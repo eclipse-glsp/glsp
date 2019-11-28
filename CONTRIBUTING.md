@@ -23,3 +23,13 @@ Before your pull request can be accepted, you must electronically sign the [Ecli
 Unless you are an [elected committer of the GLSP project](https://projects.eclipse.org/projects/ecd.glsp/who), you must include a `Signed-off-by` line in the commit message. This line can be generated with the [-s flag of git commit](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt--s). By doing this you confirm that your contribution conforms to the Eclipse Contributor Agreement.
 
 For more information, see the [Eclipse Foundation Project Handbook](https://www.eclipse.org/projects/handbook/#resources-commit).
+
+### Branch names and commit messages
+If you are an [elected committer of the GLSP project](https://projects.eclipse.org/projects/ecd.glsp/who) please create a branch. Otherwise please fork and create a branch in your fork for the Pull Request.
+
+The branch name should be in the form `issue/{issue_number}`, e.g. `issue/123` So please create an issue before creating a pull request.
+All branches with this naming schema will be deleted after they are merged.
+
+In the commit message you should also reference the corresponding issue, e.g. using `closes #123`, thus allowing [auto close of issues](https://help.github.com/en/github/managing-your-work-on-github/closing-issues-using-keywords).
+
+Finally make sure you read the [guide for a good commit message](https://chris.beams.io/posts/git-commit/).
