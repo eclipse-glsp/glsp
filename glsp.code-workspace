@@ -176,6 +176,43 @@
 				"problemMatcher": [
 					"$tsc-watch"
 				]
+			},
+			{
+				"label": "Yarn link all packages",
+				"detail": "Links all packages to the local source and shared dependencies",
+				"type": "shell",
+				"group": "none",
+				"presentation": {
+					"focus": false,
+					"panel": "shared",
+					"showReuseMessage": false,
+					"clear": true
+				},
+				"linux": {
+					"command": "./development/yarn-link.sh ${workspaceFolder}/../",
+				},
+				"osx": {
+					"command": "./development/yarn-link.sh ${workspaceFolder}/../",
+				},
+				"problemMatcher": []
+			},
+			{
+				"label": "Yarn unlink all packages",
+				"type": "shell",
+				"group": "none",
+				"presentation": {
+					"focus": false,
+					"panel": "shared",
+					"showReuseMessage": false,
+					"clear": true
+				},
+				"linux": {
+					"command": "./development/yarn-link.sh ${workspaceFolder}/../ --unlink",
+				},
+				"osx": {
+					"command": "./development/yarn-link.sh ${workspaceFolder}/../ --unlink",
+				},
+				"problemMatcher": []
 			}
 		]
 	}
