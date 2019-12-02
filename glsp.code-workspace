@@ -189,10 +189,16 @@
 					"clear": true
 				},
 				"linux": {
-					"command": "./development/yarn-link.sh ${workspaceFolder}/../",
+					"command": "./development/yarn-link.sh",
+					"args": [
+						"${workspaceFolder}/../"
+					]
 				},
 				"osx": {
-					"command": "./development/yarn-link.sh ${workspaceFolder}/../",
+					"command": "./development/yarn-link.sh",
+					"args": [
+						"${workspaceFolder}/../"
+					]
 				},
 				"problemMatcher": []
 			},
@@ -207,10 +213,18 @@
 					"clear": true
 				},
 				"linux": {
-					"command": "./development/yarn-link.sh ${workspaceFolder}/../ --unlink",
+					"command": "./development/yarn-link.sh",
+					"args": [
+						"${workspaceFolder}/../",
+						"--unlink"
+					]
 				},
 				"osx": {
-					"command": "./development/yarn-link.sh ${workspaceFolder}/../ --unlink",
+					"command": "./development/yarn-link.sh",
+					"args": [
+						"${workspaceFolder}/../",
+						"--unlink"
+					]
 				},
 				"problemMatcher": []
 			}
