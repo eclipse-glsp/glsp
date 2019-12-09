@@ -7,12 +7,11 @@ function linkLocalModule(){
 
 function linkExampleNodeModules(){
     cd $2 || exit
-    echo $2
     pwd
     cd glsp-examples/client/node_modules/ || exit
-    linkLocalModule @theia/application-manager $1 
+    linkLocalModule @theia/application-manager $1
     linkLocalModule @theia/application-package $1
-    linkLocalModule @theia/core $1 
+    linkLocalModule @theia/core $1
     linkLocalModule @theia/editor $1
     linkLocalModule @theia/filesystem $1
     linkLocalModule @theia/languages $1
@@ -84,15 +83,19 @@ fi
 
 cd $baseDir || exit
 if [[ "$2" != "--unlink" ]]; then
-    # cd glsp-examples/client
-    # yarn install
+    "--- Start linking all necessary packages --- "
+    cd glsp-examples/client || exit
+    yarn install
     linkExampleNodeModules $linkCmd $baseDir
     linkClient $linkCmd $baseDir
     linkTheiaIntegration $linkCmd $baseDir
     linkExample $linkCmd $baseDir
+    "--- LINKING SUCCESSFULL --- "
 else
+    "--- Start unlinking all previously linked packages --- "
     linkTheiaIntegration $linkCmd $baseDir
     linkClient $linkCmd $baseDir
     linkExampleNodeModules $linkCmd $baseDir
-    linkExample
+    linkExample $linkCmd $baseDir
+    "--- UNLINKING SUCCESSFULL --- "
 fi
