@@ -83,19 +83,19 @@ fi
 
 cd $baseDir || exit
 if [[ "$2" != "--unlink" ]]; then
-    "--- Start linking all necessary packages --- "
+    echo "--- Start linking all necessary packages --- "
     cd glsp-examples/client || exit
     yarn install
     linkExampleNodeModules $linkCmd $baseDir
     linkClient $linkCmd $baseDir
     linkTheiaIntegration $linkCmd $baseDir
     linkExample $linkCmd $baseDir
-    "--- LINKING SUCCESSFULL --- "
+    echo "--- LINKING SUCCESSFULL --- "
 else
-    "--- Start unlinking all previously linked packages --- "
+    echo "--- Start unlinking all previously linked packages --- "
     linkTheiaIntegration $linkCmd $baseDir
     linkClient $linkCmd $baseDir
     linkExampleNodeModules $linkCmd $baseDir
     linkExample $linkCmd $baseDir
-    "--- UNLINKING SUCCESSFULL --- "
+    echo "--- UNLINKING SUCCESSFULL --- "
 fi
