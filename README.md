@@ -22,7 +22,7 @@ This repository contains the documentation of GLSP. The actual GLSP code is avai
 
 The client packages are available via [npmjs](https://www.npmjs.com/search?q=%40eclipse-glsp), such as the [glsp-client](https://www.npmjs.com/package/@eclipse-glsp/client) and the [theia integration](https://www.npmjs.com/package/@eclipse-glsp/theia-integration). The [examples](https://www.npmjs.com/search?q=%40eclipse-glsp-examples) are available on npmjs too.
 
-The server packages are available as maven repository or p2 update site.
+The server packages are available as maven as well as p2 dependency from the following maven repository or p2 update site.
 
 ### Maven Repositories
 - <i>Snapshots: </i> https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/
@@ -114,4 +114,4 @@ For the [server components](https://github.com/eclipse-glsp/glsp-server), you ca
 
 ### Linking and watching
 
-When you are planning to change more than one client package at a time, or you want to test your changes with the workflow example, we recommend to `yarn link` your local sources.
+When you are planning to change more than one client package at a time, or you want to test your changes with the workflow example, we recommend to `yarn link` your local sources. Therefore, we provide the [yarn-link script](https://github.com/eclipse-glsp/glsp/blob/master/development/yarn-link.sh) that automatically links all the relevant packages. Currently, this script is only available for Linux and Mac (shell script). The [GLSP VSCode workspace](glsp.code-workspace) also includes a dedicated VSCode task called `Yarn link all packages` and `Yarn unlink all packages`.
