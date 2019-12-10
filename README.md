@@ -28,7 +28,7 @@ The server packages are available as maven repository or p2 update site.
 - <i>Snapshots: </i> https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/
 
 ### P2 Update Sites
-- <i>Snapshots: </i> Available soon
+- <i>Snapshots: </i> https://download.eclipse.org/glsp/nightly/
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
