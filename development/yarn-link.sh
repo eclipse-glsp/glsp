@@ -7,7 +7,6 @@ function linkLocalModule(){
 
 function linkExampleNodeModules(){
     cd $2 || exit
-    pwd
     cd glsp-examples/client/node_modules/ || exit
     linkLocalModule @theia/application-manager $1
     linkLocalModule @theia/application-package $1
@@ -64,6 +63,7 @@ function linkTheiaIntegration(){
     yarn $1 @theia/variable-resolver
     yarn $1 @theia/workspace
     yarn $1 sprotty-theia
+    yarn $1 sprotty
     yarn $1
     yarn install --force
 }
