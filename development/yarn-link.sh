@@ -64,7 +64,7 @@ function linkTheiaIntegration(){
     yarn $1 @theia/variable-resolver
     yarn $1 @theia/workspace
     yarn $1 sprotty-theia
-    yarn $1
+    yarn $1 sprotty
     yarn install --force
 }
 
