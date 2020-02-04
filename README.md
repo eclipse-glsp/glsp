@@ -6,7 +6,7 @@ The <b>G</b>raphical <b>L</b>anguage <b>S</b>erver <b>P</b>latform provides exte
 It follows the architectural pattern of the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors for browser/cloud-based deployments.
 Parts of the protocol and the web-based client implementation is based on [Sprotty](https://github.com/eclipse/sprotty) but extends it with editing functionality and GLSP-specific communication with the server.
 
-For more information, please visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp). If you have questions, contact us on our [spectrum chat](https://spectrum.chat/glsp/?tab=posts).
+For more information, please visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp/). If you have questions, contact us on our [spectrum chat](https://spectrum.chat/glsp/) and have a look at our [communication and support options](https://www.eclipse.org/glsp/contact/).
 
 ![alt](https://www.eclipse.org/glsp/images/diagramanimated.gif)
 
