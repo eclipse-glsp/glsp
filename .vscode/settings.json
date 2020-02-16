@@ -1,0 +1,30 @@
+// If one would like to add/remove/modify user preferences without modifying the content of the
+// workspace settings file, then one would need to modify the `settings.json` under here:
+// - Windows: %APPDATA%\Code\User\settings.json
+// - Linux: $HOME/.config/Code/User/settings.json
+// - Mac: $HOME/Library/Application Support/Code/User/settings.json
+{
+  "typescriptHero.imports.organizeOnSave": true,
+  "typescriptHero.imports.disableImportsSorting": false,
+  "typescriptHero.imports.stringQuoteStyle": "\"",
+  "typescriptHero.imports.insertSemicolons": true,
+  "typescriptHero.imports.multiLineTrailingComma": false,
+  "tslint.alwaysShowRuleFailuresAsWarnings": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/lib": true
+  },
+  "editor.insertSpaces": true,
+  "[typescript]": {
+    "editor.tabSize": 4
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "task.autoDetect": "off",
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
