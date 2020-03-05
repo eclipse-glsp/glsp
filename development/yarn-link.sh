@@ -15,6 +15,7 @@ function linkExampleNodeModules(){
     linkLocalModule @theia/filesystem $1
     linkLocalModule @theia/languages $1
     linkLocalModule @theia/markers $1
+    linkLocalModule @theia/messages $1
     linkLocalModule @theia/monaco $1
     linkLocalModule @theia/navigator $1
     linkLocalModule @theia/node-pty $1
@@ -54,6 +55,7 @@ function linkTheiaIntegration(){
     yarn $1 @theia/filesystem
     yarn $1 @theia/languages
     yarn $1 @theia/markers
+    yarn $1 @theia/messages
     yarn $1 @theia/monaco
     yarn $1 @theia/navigator
     yarn $1 @theia/node-pty
