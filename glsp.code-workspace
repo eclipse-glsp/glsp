@@ -119,7 +119,7 @@
                 "problemMatcher": []
             },
             {
-                "label": "Run Workflow Server",
+                "label": "Start Workflow Example Server",
                 "type": "shell",
                 "group": "test",
                 "presentation": {
