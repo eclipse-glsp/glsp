@@ -38,10 +38,10 @@ All changes on the master branch are deployed automatically to the corresponding
 
 ### Client packages
 
-You’ll need node in version 8:
+You’ll need node in version 10:
 
-	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash
-	nvm install 8
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
+	nvm install 10
 
 and Yarn
 
