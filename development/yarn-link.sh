@@ -17,6 +17,7 @@ function linkExampleNodeModules(){
     linkLocalModule @theia/markers $1
     linkLocalModule @theia/messages $1
     linkLocalModule @theia/monaco $1
+    linkLocalModule @theia/monaco-editor-core $1
     linkLocalModule @theia/navigator $1
     linkLocalModule @theia/node-pty $1
     linkLocalModule @theia/outline-view $1
@@ -57,6 +58,7 @@ function linkTheiaIntegration(){
     yarn $1 @theia/markers
     yarn $1 @theia/messages
     yarn $1 @theia/monaco
+    yarn $1 @theia/monaco-editor-core
     yarn $1 @theia/navigator
     yarn $1 @theia/node-pty
     yarn $1 @theia/outline-view
