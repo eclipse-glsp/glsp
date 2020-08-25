@@ -103,38 +103,6 @@
                 ]
             },
             {
-                "label": "Build Workflow Example Server",
-                "type": "shell",
-                "group": "build",
-                "presentation": {
-                    "focus": false,
-                    "panel": "shared",
-                    "showReuseMessage": false,
-                    "clear": false
-                },
-                "options": {
-                    "cwd": "${workspaceFolder}/../glsp-examples/server"
-                },
-                "command": "mvn clean verify",
-                "problemMatcher": []
-            },
-            {
-                "label": "Start Workflow Example Server",
-                "type": "shell",
-                "group": "test",
-                "presentation": {
-                    "focus": false,
-                    "panel": "shared",
-                    "showReuseMessage": false,
-                    "clear": false
-                },
-                "command": "java -jar ${workspaceFolder}/../glsp-examples/server/org.eclipse.glsp.example.workflow/target/org.eclipse.glsp.example.workflow-0.8.0-SNAPSHOT-glsp.jar",
-                "problemMatcher": [
-                    "$tsc",
-                    "$tslint5"
-                ]
-            },
-            {
                 "label": "Watch all",
                 "detail": "Watch all client packages, Theia backend, and workflow example",
                 "type": "shell",
