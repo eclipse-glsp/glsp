@@ -1,14 +1,41 @@
 # Eclipse GLSP [![build-status-server](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-server%2Fjob%2Fmaster%2F&label=server)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/) [![build-status-client](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-client%2Fjob%2Fmaster%2F&label=client)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master) [![build-status-theia](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-theia-integration%2Fjob%2Fmaster%2F&label=theia-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-theia-integration/) [![build-status-examples](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-examples%2Fjob%2Fmaster%2F&label=examples)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-examples/job/master)
 
-
 The <b>G</b>raphical <b>L</b>anguage <b>S</b>erver <b>P</b>latform provides extensible components for the development of *diagram editors including edit functionality* in (distributed) web-applications via a client-server protocol.
 
 It follows the architectural pattern of the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors for browser/cloud-based deployments.
 Parts of the protocol and the web-based client implementation is based on [Sprotty](https://github.com/eclipse/sprotty) but extends it with editing functionality and GLSP-specific communication with the server.
 
-For more information, please visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp/). If you have questions, contact us on our [spectrum chat](https://spectrum.chat/glsp/) and have a look at our [communication and support options](https://www.eclipse.org/glsp/contact/).
+For more information, please have a look at the [protocol](PROTOCOL.md) or visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp/). If you have questions, contact us on our [spectrum chat](https://spectrum.chat/glsp/) and have a look at our [communication and support options](https://www.eclipse.org/glsp/contact/).
 
 ![alt](https://www.eclipse.org/glsp/images/diagramanimated.gif)
+
+## Features
+
+Below is a list of features that are supported by the different base technologies that can be used with GLSP.
+
+| Feature                                                           	|   Standalone   	| Theia Integration 	| Eclipse Integration 	| VS Code Integration 	|
+|-------------------------------------------------------------------	|:--------------:	|:-----------------:	|:-------------------:	|:-------------------:	|
+| Model Saving                                                      	|                	|         ✓         	|          ✓          	|                     	|
+| Model Dirty State                                                 	|                	|         ✓         	|          ✓          	|                     	|
+| Model Layout                                                      	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Model Edit Modes<br>- Edit<br>- Read-only                         	|  <br>✓<br>&nbsp; 	|     <br>✓<br>✓    	|      <br>✓<br>&nbsp;     	|      <br>✓<br>&nbsp; 	|
+| Client View Port<br>- Center<br>- Fit to Screen                   	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
+| Client Status Notification                                        	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Client Message Notification                                       	|        ✓       	|         ✓         	|                     	|                     	|
+| Element Selection                                                 	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Element Hover                                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Element Validation                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Element Navigation                                                	|                	|         ✓         	|                     	|                     	|
+| Element Type Hints                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Element Creation and Deletion                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Node Change Bounds<br>- Move<br>- Resize                          	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
+| Node Change Container                                             	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Edge Reconnect                                                    	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Edge Routing Points                                               	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Element Text Editing                                              	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
+| Clipboard (Cut, Copy, Paste)                                      	|                	|         ✓         	|                     	|                     	|
+| Undo / Redo                                                       	|                	|         ✓         	|          ✓          	|                     	|
+| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette 	| <br><br>✓<br>✓ 	|  <br>✓<br>✓<br>✓  	|    <br><br>✓<br>✓   	|    <br><br>✓<br>✓   	|
 
 ## Repositories
 
