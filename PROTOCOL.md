@@ -269,7 +269,7 @@ class ActionMessage {
 
 ### 2.1.2. Action
 
-An action describes a change to the model declaratively. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent by both ways, by the client or the server. All actions must extend the default action interface. 
+An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface. 
 
 <details open><summary>Code</summary>
 
@@ -945,9 +945,9 @@ class SetDirtyStateAction implements Action {
 
 ## 2.7. Model Layout
 
-In GLSP the server is response to calculate the layout of the model by applying bound on all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be as straight-forward as it may depend on how the bounds are calculated on the client-side.
+In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
 
-On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all it's labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
+On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
 
 ### 2.7.1. RequestBoundsAction
 
@@ -1063,7 +1063,7 @@ class SetEditModeAction implements Action {
 
 ## 2.9. Client-Side Actions
 
-There are several actions that are used on the client-side to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
+There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
 
 ### 2.9.1. View Port
 
@@ -1105,7 +1105,7 @@ class CenterAction implements Action {
 
 #### 2.9.1.2. FitToScreenAction
 
-Triggered when the user requests the viewer to fit its content to the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
+Triggers to fit all or a list of elements into the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
 
 <details open><summary>Code</summary>
 
@@ -1144,7 +1144,7 @@ class FitToScreenAction implements Action {
 
 ### 2.9.2. Client Notification
 
-In GLSP we distinguish between a status and a message which may be displayed differently on the client-side. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
+In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
 #### 2.9.2.1. GLSPServerStatusAction
 
@@ -1220,7 +1220,7 @@ class ServerMessageAction implements Action {
 
 #### 2.9.3.1. SelectAction
 
-Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently. This action is also forwarded to the server, if present, so it may react on the selection change. Furthermore, the server can send such an action to the client in order to change the selection remotely.
+Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently. The server can send such an action to the client in order to change the selection remotely.
 
 <details open><summary>Code</summary>
 
@@ -1424,7 +1424,7 @@ class DeleteMarkersAction implements Action {
 
 GLSP makes no assumption about the type of navigation a user may want to perform. Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc. The type of navigation is identified by the `targetTypeId`.
 
-A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets. A `NavigationTarget` identifies the object we want to navigate to via it's uri and may further provide a label to display for the client. Additionally, generic  arguments may be used to to encode any domain- or navigation type-specific information.
+A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets. A `NavigationTarget` identifies the object we want to navigate to via its uri and may further provide a label to display for the client. Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.
 
 <details open><summary>Code</summary>
 
@@ -1978,7 +1978,7 @@ class SetEditValidationResultAction implements ResponseAction {
 
 ### 2.17.3. ApplyLabelEditOperation
 
-A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send a `ApplyLabelEditOperation` to the server.
+A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
 
 <details open><summary>Code</summary>
 
@@ -2004,7 +2004,7 @@ class ApplyLabelEditOperation implements Operation {
 
 ## 2.18. Clipboard
 
-In GLSP the clipboard needs to be managed by the client but the conversion from data to a clipboard-compatible format is handled by the server. By default, we use `application/json` as exchange format.
+In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server. By default, GLSP use `application/json` as exchange format.
 
 <details open><summary>Code</summary>
 
@@ -2204,7 +2204,7 @@ The context menu is an overlay that is triggered by a right click from the user.
 
 ### 2.20.4. Command Palette
 
-The command palette is an "auto-complete" widget that is triggered the user hitting `ctrl+space`. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a auto-complete widget.
+The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
 
 ### 2.20.5. Tool Palette
 
