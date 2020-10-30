@@ -34,6 +34,7 @@
     - [2.5.1. RequestModelAction](#251-requestmodelaction)
     - [2.5.2. SetModelAction](#252-setmodelaction)
     - [2.5.3. UpdateModelAction](#253-updatemodelaction)
+    - [2.5.4. ModelSourceChangedAction](#254-modelsourcechangedaction)
   - [2.6. Model Saving](#26-model-saving)
     - [2.6.1. SaveModelAction](#261-savemodelaction)
     - [2.6.2. SetDirtyStateAction](#262-setdirtystateaction)
@@ -900,6 +901,27 @@ interface Match {
     right?: SModelElementSchema
     leftParentId?: string
     rightParentId?: string
+}
+```
+</details>
+
+### 2.5.4. ModelSourceChangedAction
+
+Sent from the server to the client in order to indicate that the model source has changed. The model source denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ingore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
+
+<details open><summary>Code</summary>
+
+```typescript
+class ModelSourceChangedAction implements Action {
+    /**
+     * The kind of the action.
+     */
+    public readonly kind = "modelSourceChanged";
+
+    /**
+     * A human readable name of the model source (e.g. the file name).
+     */
+    public readonly modelSourceName: string;
 }
 ```
 </details>
