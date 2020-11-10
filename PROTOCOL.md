@@ -38,6 +38,7 @@
   - [2.6. Model Saving](#26-model-saving)
     - [2.6.1. SaveModelAction](#261-savemodelaction)
     - [2.6.2. SetDirtyStateAction](#262-setdirtystateaction)
+    - [2.6.2. ExportSvgAction](#263-exportsvgaction)
   - [2.7. Model Layout](#27-model-layout)
     - [2.7.1. RequestBoundsAction](#271-requestboundsaction)
     - [2.7.2. ComputedBoundsAction](#272-computedboundsaction)
@@ -962,6 +963,24 @@ class SetDirtyStateAction implements Action {
      */
     public readonly isDirty: boolean
 }
+```
+</details>
+
+### 2.6.3. ExportSvgAction
+
+The client (or the server) sends a `ExportSvgAction` to indicate that diagram, which represents the current model state, should be exported in SVG format. The action provides the diagram svg as plain string.
+
+<details open><summary>Code</summary>
+
+```typescript
+class ExportSvgAction implements ResponseAction {
+    static KIND = 'exportSvg';
+    kind = ExportSvgAction.KIND;
+
+    constructor(public readonly svg: string,
+                public readonly responseId: string = '') {}
+}
+
 ```
 </details>
 
