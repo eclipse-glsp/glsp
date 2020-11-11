@@ -968,18 +968,21 @@ class SetDirtyStateAction implements Action {
 
 ### 2.6.3. ExportSvgAction
 
-The client (or the server) sends a `ExportSvgAction` to indicate that diagram, which represents the current model state, should be exported in SVG format. The action provides the diagram svg as plain string.
+The client (or the server) sends a `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram svg as plain string. The expected result of executing a `ExportSvgAction` is new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem. 
 
 <details open><summary>Code</summary>
 
 ```typescript
+/**
+ * Sprotty's ExportSvgAction.
+ * Note that sprotty also provides a `RequestExportSvgAction` which is currently not supported in GLSP.
+ */
 class ExportSvgAction implements ResponseAction {
-    static KIND = 'exportSvg';
-    kind = ExportSvgAction.KIND;
-
-    constructor(public readonly svg: string,
-                public readonly responseId: string = '') {}
-}
+    /**
+     * The diagram SModel as serializable SVG.
+     */
+    public readonly svg:string;
+}  
 
 ```
 </details>
