@@ -968,7 +968,7 @@ class SetDirtyStateAction implements Action {
 
 ### 2.6.3. ExportSvgAction
 
-The client (or the server) sends a `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram svg as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem. 
+The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem. 
 
 <details open><summary>Code</summary>
 
