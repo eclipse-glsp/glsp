@@ -1615,7 +1615,7 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
 
 ### 2.12.6. NavigateToExternalTargetAction
 
-If a navigation target cannot be resolved or targets something that is not part of our model source, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer.
+If a navigation target cannot be resolved or the resolved target is something that is not part of our model source, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
 <details open><summary>Code</summary>
 
