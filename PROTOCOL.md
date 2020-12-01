@@ -38,7 +38,7 @@
   - [2.6. Model Saving](#26-model-saving)
     - [2.6.1. SaveModelAction](#261-savemodelaction)
     - [2.6.2. SetDirtyStateAction](#262-setdirtystateaction)
-    - [2.6.2. ExportSvgAction](#263-exportsvgaction)
+    - [2.6.3. ExportSvgAction](#263-exportsvgaction)
   - [2.7. Model Layout](#27-model-layout)
     - [2.7.1. RequestBoundsAction](#271-requestboundsaction)
     - [2.7.2. ComputedBoundsAction](#272-computedboundsaction)
@@ -68,6 +68,7 @@
     - [2.12.3. NavigateToTargetAction](#2123-navigatetotargetaction)
     - [2.12.4. ResolveNavigationTargetAction](#2124-resolvenavigationtargetaction)
     - [2.12.5. SetResolvedNavigationTargetAction](#2125-setresolvednavigationtargetaction)
+    - [2.12.6. NavigateToExternalTargetAction](#2126-navigatetoexternaltargetaction)
   - [2.13. Element Type Hints](#213-element-type-hints)
     - [2.13.1. RequestTypeHintsAction](#2131-requesttypehintsaction)
     - [2.13.2. SetTypeHintsAction](#2132-settypehintsaction)
@@ -1608,6 +1609,27 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
      * Custom arguments that may be interpreted by the client.
      */
     public readonly args?: Args;
+}
+```
+</details>
+
+### 2.12.6. NavigateToExternalTargetAction
+
+If a navigation target cannot be resolved or targets something that is not part of our model source, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer.
+
+<details open><summary>Code</summary>
+
+```typescript
+class NavigateToExternalTargetAction implements Action {
+    /**
+     * The kind of the action.
+     */
+    public readonly kind = "navigateToExternalTarget";
+
+    /**
+     * The target to which we navigate.
+     */
+    public readonly target: NavigationTarget;
 }
 ```
 </details>
