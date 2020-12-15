@@ -12,6 +12,8 @@
 <a name="server_changes_1.9.0">[Server:](#server_changes_1.9.0)</a>
 
 - [websocket] Fixed issue that was caused by reusing a shared injector for each client connection [#149](https://github.com/eclipse-glsp/glsp-server/pull/91)
+- [server] Added a utility class for 'JsonOpenerOptions' [#153](https://github.com/eclipse-glsp/glsp-server/pull/93)
+- [websocket] Align package import of javax.servlet with the dependency range of Jetty [#156](https://github.com/eclipse-glsp/glsp-server/pull/94)
 
 <a name="breaking_changes_1.9.0">[Breaking Changes:](#breaking_changes_1.8.0)</a>
 
