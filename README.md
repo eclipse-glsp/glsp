@@ -100,32 +100,38 @@ Clone [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples), if you h
 
 ### Building and running the GLSP backend
 
-    cd server
+    cd glsp-server
     mvn clean install -Pfatjar
 
-In the folder `server/org.eclipse.glsp.example.workflow/target`, you should have a jar file `org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar` whereas `X.X.X` is the current version. You can now start the server by executing the following commands:
+In the folder `glsp-server/examples/org.eclipse.glsp.example.workflow/target`, you should have a jar file `org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar` whereas `X.X.X` is the current version. You can now start the server by executing the following commands:
 
-	cd org.eclipse.glsp.example.workflow/target
-	java -jar org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar org.eclipse.glsp.example.workflow.ExampleServerLauncher
+	cd examples/org.eclipse.glsp.example.workflow/target
+	java -jar org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar org.eclipse.glsp.example.workflow.launch.ExampleServerLauncher
 
-To start the example server from within your IDE, run the main method of the class [ExampleServerLauncher.java](https://github.com/eclipse-glsp/glsp-examples/blob/master/server/org.eclipse.glsp.example.workflow/src/main/java/org/eclipse/glsp/example/workflow/ExampleServerLauncher.java) in the module `server/org.eclipse.glsp.example.workflow`.
+To start the example server from within your IDE, run the main method of the class [ExampleServerLauncher.java](https://github.com/eclipse-glsp/glsp-server/blob/master/examples/org.eclipse.glsp.example.workflow/src/org/eclipse/glsp/example/workflow/launch/WorkflowServerLauncher.java) in the module `glsp-server/examples/org.eclipse.glsp.example.workflow`.
 
 ### Building and running the Workflow Theia application
 
 Note that it is not necessary to build the other components of GLSP just for running the workflow example, as the workflow example build will pull all dependencies (including those from GLSP) from npmjs and sonar.
 
-Switch to the folder `client` in your clone of the [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples) repository and build.
+Switch to the folder `glsp-theia-integration` in your clone of the [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration) repository and build.
 
-    cd client
+    cd glsp-theia-integration
     yarn
 
-This will not only build the GLSP workflow example modules, but also its Theia integration and a Theia application. Once the build is finished, you can start the Theia application:
+This will not only build the GLSP Theia integration modules, but also the workflow diagram editor example. Once the build is finished, you can start the Theia application:
 
-    cd workflow/browser-app
+    cd glsp-theia-integration/examples/browser-app
     yarn start
 
 Now open a browser and point it to http://localhost:3000.
-If you open this the first time and you don't have selected a workspace yet, point it to `glsp-examples/client/workflow/workspace` of your repository clone. This will already include an up to date workflow file `example1.wf` that you can open by double-clicking it in the navigator.
+If you open this the first time and you don't have selected a workspace yet, point it to [`glsp-theia-integration/examples/workspace`](https://github.com/eclipse-glsp/glsp-theia-integration/tree/master/examples/workspace) of your repository clone. This will already include an up to date workflow file `example1.wf` that you can open by double-clicking it in the navigator.
+
+In order to start the workflow diagram editor example with VSCode or Eclipse, please see the documentation of the respective integration modules:
+
+  * [VSCode Integration](https://github.com/eclipsesource/glsp-vscode-integration)
+  * [Eclipse Integration](https://github.com/eclipsesource/glsp-vscode-integration)
+  * [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration)
 
 ## Setting up your development environment
 
