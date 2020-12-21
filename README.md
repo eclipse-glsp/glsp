@@ -91,9 +91,9 @@ To build the client packages, just invoke `yarn` in `glsp-client`, `glsp-theia-i
 
 The server components are built with `mvn clean install` in `glsp-server`. If you want to build the example server, run `mvn clean install` in `glsp-examples/server`.
 
-## Building and starting the workflow example
+## Building and starting the Workflow Diagram example
 
-The workflow example consists of the following components: the Workflow Diagram Server, the client, and optionally an IDE integration of the Workflow Diagram Editor. Please follow the steps below to build and run each of those components.
+The Workflow Diagram is a consistent example provided by all GLSP components. The example implements a simple flow chart diagram editor with different types of nodes and edges (see screenshot below). The example can be used to try out different GLSP features, as well as several available integrations with IDE platforms (Theia, VSCode, Eclipse, Standalone). As the example is fully open source, you can also use it as a blueprint for a custom implementation of a GLSP diagram editor. The workflow example consists of the following components: the Workflow Diagram Server, the client, and optionally an IDE integration of the Workflow Diagram Editor. Please follow the steps below to build and run each of those components.
 
 ### Building and running the Workflow Diagram Server
 
