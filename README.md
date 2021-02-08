@@ -26,7 +26,7 @@ Below is a list of features that are supported by the different base technologie
 | Element Selection                                                 	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Element Hover                                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Element Validation                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Navigation                                                	|                	|         ✓         	|                     	|                     	|
+| Element Navigation                                                	|                	|         ✓         	|          ✓          	|                     	|
 | Element Type Hints                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Element Creation and Deletion                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Node Change Bounds<br>- Move<br>- Resize                          	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
