@@ -963,6 +963,11 @@ class SetDirtyStateAction implements Action {
      * True if the current model state is dirty
      */
     public readonly isDirty: boolean
+
+    /**
+    * The action or operation which caused the dirty state change
+    */
+    public readonly causedBy: Action
 }
 ```
 </details>
