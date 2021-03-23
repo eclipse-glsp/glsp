@@ -965,9 +965,9 @@ class SetDirtyStateAction implements Action {
     public readonly isDirty: boolean
 
     /**
-    * The action or operation which caused the dirty state change
+    * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
     */
-    public readonly causedBy: Action
+    public readonly reason?: string
 }
 ```
 </details>
