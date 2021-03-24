@@ -933,6 +933,7 @@ class ModelSourceChangedAction implements Action {
 ### 2.6.1. SaveModelAction
 
 Sent from the client to the server in order to persist the current model state back to the model source.
+A new `fileUri` can be defined to save the model to a new destination different from its original model source.
 
 <details open><summary>Code</summary>
 
@@ -942,6 +943,11 @@ class SaveModelAction implements Action {
      * The kind of the action.
      */
     public readonly kind = "saveModel";
+
+    /**
+     *  The optional destination file uri.
+     */
+    public readonly fileUri?: string;
 }
 ```
 </details>
