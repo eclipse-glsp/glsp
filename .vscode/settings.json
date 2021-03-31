@@ -6,13 +6,12 @@
 {
   "typescriptHero.imports.organizeOnSave": true,
   "typescriptHero.imports.disableImportsSorting": false,
-  "typescriptHero.imports.stringQuoteStyle": "\"",
+  "typescriptHero.imports.stringQuoteStyle": "'",
   "typescriptHero.imports.insertSemicolons": true,
   "typescriptHero.imports.multiLineTrailingComma": false,
-  "tslint.alwaysShowRuleFailuresAsWarnings": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true
+    "source.fixAll.eslint": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -26,5 +25,9 @@
     "editor.tabSize": 2
   },
   "task.autoDetect": "off",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ]
 }

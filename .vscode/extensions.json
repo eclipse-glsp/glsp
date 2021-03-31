@@ -4,7 +4,7 @@
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
     "editorconfig.editorconfig",
-    "ms-vscode.vscode-typescript-tslint-plugin",
+    "dbaeumer.vscode-eslint",
     "rbbit.typescript-hero",
     "aeschli.vscode-css-formatter"
   ],

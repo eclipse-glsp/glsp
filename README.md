@@ -144,7 +144,7 @@ If you want to explore or extend the GLSP source code in any of the available co
 
 For the client-side code (Typescript), we recommend using VSCode. Therefore, this repository provides a VSCode [workspace file](glsp.code-workspace), which you can open in VSCode and it will import all client-side folders for you -- given that you kept the repository structure specified above.
 
-The [GLSP workspace file](glsp.code-workspace) provides build & watch tasks, so that you can build all packages with the task `Build all` or start watching all client packages with `Watch all`.
+The [GLSP workspace file](glsp.theia.code-workspace) provides build & watch tasks, so that you can build all packages with the task `Build all` or start watching all client packages with `Watch all`.
 
 For the [server components](https://github.com/eclipse-glsp/glsp-server), you can use any IDE you like. We recommend an IDE that supports maven, though, to import the maven modules from the [glsp-server](https://github.com/eclipse-glsp/glsp-server) and optionally also those from the [glsp-examples](https://github.com/eclipse-glsp/glsp-examples/tree/master/server/).
 
