@@ -60,7 +60,7 @@
                 "command": "yarn",
                 "problemMatcher": [
                     "$tsc",
-                    "$tslint5"
+                    "$eslint-stylish"
                 ]
             },
             {
@@ -80,7 +80,7 @@
                 "command": "yarn",
                 "problemMatcher": [
                     "$tsc",
-                    "$tslint5"
+                    "$eslint-stylish"
                 ]
             },
             {
