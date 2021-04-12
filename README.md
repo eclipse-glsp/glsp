@@ -15,8 +15,8 @@ Below is a list of features that are supported by the different base technologie
 
 | Feature                                                           	|   Standalone   	| Theia Integration 	| Eclipse Integration 	| VS Code Integration 	|
 |-------------------------------------------------------------------	|:--------------:	|:-----------------:	|:-------------------:	|:-------------------:	|
-| Model Saving                                                      	|                	|         ✓         	|          ✓          	|                     	|
-| Model Dirty State                                                 	|                	|         ✓         	|          ✓          	|                     	|
+| Model Saving                                                      	|                	|         ✓         	|          ✓          	|          ✓          	|	|
+| Model Dirty State                                                 	|                	|         ✓         	|          ✓          	|          ✓          	|	|
 | Model SVG Export                                                 	    |                	|         ✓         	|                   	|                     	|
 | Model Layout                                                      	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Model Edit Modes<br>- Edit<br>- Read-only                         	|  <br>✓<br>&nbsp; 	|     <br>✓<br>✓    	|      <br>✓<br>&nbsp;  |      <br>✓<br>&nbsp; 	|
@@ -35,7 +35,7 @@ Below is a list of features that are supported by the different base technologie
 | Edge Routing Points                                               	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Element Text Editing                                              	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
 | Clipboard (Cut, Copy, Paste)                                      	|                	|         ✓         	|                     	|                     	|
-| Undo / Redo                                                       	|                	|         ✓         	|          ✓          	|                     	|
+| Undo / Redo                                                       	|                	|         ✓         	|          ✓          	|          ✓          	|	|
 | Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette 	| <br><br>✓<br>✓ 	|  <br>✓<br>✓<br>✓  	|    <br><br>✓<br>✓   	|    <br><br>✓<br>✓   	|
 
 ## Repositories
@@ -47,7 +47,7 @@ The GLSP source code consists of the following repositories:
 - [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples to demonstrate GLSP in action.
 - [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 - [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
-- [`glsp-vscode-integration`](https://github.com/eclipsesource/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
+- [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
 
 ## Build artifacts
 
