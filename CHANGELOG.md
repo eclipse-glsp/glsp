@@ -12,6 +12,7 @@
 - [protocol] Implemented missing typeguard functions for all protocol operations [#212](https://github.com/eclipse-glsp/glsp-client/pull/110)
 - [diagram] Implemented a reusable utility function (`configureDefaultModelElements`) that handles configuration of default model elements and views. 
 Introduced reusable view for rounded corner nodes and and improved edge view that supports custom padding for easer mouse handling. Adpated the workflow example to make use of these new views [#180](https://github.com/eclipse-glsp/glsp-client/pull/113)
+- [example] Cleaned up and reworked the workflow example. Additional css classes are now applied directly to the `SModelElement` instead of using custom views. Removed now obsolete classes `TaskNodeView` and `WeightedEdgeView` [#220](https://github.com/eclipse-glsp/glsp-client/pull/116)
 <br>
 
 
@@ -22,6 +23,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [theia-frontend] Fixed a bug that kept the hover feedback visible after the diagram widget becomes inactive [#184](https://github.com/eclipse-glsp/glsp-theia-integration/pull/64)
 - [theia-frontend] Made rebind of `CommandPalette` to `TheiaCommandPalette` optional to ensure compatibility with DI configurations where no `CommandPalette` is bound [#188](https://github.com/eclipse-glsp/glsp-theia-integration/pull/65)
 - [theia-frontend] Adapted `SetDirtyStateAction` to provide an optional `reason` property indicating the cause for the dirty state change  [#197](https://github.com/eclipse-glsp/glsp-theia-integration/pull/67)
+- [theia-fronted] Introduced `GLSPSelectionDataService` which can be used to forward additional information on top of the selection to the Theia selection service. [#228](https://github.com/eclipse-glsp/glsp/issues/228)
 <br>
 
 <a name="server_changes_1.9.0">[Server:](#server_changes_1.9.0)</a>
