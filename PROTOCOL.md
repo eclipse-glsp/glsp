@@ -1649,7 +1649,7 @@ class NavigateToExternalTargetAction implements Action {
 
 Type hints are used to define what modifications are supported on the different element types. Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level. The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
 
-In GLSP we distinguish between `NodeTypeHints` and `EdgeTypeHints`. These hints specify whether an element can be resized, relocated and/or deleted. Optionally, they specify a list of element types that can be contained/connected by this element.
+In GLSP we distinguish between `ShapeTypeHints` and `EdgeTypeHints`. These hints specify whether an element can be resized, relocated and/or deleted. Optionally, they specify a list of element types that can be contained/connected by this element.
 
 <details open><summary>Code</summary>
 
@@ -1671,11 +1671,16 @@ interface TypeHint {
     readonly deletable: boolean;
 }
 
-interface NodeTypeHint extends TypeHint {
+interface ShapeTypeHint extends TypeHint {
     /**
      * Specifies whether the element can be resized.
      */
     readonly resizable: boolean;
+
+    /**
+     * Specifies whether the element can be moved to another parent
+     */
+    readonly reparentable: boolean;
 
     /**
      * The types of elements that can be contained by this element (if any)
@@ -1734,7 +1739,7 @@ class SetTypeHintsAction implements Action {
     /**
      * The hints for node types.
      */
-    public readonly nodeHints: NodeTypeHint[];
+    public readonly nodeHints: ShapeTypeHint[];
 
     /**
      * The hints for edge types.
