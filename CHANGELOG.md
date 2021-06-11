@@ -7,12 +7,13 @@
 - [diagram] Extended the `ModifyCssFeedbackAction` to support both `string[]` and `SModelElement[]` as input [#103](https://github.com/eclipse-glsp/glsp-client/pull/103)
 - [diagram] Improved extensibility of `AutoCompleteWidget` by enabling changing of settings without having to re-instantiate the entire widget [#104](https://github.com/eclipse-glsp/glsp-client/pull/104)
 - [model] Added `SArgumentable` interface for denoting `SModelElement`s that contain an arbitrary arguments map [#194](https://github.com/eclipse-glsp/glsp-client/pull/106)
-- [diagram] Implemented a marquee selection tool to select multiple elements at once by drawing a rectangle. [#199](https://github.com/eclipse-glsp/glsp-client/pull/108)
+- [diagram] Implemented a marquee selection tool to select multiple elements at once by drawing a rectangle. [#199](https://github.com/eclipse-glsp/glsp-client/pull/108) [#213](https://github.com/eclipse-glsp/glsp-client/pull/120)
 - [protocol] Added `fileUri` property to `SaveModelAction`. This can be used to implemend save-as functionality [#208](https://github.com/eclipse-glsp/glsp-client/pull/109)
 - [protocol] Implemented missing typeguard functions for all protocol operations [#212](https://github.com/eclipse-glsp/glsp-client/pull/110)
 - [diagram] Implemented a reusable utility function (`configureDefaultModelElements`) that handles configuration of default model elements and views. 
 Introduced reusable view for rounded corner nodes and and improved edge view that supports custom padding for easer mouse handling. Adpated the workflow example to make use of these new views [#180](https://github.com/eclipse-glsp/glsp-client/pull/113)
 - [example] Cleaned up and reworked the workflow example. Additional css classes are now applied directly to the `SModelElement` instead of using custom views. Removed now obsolete classes `TaskNodeView` and `WeightedEdgeView` [#220](https://github.com/eclipse-glsp/glsp-client/pull/116)
+- [diagram] Fixed a bug in the connection tool regarding the feedback edge snapping computation for nested elements. [#224](https://github.com/eclipse-glsp/glsp-client/pull/123)
 <br>
 
 
@@ -24,6 +25,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [theia-frontend] Made rebind of `CommandPalette` to `TheiaCommandPalette` optional to ensure compatibility with DI configurations where no `CommandPalette` is bound [#188](https://github.com/eclipse-glsp/glsp-theia-integration/pull/65)
 - [theia-frontend] Adapted `SetDirtyStateAction` to provide an optional `reason` property indicating the cause for the dirty state change  [#197](https://github.com/eclipse-glsp/glsp-theia-integration/pull/67)
 - [theia-fronted] Introduced `GLSPSelectionDataService` which can be used to forward additional information on top of the selection to the Theia selection service. [#228](https://github.com/eclipse-glsp/glsp/issues/228)
+- [theia-frontend] Fixed a bug that displayed the diagram widget as inative when intially openend. [#243](https://github.com/eclipse-glsp/glsp-theia-integration/pull/75)
 <br>
 
 <a name="server_changes_1.9.0">[Server:](#server_changes_1.9.0)</a>
@@ -48,6 +50,8 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [glsp-server] Reworked `ModelSubmissionHandler` API. This includes changes of method names and parameters [#119](https://github.com/eclipse-glsp/glsp-server/pull/96) [#197](https://github.com/eclipse-glsp/glsp-server/pull/101)
 - [theia-integration] Dropped the dependency to the deprecated `@theia/languages` package. This enables  compatibility with new Theia versions (>1.4.0). As a consequence the new minium requirment for `sprotty-theia` is > 0.9.0 [#189](https://github.com/eclipse-glsp/glsp-theia-integration/pull/66)
 - [glsp-client] Introduced `glspViewportModule`. This module contains a custom `ScrollMouseListener` that gets disabled if the `MarqueeTool` is active. This module should be used instead of the `viewportModule` provided by sprotty [#199](https://github.com/eclipse-glsp/glsp-client/pull/108)
+- [glsp-server] Refactored the `CreateNodeOperationHandler.createNode` method. The method now also passes the argument map of the operation. [#223](https://github.com/eclipse-glsp/glsp-server/pull/108)
+- [glsp-server] Refactored methods in`DiagramConfiguration` to correctly reflect `ShapeTypeHint` instead of `NodeTypeHint`.
 
 
 ## [v0.8.0 - 20/10/2020](https://github.com/eclipse-glsp/glsp/releases/tag/0.8.0)
