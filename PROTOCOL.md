@@ -1293,12 +1293,12 @@ class SelectAction implements Action {
     /**
      * The identifier of the elements to mark as selected.
      */
-    public readonly selectedElementsIds: string[] = [];
+    public readonly selectedElementsIDs: string[] = [];
 
     /**
      * The identifier of the elements to mark as not selected.
      */
-    public readonly deselectedElementsIds: string[] = [];
+    public readonly deselectedElementsIDs: string[] = [];
 }
 ```
 </details>
