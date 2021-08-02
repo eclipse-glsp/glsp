@@ -91,7 +91,7 @@ You'll need Java 11 and maven.
 
 To build the client packages, just invoke `yarn` in `glsp-client`, `glsp-theia-integration`. If you want to build the example too, run `yarn` in `glsp-examples/client`.
 
-The server components are built with `mvn clean install` in `glsp-server`. If you want to build the example server, run `mvn clean install` in `glsp-examples/server`.
+The server components are built with `mvn clean verify` in `glsp-server`. If you want to build the example server, run `mvn clean install` in `glsp-examples/server`.
 
 ## Building and starting the Workflow Diagram example
 
@@ -100,7 +100,7 @@ The Workflow Diagram is a consistent example provided by all GLSP components. Th
 ### Building and running the Workflow Diagram Server
 
     cd glsp-server
-    mvn clean install -Pfatjar
+    mvn clean verify -Pfatjar
 
 In the folder `glsp-server/examples/org.eclipse.glsp.example.workflow/target`, you should have a jar file `org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar` whereas `X.X.X` is the current version. You can now start the server by executing the following commands:
 
