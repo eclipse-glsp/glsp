@@ -26,82 +26,78 @@
     - [2.3.7. ElementAndRoutingPoints](#237-elementandroutingpoints)
     - [2.3.8. EditorContext](#238-editorcontext)
     - [2.3.9. LabeledAction](#239-labeledaction)
-  - [2.4. Session Lifecycle](#24-session-lifecycle)
-    - [2.4.1. InitializeClientSessionAction](#241-initializeclientsessionaction)
-    - [2.4.2. ConfigureServerHandlersAction](#242-configureserverhandlersaction)
-    - [2.4.3. DisposeClientSessionAction](#243-disposeclientsessionaction)
-  - [2.5. Model Data](#25-model-data)
-    - [2.5.1. RequestModelAction](#251-requestmodelaction)
-    - [2.5.2. SetModelAction](#252-setmodelaction)
-    - [2.5.3. UpdateModelAction](#253-updatemodelaction)
-    - [2.5.4. ModelSourceChangedAction](#254-modelsourcechangedaction)
-  - [2.6. Model Saving](#26-model-saving)
-    - [2.6.1. SaveModelAction](#261-savemodelaction)
-    - [2.6.2. SetDirtyStateAction](#262-setdirtystateaction)
-    - [2.6.3. ExportSvgAction](#263-exportsvgaction)
-  - [2.7. Model Layout](#27-model-layout)
-    - [2.7.1. RequestBoundsAction](#271-requestboundsaction)
-    - [2.7.2. ComputedBoundsAction](#272-computedboundsaction)
-    - [2.7.3. LayoutOperation](#273-layoutoperation)
-  - [2.8. Model Edit Mode](#28-model-edit-mode)
-    - [2.8.1. SetEditModeAction](#281-seteditmodeaction)
-  - [2.9. Client-Side Actions](#29-client-side-actions)
-    - [2.9.1. View Port](#291-view-port)
-      - [2.9.1.1. CenterAction](#2911-centeraction)
-      - [2.9.1.2. FitToScreenAction](#2912-fittoscreenaction)
-    - [2.9.2. Client Notification](#292-client-notification)
-      - [2.9.2.1. GLSPServerStatusAction](#2921-glspserverstatusaction)
-      - [2.9.2.2. ServerMessageAction](#2922-servermessageaction)
-    - [2.9.3. Element Selection](#293-element-selection)
-      - [2.9.3.1. SelectAction](#2931-selectaction)
-      - [2.9.3.2. SelectAllAction](#2932-selectallaction)
-  - [2.10. Element Hover](#210-element-hover)
-    - [2.10.1. RequestPopupModelAction](#2101-requestpopupmodelaction)
-    - [2.10.2. SetPopupModelAction](#2102-setpopupmodelaction)
-  - [2.11. Element Validation](#211-element-validation)
-    - [2.11.1. RequestMarkersAction](#2111-requestmarkersaction)
-    - [2.11.2. SetMarkersAction](#2112-setmarkersaction)
-    - [2.11.3. DeleteMarkersAction](#2113-deletemarkersaction)
-  - [2.12. Element Navigation](#212-element-navigation)
-    - [2.12.1. RequestNavigationTargetsAction](#2121-requestnavigationtargetsaction)
-    - [2.12.2. SetNavigationTargetsAction](#2122-setnavigationtargetsaction)
-    - [2.12.3. NavigateToTargetAction](#2123-navigatetotargetaction)
-    - [2.12.4. ResolveNavigationTargetAction](#2124-resolvenavigationtargetaction)
-    - [2.12.5. SetResolvedNavigationTargetAction](#2125-setresolvednavigationtargetaction)
-    - [2.12.6. NavigateToExternalTargetAction](#2126-navigatetoexternaltargetaction)
-  - [2.13. Element Type Hints](#213-element-type-hints)
-    - [2.13.1. RequestTypeHintsAction](#2131-requesttypehintsaction)
-    - [2.13.2. SetTypeHintsAction](#2132-settypehintsaction)
-  - [2.14. Element Creation and Deletion](#214-element-creation-and-deletion)
-    - [2.14.1. CreateNodeOperation](#2141-createnodeoperation)
-    - [2.14.2. CreateEdgeOperation](#2142-createedgeoperation)
-    - [2.14.3. DeleteElementOperation](#2143-deleteelementoperation)
-  - [2.15. Node Modification](#215-node-modification)
-    - [2.15.1. ChangeBoundsOperation](#2151-changeboundsoperation)
-    - [2.15.2. ChangeContainerOperation](#2152-changecontaineroperation)
-  - [2.16. Edge Modification](#216-edge-modification)
-    - [2.16.1. ReconnectEdgeOperation](#2161-reconnectedgeoperation)
-    - [2.16.2. ChangeRoutingPointsOperation](#2162-changeroutingpointsoperation)
-  - [2.17. Element Text Editing](#217-element-text-editing)
-    - [2.17.1. RequestEditValidationAction](#2171-requesteditvalidationaction)
-    - [2.17.2. SetEditValidationResultAction](#2172-seteditvalidationresultaction)
-    - [2.17.3. ApplyLabelEditOperation](#2173-applylabeleditoperation)
-  - [2.18. Clipboard](#218-clipboard)
-    - [2.18.1. RequestClipboardDataAction](#2181-requestclipboarddataaction)
-    - [2.18.2. SetClipboardDataAction](#2182-setclipboarddataaction)
-    - [2.18.3. CutOperation](#2183-cutoperation)
-    - [2.18.4. PasteOperation](#2184-pasteoperation)
-  - [2.19. Undo / Redo](#219-undo--redo)
-    - [2.19.1. UndoOperation](#2191-undooperation)
-    - [2.19.2. RedoOperation](#2192-redooperation)
-  - [2.20. Contexts](#220-contexts)
-    - [2.20.1. RequestContextActions](#2201-requestcontextactions)
-    - [2.20.2. SetContextActions](#2202-setcontextactions)
-    - [2.20.3. Context Menu](#2203-context-menu)
-    - [2.20.4. Command Palette](#2204-command-palette)
-    - [2.20.5. Tool Palette](#2205-tool-palette)
-      - [2.20.5.1. TriggerNodeCreationAction](#22051-triggernodecreationaction)
-      - [2.20.5.2. TriggerEdgeCreationAction](#22052-triggeredgecreationaction)
+  - [2.4 Model Data](#24-model-data)
+    - [2.4.1. RequestModelAction](#241-requestmodelaction)
+    - [2.4.2. SetModelAction](#242-setmodelaction)
+    - [2.4.3. UpdateModelAction](#243-updatemodelaction)
+    - [2.4.4. ModelSourceChangedAction](#244-modelsourcechangedaction)
+  - [2.5. Model Saving](#25-model-saving)
+    - [2.5.1. SaveModelAction](#251-savemodelaction)
+    - [2.5.2. SetDirtyStateAction](#252-setdirtystateaction)
+    - [2.5.3. ExportSvgAction](#253-exportsvgaction)
+  - [2.6. Model Layout](#26-model-layout)
+    - [2.6.1. RequestBoundsAction](#261-requestboundsaction)
+    - [2.6.2. ComputedBoundsAction](#262-computedboundsaction)
+    - [2.6.3. LayoutOperation](#263-layoutoperation)
+  - [2.7. Model Edit Mode](#27-model-edit-mode)
+    - [2.7.1. SetEditModeAction](#271-seteditmodeaction)
+  - [2.8. Client-Side Actions](#28-client-side-actions)
+    - [2.8.1. View Port](#281-view-port)
+      - [2.8.1.1. CenterAction](#2811-centeraction)
+      - [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
+    - [2.8.2. Client Notification](#282-client-notification)
+      - [2.8.2.1. GLSPServerStatusAction](#2821-glspserverstatusaction)
+      - [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
+    - [2.8.3. Element Selection](#283-element-selection)
+      - [2.8.3.1. SelectAction](#2831-selectaction)
+      - [2.8.3.2. SelectAllAction](#2832-selectallaction)
+  - [2.9. Element Hover](#29-element-hover)
+    - [2.9.1. RequestPopupModelAction](#291-requestpopupmodelaction)
+    - [2.9.2. SetPopupModelAction](#292-setpopupmodelaction)
+  - [2.10. Element Validation](#210-element-validation)
+    - [2.10.1. RequestMarkersAction](#2101-requestmarkersaction)
+    - [2.10.2. SetMarkersAction](#2102-setmarkersaction)
+    - [2.10.3. DeleteMarkersAction](#2103-deletemarkersaction)
+  - [2.11. Element Navigation](#211-element-navigation)
+    - [2.11.1. RequestNavigationTargetsAction](#2111-requestnavigationtargetsaction)
+    - [2.11.2. SetNavigationTargetsAction](#2112-setnavigationtargetsaction)
+    - [2.11.3. NavigateToTargetAction](#2113-navigatetotargetaction)
+    - [2.11.4. ResolveNavigationTargetAction](#2114-resolvenavigationtargetaction)
+    - [2.11.4. SetResolvedNavigationTargetAction](#2114-setresolvednavigationtargetaction)
+    - [2.11.5. NavigateToExternalTargetAction](#2115-navigatetoexternaltargetaction)
+  - [2.12. Element Type Hints](#212-element-type-hints)
+    - [2.12.1. RequestTypeHintsAction](#2121-requesttypehintsaction)
+    - [2.12.2. SetTypeHintsAction](#2122-settypehintsaction)
+  - [2.13. Element Creation and Deletion](#213-element-creation-and-deletion)
+    - [2.13.1. CreateNodeOperation](#2131-createnodeoperation)
+    - [2.13.2. CreateEdgeOperation](#2132-createedgeoperation)
+    - [2.13.3. DeleteElementOperation](#2133-deleteelementoperation)
+  - [2.14. Node Modification](#214-node-modification)
+    - [2.14.1. ChangeBoundsOperation](#2141-changeboundsoperation)
+    - [2.14.2. ChangeContainerOperation](#2142-changecontaineroperation)
+  - [2.15. Edge Modification](#215-edge-modification)
+    - [2.15.1. ReconnectEdgeOperation](#2151-reconnectedgeoperation)
+    - [2.15.2. ChangeRoutingPointsOperation](#2152-changeroutingpointsoperation)
+  - [2.16. Element Text Editing](#216-element-text-editing)
+    - [2.16.1. RequestEditValidationAction](#2161-requesteditvalidationaction)
+    - [2.16.2. SetEditValidationResultAction](#2162-seteditvalidationresultaction)
+    - [2.16.3. ApplyLabelEditOperation](#2163-applylabeleditoperation)
+  - [2.17. Clipboard](#217-clipboard)
+    - [2.17.1. RequestClipboardDataAction](#2171-requestclipboarddataaction)
+    - [2.17.2. SetClipboardDataAction](#2172-setclipboarddataaction)
+    - [2.17.3. CutOperation](#2173-cutoperation)
+    - [2.17.4. PasteOperation](#2174-pasteoperation)
+  - [2.18. Undo / Redo](#218-undo--redo)
+    - [2.18.1. UndoOperation](#2181-undooperation)
+    - [2.18.2. RedoOperation](#2182-redooperation)
+  - [2.19. Contexts](#219-contexts)
+    - [2.19.1. RequestContextActions](#2191-requestcontextactions)
+    - [2.19.2. SetContextActions](#2192-setcontextactions)
+    - [2.19.3. Context Menu](#2193-context-menu)
+    - [2.19.4. Command Palette](#2194-command-palette)
+    - [2.19.5. Tool Palette](#2195-tool-palette)
+      - [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
+      - [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
 </details>
 
 # 1. Server-Client Lifecycle
@@ -120,38 +116,56 @@ interface GLSPClient {
     readonly id: string;
 
     /**
-     * Client name.
-     */
-    readonly name: string;
-
-    /**
      * Current client state.
      */
-    currentState(): ClientState;
+    readonly currentState: ClientState;
 
     /**
-     * Initializes the client and the server connection. During the start procedure the client is in the 
-     * 'Starting' state and will transition to either 'Running' or 'StartFailed'.
+     * Initializes the client and the server connection. During the start procedure the client is in the
+     * `Starting` state and will transition to either `Running` or `StartFailed`.
+     *
+     * @returns A promise that resolves if the startup was successful.
      */
     start(): Promise<void>;
 
     /**
-     * Send an 'initialize' request to the server. The server needs to be initialized in order to accept 
-     * and process action messages.
+     * Send an `initialize` request to the server. The server needs to be initialized in order to accept and
+     * process other requests and notifications.
      *
-     * @param params Initialize parameter
-     * @returns true if the initialization was successful
+     * @param params Initialize parameters
+     * @returns A promise of the {@link InitializeResult}.
      */
-    initializeServer(params: InitializeParameters): Promise<Boolean>;
+    initializeServer(params: InitializeParameters): Promise<InitializeResult>;
 
     /**
-     * Send a 'shutdown' notification to the server.
+     * Send an `initializeClientSession` request to the server. One client application may open several session.
+     * Each individual diagram on the client side counts as one session and has to provide
+     * a unique clientId.
+     *
+     * @param params InitializeClientSession parameters
+     * @returns A promise that resolves if the initialization was successful
      */
-    shutdownServer(): void
+    initializeClientSession(params: InitializeClientSessionParameters): Promise<void>;
 
     /**
-     * Stops the client and disposes any resources. During the stop procedure the client is in the 'Stopping'
-     * state and will transition to either 'Stopped' or 'ServerError'.
+     * Sends a `disposeClientSession` request to the server. This request has to be sent at the end of client session lifecycle
+     * e.g. when an editor widget is closed.
+     *
+     * @param params DisposeClientSession parameters
+     * @returns A promise that resolves if the disposal was successful
+     */
+    disposeClientSession(params: DisposeClientSessionParameters): Promise<void>;
+
+    /**
+     * Send a `shutdown` notification to the server.
+     */
+    shutdownServer(): void;
+
+    /**
+     * Stops the client and disposes any resources. During the stop procedure the client is in the `Stopping` state and will
+     * transition to either `Stopped` or `ServerError`.
+     *
+     * @returns A promise that resolves after the server was stopped and disposed.
      */
     stop(): Promise<void>;
 
@@ -201,7 +215,12 @@ export enum ClientState {
     ServerError
 }
 
-export type ActionMessageHandler = (message: ActionMessage) => void;
+/**
+ * A key-value pair structure for custom arguments.
+ */
+interface Args { [key: string]: string | number | boolean }
+
+type ActionMessageHandler = (message: ActionMessage) => void;
 ```
 </details>
 
@@ -209,22 +228,96 @@ In GLSP we provide a default client implementation based on [JSON-RPC messages](
 
 **Initialize Request**
 
-On startup, a client can send an `initialize` request to the server to indicate to the server that the client is ready to connect. A client is uniquely identified by an `applicationId` and can provide custom arguments in the `options` to allow for custom initialization behavior on the server.
+ The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-interface InitializeParameters<> {
+interface InitializeParameters {
     /**
      * Unique identifier for the current client application.
      */
     applicationId: string;
 
     /**
-     * Options that can include application-specific parameters.
+     * GLSP protocol version that this client is implementing.
      */
-    options?: any
+    protocolVersion: string;
+
+    /**
+     * Additional custom arguments e.g. application specific parameters.
+     */
+    args?: Args;
 }
+
+interface InitializeResult {
+
+    /**
+    * GLSP protocol version that the server is implementing.
+    */
+    protocolVersion: string;
+
+    /**
+     * The actions (grouped by `diagramType`) that the server can handle.
+     */
+    serverActions: ServerActions;
+}
+
+/**
+ * A key-value pair structure to map a `diagramType` to its server-handled action kinds.
+ */
+interface ServerActions { [key: string]: string[] }
+
+
+```
+</details>
+
+**InitializeClientSession Request**
+
+When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server. Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface InitializeClientSessionParameters {
+    /**
+     * Unique identifier for the new client session.
+     */
+    clientSessionId: string;
+
+    /**
+     * Unique identifier of the diagram type for which the session should be configured.
+     */
+    diagramType: string;
+
+    /**
+     * Additional custom arguments.
+     */
+    args?: Args;
+}
+
+```
+</details>
+
+**DisposeClientSession Request**
+
+When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a `DisposeClientSession` request has to be sent to the server. The session is identified by its unique `clientSessionId`. In addition, custom arguments can be provided in the `args` map to allow for custom dispose behavior on the server.
+
+<details open><summary>Code</summary>
+
+```typescript
+interface DisposeClientSessionParameters {
+    /**
+     * Unique identifier of the client session that should be disposed.
+     */
+    clientSessionId: string;
+
+    /**
+    * Additional custom arguments.
+    */
+    args?: Args;
+}
+
 ```
 </details>
 
@@ -748,78 +841,9 @@ class LabeledAction {
 ```
 </details>
 
-## 2.4. Session Lifecycle
+## 2.4 Model Data
 
-Each individual diagram that has been opened on the client side counts as a single session that is managed by the server. Each diagram session is identified through a unique `clientId`.
-
-### 2.4.1. InitializeClientSessionAction
-
-Initialize a new session. One client may open several sessions. Each session is associated to a unique clientId. The session is used to track the client lifecycle: it should be the first action sent by a client to the server. The server will then be able to dispose any resources associated to this client when either:
-- the client disconnects
-- the client sends a `DisposeClientSessionAction`
-
-<details open><summary>Code</summary>
-
-```typescript
-class InitializeClientSessionAction implements Action {
-    /**
-     * The kind of the action.
-     */
-    public readonly kind = "initializeClientSession";
-
-    /**
-     * Unique client id to identify the diagram session.
-     */
-    readonly clientId: string;
-}
-```
-</details>
-
-### 2.4.2. ConfigureServerHandlersAction
-
-Sent by the server after `InitializeClientSessionAction` to indicate all the action kinds that the server can handle.
-
-<details open><summary>Code</summary>
-
-```typescript
-class ConfigureServerHandlersAction implements Action {
-    /**
-     * The kind of the action.
-     */
-    public readonly kind = "configureServerHandlers";
-
-    /**
-     * A list of actions the server can handle.
-     */
-    readonly actionKinds: string[];
-}
-```
-</details>
-
-### 2.4.3. DisposeClientSessionAction
-
-Sent to the server if the graphical representation (diagram) for a specific client session is no longer needed. e.g. the tab containing the diagram widget has been closed.
-
-<details open><summary>Code</summary>
-
-```typescript
-class DisposeClientSessionAction implements Action {
-    /**
-     * The kind of the action.
-     */
-    public readonly kind = "disposeClientSession";
-
-    /**
-     * Id to identify the diagram session that should be disposed.
-     */
-    readonly clientId: string;
-}
-```
-</details>
-
-## 2.5. Model Data
-
-### 2.5.1. RequestModelAction
+### 2.4.1. RequestModelAction
 
 Sent from the client to the server in order to request a graphical model. Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication. The response is a `SetModelAction` or an `UpdateModelAction`.
 
@@ -843,7 +867,7 @@ class RequestModelAction implements Action {
 ```
 </details>
 
-### 2.5.2. SetModelAction
+### 2.4.2. SetModelAction
 
 Sent from the server to the client in order to set the model. If a model is already present, it is replaced.
 
@@ -868,7 +892,7 @@ class SetModelAction implements Action {
 </details>
 
 
-### 2.5.3. UpdateModelAction
+### 2.4.3. UpdateModelAction
 
 Sent from the server to the client in order to update the model. If no model is present yet, this behaves the same as a `SetModelAction`. The transition from the old model to the new one can be animated.
 
@@ -907,7 +931,7 @@ interface Match {
 ```
 </details>
 
-### 2.5.4. ModelSourceChangedAction
+### 2.4.4. ModelSourceChangedAction
 
 Sent from the server to the client in order to indicate that the model source has changed. The model source denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ingore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
 
@@ -928,9 +952,9 @@ class ModelSourceChangedAction implements Action {
 ```
 </details>
 
-## 2.6. Model Saving
+## 2.5. Model Saving
 
-### 2.6.1. SaveModelAction
+### 2.5.1. SaveModelAction
 
 Sent from the client to the server in order to persist the current model state back to the model source.
 A new `fileUri` can be defined to save the model to a new destination different from its original model source.
@@ -952,7 +976,7 @@ class SaveModelAction implements Action {
 ```
 </details>
 
-### 2.6.2. SetDirtyStateAction
+### 2.5.2. SetDirtyStateAction
 
 The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the model source. A client may ignore such an action or use it to indicate to the user the dirty state. 
 
@@ -978,7 +1002,7 @@ class SetDirtyStateAction implements Action {
 ```
 </details>
 
-### 2.6.3. ExportSvgAction
+### 2.5.3. ExportSvgAction
 
 The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem. 
 
@@ -999,13 +1023,13 @@ class ExportSvgAction implements ResponseAction {
 ```
 </details>
 
-## 2.7. Model Layout
+## 2.6. Model Layout
 
 In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
 
 On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
 
-### 2.7.1. RequestBoundsAction
+### 2.6.1. RequestBoundsAction
 
 Sent from the server to the client to request bounds for the given model. The model is rendered invisibly so the bounds can derived from the DOM. The response is a `ComputedBoundsAction`. This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.
 
@@ -1029,7 +1053,7 @@ class RequestBoundsAction implements Action {
 ```
 </details>
 
-### 2.7.2. ComputedBoundsAction
+### 2.6.2. ComputedBoundsAction
 
 Sent from the client to the server to transmit the result of bounds computation as a response to a `RequestBoundsAction`. If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action. Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.
 
@@ -1063,7 +1087,7 @@ class ComputedBoundsAction implements Action {
 ```
 </details>
 
-### 2.7.3. LayoutOperation
+### 2.6.3. LayoutOperation
 
 Request a layout of the diagram or selected elements from the server.
 
@@ -1092,11 +1116,11 @@ class LayoutOperation implements Operation {
 ```
 </details>
 
-## 2.8. Model Edit Mode
+## 2.7. Model Edit Mode
 
 GLSP supports setting the model into different edit modes. We pre-define two such modes: `readonly` and `editable`. However these modes can be customized as need be.
 
-### 2.8.1. SetEditModeAction
+### 2.7.1. SetEditModeAction
 
 Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode. A client may also listen to this action to prevent certain user interactions preemptively.
 
@@ -1117,15 +1141,15 @@ class SetEditModeAction implements Action {
 ```
 </details>
 
-## 2.9. Client-Side Actions
+## 2.8. Client-Side Actions
 
 There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
 
-### 2.9.1. View Port
+### 2.8.1. View Port
 
 View port actions manipulate the viewport on the client-side and may be sent from the server to highlight changes or improve general usability.
 
-#### 2.9.1.1. CenterAction
+#### 2.8.1.1. CenterAction
 
 Centers the viewport on the elements with the given identifiers. It changes the scroll setting of the viewport accordingly and resets the zoom to its default. This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.
 
@@ -1159,7 +1183,7 @@ class CenterAction implements Action {
 ```
 </details>
 
-#### 2.9.1.2. FitToScreenAction
+#### 2.8.1.2. FitToScreenAction
 
 Triggers to fit all or a list of elements into the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
 
@@ -1198,11 +1222,11 @@ class FitToScreenAction implements Action {
 ```
 </details>
 
-### 2.9.2. Client Notification
+### 2.8.2. Client Notification
 
 In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
-#### 2.9.2.1. GLSPServerStatusAction
+#### 2.8.2.1. GLSPServerStatusAction
 
 This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
 
@@ -1236,7 +1260,7 @@ class GLSPServerStatusAction implements Action {
 ```
 </details>
 
-#### 2.9.2.2. ServerMessageAction
+#### 2.8.2.2. ServerMessageAction
 
 This action is typically sent by the server to notify the user about something of interest. 
 
@@ -1272,9 +1296,9 @@ class ServerMessageAction implements Action {
 ```
 </details>
 
-### 2.9.3. Element Selection
+### 2.8.3. Element Selection
 
-#### 2.9.3.1. SelectAction
+#### 2.8.3.1. SelectAction
 
 Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently. The server can send such an action to the client in order to change the selection remotely.
 
@@ -1303,7 +1327,7 @@ class SelectAction implements Action {
 ```
 </details>
 
-#### 2.9.3.2. SelectAllAction
+#### 2.8.3.2. SelectAllAction
 
 Used for selecting or deselecting all elements.
 
@@ -1327,9 +1351,9 @@ class SelectAllAction implements Action {
 ```
 </details>
 
-## 2.10. Element Hover
+## 2.9. Element Hover
 
-### 2.10.1. RequestPopupModelAction
+### 2.9.1. RequestPopupModelAction
 
 Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element. This action is sent from the client to the server. The response is a `SetPopupModelAction`.
 
@@ -1358,7 +1382,7 @@ class RequestPopupModelAction implements Action {
 ```
 </details>
 
-### 2.10.2. SetPopupModelAction
+### 2.9.2. SetPopupModelAction
 
 Sent from the server to the client to display a popup in response to a `RequestPopupModelAction`. This action can also be used to remove any existing popup by choosing `EMPTY_ROOT` as root element.
 
@@ -1382,7 +1406,7 @@ class SetPopupModelAction implements Action {
 ```
 </details>
 
-## 2.11. Element Validation
+## 2.10. Element Validation
 
 Validation in GLSP is performed by using validation markers. A marker represents the validation result for a single model element:
 
@@ -1413,7 +1437,7 @@ interface Marker {
 ```
 </details>
 
-### 2.11.1. RequestMarkersAction
+### 2.10.1. RequestMarkersAction
 
 Action to retrieve markers for the specified model elements. Sent from the client to the server.
 
@@ -1434,7 +1458,7 @@ class RequestMarkersAction implements Action {
 ```
 </details>
 
-### 2.11.2. SetMarkersAction
+### 2.10.2. SetMarkersAction
 
 Response to the `RequestMarkersAction` containing all validation markers. Sent from the server to the client.
 
@@ -1455,7 +1479,7 @@ class SetMarkersAction implements Action {
 ```
 </details>
 
-### 2.11.3. DeleteMarkersAction
+### 2.10.3. DeleteMarkersAction
 
 To remove markers for elements a client or server may send a `DeleteMarkersAction` with all markers that should be removed.
 
@@ -1476,7 +1500,7 @@ class DeleteMarkersAction implements Action {
 ```
 </details>
 
-## 2.12. Element Navigation
+## 2.11. Element Navigation
 
 GLSP makes no assumption about the type of navigation a user may want to perform. Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc. The type of navigation is identified by the `targetTypeId`.
 
@@ -1504,7 +1528,7 @@ interface NavigationTarget {
 ```
 </details>
 
-### 2.12.1. RequestNavigationTargetsAction
+### 2.11.1. RequestNavigationTargetsAction
 
 Action that is usually sent from the client to the server to request navigation targets for a specific navigation type such as `documentation` or `implementation` in the given editor context.
 
@@ -1530,7 +1554,7 @@ class RequestNavigationTargetsAction implements RequestAction<SetNavigationTarge
 ```
 </details>
 
-### 2.12.2. SetNavigationTargetsAction
+### 2.11.2. SetNavigationTargetsAction
 
 Response action from the server following a `RequestNavigationTargetsAction`. It contains all available navigation targets for the queried target type in the provided editor context. The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.
 
@@ -1556,7 +1580,7 @@ class SetNavigationTargetsAction implements ResponseAction {
 ```
 </details>
 
-### 2.12.3. NavigateToTargetAction
+### 2.11.3. NavigateToTargetAction
 
 Action that triggers the navigation to a particular navigation target. This may be used by the client internally or may be sent from the server.
 
@@ -1577,7 +1601,7 @@ class NavigateToTargetAction implements Action {
 ```
 </details>
 
-### 2.12.4. ResolveNavigationTargetAction
+### 2.11.4. ResolveNavigationTargetAction
 
 If a client cannot navigate to a target directly, a `ResolveNavigationTargetAction` may be sent to the server to resolve the navigation target to one or more model elements. This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.
 
@@ -1598,7 +1622,7 @@ class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigati
 ```
 </details>
 
-### 2.12.5. SetResolvedNavigationTargetAction
+### 2.11.4. SetResolvedNavigationTargetAction
 
 An action sent from the server in response to a `ResolveNavigationTargetAction`. The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
 
@@ -1624,7 +1648,7 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
 ```
 </details>
 
-### 2.12.6. NavigateToExternalTargetAction
+### 2.11.5. NavigateToExternalTargetAction
 
 If a navigation target cannot be resolved or the resolved target is something that is not part of our model source, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
@@ -1645,7 +1669,7 @@ class NavigateToExternalTargetAction implements Action {
 ```
 </details>
 
-## 2.13. Element Type Hints
+## 2.12. Element Type Hints
 
 Type hints are used to define what modifications are supported on the different element types. Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level. The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
 
@@ -1707,7 +1731,7 @@ interface EdgeTypeHint extends TypeHint {
 ```
 </details>
 
-### 2.13.1. RequestTypeHintsAction
+### 2.12.1. RequestTypeHintsAction
 
 Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type. The `RequestTypeHintsAction` is optional, but should usually be among the first messages sent from the client to the server after receiving the model via `RequestModelAction`. The response is a `SetTypeHintsAction`.
 
@@ -1723,7 +1747,7 @@ class RequestTypeHintsAction implements Action {
 ```
 </details>
 
-### 2.13.2. SetTypeHintsAction
+### 2.12.2. SetTypeHintsAction
 
 Sent from the server to the client in order to provide hints certain modifications are allowed for a specific element type. 
 
@@ -1749,9 +1773,9 @@ class SetTypeHintsAction implements Action {
 ```
 </details>
 
-## 2.14. Element Creation and Deletion
+## 2.13. Element Creation and Deletion
 
-### 2.14.1. CreateNodeOperation
+### 2.13.1. CreateNodeOperation
 
 <details open><summary>Code</summary>
 
@@ -1787,7 +1811,7 @@ class CreateNodeOperation implements Operation {
 ```
 </details>
 
-### 2.14.2. CreateEdgeOperation
+### 2.13.2. CreateEdgeOperation
 
 In order to create an edge in the model the client can send a `CreateEdgeOperation` with the necessary information to create that edge.
 
@@ -1823,7 +1847,7 @@ class CreateEdgeOperation implements Operation {
 ```
 </details>
 
-### 2.14.3. DeleteElementOperation
+### 2.13.3. DeleteElementOperation
 
 The client sends a `DeleteElementOperation` to the server to request the deletion of an element from the model.
 
@@ -1844,9 +1868,9 @@ class DeleteElementOperation implements Operation {
 ```
 </details>
 
-## 2.15. Node Modification
+## 2.14. Node Modification
 
-### 2.15.1. ChangeBoundsOperation
+### 2.14.1. ChangeBoundsOperation
 
 Triggers the position or size change of elements. This action concerns only the element's graphical size and position. Whether an element can be resized or repositioned may be specified by the server with a [`TypeHint`](#213-element-type-hints) to allow for immediate user feedback before resizing or repositioning.
 
@@ -1867,7 +1891,7 @@ class ChangeBoundsOperation implements Action {
 ```
 </details>
 
-### 2.15.2. ChangeContainerOperation
+### 2.14.2. ChangeContainerOperation
 
 The client sends a `ChangeContainerOperation` to the server to request the execution of a `changeContainer` operation.
 
@@ -1898,9 +1922,9 @@ class ChangeContainerOperation implements Operation {
 ```
 </details>
 
-## 2.16. Edge Modification
+## 2.15. Edge Modification
 
-### 2.16.1. ReconnectEdgeOperation
+### 2.15.1. ReconnectEdgeOperation
 
 If the source and/or target element of an edge should be adapted, the client can send a `ReconnectEdgeOperation` to the server.
 
@@ -1931,7 +1955,7 @@ class ReconnectEdgeOperation implements Operation {
 ```
 </details>
 
-### 2.16.2. ChangeRoutingPointsOperation
+### 2.15.2. ChangeRoutingPointsOperation
 
 An edge may have zero or more routing points that "re-direct" the edge between the source and the target element. In order to set these routing points the client may send a `ChangeRoutingPointsOperation`.
 
@@ -1952,7 +1976,7 @@ class ChangeRoutingPointsOperation implements Operation {
 ```
 </details>
 
-## 2.17. Element Text Editing
+## 2.16. Element Text Editing
 
 A common use case in diagrams is to query the user for textual input to perform a certain action, e.g., when editing the text on a label. 
 
@@ -2001,7 +2025,7 @@ namespace ValidationStatus {
 ```
 </details>
 
-### 2.17.1. RequestEditValidationAction
+### 2.16.1. RequestEditValidationAction
 
 Requests the validation of the given text in the context of the provided model element. Typically sent from the client to the server.
 
@@ -2032,7 +2056,7 @@ class RequestEditValidationAction implements RequestAction<SetEditValidationResu
 ```
 </details>
 
-### 2.17.2. SetEditValidationResultAction
+### 2.16.2. SetEditValidationResultAction
 
 Response to a `RequestEditValidationAction` containing the validation result for applying a text on a certain model element.
 
@@ -2058,7 +2082,7 @@ class SetEditValidationResultAction implements ResponseAction {
 ```
 </details>
 
-### 2.17.3. ApplyLabelEditOperation
+### 2.16.3. ApplyLabelEditOperation
 
 A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
 
@@ -2084,7 +2108,7 @@ class ApplyLabelEditOperation implements Operation {
 ```
 </details>
 
-## 2.18. Clipboard
+## 2.17. Clipboard
 
 In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server. By default, GLSP use `application/json` as exchange format.
 
@@ -2095,7 +2119,7 @@ type ClipboardData = { [format: string]: string };
 ```
 </details>
 
-### 2.18.1. RequestClipboardDataAction
+### 2.17.1. RequestClipboardDataAction
 
 Requests the clipboard data for the current editor context, i.e., the selected elements, in a clipboard-compatible format.
 
@@ -2116,7 +2140,7 @@ class RequestClipboardDataAction implements RequestAction<SetClipboardDataAction
 ```
 </details>
 
-### 2.18.2. SetClipboardDataAction
+### 2.17.2. SetClipboardDataAction
 
 Server response to a `RequestClipboardDataAction` containing the selected elements as clipboard-compatible format.
 
@@ -2137,7 +2161,7 @@ class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
 ```
 </details>
 
-### 2.18.3. CutOperation
+### 2.17.3. CutOperation
 
 Requests a cut operation from the server, i.e., deleting the selected elements from the model. Before submitting a `CutOperation` a client should ensure that the cut elements are put into the clipboard.
 
@@ -2158,7 +2182,7 @@ class CutOperation implements Operation {
 ```
 </details>
 
-### 2.18.4. PasteOperation
+### 2.17.4. PasteOperation
 
 Requests a paste operation from the server by providing the current clipboard data. Typically this means that elements should be created based on the data in the clipboard.
 
@@ -2185,11 +2209,11 @@ class PasteOperation implements Operation {
 </details>
 
 
-## 2.19. Undo / Redo
+## 2.18. Undo / Redo
 
 A server usually keeps a command stack of all commands executed on the model. To navigate the command stack the following actions can be used.
 
-### 2.19.1. UndoOperation
+### 2.18.1. UndoOperation
 
 Trigger an undo of the latest executed command.
 
@@ -2205,7 +2229,7 @@ class UndoOperation implements Action {
 ```
 </details>
 
-### 2.19.2. RedoOperation
+### 2.18.2. RedoOperation
 
 Trigger a redo of the latest undone command.
 
@@ -2221,14 +2245,14 @@ class RedoOperation implements Action {
 ```
 </details>
 
-## 2.20. Contexts
+## 2.19. Contexts
 
 A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:
 - The Context Menu with the context id `context-menu`
 - The Command Palette with the context id `command-palette`
 - The Tool Palette with the context id `tool-palette`
 
-### 2.20.1. RequestContextActions
+### 2.19.1. RequestContextActions
 
 <details open><summary>Code</summary>
 
@@ -2254,7 +2278,7 @@ class RequestContextActions implements RequestAction<SetContextActions> {
 ```
 </details>
 
-### 2.20.2. SetContextActions
+### 2.19.2. SetContextActions
 
 The `SetContextActions` is the response to a `RequestContextActions` containing all actions for the queried context.
 
@@ -2280,15 +2304,15 @@ class SetContextActions implements ResponseAction {
 ```
 </details>
 
-### 2.20.3. Context Menu
+### 2.19.3. Context Menu
 
 The context menu is an overlay that is triggered by a right click from the user. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `context-menu` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a context menu.
 
-### 2.20.4. Command Palette
+### 2.19.4. Command Palette
 
 The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
 
-### 2.20.5. Tool Palette
+### 2.19.5. Tool Palette
 
 The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions. 
 
@@ -2325,7 +2349,7 @@ The supported actions of the tool palette come from the server. If server action
 
 For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the `Node Creation Tool` or the `Edge Creation Tool` respectively. This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge. After all information is available, the actual creation operation is triggered.
 
-#### 2.20.5.1. TriggerNodeCreationAction
+#### 2.19.5.1. TriggerNodeCreationAction
 
 Triggers the enablement of the tool that is responsible for creating nodes and initializes it with the creation of nodes of the given `elementTypeId`.
 
@@ -2351,7 +2375,7 @@ class TriggerNodeCreationAction extends TriggerElementCreationAction {
 ```
 </details>
 
-#### 2.20.5.2. TriggerEdgeCreationAction
+#### 2.19.5.2. TriggerEdgeCreationAction
 
 Triggers the enablement of the tool that is responsible for creating edges and initializes it with the creation of edges of the given `elementTypeId`.
 
