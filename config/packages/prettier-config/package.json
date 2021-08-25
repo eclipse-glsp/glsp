@@ -1,0 +1,30 @@
+{
+  "name": "@eclipse-glsp/prettier-config",
+  "version": "0.1.0",
+  "description": "Shared Prettier configuration for GLSP projects",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "keywords": [
+    "eclipse",
+    "tsconfig"
+  ],
+  "author": {
+    "name": "Eclipse GLSP"
+  },
+  "homepage": "https://www.eclipse.org/glsp/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse-glsp/glsp.git"
+  },
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "contributors": [
+    {
+      "name": "Eclipse GLSP Project",
+      "email": "glsp-dev@eclipse.org",
+      "url": "https://projects.eclipse.org/projects/ecd.glsp"
+    }
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "tsconfig.json"
+}
