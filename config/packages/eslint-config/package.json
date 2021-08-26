@@ -30,21 +30,14 @@
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-header": "^3.0.0",
+    "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-no-null": "^1.0.2",
-    "eslint-config-prettier": "^8.3.0"
+    "eslint-config-prettier": "^8.3.0",
+    "@eclipse-glsp/prettier-config": "next"
   },
   "devDependencies": {
     "typescript": "^3.9.2"
   },
-  "peerDependencies": {
-    "@typescript-eslint/eslint-plugin": ">=2.16.0",
-    "@typescript-eslint/parser": ">=2.16.0",
-    "eslint": ">=6.8.0",
-    "eslint-plugin-header": ">=3.0.0",
-    "eslint-plugin-import": ">=2.20.0",
-    "eslint-plugin-no-null": ">=1.0.2",
-    "eslint-config-prettier": ">=8.3.0"
-  }
+  "prettier": "@eclipse-glsp/prettier-config"
 }

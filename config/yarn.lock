@@ -23,6 +23,11 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
+"@eclipse-glsp/prettier-config@next":
+  version "0.9.0-next.13e5422c"
+  resolved "https://registry.yarnpkg.com/@eclipse-glsp/prettier-config/-/prettier-config-0.9.0-next.13e5422c.tgz#f841f9302377a442254a7392e6ee42b4329dad67"
+  integrity sha512-3VWPCF8Lcu/iCsfplZUYtD80SxN7IHvzxV5cUxFfMFyUAf4Ts6cjF8xpfzG+3x+SRw02hOThzEw8sRXIgkodrA==
+
 "@improved/node@^1.0.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@improved/node/-/node-1.1.1.tgz#7be3d401b7cd2f848d5bb8713d2826b84fc51817"

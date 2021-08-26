@@ -1,107 +1,101 @@
+const year = new Date().getFullYear();
 module.exports = {
     rules: {
         // https://eslint.org/docs/rules/
         // Possible Errors
-        "no-inner-declarations": "off",
+        'no-inner-declarations': 'off',
         // Best Practices
-        curly: "error",
-        "eol-last": "error",
-        eqeqeq: ["error", "smart"],
-        "guard-for-in": "error",
-        "no-caller": "error",
-        "no-eval": "error",
-        "no-redeclare": [
-            "error",
+        curly: 'error',
+        'eol-last': 'error',
+        eqeqeq: ['error', 'smart'],
+        'guard-for-in': 'error',
+        'no-caller': 'error',
+        'no-eval': 'error',
+        'no-redeclare': [
+            'error',
             {
-                builtinGlobals: false,
-            },
+                builtinGlobals: false
+            }
         ],
-        "no-restricted-imports": [
-            "error",
-            "..",
-            "../index",
-            "../..",
-            "../../index",
-        ],
-        "no-sequences": "error",
-        "no-throw-literal": "error",
-        "no-unused-expressions": [
-            "error",
+        'no-restricted-imports': ['error', '..', '../index', '../..', '../../index'],
+        'no-sequences': 'error',
+        'no-throw-literal': 'error',
+        'no-unused-expressions': [
+            'error',
             {
                 allowShortCircuit: true,
-                allowTernary: true,
-            },
+                allowTernary: true
+            }
         ],
         // Variables
-        "no-unused-vars": "off", // typescript-eslint rule activated instead
-        "no-use-before-define": "off", // typescript-eslint rule activated instead
+        'no-unused-vars': 'off', // typescript-eslint rule activated instead
+        'no-use-before-define': 'off', // typescript-eslint rule activated instead
         // Stylistic Issues
-        "max-len": [
-            "error",
+        'max-len': [
+            'error',
             {
-                code: 180,
-            },
+                code: 180
+            }
         ],
-        "no-multiple-empty-lines": [
-            "error",
+        'no-multiple-empty-lines': [
+            'error',
             {
-                max: 1,
-            },
+                max: 1
+            }
         ],
-        "no-underscore-dangle": "off",
-        quotes: "off", // typescript-eslint rule activated instead
-        "space-before-function-paren": [
-            "error",
+        'no-underscore-dangle': 'off',
+        quotes: 'off', // typescript-eslint rule activated instead
+        'space-before-function-paren': [
+            'error',
             {
-                anonymous: "always",
-                named: "never",
-                asyncArrow: "always",
-            },
+                anonymous: 'always',
+                named: 'never',
+                asyncArrow: 'always'
+            }
         ],
-        "one-var": ["error", "never"],
+        'one-var': ['error', 'never'],
         // ECMAScript6
-        "arrow-body-style": ["error", "as-needed"],
-        "arrow-parens": ["error", "as-needed"],
-        "no-var": "error",
-        "prefer-const": [
-            "error",
+        'arrow-body-style': ['error', 'as-needed'],
+        'arrow-parens': ['error', 'as-needed'],
+        'no-var': 'error',
+        'prefer-const': [
+            'error',
             {
-                destructuring: "all",
-            },
+                destructuring: 'all'
+            }
         ],
         // @typescript-eslint/eslint-plugin
-        "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/consistent-type-definitions": "error",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-misused-new": "error",
-        "@typescript-eslint/no-empty-interface": "off",
-        "@typescript-eslint/interface-name-prefix": "off",
-        "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/no-unused-vars": [
-            "error",
+        '@typescript-eslint/class-name-casing': 'error',
+        '@typescript-eslint/consistent-type-definitions': 'error',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-misused-new': 'error',
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
+        '@typescript-eslint/no-unused-vars': [
+            'error',
             {
-                args: "none",
-            },
+                args: 'none'
+            }
         ],
-        "@typescript-eslint/quotes": [
-            "error",
-            "single",
+        '@typescript-eslint/quotes': [
+            'error',
+            'single',
             {
-                avoidEscape: true,
-            },
+                avoidEscape: true
+            }
         ],
-        "@typescript-eslint/semi": ["error", "always"],
+        '@typescript-eslint/semi': ['error', 'always'],
         // eslint-plugin-header
-        "header/header": [
+        'header/header': [
             2,
-            "block",
+            'block',
             [
                 {
-                    pattern:
-                        "[\n\r]+ \\* Copyright \\([cC]\\) \\d{4}(-\\d{4})? .*[\n\r]+",
-                    template: `*****3**************************************************************************
- * Copyright (c) 2021 EclipseSource and others.
+                    pattern: '[\n\r]+ \\* Copyright \\([cC]\\) \\d{4}(-\\d{4})? .*[\n\r]+',
+                    template: `*******************************************************************************
+ * Copyright (c) ${year} EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -114,14 +108,14 @@ module.exports = {
  * https://www.gnu.org/software/classpath/license.html.
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
- *******************************************************************************`,
-                },
-            ],
+ *******************************************************************************`
+                }
+            ]
         ],
         // eslint-plugin-import
-        "import/export": "off", // we have multiple exports due to namespaces, enums and classes that share the same name
-        "import/no-deprecated": "error",
+        'import/export': 'off', // we have multiple exports due to namespaces, enums and classes that share the same name
+        'import/no-deprecated': 'error',
         // eslint-plugin-no-null
-        "no-null/no-null": "error",
-    },
+        'no-null/no-null': 'error'
+    }
 };
