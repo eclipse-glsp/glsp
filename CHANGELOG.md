@@ -52,6 +52,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [glsp-client] Introduced `glspViewportModule`. This module contains a custom `ScrollMouseListener` that gets disabled if the `MarqueeTool` is active. This module should be used instead of the `viewportModule` provided by sprotty [#199](https://github.com/eclipse-glsp/glsp-client/pull/108)
 - [glsp-server] Refactored the `CreateNodeOperationHandler.createNode` method. The method now also passes the argument map of the operation. [#223](https://github.com/eclipse-glsp/glsp-server/pull/108)
 - [glsp-server] Refactored methods in`DiagramConfiguration` to correctly reflect `ShapeTypeHint` instead of `NodeTypeHint`.
+- [thiea-integration] Server port options have been generalized [#381]. In the `JavaSocketServerLaunchOptions` the property `serverPort` has been removed and replaced by a property `socketConnectionOptions` which needs to conform to `net.socketConnectionOpts.
 
 
 ## [v0.8.0 - 20/10/2020](https://github.com/eclipse-glsp/glsp/releases/tag/0.8.0)
