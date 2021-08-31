@@ -18,7 +18,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 
 
 <a name="theia_changes_1.9.0">[Theia Integration:](#theia_changes_1.9.0)</a>
-- [theia-backend] Added ability to launch embedded GLSP servers from `GLSPBackendContribution` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55)
+- [theia-backend] Added ability to launch embedded GLSP servers from `GLSPBackendContribution` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55) [#381](https://github.com/eclipse-glsp/glsp/pull/382)
 - [theia-frontend] Cleanup diagram widget initialization by removing no longer needed options [#123](https://github.com/eclipse-glsp/glsp-theia-integration/pull/60)
 - [theia-frontend] Fixed a bug that prevented activation of the diagram widget on model source changes [#168](https://github.com/eclipse-glsp/glsp-theia-integration/pull/61)
 - [theia-frontend] Fixed a bug that kept the hover feedback visible after the diagram widget becomes inactive [#184](https://github.com/eclipse-glsp/glsp-theia-integration/pull/64)
