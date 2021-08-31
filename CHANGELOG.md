@@ -18,7 +18,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 
 
 <a name="theia_changes_1.9.0">[Theia Integration:](#theia_changes_1.9.0)</a>
-- [theia-backend] Added ability to launch embedded GLSP servers from `GLSPBackendContribution` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55)
+- [theia-backend] Added ability to launch embedded GLSP servers from `GLSPBackendContribution` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55) [#381](https://github.com/eclipse-glsp/glsp/pull/382)
 - [theia-frontend] Cleanup diagram widget initialization by removing no longer needed options [#123](https://github.com/eclipse-glsp/glsp-theia-integration/pull/60)
 - [theia-frontend] Fixed a bug that prevented activation of the diagram widget on model source changes [#168](https://github.com/eclipse-glsp/glsp-theia-integration/pull/61)
 - [theia-frontend] Fixed a bug that kept the hover feedback visible after the diagram widget becomes inactive [#184](https://github.com/eclipse-glsp/glsp-theia-integration/pull/64)
@@ -52,7 +52,6 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [glsp-client] Introduced `glspViewportModule`. This module contains a custom `ScrollMouseListener` that gets disabled if the `MarqueeTool` is active. This module should be used instead of the `viewportModule` provided by sprotty [#199](https://github.com/eclipse-glsp/glsp-client/pull/108)
 - [glsp-server] Refactored the `CreateNodeOperationHandler.createNode` method. The method now also passes the argument map of the operation. [#223](https://github.com/eclipse-glsp/glsp-server/pull/108)
 - [glsp-server] Refactored methods in`DiagramConfiguration` to correctly reflect `ShapeTypeHint` instead of `NodeTypeHint`.
-- [thiea-integration] Server port options have been generalized [#88](https://github.com/eclipse-glsp/glsp-theia-integration/pull/88). In the `JavaSocketServerLaunchOptions` the property `serverPort` has been removed and replaced by a property `socketConnectionOptions` which needs to conform to `net.socketConnectionOpts`.
 
 
 ## [v0.8.0 - 20/10/2020](https://github.com/eclipse-glsp/glsp/releases/tag/0.8.0)
