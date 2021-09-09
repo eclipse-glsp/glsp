@@ -66,7 +66,6 @@ Inception of the Eclipse VScode integration. This project provides the glue code
 - [glsp-server] Update dependencies of Googgle Guava (>= 30.1) and Google Guice (>= 5.0.0). [#260](https://github.com/eclipse-glsp/glsp-server/pull/119)
 - [glsp-client] Remove the `name` property from `GLSPClient`. [#258](https://github.com/eclipse-glsp/glsp-client/pull/130/files)
 - [glsp-server] Refactor the base communication protocol to support initializing and disposing a client session. Remove now obsolete `InitializeClientSesionAction` and `DisposeClientSessionAction`. [#315](https://github.com/eclipse-glsp/glsp-server/pull/123)
-- [glsp-client] Refactor the base communication protocol to support initializing and disposing a client session. Remove now obsolete `InitializeClientSesionAction` and `DisposeClientSessionAction`. [#315](https://github.com/eclipse-glsp/glsp-client/pull/132)
 
 
 
