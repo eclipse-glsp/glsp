@@ -5,8 +5,6 @@ Eclipse GLSP follows the [Eclipse Vulnerability Reporting Policy](https://www.ec
 ## Supported Versions
 Eclipse GLSP is still in the incubation phase. During this phase only the most current release is supported
 with security updates.
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
