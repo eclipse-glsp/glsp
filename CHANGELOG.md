@@ -1,6 +1,7 @@
 # Eclipse GLSP Change Log
 
 ## [v0.9.0 - Upcoming]()
+
 <a name="client_changes_1.9.0">[Client:](#client_changes_1.9.0)</a>
 - [build] Added a download script to download the latest workflow-glsp-server JAR from maven artifactory [#171](https://github.com/eclipse-glsp/glsp-client/pull/99)
 - [diagram] Fixed a bug that kept the hover feedback visible after the diagram widget becomes inactive [#184](https://github.com/eclipse-glsp/glsp-client/pull/102)
@@ -16,21 +17,22 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [diagram] Fixed a bug in the connection tool regarding the feedback edge snapping computation for nested elements. [#224](https://github.com/eclipse-glsp/glsp-client/pull/123)
 - [diagram] Fixed a bug in the copy& paste behavior. [#249](https://github.com/eclipse-glsp/glsp-client/pull/124)
 - [diagram] Fixed a bug in Firefox that required elements to be selected before they can be moved. [#376](https://github.com/eclipse-glsp/glsp-client/pull/134)
+- Upgrade to Snabbdom3 and ES2017 [#137](https://github.com/eclipse-glsp/glsp-client/pull/137)
 <br>
 
 <a name="server_changes_1.9.0">[Server:](#server_changes_1.9.0)</a>
 
-- [websocket] Fixed issue that was caused by reusing a shared injector for each client connection [#149](https://github.com/eclipse-glsp/glsp-server/pull/91)
-- [server] Added a utility class for 'JsonOpenerOptions' [#153](https://github.com/eclipse-glsp/glsp-server/pull/93)
-- [websocket] Align package import of javax.servlet with the dependency range of Jetty [#156](https://github.com/eclipse-glsp/glsp-server/pull/94)
-- [server] Reworked model update flow. All aspects of the update process are now handled by the `ModelSubmissionHandler` [#122](https://github.com/eclipse-glsp/glsp-server/pull/95)
-- [server] Reworked and split `ModelFactory` API into a dedicated component responsible for loading the model source (`ModelSourceLoader`) and a component responsible for transforming the current modelstate into its GModel-representation (`GModelFactory`)  [#119](https://github.com/eclipse-glsp/glsp-server/pull/96)
-- [protocol] Updated kind of `SelectAction` to be in-line with the client type. This ensures correct of handling of `SelectAction`s that were sent from the server [#191](https://github.com/eclipse-glsp/glsp-server/pull/98)
-- [protocol] Added implementation for `SetViewportAction` [#179](https://github.com/eclipse-glsp/glsp-server/pull/99)
-- [server] Introduced `GArgumentable` interface which is implemented by all `GModelElement`s. This can be used to provide additional information in form of an `args` map without having to extend the `GModel` type [#194](https://github.com/eclipse-glsp/glsp-server/pull/100)
-- [server] Extended default type mapping and added builder for `GArgumentable` elements and corresponding utility classes [#180](https://github.com/eclipse-glsp/glsp-server/pull/105)
-- [protocol]  Added `fileUri` property to `SaveModelAction` and updated `SaveModelActionHandler` accordingly [#208](https://github.com/eclipse-glsp/glsp-server/pull/103/)
-- [protocol] Added optional `reason` string property to `SetDirtyStateAction`. This property indicates the reason that caused to dirty state change and enables more fine granular handling of dirty state changes [#197](https://github.com/eclipse-glsp/glsp-server/pull/101)
+-   [websocket] Fixed issue that was caused by reusing a shared injector for each client connection [#149](https://github.com/eclipse-glsp/glsp-server/pull/91)
+-   [server] Added a utility class for 'JsonOpenerOptions' [#153](https://github.com/eclipse-glsp/glsp-server/pull/93)
+-   [websocket] Align package import of javax.servlet with the dependency range of Jetty [#156](https://github.com/eclipse-glsp/glsp-server/pull/94)
+-   [server] Reworked model update flow. All aspects of the update process are now handled by the `ModelSubmissionHandler` [#122](https://github.com/eclipse-glsp/glsp-server/pull/95)
+-   [server] Reworked and split `ModelFactory` API into a dedicated component responsible for loading the model source (`ModelSourceLoader`) and a component responsible for transforming the current modelstate into its GModel-representation (`GModelFactory`) [#119](https://github.com/eclipse-glsp/glsp-server/pull/96)
+-   [protocol] Updated kind of `SelectAction` to be in-line with the client type. This ensures correct of handling of `SelectAction`s that were sent from the server [#191](https://github.com/eclipse-glsp/glsp-server/pull/98)
+-   [protocol] Added implementation for `SetViewportAction` [#179](https://github.com/eclipse-glsp/glsp-server/pull/99)
+-   [server] Introduced `GArgumentable` interface which is implemented by all `GModelElement`s. This can be used to provide additional information in form of an `args` map without having to extend the `GModel` type [#194](https://github.com/eclipse-glsp/glsp-server/pull/100)
+-   [server] Extended default type mapping and added builder for `GArgumentable` elements and corresponding utility classes [#180](https://github.com/eclipse-glsp/glsp-server/pull/105)
+-   [protocol] Added `fileUri` property to `SaveModelAction` and updated `SaveModelActionHandler` accordingly [#208](https://github.com/eclipse-glsp/glsp-server/pull/103/)
+-   [protocol] Added optional `reason` string property to `SetDirtyStateAction`. This property indicates the reason that caused to dirty state change and enables more fine granular handling of dirty state changes [#197](https://github.com/eclipse-glsp/glsp-server/pull/101)
 
 <a name="theia_changes_1.9.0">[Theia Integration:](#theia_changes_1.9.0)</a>
 - [theia-backend] Added ability to launch embedded GLSP servers from `GLSPBackendContribution` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55) [#381](https://github.com/eclipse-glsp/glsp/pull/382)
@@ -42,6 +44,7 @@ Introduced reusable view for rounded corner nodes and and improved edge view tha
 - [theia-fronted] Introduced `GLSPSelectionDataService` which can be used to forward additional information on top of the selection to the Theia selection service. [#228](https://github.com/eclipse-glsp/glsp/issues/228)
 - [theia-frontend] Fixed a bug that displayed the diagram widget as inative when intially openend. [#243](https://github.com/eclipse-glsp/glsp-theia-integration/pull/75)
 - [theia-frontend] Adapt frontend components to conform to the  latest [protocol changes](eclipse-glsp/glsp/issues/315).  [#315](https://github.com/eclipse-glsp/glsp-theia-integration/pull/86) 
+- Upgrade to Theia 1.17.2 and ES2017 [#90](https://github.com/eclipse-glsp/glsp-theia-integration/pull/90)
 <br>
 
 
@@ -68,6 +71,15 @@ Inception of the Eclipse VScode integration. This project provides the glue code
 - [glsp-server] Refactor the base communication protocol to support initializing and disposing a client session. Remove now obsolete `InitializeClientSesionAction` and `DisposeClientSessionAction`. [#315](https://github.com/eclipse-glsp/glsp-server/pull/123)
 
 
+-   [theia-integration] Renamed `GLSPServerContribution.start()` to `GLSPServerContribution.connect()` [#35](https://github.com/eclipse-glsp/glsp-theia-integration/pull/55)
+-   [glsp-client & theia-integration] Replaced `ExternalNavigateToTargetHandler` and its implementation in Theia `TheiaNavigateToTargetHandler` with a generic action `NavigateToExternalTargetAction` [#153](https://github.com/eclipse-glsp/glsp-client/pull/95) and an action handler `TheiaNavigateToExternalTargetHandler` in Theia [#153](https://github.com/eclipse-glsp/glsp-theia-integration/pull/57)
+-   [glsp-server] Merged the `ServerLayoutConfiguration` API into the `DiagramConfiguration` API. The standalone `ServerLayoutConfiguration` is now deprecated and no longer supported [#123](https://github.com/eclipse-glsp/glsp-server/pull/95)
+-   [glsp-server] Renamed `ModelFactory` to `ModelSourceLoader` and adapted interface method. This also affects implementing classes like the `JsonFileModelFactory` [#119](https://github.com/eclipse-glsp/glsp-server/pull/96)
+-   [glsp-server] Reworked `ModelSubmissionHandler` API. This includes changes of method names and parameters [#119](https://github.com/eclipse-glsp/glsp-server/pull/96) [#197](https://github.com/eclipse-glsp/glsp-server/pull/101)
+-   [theia-integration] Dropped the dependency to the deprecated `@theia/languages` package. This enables compatibility with new Theia versions (>1.4.0). As a consequence the new minium requirment for `sprotty-theia` is > 0.9.0 [#189](https://github.com/eclipse-glsp/glsp-theia-integration/pull/66)
+-   [glsp-client] Introduced `glspViewportModule`. This module contains a custom `ScrollMouseListener` that gets disabled if the `MarqueeTool` is active. This module should be used instead of the `viewportModule` provided by sprotty [#199](https://github.com/eclipse-glsp/glsp-client/pull/108)
+-   [glsp-server] Refactored the `CreateNodeOperationHandler.createNode` method. The method now also passes the argument map of the operation. [#223](https://github.com/eclipse-glsp/glsp-server/pull/108)
+-   [glsp-server] Refactored methods in`DiagramConfiguration` to correctly reflect `ShapeTypeHint` instead of `NodeTypeHint`.
 
 ## [v0.8.0 - 20/10/2020](https://github.com/eclipse-glsp/glsp/releases/tag/0.8.0)
 
