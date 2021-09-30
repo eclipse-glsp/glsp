@@ -27,17 +27,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.16.0",
-    "@typescript-eslint/parser": "^2.16.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.32.0",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-no-null": "^1.0.2",
-    "eslint-config-prettier": "^8.3.0",
-    "@eclipse-glsp/prettier-config": "0.1.0"
+    "eslint-config-prettier": "^8.3.0"
   },
   "devDependencies": {
-    "typescript": "^3.9.2"
-  },
-  "prettier": "@eclipse-glsp/prettier-config"
+    "typescript": "^3.9.0"
+  }
 }

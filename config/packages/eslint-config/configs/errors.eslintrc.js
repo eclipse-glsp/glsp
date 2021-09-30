@@ -65,12 +65,11 @@ module.exports = {
             }
         ],
         // @typescript-eslint/eslint-plugin
-        '@typescript-eslint/class-name-casing': 'error',
+        '@typescript-eslint/naming-convention': 'error',
         '@typescript-eslint/consistent-type-definitions': 'error',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-misused-new': 'error',
         '@typescript-eslint/no-empty-interface': 'off',
-        '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/no-unused-vars': [
