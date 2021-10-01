@@ -1,3 +1,4 @@
 module.exports = {
-    extends: ["./no-prettier", "prettier"],
+    extends: ['./no-prettier', 'prettier'],
+    root: 'true'
 };
