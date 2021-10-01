@@ -16,5 +16,8 @@
   },
   "task.autoDetect": "off",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "eslint.validate": ["javascript", "typescript"]
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ]
 }

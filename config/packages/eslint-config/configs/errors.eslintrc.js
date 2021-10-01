@@ -11,12 +11,7 @@ module.exports = {
         'guard-for-in': 'error',
         'no-caller': 'error',
         'no-eval': 'error',
-        'no-redeclare': [
-            'error',
-            {
-                builtinGlobals: false
-            }
-        ],
+        'no-redeclare': 'off',
         'no-restricted-imports': ['error', '..', '../index', '../..', '../../index'],
         'no-sequences': 'error',
         'no-throw-literal': 'error',
@@ -65,7 +60,7 @@ module.exports = {
             }
         ],
         // @typescript-eslint/eslint-plugin
-        '@typescript-eslint/naming-convention': 'error',
+        '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/consistent-type-definitions': 'error',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-misused-new': 'error',
