@@ -3,6 +3,8 @@ module.exports = {
         // https://eslint.org/docs/rules/
         'brace-style': ['warn', '1tbs'],
         'comma-dangle': 'warn',
+        curly: 'warn',
+        'eol-last': 'warn',
         indent: [
             'warn',
             4,
@@ -13,6 +15,7 @@ module.exports = {
         'no-invalid-this': 'warn',
         'no-new-wrappers': 'warn',
         'no-return-await': 'warn',
+        'no-redeclare': 'off',
         'no-shadow': [
             'warn',
             {
@@ -36,8 +39,33 @@ module.exports = {
                 exceptions: ['*', '+', '-', '/', '!']
             }
         ],
+        'space-before-function-paren': [
+            'warn',
+            {
+                anonymous: 'always',
+                named: 'never',
+                asyncArrow: 'always'
+            }
+        ],
+        // Stylistic Issues
+        'max-len': [
+            'warn',
+            {
+                code: 140
+            }
+        ],
         'use-isnan': 'warn',
+        'arrow-parens': ['warn', 'as-needed'],
+
         // @typescript-eslint/eslint-plugin
+        '@typescript-eslint/semi': ['warn', 'always'],
+        '@typescript-eslint/quotes': [
+            'warn',
+            'single',
+            {
+                avoidEscape: true
+            }
+        ],
         '@typescript-eslint/explicit-function-return-type': [
             'warn',
             {
