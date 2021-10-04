@@ -15,30 +15,11 @@ $ yarn add --dev @eclipse-glsp/eslint-config
 ```javascript
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
-    extends: "@eclipse-glsp",
+    extends: '@eclipse-glsp',
     parserOptions: {
         tsconfigRootDir: __dirname,
-        project: "tsconfig.json",
-    },
-};
-```
-
-## Usage without prettier
-
-The default shared ESLint configuration is expected to be used in combination with [Prettier](https://prettier.io/).
-As a consequence all stylistic rules that might conflict with Prettier haven been disabled.
-We provide an additional `no-prettier` configuration that can be used for projects that don't use Prettier.
-
-**Create a `.eslintrc.js`**:
-
-```javascript
-/** @type {import('eslint').Linter.Config} */
-module.exports = {
-    extends: "@eclipse-glsp/eslint-config/no-prettier",
-    parserOptions: {
-        tsconfigRootDir: __dirname,
-        project: "tsconfig.json",
-    },
+        project: 'tsconfig.json'
+    }
 };
 ```
 
