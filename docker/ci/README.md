@@ -6,7 +6,7 @@
     [Eclipse GLSP](https://github.com/eclipse-glsp/glsp)
 
 -   **Where to get help**:  
-    [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Spectrum Chat](https://spectrum.chat/), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
+    [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Discussions](https://github.com/eclipse-glsp/glsp/discussions), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
 
 -   **Where to file issues**:  
     <https://github.com/eclipse-glsp/glsp/issues>
