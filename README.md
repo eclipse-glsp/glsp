@@ -1,8 +1,8 @@
 # Eclipse GLSP
+
 [![build-status-server](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-server%2Fjob%2Fmaster%2F&label=server)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/) [![build-status-client](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-client%2Fjob%2Fmaster%2F&label=client)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master) [![build-status-theia](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-theia-integration%2Fjob%2Fmaster%2F&label=theia-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-theia-integration/) [![build-status-vscode](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-vscode-integration%2Fjob%2Fmaster%2F&label=vscode-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-vscode/job/master) [![build-status-examples](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-eclipse-integration%2Fjob%2Fmaster%2F&label=eclipse-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master) [![build-status-examples](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.eclipse.org%2Fglsp%2Fjob%2Feclipse-glsp%2Fjob%2Fglsp-examples%2Fjob%2Fmaster%2F&label=examples)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-examples/job/master)
 
-
-The <b>G</b>raphical <b>L</b>anguage <b>S</b>erver <b>P</b>latform provides extensible components for the development of *diagram editors including edit functionality* in (distributed) web-applications via a client-server protocol.
+The <b>G</b>raphical <b>L</b>anguage <b>S</b>erver <b>P</b>latform provides extensible components for the development of _diagram editors including edit functionality_ in (distributed) web-applications via a client-server protocol.
 
 It follows the architectural pattern of the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors for browser/cloud-based deployments.
 Parts of the protocol and the web-based client implementation is based on [Sprotty](https://github.com/eclipse/sprotty) but extends it with editing functionality and GLSP-specific communication with the server.
@@ -15,41 +15,48 @@ For more information, please have a look at the [protocol](PROTOCOL.md) or visit
 
 Below is a list of features that are supported by the different base technologies that can be used with GLSP.
 
-| Feature                                                           	|   Standalone   	| Theia Integration 	| Eclipse Integration 	| VS Code Integration 	|
-|-------------------------------------------------------------------	|:--------------:	|:-----------------:	|:-------------------:	|:-------------------:	|
-| Model Saving                                                      	|                	|         ✓         	|          ✓          	|          ✓          	|	|
-| Model Dirty State                                                 	|                	|         ✓         	|          ✓          	|          ✓          	|	|
-| Model SVG Export                                                 	    |                	|         ✓         	|                   	|                     	|
-| Model Layout                                                      	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Model Edit Modes<br>- Edit<br>- Read-only                         	|  <br>✓<br>&nbsp; 	|     <br>✓<br>✓    	|      <br>✓<br>&nbsp;  |      <br>✓<br>&nbsp; 	|
-| Client View Port<br>- Center<br>- Fit to Screen                   	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
-| Client Status Notification                                        	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Client Message Notification                                       	|        ✓       	|         ✓         	|                     	|                     	|
-| Element Selection                                                 	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Hover                                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Validation                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Navigation                                                	|                	|         ✓         	|          ✓          	|                     	|
-| Element Type Hints                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Creation and Deletion                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Node Change Bounds<br>- Move<br>- Resize                          	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
-| Node Change Container                                             	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Edge Reconnect                                                    	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Edge Routing Points                                               	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Text Editing                                              	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Clipboard (Cut, Copy, Paste)                                      	|                	|         ✓         	|                     	|                     	|
-| Undo / Redo                                                       	|                	|         ✓         	|          ✓          	|          ✓          	|	|
-| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette 	| <br><br>✓<br>✓ 	|  <br>✓<br>✓<br>✓  	|    <br><br>✓<br>✓   	|    <br><br>✓<br>✓   	|
+| Feature                                                           |   Standalone    | Theia Integration | Eclipse Integration | VS Code Integration |
+| ----------------------------------------------------------------- | :-------------: | :---------------: | :-----------------: | :-----------------: | --- |
+| Model Saving                                                      |                 |         ✓         |          ✓          |          ✓          |     |
+| Model Dirty State                                                 |                 |         ✓         |          ✓          |          ✓          |     |
+| Model SVG Export                                                  |                 |         ✓         |                     |                     |
+| Model Layout                                                      |        ✓        |         ✓         |          ✓          |          ✓          |
+| Model Edit Modes<br>- Edit<br>- Read-only                         | <br>✓<br>&nbsp; |    <br>✓<br>✓     |   <br>✓<br>&nbsp;   |   <br>✓<br>&nbsp;   |
+| Client View Port<br>- Center<br>- Fit to Screen                   |   <br>✓<br>✓    |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Client Status Notification                                        |        ✓        |         ✓         |          ✓          |          ✓          |
+| Client Message Notification                                       |        ✓        |         ✓         |                     |                     |
+| Element Selection                                                 |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Hover                                                     |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Validation                                                |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Navigation                                                |                 |         ✓         |          ✓          |                     |
+| Element Type Hints                                                |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Creation and Deletion                                     |        ✓        |         ✓         |          ✓          |          ✓          |
+| Node Change Bounds<br>- Move<br>- Resize                          |   <br>✓<br>✓    |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Node Change Container                                             |        ✓        |         ✓         |          ✓          |          ✓          |
+| Edge Reconnect                                                    |        ✓        |         ✓         |          ✓          |          ✓          |
+| Edge Routing Points                                               |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Text Editing                                              |        ✓        |         ✓         |          ✓          |          ✓          |
+| Clipboard (Cut, Copy, Paste)                                      |                 |         ✓         |                     |                     |
+| Undo / Redo                                                       |                 |         ✓         |          ✓          |          ✓          |     |
+| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette | <br><br>✓<br>✓  |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br><br>✓<br>✓    |
 
 ## Repositories
 
 The GLSP source code consists of the following repositories:
 
-- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the default ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
-- [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
-- [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples to demonstrate GLSP in action.
-- [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
-- [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
-- [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
+-   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the default ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
+-   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
+-   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples to demonstrate GLSP in action.
+-   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
+-   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
+-   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
+
+## Shared artifacts
+
+This repository provides the following packages and artifacts that are shared across all GLSP repositories and/or projects:
+
+-   [Eclipse GLSP docker images](docker/ci/README.md)
+-   [Eclipse GLSP Typescript Project Configuration ](packages/config/README.md)
 
 ## Build artifacts
 
@@ -59,10 +66,11 @@ The server packages are available as maven as well as p2 dependency from the fol
 
 ### Maven Repositories
 
-- <i>Snapshots: </i> https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/
+-   <i>Snapshots: </i> https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/
 
 ### P2 Update Sites
-- <i>Snapshots: </i> https://download.eclipse.org/glsp/server/p2/nightly/
+
+-   <i>Snapshots: </i> https://download.eclipse.org/glsp/server/p2/nightly/
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
@@ -72,16 +80,16 @@ All changes on the master branch are deployed automatically to the corresponding
 
 You’ll need node in version 12:
 
-	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
-	nvm install 12
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
+    nvm install 12
 
 and Yarn
 
-	npm install -g yarn
+    npm install -g yarn
 
 and Lerna
 
-	npm install -g lerna
+    npm install -g lerna
 
 ### Server packages
 
@@ -104,8 +112,8 @@ The Workflow Diagram is a consistent example provided by all GLSP components. Th
 
 In the folder `glsp-server/examples/org.eclipse.glsp.example.workflow/target`, you should have a jar file `org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar` whereas `X.X.X` is the current version. You can now start the server by executing the following commands:
 
-	cd examples/org.eclipse.glsp.example.workflow/target
-	java -jar org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar org.eclipse.glsp.example.workflow.launch.ExampleServerLauncher
+    cd examples/org.eclipse.glsp.example.workflow/target
+    java -jar org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar org.eclipse.glsp.example.workflow.launch.ExampleServerLauncher
 
 To start the example server from within your IDE, run the main method of the class [ExampleServerLauncher.java](https://github.com/eclipse-glsp/glsp-server/blob/master/examples/org.eclipse.glsp.example.workflow/src/org/eclipse/glsp/example/workflow/launch/WorkflowServerLauncher.java) in the module `glsp-server/examples/org.eclipse.glsp.example.workflow`.
 
@@ -128,21 +136,21 @@ If you open this the first time and you don't have selected a workspace yet, poi
 
 In order to start the workflow diagram editor example with VSCode, Eclipse, or standalone, please see the documentation of the respective integration modules:
 
-  * [VSCode Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
-  * [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
-  * [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
-  * [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
+-   [VSCode Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
+-   [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
+-   [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
+-   [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
 
 ## Setting up your development environment
 
 If you want to explore or extend the GLSP source code in any of the available components, we recommend cloning the repositories alongside this repository, so that you have the following folder layout:
 
-- `eclipse-glsp` (or any name for your parent folder)
-  - [`glsp`](https://github.com/eclipse-glsp/glsp)
-  - [`glsp-client`](https://github.com/eclipse-glsp/glsp-client)
-  - [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration)
-  - [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
-  - [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
+-   `eclipse-glsp` (or any name for your parent folder)
+    -   [`glsp`](https://github.com/eclipse-glsp/glsp)
+    -   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client)
+    -   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration)
+    -   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
+    -   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
 
 For the client-side code (Typescript), we recommend using VSCode. Therefore, this repository provides a VSCode [workspace file](glsp.code-workspace), which you can open in VSCode and it will import all client-side folders for you -- given that you kept the repository structure specified above.
 

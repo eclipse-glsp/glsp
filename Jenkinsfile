@@ -51,10 +51,8 @@ pipeline {
             steps {
                 // Dont fail build on stage failure => always execute next stage
                 container('node') {
-                    dir('config') {
-                        timeout(30){
-                            sh "yarn"
-                        }
+                    timeout(30){
+                        sh "yarn"
                     }
                 }          
             }
@@ -67,7 +65,7 @@ pipeline {
                     expression {  
                       /* Only trigger the deployment job if the changeset contains changes in 
                       the `configs/packages` directory */
-                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep --quiet "^config/packages"') == 0
+                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep --quiet "^packages"') == 0
                     }
                 }
             }
