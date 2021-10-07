@@ -29,10 +29,10 @@
   "dependencies": {
     "@eclipse-glsp/eslint-config": "0.1.0",
     "@eclipse-glsp/prettier-config": "0.1.0",
-    "@eclipse-glsp/ts-config": "0.1.0"
+    "@eclipse-glsp/ts-config": "0.1.0",
+    "prettier": "^2.4.1"
   },
   "devDependencies": {
     "typescript": "^3.9.2"
-  },
-  "prettier": "@eclipse-glsp/prettier-config"
+  }
 }

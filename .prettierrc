@@ -1,4 +1,5 @@
 {
+    "$schema": "http://json.schemastore.org/prettierrc",
     "singleQuote": true,
     "jsxSingleQuote": true,
     "arrowParens": "avoid",
@@ -8,11 +9,9 @@
     "tabWidth": 4,
     "overrides": [
         {
-            "files": [
-                "*.json",
-                "*.yml"
-            ],
+            "files": ["*.json", "*.yml"],
             "options": {
+                "printWidth": 100,
                 "tabWidth": 2
             }
         }
