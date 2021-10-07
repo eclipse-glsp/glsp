@@ -10,10 +10,10 @@ This project is governed by the [Eclipse Community Code of Conduct](https://gith
 
 The following communication channels are available:
 
- * [GitHub issues](https://github.com/eclipse-glsp/glsp/issues) - for bug reports, feature requests, etc.
- * [Spectrum chat](https://spectrum.chat/glsp/?tab=posts) - for questions
- * [Eclipse community forum](https://www.eclipse.org/forums/index.php/f/465/) - for questions
- * [Developer mailing list](https://accounts.eclipse.org/mailing-list/glsp-dev) - for organizational issues (e.g. elections of new committers)
+-   [GitHub issues](https://github.com/eclipse-glsp/glsp/issues) - for bug reports, feature requests, etc.
+-   [Spectrum chat](https://spectrum.chat/glsp/?tab=posts) - for questions
+-   [Eclipse community forum](https://www.eclipse.org/forums/index.php/f/465/) - for questions
+-   [Developer mailing list](https://accounts.eclipse.org/mailing-list/glsp-dev) - for organizational issues (e.g. elections of new committers)
 
 In case you have a question, please look into the [documentation in the Wiki](https://github.com/eclipse-glsp/glsp/wiki) first. If you don't find any answer there, feel free to use the [chat](https://spectrum.chat/glsp/?tab=posts), [forum](https://www.eclipse.org/forums/index.php/f/465/) or [issues](https://github.com/eclipse-glsp/glsp/issues) to get help.
 

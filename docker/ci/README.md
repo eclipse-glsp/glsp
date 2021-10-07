@@ -2,23 +2,23 @@
 
 ## Quick reference
 
-- **Maintained by**:  
- [Eclipse GLSP](https://github.com/eclipse-glsp/glsp)
+-   **Maintained by**:  
+    [Eclipse GLSP](https://github.com/eclipse-glsp/glsp)
 
-- **Where to get help**:  
- [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Spectrum Chat](https://spectrum.chat/), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
+-   **Where to get help**:  
+    [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Spectrum Chat](https://spectrum.chat/), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
 
-- **Where to file issues**:  
- <https://github.com/eclipse-glsp/glsp/issues>
+-   **Where to file issues**:  
+    <https://github.com/eclipse-glsp/glsp/issues>
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`latest`, `ubuntu`, `ubuntu-18.04`, `ubuntu-base`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
-- [`uitest`, `uitest-ubuntu-18.04`, `ubuntu-chrome`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
+-   [`latest`, `ubuntu`, `ubuntu-18.04`, `ubuntu-base`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
+-   [`uitest`, `uitest-ubuntu-18.04`, `ubuntu-chrome`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
 
-- [`alpine`, `alpine-3.12`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   [`alpine`, `alpine-3.12`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
-Note that these tags are fluent and not bound to a fixed image version. If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`.  An increment of the major version number (e.g. v1.0-> v2.0) indicates an update of a major component e.g a new OS, Node or Java version.
+Note that these tags are fluent and not bound to a fixed image version. If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`. An increment of the major version number (e.g. v1.0-> v2.0) indicates an update of a major component e.g a new OS, Node or Java version.
 
 ## What is Eclipse GLSP CI
 
@@ -26,10 +26,10 @@ Collection of images that are used in Continuos Integration jobs of Eclipse GLSP
 
 Currently each image variant has at least the following components installed:
 
-- Git >=2.17.1
-- Node 12 and yarn 1.22.4
-- OpenJDK 11 and Maven >=3.6.0
-- Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
+-   Git >=2.17.1
+-   Node 12 and yarn 1.22.4
+-   OpenJDK 11 and Maven >=3.6.0
+-   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
 ## How to use this image
 
@@ -66,4 +66,3 @@ This is the recommend image for CI jobs that execute any sort of UI tests. It us
 Eclipse Eclipse is released under the [EPL-2.0](https://www.eclipse.org/legal/epl-2.0/)/[GPL-2.0-with-classpath-exception](https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html),
 
 As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
-

@@ -1,104 +1,97 @@
 <details open><summary>Table of Contents</summary>
 
-- [1. Server-Client Lifecycle](#1-server-client-lifecycle)
-- [2. Graphical Language Server Protocol](#2-graphical-language-server-protocol)
-  - [2.1. Base Protocol](#21-base-protocol)
-    - [2.1.1. ActionMessage](#211-actionmessage)
-    - [2.1.2. Action](#212-action)
-      - [2.1.2.1. RequestAction](#2121-requestaction)
-      - [2.1.2.2. ResponseAction](#2122-responseaction)
-      - [2.1.2.3. RejectAction](#2123-rejectaction)
-      - [2.1.2.4. Operation](#2124-operation)
-  - [2.2. Model Structure](#22-model-structure)
-    - [2.2.1. SModelElementSchema](#221-smodelelementschema)
-      - [2.2.1.1. SModelRootSchema](#2211-smodelrootschema)
-    - [2.2.2. SModelElement](#222-smodelelement)
-      - [2.2.2.1. SParentElement](#2221-sparentelement)
-      - [2.2.2.2. SChildElement](#2222-schildelement)
-      - [2.2.2.3. SModelRoot](#2223-smodelroot)
-  - [2.3. Types](#23-types)
-    - [2.3.1. Args](#231-args)
-    - [2.3.2. Point](#232-point)
-    - [2.3.3. Dimension](#233-dimension)
-    - [2.3.4. Bounds](#234-bounds)
-    - [2.3.5. ElementAndBounds](#235-elementandbounds)
-    - [2.3.6. ElementAndAlignment](#236-elementandalignment)
-    - [2.3.7. ElementAndRoutingPoints](#237-elementandroutingpoints)
-    - [2.3.8. EditorContext](#238-editorcontext)
-    - [2.3.9. LabeledAction](#239-labeledaction)
-  - [2.4 Model Data](#24-model-data)
-    - [2.4.1. RequestModelAction](#241-requestmodelaction)
-    - [2.4.2. SetModelAction](#242-setmodelaction)
-    - [2.4.3. UpdateModelAction](#243-updatemodelaction)
-    - [2.4.4. ModelSourceChangedAction](#244-modelsourcechangedaction)
-  - [2.5. Model Saving](#25-model-saving)
-    - [2.5.1. SaveModelAction](#251-savemodelaction)
-    - [2.5.2. SetDirtyStateAction](#252-setdirtystateaction)
-    - [2.5.3. ExportSvgAction](#253-exportsvgaction)
-  - [2.6. Model Layout](#26-model-layout)
-    - [2.6.1. RequestBoundsAction](#261-requestboundsaction)
-    - [2.6.2. ComputedBoundsAction](#262-computedboundsaction)
-    - [2.6.3. LayoutOperation](#263-layoutoperation)
-  - [2.7. Model Edit Mode](#27-model-edit-mode)
-    - [2.7.1. SetEditModeAction](#271-seteditmodeaction)
-  - [2.8. Client-Side Actions](#28-client-side-actions)
-    - [2.8.1. View Port](#281-view-port)
-      - [2.8.1.1. CenterAction](#2811-centeraction)
-      - [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
-    - [2.8.2. Client Notification](#282-client-notification)
-      - [2.8.2.1. GLSPServerStatusAction](#2821-glspserverstatusaction)
-      - [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
-    - [2.8.3. Element Selection](#283-element-selection)
-      - [2.8.3.1. SelectAction](#2831-selectaction)
-      - [2.8.3.2. SelectAllAction](#2832-selectallaction)
-  - [2.9. Element Hover](#29-element-hover)
-    - [2.9.1. RequestPopupModelAction](#291-requestpopupmodelaction)
-    - [2.9.2. SetPopupModelAction](#292-setpopupmodelaction)
-  - [2.10. Element Validation](#210-element-validation)
-    - [2.10.1. RequestMarkersAction](#2101-requestmarkersaction)
-    - [2.10.2. SetMarkersAction](#2102-setmarkersaction)
-    - [2.10.3. DeleteMarkersAction](#2103-deletemarkersaction)
-  - [2.11. Element Navigation](#211-element-navigation)
-    - [2.11.1. RequestNavigationTargetsAction](#2111-requestnavigationtargetsaction)
-    - [2.11.2. SetNavigationTargetsAction](#2112-setnavigationtargetsaction)
-    - [2.11.3. NavigateToTargetAction](#2113-navigatetotargetaction)
-    - [2.11.4. ResolveNavigationTargetAction](#2114-resolvenavigationtargetaction)
-    - [2.11.4. SetResolvedNavigationTargetAction](#2114-setresolvednavigationtargetaction)
-    - [2.11.5. NavigateToExternalTargetAction](#2115-navigatetoexternaltargetaction)
-  - [2.12. Element Type Hints](#212-element-type-hints)
-    - [2.12.1. RequestTypeHintsAction](#2121-requesttypehintsaction)
-    - [2.12.2. SetTypeHintsAction](#2122-settypehintsaction)
-  - [2.13. Element Creation and Deletion](#213-element-creation-and-deletion)
-    - [2.13.1. CreateNodeOperation](#2131-createnodeoperation)
-    - [2.13.2. CreateEdgeOperation](#2132-createedgeoperation)
-    - [2.13.3. DeleteElementOperation](#2133-deleteelementoperation)
-  - [2.14. Node Modification](#214-node-modification)
-    - [2.14.1. ChangeBoundsOperation](#2141-changeboundsoperation)
-    - [2.14.2. ChangeContainerOperation](#2142-changecontaineroperation)
-  - [2.15. Edge Modification](#215-edge-modification)
-    - [2.15.1. ReconnectEdgeOperation](#2151-reconnectedgeoperation)
-    - [2.15.2. ChangeRoutingPointsOperation](#2152-changeroutingpointsoperation)
-  - [2.16. Element Text Editing](#216-element-text-editing)
-    - [2.16.1. RequestEditValidationAction](#2161-requesteditvalidationaction)
-    - [2.16.2. SetEditValidationResultAction](#2162-seteditvalidationresultaction)
-    - [2.16.3. ApplyLabelEditOperation](#2163-applylabeleditoperation)
-  - [2.17. Clipboard](#217-clipboard)
-    - [2.17.1. RequestClipboardDataAction](#2171-requestclipboarddataaction)
-    - [2.17.2. SetClipboardDataAction](#2172-setclipboarddataaction)
-    - [2.17.3. CutOperation](#2173-cutoperation)
-    - [2.17.4. PasteOperation](#2174-pasteoperation)
-  - [2.18. Undo / Redo](#218-undo--redo)
-    - [2.18.1. UndoOperation](#2181-undooperation)
-    - [2.18.2. RedoOperation](#2182-redooperation)
-  - [2.19. Contexts](#219-contexts)
-    - [2.19.1. RequestContextActions](#2191-requestcontextactions)
-    - [2.19.2. SetContextActions](#2192-setcontextactions)
-    - [2.19.3. Context Menu](#2193-context-menu)
-    - [2.19.4. Command Palette](#2194-command-palette)
-    - [2.19.5. Tool Palette](#2195-tool-palette)
-      - [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
-      - [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
-</details>
+-   [1. Server-Client Lifecycle](#1-server-client-lifecycle)
+-   [2. Graphical Language Server Protocol](#2-graphical-language-server-protocol)
+    -   [2.1. Base Protocol](#21-base-protocol)
+        -   [2.1.1. ActionMessage](#211-actionmessage)
+        -   [2.1.2. Action](#212-action)
+            -   [2.1.2.1. RequestAction](#2121-requestaction)
+            -   [2.1.2.2. ResponseAction](#2122-responseaction)
+            -   [2.1.2.3. RejectAction](#2123-rejectaction)
+            -   [2.1.2.4. Operation](#2124-operation)
+    -   [2.2. Model Structure](#22-model-structure)
+        -   [2.2.1. SModelElementSchema](#221-smodelelementschema)
+            -   [2.2.1.1. SModelRootSchema](#2211-smodelrootschema)
+        -   [2.2.2. SModelElement](#222-smodelelement)
+            -   [2.2.2.1. SParentElement](#2221-sparentelement)
+            -   [2.2.2.2. SChildElement](#2222-schildelement)
+            -   [2.2.2.3. SModelRoot](#2223-smodelroot)
+    -   [2.3. Types](#23-types)
+        -   [2.3.1. Args](#231-args)
+        -   [2.3.2. Point](#232-point)
+        -   [2.3.3. Dimension](#233-dimension)
+        -   [2.3.4. Bounds](#234-bounds)
+        -   [2.3.5. ElementAndBounds](#235-elementandbounds)
+        -   [2.3.6. ElementAndAlignment](#236-elementandalignment)
+        -   [2.3.7. ElementAndRoutingPoints](#237-elementandroutingpoints)
+        -   [2.3.8. EditorContext](#238-editorcontext)
+        -   [2.3.9. LabeledAction](#239-labeledaction)
+    -   [2.4 Model Data](#24-model-data)
+        -   [2.4.1. RequestModelAction](#241-requestmodelaction)
+        -   [2.4.2. SetModelAction](#242-setmodelaction)
+        -   [2.4.3. UpdateModelAction](#243-updatemodelaction)
+        -   [2.4.4. ModelSourceChangedAction](#244-modelsourcechangedaction)
+    -   [2.5. Model Saving](#25-model-saving)
+        -   [2.5.1. SaveModelAction](#251-savemodelaction)
+        -   [2.5.2. SetDirtyStateAction](#252-setdirtystateaction)
+        -   [2.5.3. ExportSvgAction](#253-exportsvgaction)
+    -   [2.6. Model Layout](#26-model-layout)
+        -   [2.6.1. RequestBoundsAction](#261-requestboundsaction)
+        -   [2.6.2. ComputedBoundsAction](#262-computedboundsaction)
+        -   [2.6.3. LayoutOperation](#263-layoutoperation)
+    -   [2.7. Model Edit Mode](#27-model-edit-mode)
+        -   [2.7.1. SetEditModeAction](#271-seteditmodeaction)
+    -   [2.8. Client-Side Actions](#28-client-side-actions)
+        -   [2.8.1. View Port](#281-view-port)
+            -   [2.8.1.1. CenterAction](#2811-centeraction)
+            -   [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
+        -   [2.8.2. Client Notification](#282-client-notification)
+            -   [2.8.2.1. GLSPServerStatusAction](#2821-glspserverstatusaction)
+            -   [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
+        -   [2.8.3. Element Selection](#283-element-selection)
+            -   [2.8.3.1. SelectAction](#2831-selectaction)
+            -   [2.8.3.2. SelectAllAction](#2832-selectallaction)
+    -   [2.9. Element Hover](#29-element-hover)
+        -   [2.9.1. RequestPopupModelAction](#291-requestpopupmodelaction)
+        -   [2.9.2. SetPopupModelAction](#292-setpopupmodelaction)
+    -   [2.10. Element Validation](#210-element-validation)
+        -   [2.10.1. RequestMarkersAction](#2101-requestmarkersaction)
+        -   [2.10.2. SetMarkersAction](#2102-setmarkersaction)
+        -   [2.10.3. DeleteMarkersAction](#2103-deletemarkersaction)
+    -   [2.11. Element Navigation](#211-element-navigation)
+        -   [2.11.1. RequestNavigationTargetsAction](#2111-requestnavigationtargetsaction)
+        -   [2.11.2. SetNavigationTargetsAction](#2112-setnavigationtargetsaction)
+        -   [2.11.3. NavigateToTargetAction](#2113-navigatetotargetaction)
+        -   [2.11.4. ResolveNavigationTargetAction](#2114-resolvenavigationtargetaction)
+        -   [2.11.4. SetResolvedNavigationTargetAction](#2114-setresolvednavigationtargetaction)
+        -   [2.11.5. NavigateToExternalTargetAction](#2115-navigatetoexternaltargetaction)
+    -   [2.12. Element Type Hints](#212-element-type-hints)
+        -   [2.12.1. RequestTypeHintsAction](#2121-requesttypehintsaction)
+        -   [2.12.2. SetTypeHintsAction](#2122-settypehintsaction)
+    -   [2.13. Element Creation and Deletion](#213-element-creation-and-deletion)
+        -   [2.13.1. CreateNodeOperation](#2131-createnodeoperation)
+        -   [2.13.2. CreateEdgeOperation](#2132-createedgeoperation)
+        -   [2.13.3. DeleteElementOperation](#2133-deleteelementoperation)
+    -   [2.14. Node Modification](#214-node-modification)
+        -   [2.14.1. ChangeBoundsOperation](#2141-changeboundsoperation)
+        -   [2.14.2. ChangeContainerOperation](#2142-changecontaineroperation)
+    -   [2.15. Edge Modification](#215-edge-modification)
+        -   [2.15.1. ReconnectEdgeOperation](#2151-reconnectedgeoperation)
+        -   [2.15.2. ChangeRoutingPointsOperation](#2152-changeroutingpointsoperation)
+    -   [2.16. Element Text Editing](#216-element-text-editing)
+        -   [2.16.1. RequestEditValidationAction](#2161-requesteditvalidationaction)
+        -   [2.16.2. SetEditValidationResultAction](#2162-seteditvalidationresultaction)
+        -   [2.16.3. ApplyLabelEditOperation](#2163-applylabeleditoperation)
+    -   [2.17. Clipboard](#217-clipboard)
+        -   [2.17.1. RequestClipboardDataAction](#2171-requestclipboarddataaction)
+        -   [2.17.2. SetClipboardDataAction](#2172-setclipboarddataaction)
+        -   [2.17.3. CutOperation](#2173-cutoperation)
+        -   [2.17.4. PasteOperation](#2174-pasteoperation)
+    -   [2.18. Undo / Redo](#218-undo--redo)
+        -   [2.18.1. UndoOperation](#2181-undooperation)
+        -   [2.18.2. RedoOperation](#2182-redooperation)
+    -   [2.19. Contexts](#219-contexts) - [2.19.1. RequestContextActions](#2191-requestcontextactions) - [2.19.2. SetContextActions](#2192-setcontextactions) - [2.19.3. Context Menu](#2193-context-menu) - [2.19.4. Command Palette](#2194-command-palette) - [2.19.5. Tool Palette](#2195-tool-palette) - [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction) - [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
+    </details>
 
 # 1. Server-Client Lifecycle
 
@@ -218,17 +211,20 @@ export enum ClientState {
 /**
  * A key-value pair structure for custom arguments.
  */
-interface Args { [key: string]: string | number | boolean }
+interface Args {
+    [key: string]: string | number | boolean;
+}
 
 type ActionMessageHandler = (message: ActionMessage) => void;
 ```
+
 </details>
 
 In GLSP we provide a default client implementation based on [JSON-RPC messages](https://www.jsonrpc.org/).
 
 **Initialize Request**
 
- The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
+The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
@@ -251,10 +247,9 @@ interface InitializeParameters {
 }
 
 interface InitializeResult {
-
     /**
-    * GLSP protocol version that the server is implementing.
-    */
+     * GLSP protocol version that the server is implementing.
+     */
     protocolVersion: string;
 
     /**
@@ -266,10 +261,11 @@ interface InitializeResult {
 /**
  * A key-value pair structure to map a `diagramType` to its server-handled action kinds.
  */
-interface ServerActions { [key: string]: string[] }
-
-
+interface ServerActions {
+    [key: string]: string[];
+}
 ```
+
 </details>
 
 **InitializeClientSession Request**
@@ -295,8 +291,8 @@ interface InitializeClientSessionParameters {
      */
     args?: Args;
 }
-
 ```
+
 </details>
 
 **DisposeClientSession Request**
@@ -313,12 +309,12 @@ interface DisposeClientSessionParameters {
     clientSessionId: string;
 
     /**
-    * Additional custom arguments.
-    */
+     * Additional custom arguments.
+     */
     args?: Args;
 }
-
 ```
+
 </details>
 
 **Shutdown Notification**
@@ -337,7 +333,7 @@ Please note that there are several actions that are used purely on the client si
 
 ## 2.1. Base Protocol
 
-The base protocol describes the structure of the messages that are sent between the server and the client. 
+The base protocol describes the structure of the messages that are sent between the server and the client.
 
 ### 2.1.1. ActionMessage
 
@@ -361,11 +357,12 @@ class ActionMessage {
     public readonly action: Action;
 }
 ```
+
 </details>
 
 ### 2.1.2. Action
 
-An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface. 
+An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface.
 
 <details open><summary>Code</summary>
 
@@ -380,6 +377,7 @@ interface Action {
     readonly kind: string;
 }
 ```
+
 </details>
 
 #### 2.1.2.1. RequestAction
@@ -396,9 +394,10 @@ interface RequestAction<Res extends ResponseAction> extends Action {
     /**
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
      */
-    readonly requestId: string
+    readonly requestId: string;
 }
 ```
+
 </details>
 
 #### 2.1.2.2. ResponseAction
@@ -415,9 +414,10 @@ interface ResponseAction extends Action {
     /**
      * Id corresponding to the request this action responds to.
      */
-    readonly responseId: string
-}    
+    readonly responseId: string;
+}
 ```
+
 </details>
 
 #### 2.1.2.3. RejectAction
@@ -431,9 +431,10 @@ A reject action is a response fired to indicate that a request must be rejected.
  * Sprotty's RejectAction.
  */
 class RejectAction implements ResponseAction {
-    readonly kind = "rejectRequest";
-}   
+    readonly kind = 'rejectRequest';
+}
 ```
+
 </details>
 
 #### 2.1.2.4. Operation
@@ -446,13 +447,13 @@ Operations are actions that denote requests from the client to _modify_ the mode
 /**
  * Marker interface for operations.
  */
-interface Operation extends Action { }
+interface Operation extends Action {}
 
 /**
  * An operation that executes a list of operations.
  */
 class CompoundOperation implements Operation {
-    readonly kind = "compound";
+    readonly kind = 'compound';
 
     /**
      * List of operations that should be executed.
@@ -460,6 +461,7 @@ class CompoundOperation implements Operation {
     operationList: Operation[];
 }
 ```
+
 </details>
 
 ## 2.2. Model Structure
@@ -500,6 +502,7 @@ interface SModelElementSchema {
     cssClasses?: string[];
 }
 ```
+
 </details>
 
 #### 2.2.1.1. SModelRootSchema
@@ -524,6 +527,7 @@ interface SModelRootSchema extends SModelElementSchema {
     revision?: number;
 }
 ```
+
 </details>
 
 ### 2.2.2. SModelElement
@@ -555,7 +559,7 @@ class SModelElement {
     cssClasses?: string[];
 
     /**
-     * A set of features supported by this element, e.g., 
+     * A set of features supported by this element, e.g.,
      */
     features?: FeatureSet;
 
@@ -570,6 +574,7 @@ class SModelElement {
     index: SModelIndex<SModelElement>;
 }
 ```
+
 </details>
 
 #### 2.2.2.1. SParentElement
@@ -589,6 +594,7 @@ class SParentElement extends SModelElement {
     readonly children: ReadonlyArray<SChildElement>;
 }
 ```
+
 </details>
 
 #### 2.2.2.2. SChildElement
@@ -608,6 +614,7 @@ class SChildElement extends SParentElement {
     readonly parent: SParentElement;
 }
 ```
+
 </details>
 
 #### 2.2.2.3. SModelRoot
@@ -637,8 +644,8 @@ class SModelRoot extends SParentElement {
     revision?: number;
 }
 ```
-</details>
 
+</details>
 
 ## 2.3. Types
 
@@ -651,6 +658,7 @@ Arguments are a key-value map with the key being a string and the value being ei
 ```typescript
 type Args = { [key: string]: string | number | boolean };
 ```
+
 </details>
 
 ### 2.3.2. Point
@@ -675,6 +683,7 @@ class Point {
     public readonly y: number;
 }
 ```
+
 </details>
 
 ### 2.3.3. Dimension
@@ -699,6 +708,7 @@ class Dimension {
     public readonly height: number;
 }
 ```
+
 </details>
 
 ### 2.3.4. Bounds
@@ -714,6 +724,7 @@ The bounds are the position (x, y) and dimension (width, height) of an object. A
 class Bounds extends Point, Dimension {
 }
 ```
+
 </details>
 
 ### 2.3.5. ElementAndBounds
@@ -738,6 +749,7 @@ class ElementAndBounds {
     public readonly newBounds: Bounds;
 }
 ```
+
 </details>
 
 ### 2.3.6. ElementAndAlignment
@@ -762,6 +774,7 @@ class ElementAndAlignment {
     public readonly newAlignment: Point;
 }
 ```
+
 </details>
 
 ### 2.3.7. ElementAndRoutingPoints
@@ -775,7 +788,7 @@ interface ElementAndRoutingPoints {
     /**
      * The identifier of an element.
      */
-    elementId: string
+    elementId: string;
 
     /**
      * The new list of routing points.
@@ -783,8 +796,8 @@ interface ElementAndRoutingPoints {
     newRoutingPoints?: Point[];
 }
 ```
-</details>
 
+</details>
 
 ### 2.3.8. EditorContext
 
@@ -810,6 +823,7 @@ interface EditorContext {
     readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.3.9. LabeledAction
@@ -835,10 +849,11 @@ class LabeledAction {
 
     /**
      * Optional group icon.
-     */    
+     */
     readonly icon?: string;
-}   
+}
 ```
+
 </details>
 
 ## 2.4 Model Data
@@ -865,6 +880,7 @@ class RequestModelAction implements Action {
   public readonly options?: { [key: string]: string });
 }
 ```
+
 </details>
 
 ### 2.4.2. SetModelAction
@@ -881,7 +897,7 @@ class SetModelAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setModel";
+    public readonly kind = 'setModel';
 
     /**
      * The new graphical model elements.
@@ -889,8 +905,8 @@ class SetModelAction implements Action {
     public readonly newRoot: SModelRootSchema;
 }
 ```
-</details>
 
+</details>
 
 ### 2.4.3. UpdateModelAction
 
@@ -906,7 +922,7 @@ class UpdateModelAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "updateModel";
+    public readonly kind = 'updateModel';
 
     /**
      * The new root element of the graphical model.
@@ -923,12 +939,13 @@ class UpdateModelAction implements Action {
  * Sprotty's Match.
  */
 interface Match {
-    left?: SModelElementSchema
-    right?: SModelElementSchema
-    leftParentId?: string
-    rightParentId?: string
+    left?: SModelElementSchema;
+    right?: SModelElementSchema;
+    leftParentId?: string;
+    rightParentId?: string;
 }
 ```
+
 </details>
 
 ### 2.4.4. ModelSourceChangedAction
@@ -942,7 +959,7 @@ class ModelSourceChangedAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "modelSourceChanged";
+    public readonly kind = 'modelSourceChanged';
 
     /**
      * A human readable name of the model source (e.g. the file name).
@@ -950,6 +967,7 @@ class ModelSourceChangedAction implements Action {
     public readonly modelSourceName: string;
 }
 ```
+
 </details>
 
 ## 2.5. Model Saving
@@ -966,7 +984,7 @@ class SaveModelAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "saveModel";
+    public readonly kind = 'saveModel';
 
     /**
      *  The optional destination file uri.
@@ -974,11 +992,12 @@ class SaveModelAction implements Action {
     public readonly fileUri?: string;
 }
 ```
+
 </details>
 
 ### 2.5.2. SetDirtyStateAction
 
-The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the model source. A client may ignore such an action or use it to indicate to the user the dirty state. 
+The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the model source. A client may ignore such an action or use it to indicate to the user the dirty state.
 
 <details open><summary>Code</summary>
 
@@ -987,24 +1006,25 @@ class SetDirtyStateAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setDirtyState";
+    public readonly kind = 'setDirtyState';
 
     /**
      * True if the current model state is dirty
      */
-    public readonly isDirty: boolean
+    public readonly isDirty: boolean;
 
     /**
-    * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
-    */
-    public readonly reason?: string
+     * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
+     */
+    public readonly reason?: string;
 }
 ```
+
 </details>
 
 ### 2.5.3. ExportSvgAction
 
-The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem. 
+The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
 
 <details open><summary>Code</summary>
 
@@ -1017,10 +1037,10 @@ class ExportSvgAction implements ResponseAction {
     /**
      * The diagram SModel as serializable SVG.
      */
-    public readonly svg:string;
-}  
-
+    public readonly svg: string;
+}
 ```
+
 </details>
 
 ## 2.6. Model Layout
@@ -1043,7 +1063,7 @@ class RequestBoundsAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestBounds";
+    public readonly kind = 'requestBounds';
 
     /**
      * The model elements to consider to compute the new bounds.
@@ -1051,6 +1071,7 @@ class RequestBoundsAction implements Action {
     public readonly newRoot: SModelRootSchema;
 }
 ```
+
 </details>
 
 ### 2.6.2. ComputedBoundsAction
@@ -1067,7 +1088,7 @@ class ComputedBoundsAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "computedBounds";
+    public readonly kind = 'computedBounds';
 
     /**
      * The new bounds of the model elements.
@@ -1085,6 +1106,7 @@ class ComputedBoundsAction implements Action {
     public readonly alignments?: ElementAndAlignment[];
 }
 ```
+
 </details>
 
 ### 2.6.3. LayoutOperation
@@ -1101,7 +1123,7 @@ class LayoutOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "layout";
+    public readonly kind = 'layout';
 
     /**
      * The layout type.
@@ -1114,6 +1136,7 @@ class LayoutOperation implements Operation {
     public readonly elementIds: string[];
 }
 ```
+
 </details>
 
 ## 2.7. Model Edit Mode
@@ -1131,7 +1154,7 @@ class SetEditModeAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setEditMode";
+    public readonly kind = 'setEditMode';
 
     /**
      * The new edit mode of the diagram.
@@ -1139,6 +1162,7 @@ class SetEditModeAction implements Action {
     public readonly editMode: string;
 }
 ```
+
 </details>
 
 ## 2.8. Client-Side Actions
@@ -1163,7 +1187,7 @@ class CenterAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "center";
+    public readonly kind = 'center';
 
     /**
      * The identifier of the elements on which the viewport should be centered.
@@ -1181,6 +1205,7 @@ class CenterAction implements Action {
     public readonly retainZoom: boolean = false;
 }
 ```
+
 </details>
 
 #### 2.8.1.2. FitToScreenAction
@@ -1197,7 +1222,7 @@ class FitToScreenAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "fit";
+    public readonly kind = 'fit';
 
     /**
      * The identifier of the elements to fit on screen.
@@ -1220,6 +1245,7 @@ class FitToScreenAction implements Action {
     public readonly animate: boolean = true;
 }
 ```
+
 </details>
 
 ### 2.8.2. Client Notification
@@ -1240,7 +1266,7 @@ class GLSPServerStatusAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "serverStatus";
+    public readonly kind = 'serverStatus';
 
     /**
      * The severity of the status.
@@ -1258,11 +1284,12 @@ class GLSPServerStatusAction implements Action {
     public timeout: number = 1;
 }
 ```
+
 </details>
 
 #### 2.8.2.2. ServerMessageAction
 
-This action is typically sent by the server to notify the user about something of interest. 
+This action is typically sent by the server to notify the user about something of interest.
 
 <details open><summary>Code</summary>
 
@@ -1271,7 +1298,7 @@ class ServerMessageAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "serverMessage";
+    public readonly kind = 'serverMessage';
 
     /**
      * The severity of the message.
@@ -1294,6 +1321,7 @@ class ServerMessageAction implements Action {
     timeout: number = -1;
 }
 ```
+
 </details>
 
 ### 2.8.3. Element Selection
@@ -1312,7 +1340,7 @@ class SelectAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "elementSelected";
+    public readonly kind = 'elementSelected';
 
     /**
      * The identifier of the elements to mark as selected.
@@ -1325,6 +1353,7 @@ class SelectAction implements Action {
     public readonly deselectedElementsIDs: string[] = [];
 }
 ```
+
 </details>
 
 #### 2.8.3.2. SelectAllAction
@@ -1341,7 +1370,7 @@ class SelectAllAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "allSelected";
+    public readonly kind = 'allSelected';
 
     /**
      * If `select` is true, all elements are selected, otherwise they are deselected.
@@ -1349,6 +1378,7 @@ class SelectAllAction implements Action {
     public readonly select: boolean = true;
 }
 ```
+
 </details>
 
 ## 2.9. Element Hover
@@ -1367,7 +1397,7 @@ class RequestPopupModelAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestPopupModel";
+    public readonly kind = 'requestPopupModel';
 
     /**
      * The identifier of the elements for which a popup is requested.
@@ -1380,6 +1410,7 @@ class RequestPopupModelAction implements Action {
     public readonly bounds: Bounds;
 }
 ```
+
 </details>
 
 ### 2.9.2. SetPopupModelAction
@@ -1396,7 +1427,7 @@ class SetPopupModelAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setPopupModel";
+    public readonly kind = 'setPopupModel';
 
     /**
      * The model elements composing the popup to display.
@@ -1404,6 +1435,7 @@ class SetPopupModelAction implements Action {
     public readonly newRoot: SModelRootSchema;
 }
 ```
+
 </details>
 
 ## 2.10. Element Validation
@@ -1435,6 +1467,7 @@ interface Marker {
     readonly kind: string;
 }
 ```
+
 </details>
 
 ### 2.10.1. RequestMarkersAction
@@ -1448,7 +1481,7 @@ class RequestMarkersAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestMarkers";
+    public readonly kind = 'requestMarkers';
 
     /**
      * The elements for which markers are requested, may be just the root element.
@@ -1456,6 +1489,7 @@ class RequestMarkersAction implements Action {
     public readonly elementsIDs: string[];
 }
 ```
+
 </details>
 
 ### 2.10.2. SetMarkersAction
@@ -1469,7 +1503,7 @@ class SetMarkersAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setMarkers";
+    public readonly kind = 'setMarkers';
 
     /**
      * The list of markers that has been requested by the `RequestMarkersAction`.
@@ -1477,6 +1511,7 @@ class SetMarkersAction implements Action {
     public readonly markers: Marker[];
 }
 ```
+
 </details>
 
 ### 2.10.3. DeleteMarkersAction
@@ -1490,7 +1525,7 @@ class DeleteMarkersAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "deleteMarkers";
+    public readonly kind = 'deleteMarkers';
 
     /**
      * The list of markers that should be deleted.
@@ -1498,6 +1533,7 @@ class DeleteMarkersAction implements Action {
     public readonly markers: Marker[];
 }
 ```
+
 </details>
 
 ## 2.11. Element Navigation
@@ -1526,6 +1562,7 @@ interface NavigationTarget {
     args?: Args;
 }
 ```
+
 </details>
 
 ### 2.11.1. RequestNavigationTargetsAction
@@ -1539,7 +1576,7 @@ class RequestNavigationTargetsAction implements RequestAction<SetNavigationTarge
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestNavigationTargets";
+    public readonly kind = 'requestNavigationTargets';
 
     /**
      * Identifier of the type of navigation targets we want to retrieve, e.g., 'documentation', 'implementation', etc.
@@ -1552,6 +1589,7 @@ class RequestNavigationTargetsAction implements RequestAction<SetNavigationTarge
     public readonly editorContext: EditorContext;
 }
 ```
+
 </details>
 
 ### 2.11.2. SetNavigationTargetsAction
@@ -1565,7 +1603,7 @@ class SetNavigationTargetsAction implements ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setNavigationTargets";
+    public readonly kind = 'setNavigationTargets';
 
     /**
      * A list of navigation targets.
@@ -1578,6 +1616,7 @@ class SetNavigationTargetsAction implements ResponseAction {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.11.3. NavigateToTargetAction
@@ -1591,7 +1630,7 @@ class NavigateToTargetAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "navigateToTarget";
+    public readonly kind = 'navigateToTarget';
 
     /**
      * The target to which we navigate.
@@ -1599,6 +1638,7 @@ class NavigateToTargetAction implements Action {
     public readonly target: NavigationTarget;
 }
 ```
+
 </details>
 
 ### 2.11.4. ResolveNavigationTargetAction
@@ -1612,7 +1652,7 @@ class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigati
     /**
      * The kind of the action.
      */
-    public readonly kind = "resolveNavigationTarget";
+    public readonly kind = 'resolveNavigationTarget';
 
     /**
      * The navigation target to resolve.
@@ -1620,6 +1660,7 @@ class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigati
     public readonly navigationTarget: NavigationTarget;
 }
 ```
+
 </details>
 
 ### 2.11.4. SetResolvedNavigationTargetAction
@@ -1633,7 +1674,7 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setResolvedNavigationTarget";
+    public readonly kind = 'setResolvedNavigationTarget';
 
     /**
      * The element ids of the resolved navigation target.
@@ -1646,6 +1687,7 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.11.5. NavigateToExternalTargetAction
@@ -1659,7 +1701,7 @@ class NavigateToExternalTargetAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "navigateToExternalTarget";
+    public readonly kind = 'navigateToExternalTarget';
 
     /**
      * The target to which we navigate.
@@ -1667,6 +1709,7 @@ class NavigateToExternalTargetAction implements Action {
     public readonly target: NavigationTarget;
 }
 ```
+
 </details>
 
 ## 2.12. Element Type Hints
@@ -1729,6 +1772,7 @@ interface EdgeTypeHint extends TypeHint {
     readonly targetElementTypeIds: string[];
 }
 ```
+
 </details>
 
 ### 2.12.1. RequestTypeHintsAction
@@ -1742,14 +1786,15 @@ class RequestTypeHintsAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestTypeHints";
+    public readonly kind = 'requestTypeHints';
 }
 ```
+
 </details>
 
 ### 2.12.2. SetTypeHintsAction
 
-Sent from the server to the client in order to provide hints certain modifications are allowed for a specific element type. 
+Sent from the server to the client in order to provide hints certain modifications are allowed for a specific element type.
 
 <details open><summary>Code</summary>
 
@@ -1758,7 +1803,7 @@ class SetTypeHintsAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setTypeHints";
+    public readonly kind = 'setTypeHints';
 
     /**
      * The hints for node types.
@@ -1771,6 +1816,7 @@ class SetTypeHintsAction implements Action {
     public readonly edgeHints: EdgeTypeHint[];
 }
 ```
+
 </details>
 
 ## 2.13. Element Creation and Deletion
@@ -1786,7 +1832,7 @@ class CreateNodeOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "createNode";
+    public readonly kind = 'createNode';
 
     /**
      * The type of the element to be created.
@@ -1809,6 +1855,7 @@ class CreateNodeOperation implements Operation {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.13.2. CreateEdgeOperation
@@ -1822,7 +1869,7 @@ class CreateEdgeOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "createEdge";
+    public readonly kind = 'createEdge';
 
     /**
      * The type of the element to be created.
@@ -1845,6 +1892,7 @@ class CreateEdgeOperation implements Operation {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.13.3. DeleteElementOperation
@@ -1858,7 +1906,7 @@ class DeleteElementOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "deleteElement";
+    public readonly kind = 'deleteElement';
 
     /**
      * The elements to be deleted.
@@ -1866,6 +1914,7 @@ class DeleteElementOperation implements Operation {
     public readonly elementIds: string[];
 }
 ```
+
 </details>
 
 ## 2.14. Node Modification
@@ -1881,7 +1930,7 @@ class ChangeBoundsOperation implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "changeBounds";
+    public readonly kind = 'changeBounds';
 
     /**
      * The new bounds of the respective elements.
@@ -1889,6 +1938,7 @@ class ChangeBoundsOperation implements Action {
     public readonly newBounds: ElementAndBounds[];
 }
 ```
+
 </details>
 
 ### 2.14.2. ChangeContainerOperation
@@ -1902,7 +1952,7 @@ class ChangeContainerOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "changeContainer";
+    public readonly kind = 'changeContainer';
 
     /**
      * The element to be changed.
@@ -1920,6 +1970,7 @@ class ChangeContainerOperation implements Operation {
     public readonly location?: string;
 }
 ```
+
 </details>
 
 ## 2.15. Edge Modification
@@ -1935,7 +1986,7 @@ class ReconnectEdgeOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "reconnectEdge";
+    public readonly kind = 'reconnectEdge';
 
     /**
      * The edge element that should be reconnected.
@@ -1953,6 +2004,7 @@ class ReconnectEdgeOperation implements Operation {
     public readonly targetElementId: string;
 }
 ```
+
 </details>
 
 ### 2.15.2. ChangeRoutingPointsOperation
@@ -1966,7 +2018,7 @@ class ChangeRoutingPointsOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "changeRoutingPoints";
+    public readonly kind = 'changeRoutingPoints';
 
     /**
      * The routing points of the edge (may be empty).
@@ -1974,11 +2026,12 @@ class ChangeRoutingPointsOperation implements Operation {
     public readonly newRoutingPoints: ElementAndRoutingPoints[];
 }
 ```
+
 </details>
 
 ## 2.16. Element Text Editing
 
-A common use case in diagrams is to query the user for textual input to perform a certain action, e.g., when editing the text on a label. 
+A common use case in diagrams is to query the user for textual input to perform a certain action, e.g., when editing the text on a label.
 
 To support the validation of user input in the context of such an action before actually applying that user input, GLSP defines two actions: `RequestEditValidationAction` and `SetEditValidationResultAction`.
 
@@ -2020,9 +2073,17 @@ interface ResponseError {
 }
 
 namespace ValidationStatus {
-    enum Severity { FATAL, ERROR, WARNING, INFO, OK, NONE }
+    enum Severity {
+        FATAL,
+        ERROR,
+        WARNING,
+        INFO,
+        OK,
+        NONE
+    }
 }
 ```
+
 </details>
 
 ### 2.16.1. RequestEditValidationAction
@@ -2036,7 +2097,7 @@ class RequestEditValidationAction implements RequestAction<SetEditValidationResu
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestEditValidation";
+    public readonly kind = 'requestEditValidation';
 
     /**
      * Context in which the text is validated, e.g., 'label-edit'.
@@ -2054,6 +2115,7 @@ class RequestEditValidationAction implements RequestAction<SetEditValidationResu
     public readonly text: string;
 }
 ```
+
 </details>
 
 ### 2.16.2. SetEditValidationResultAction
@@ -2067,7 +2129,7 @@ class SetEditValidationResultAction implements ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setEditValidationResult";
+    public readonly kind = 'setEditValidationResult';
 
     /**
      * Validation status.
@@ -2080,6 +2142,7 @@ class SetEditValidationResultAction implements ResponseAction {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 ### 2.16.3. ApplyLabelEditOperation
@@ -2093,7 +2156,7 @@ class ApplyLabelEditOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "applyLabelEdit";
+    public readonly kind = 'applyLabelEdit';
 
     /**
      * Identifier of the label model element.
@@ -2106,6 +2169,7 @@ class ApplyLabelEditOperation implements Operation {
     public readonly text: string;
 }
 ```
+
 </details>
 
 ## 2.17. Clipboard
@@ -2117,6 +2181,7 @@ In GLSP the clipboard needs to be managed by the client but the conversion from 
 ```typescript
 type ClipboardData = { [format: string]: string };
 ```
+
 </details>
 
 ### 2.17.1. RequestClipboardDataAction
@@ -2130,7 +2195,7 @@ class RequestClipboardDataAction implements RequestAction<SetClipboardDataAction
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestClipboardData";
+    public readonly kind = 'requestClipboardData';
 
     /**
      * The current editor context.
@@ -2138,6 +2203,7 @@ class RequestClipboardDataAction implements RequestAction<SetClipboardDataAction
     public readonly editorContext: EditorContext;
 }
 ```
+
 </details>
 
 ### 2.17.2. SetClipboardDataAction
@@ -2151,7 +2217,7 @@ class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setClipboardData";
+    public readonly kind = 'setClipboardData';
 
     /**
      * The selected elements from the editor context as clipboard data.
@@ -2159,6 +2225,7 @@ class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
     public readonly clipboardData: ClipboardData;
 }
 ```
+
 </details>
 
 ### 2.17.3. CutOperation
@@ -2172,7 +2239,7 @@ class CutOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "cut";
+    public readonly kind = 'cut';
 
     /**
      * The current editor context.
@@ -2180,6 +2247,7 @@ class CutOperation implements Operation {
     public readonly editorContext: EditorContext;
 }
 ```
+
 </details>
 
 ### 2.17.4. PasteOperation
@@ -2193,7 +2261,7 @@ class PasteOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = "paste";
+    public readonly kind = 'paste';
 
     /**
      * The current editor context.
@@ -2206,8 +2274,8 @@ class PasteOperation implements Operation {
     public readonly clipboardData: ClipboardData;
 }
 ```
-</details>
 
+</details>
 
 ## 2.18. Undo / Redo
 
@@ -2224,9 +2292,10 @@ class UndoOperation implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "glspUndo";
+    public readonly kind = 'glspUndo';
 }
 ```
+
 </details>
 
 ### 2.18.2. RedoOperation
@@ -2240,17 +2309,19 @@ class RedoOperation implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = "glspRedo";
+    public readonly kind = 'glspRedo';
 }
 ```
+
 </details>
 
 ## 2.19. Contexts
 
 A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:
-- The Context Menu with the context id `context-menu`
-- The Command Palette with the context id `command-palette`
-- The Tool Palette with the context id `tool-palette`
+
+-   The Context Menu with the context id `context-menu`
+-   The Command Palette with the context id `command-palette`
+-   The Tool Palette with the context id `tool-palette`
 
 ### 2.19.1. RequestContextActions
 
@@ -2263,7 +2334,7 @@ class RequestContextActions implements RequestAction<SetContextActions> {
     /**
      * The kind of the action.
      */
-    public readonly kind = "requestContextActions";
+    public readonly kind = 'requestContextActions';
 
     /**
      * The identifier for the context.
@@ -2276,6 +2347,7 @@ class RequestContextActions implements RequestAction<SetContextActions> {
     public readonly editorContext: EditorContext;
 }
 ```
+
 </details>
 
 ### 2.19.2. SetContextActions
@@ -2289,7 +2361,7 @@ class SetContextActions implements ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "setContextActions";
+    public readonly kind = 'setContextActions';
 
     /**
      * The actions available in the queried context.
@@ -2299,9 +2371,10 @@ class SetContextActions implements ResponseAction {
     /**
      * Custom arguments.
      */
-    public readonly args: Args?;
+    public readonly args: ?Args;
 }
 ```
+
 </details>
 
 ### 2.19.3. Context Menu
@@ -2314,10 +2387,10 @@ The command palette is an "auto-complete" widget that is triggered when the user
 
 ### 2.19.5. Tool Palette
 
-The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions. 
+The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions.
 
 A tool is a uniquely identified functionality that can be either enabled or disabled. Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.
- 
+
  <details open><summary>Code</summary>
 
 ```typescript
@@ -2338,12 +2411,14 @@ interface Tool {
     disable(): void;
 }
 ```
+
 </details>
 
 By default, the tool palette in GLSP includes the following tools in the palette:
-- Default Tool (Selection Tool)
-- Mouse Delete Tool
-- Validation Tool
+
+-   Default Tool (Selection Tool)
+-   Mouse Delete Tool
+-   Validation Tool
 
 The supported actions of the tool palette come from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette. A user may click on any of the entries in the tool palette to trigger the corresponding action.
 
@@ -2360,7 +2435,7 @@ class TriggerNodeCreationAction extends TriggerElementCreationAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "triggerNodeCreation";
+    public readonly kind = 'triggerNodeCreation';
 
     /**
      * The type of node that should be created by the node creation tool.
@@ -2373,6 +2448,7 @@ class TriggerNodeCreationAction extends TriggerElementCreationAction {
     public readonly args?: Args;
 }
 ```
+
 </details>
 
 #### 2.19.5.2. TriggerEdgeCreationAction
@@ -2386,7 +2462,7 @@ class TriggerEdgeCreationAction extends TriggerElementCreationAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = "triggerEdgeCreation";
+    public readonly kind = 'triggerEdgeCreation';
 
     /**
      * The type of edge that should be created by the edge creation tool.
@@ -2399,4 +2475,5 @@ class TriggerEdgeCreationAction extends TriggerElementCreationAction {
     public readonly args?: Args;
 }
 ```
+
 </details>
