@@ -18,7 +18,8 @@
 -   [diagram] Fixed a bug in the connection tool regarding the feedback edge snapping computation for nested elements. [#224](https://github.com/eclipse-glsp/glsp-client/pull/123)
 -   [diagram] Fixed a bug in the copy& paste behavior. [#249](https://github.com/eclipse-glsp/glsp-client/pull/124)
 -   [diagram] Fixed a bug in Firefox that required elements to be selected before they can be moved. [#376](https://github.com/eclipse-glsp/glsp-client/pull/134)
--   Upgrade to Snabbdom3 and ES2017 [#137](https://github.com/eclipse-glsp/glsp-client/pull/137)
+-   [build] Upgrade to Snabbdom3 and ES2017 [#137](https://github.com/eclipse-glsp/glsp-client/pull/137)
+-   [protocol] Extract action message protocol and action definitions from `@eclipse-glsp/client` and move to `@eclipse-glsp/protocol` [#256](https://github.com/eclipse-glsp/glsp-client/pull/141) - Contributed on behalf of STMicroelectronics
     <br>
 
 <a name="server_changes_1.9.0">[Server:](#server_changes_1.9.0)</a>
