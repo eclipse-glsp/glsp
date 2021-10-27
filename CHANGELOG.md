@@ -35,6 +35,7 @@
 -   [server] Extended default type mapping and added builder for `GArgumentable` elements and corresponding utility classes [#180](https://github.com/eclipse-glsp/glsp-server/pull/105)
 -   [protocol] Added `fileUri` property to `SaveModelAction` and updated `SaveModelActionHandler` accordingly [#208](https://github.com/eclipse-glsp/glsp-server/pull/103/)
 -   [protocol] Added optional `reason` string property to `SetDirtyStateAction`. This property indicates the reason that caused to dirty state change and enables more fine granular handling of dirty state changes [#197](https://github.com/eclipse-glsp/glsp-server/pull/101)
+-   [server] The `org.apache.log4j` dependency is not reexported any more when consumed as p2 artifact. You need to import `org.apache.log4j` in your own plugins if you use the log4j API there. [#430](https://github.com/eclipse-glsp/glsp/issues/430)
 
 <a name="theia_changes_1.9.0">[Theia Integration:](#theia_changes_1.9.0)</a>
 
