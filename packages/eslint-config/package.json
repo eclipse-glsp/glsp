@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/eslint-config",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Shared ESLint configuration for GLSP projects",
   "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
@@ -27,13 +27,13 @@
     "access": "public"
   },
   "dependencies": {
-    "eslint": "^7.32.0",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-no-null": "^1.0.2",
-    "eslint-config-prettier": "^8.3.0"
+    "eslint-plugin-no-null": "^1.0.2"
   },
   "devDependencies": {
     "typescript": "^3.9.0"

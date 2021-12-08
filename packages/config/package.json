@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/config",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Wrapper package that provides Typescript, ESLint and prettier configurations for GLSP projects",
   "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
@@ -27,9 +27,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@eclipse-glsp/eslint-config": "0.1.0",
-    "@eclipse-glsp/prettier-config": "0.1.0",
-    "@eclipse-glsp/ts-config": "0.1.0",
+    "@eclipse-glsp/eslint-config": "0.8.0",
+    "@eclipse-glsp/prettier-config": "0.8.0",
+    "@eclipse-glsp/ts-config": "0.8.0",
     "prettier": "^2.4.1"
   },
   "devDependencies": {
