@@ -16,30 +16,30 @@ If you have questions, please raise them in the [discussions](https://github.com
 
 Below is a list of features that are supported by the different base technologies that can be used with GLSP.
 
-| Feature                                                           	|   Standalone   	| Theia Integration 	| Eclipse Integration 	| VS Code Integration 	|
-|-------------------------------------------------------------------	|:--------------:	|:-----------------:	|:-------------------:	|:-------------------:	|
-| Model Saving                                                      	|                	|         ✓         	|          ✓          	|                     	|
-| Model Dirty State                                                 	|                	|         ✓         	|          ✓          	|                     	|
-| Model SVG Export                                                 	    |                	|         ✓         	|                   	|                     	|
-| Model Layout                                                      	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Model Edit Modes<br>- Edit<br>- Read-only                         	|  <br>✓<br>&nbsp; 	|     <br>✓<br>✓    	|      <br>✓<br>&nbsp;  |      <br>✓<br>&nbsp; 	|
-| Client View Port<br>- Center<br>- Fit to Screen                   	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
-| Client Status Notification                                        	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Client Message Notification                                       	|        ✓       	|         ✓         	|                     	|                     	|
-| Element Selection                                                 	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Hover                                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Validation                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Navigation                                                	|                	|         ✓         	|          ✓          	|                     	|
-| Element Type Hints                                                	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Creation and Deletion                                     	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Node Change Bounds<br>- Move<br>- Resize                          	|   <br>✓<br>✓   	|     <br>✓<br>✓    	|      <br>✓<br>✓     	|      <br>✓<br>✓     	|
-| Node Change Container                                             	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Edge Reconnect                                                    	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Edge Routing Points                                               	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Element Text Editing                                              	|        ✓       	|         ✓         	|          ✓          	|          ✓          	|
-| Clipboard (Cut, Copy, Paste)                                      	|                	|         ✓         	|                     	|                     	|
-| Undo / Redo                                                       	|                	|         ✓         	|          ✓          	|                     	|
-| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette 	| <br><br>✓<br>✓ 	|  <br>✓<br>✓<br>✓  	|    <br><br>✓<br>✓   	|    <br><br>✓<br>✓   	|
+| Feature                                                           |   Standalone    | Theia Integration | Eclipse Integration | VS Code Integration |
+| ----------------------------------------------------------------- | :-------------: | :---------------: | :-----------------: | :-----------------: |
+| Model Saving                                                      |                 |         ✓         |          ✓          |                     |
+| Model Dirty State                                                 |                 |         ✓         |          ✓          |                     |
+| Model SVG Export                                                  |                 |         ✓         |                     |                     |
+| Model Layout                                                      |        ✓        |         ✓         |          ✓          |          ✓          |
+| Model Edit Modes<br>- Edit<br>- Read-only                         | <br>✓<br>&nbsp; |    <br>✓<br>✓     |   <br>✓<br>&nbsp;   |   <br>✓<br>&nbsp;   |
+| Client View Port<br>- Center<br>- Fit to Screen                   |   <br>✓<br>✓    |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Client Status Notification                                        |        ✓        |         ✓         |          ✓          |          ✓          |
+| Client Message Notification                                       |        ✓        |         ✓         |                     |                     |
+| Element Selection                                                 |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Hover                                                     |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Validation                                                |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Navigation                                                |                 |         ✓         |          ✓          |                     |
+| Element Type Hints                                                |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Creation and Deletion                                     |        ✓        |         ✓         |          ✓          |          ✓          |
+| Node Change Bounds<br>- Move<br>- Resize                          |   <br>✓<br>✓    |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Node Change Container                                             |        ✓        |         ✓         |          ✓          |          ✓          |
+| Edge Reconnect                                                    |        ✓        |         ✓         |          ✓          |          ✓          |
+| Edge Routing Points                                               |        ✓        |         ✓         |          ✓          |          ✓          |
+| Element Text Editing                                              |        ✓        |         ✓         |          ✓          |          ✓          |
+| Clipboard (Cut, Copy, Paste)                                      |                 |         ✓         |                     |                     |
+| Undo / Redo                                                       |                 |         ✓         |          ✓          |                     |
+| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette | <br><br>✓<br>✓  |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br><br>✓<br>✓    |
 
 ## Repositories
 

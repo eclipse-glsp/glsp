@@ -48,6 +48,9 @@
     "MD030": {
       "ul_single": 3,
       "ul_multi": 3
+    },
+    "no-inline-html": {
+      "allowed_elements": ["br", "details", "summary"]
     }
   }
 }
