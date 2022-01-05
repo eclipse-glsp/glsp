@@ -2,6 +2,7 @@
 
 -   [1. Server-Client Lifecycle](#1-server-client-lifecycle)
 -   [2. Graphical Language Server Protocol](#2-graphical-language-server-protocol)
+
     -   [2.1. Base Protocol](#21-base-protocol)
         -   [2.1.1. ActionMessage](#211-actionmessage)
         -   [2.1.2. Action](#212-action)
@@ -90,7 +91,15 @@
     -   [2.18. Undo / Redo](#218-undo--redo)
         -   [2.18.1. UndoOperation](#2181-undooperation)
         -   [2.18.2. RedoOperation](#2182-redooperation)
-    -   [2.19. Contexts](#219-contexts) - [2.19.1. RequestContextActions](#2191-requestcontextactions) - [2.19.2. SetContextActions](#2192-setcontextactions) - [2.19.3. Context Menu](#2193-context-menu) - [2.19.4. Command Palette](#2194-command-palette) - [2.19.5. Tool Palette](#2195-tool-palette) - [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction) - [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
+    -   [2.19. Contexts](#219-contexts)
+    -   [2.19.1. RequestContextActions](#2191-requestcontextactions)
+    -   [2.19.2. SetContextActions](#2192-setcontextactions)
+    -   [2.19.3. Context Menu](#2193-context-menu)
+    -   [2.19.4. Command Palette](#2194-command-palette)
+    -   [2.19.5. Tool Palette](#2195-tool-palette)
+        -   [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
+        -   [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
+
     </details>
 
 # 1. Server-Client Lifecycle
