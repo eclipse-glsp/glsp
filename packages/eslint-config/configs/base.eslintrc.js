@@ -7,7 +7,7 @@ module.exports = {
             jsx: true
         }
     },
-    plugins: ['@typescript-eslint', 'header', 'import', 'no-null'],
+    plugins: ['@typescript-eslint', 'header', 'import', 'no-null', 'chai-friendly'],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
