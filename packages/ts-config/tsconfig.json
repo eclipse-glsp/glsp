@@ -18,6 +18,7 @@
     "target": "ES2017",
     "jsx": "react",
     "lib": ["ES2017", "dom"],
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node", "mocha", "reflect-metadata"]
   }
 }
