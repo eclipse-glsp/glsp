@@ -9,7 +9,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "command": "cd config && yarn",
+      "command": "yarn",
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"

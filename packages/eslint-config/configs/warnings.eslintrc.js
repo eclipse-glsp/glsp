@@ -1,7 +1,7 @@
 module.exports = {
     rules: {
         // https://eslint.org/docs/rules/
-        'brace-style': ['warn', '1tbs'],
+        'brace-style': 'off',
         'comma-dangle': 'warn',
         curly: 'warn',
         'eol-last': 'warn',
@@ -74,6 +74,7 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/type-annotation-spacing': 'warn',
-        '@typescript-eslint/no-explicit-any': 'off'
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-this-alias': 'off'
     }
 };

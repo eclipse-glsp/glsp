@@ -1,11 +1,12 @@
 {
-  "name": "@eclipse-glsp/eslint-config",
+  "name": "@eclipse-glsp/mocha-config",
   "version": "0.9.0",
-  "description": "Shared ESLint configuration for GLSP projects",
+  "description": "Shared Mocha test configuration for GLSP projects",
   "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
     "eclipse",
-    "tsconfig"
+    "mocha",
+    "testing"
   ],
   "author": {
     "name": "Eclipse GLSP"
@@ -23,17 +24,26 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
+  "dependencies": {
+    "mocha-jenkins-reporter": "^0.4.7",
+    "mocha": "^9.1.3",
+    "chai": "^4.3.4",
+    "sinon": "^12.0.1",
+    "ts-node": "^10.4.0",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "@types/sinon": "^10.0.6"
+  },
+  "peerDependencies": {
+    "reflect-metadata": ">=0.1.13",
+    "@types/node": ">=12.x",
+    "typescript": ">=3.9.0"
+  },
+  "files": [
+    ".mocharc.json"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.32.0",
-    "@typescript-eslint/parser": "^4.32.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-no-null": "^1.0.2",
-    "eslint-plugin-chai-friendly": "^0.7.2"
-  }
+  "main": ".mocharc.json"
 }
