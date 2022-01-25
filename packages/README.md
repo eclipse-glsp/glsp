@@ -6,14 +6,16 @@ Provides a meta package that export common configuration objects for:
 -   [Typescript](https://www.typescriptlang.org/) (`tsconfig.json`)
 -   [ESLint](https://eslint.org/) (`.eslintrc`)
 -   [Prettier](https://prettier.io/) (`.prettierrc`).
+-   [Mocha](https://mochajs.org/) (`.mocharc.json`).
 
-The package is available via npm and are used by all GLSP components implemented with Typescript. ESLint and prettier are included as direct dependencies.
+The package is available via npm and are used by all GLSP components implemented with Typescript. ESLint, prettier and mocha are included as direct dependencies.
 
 ## Components
 
 -   `@eclipse-glsp/ts-config`: Shared Typescript configuration for GLSP projects
 -   `@eclipse-glsp/eslint-config`: Shared ESLint configuration for GLSP projects
 -   `@eclipse-glsp/prettier-config`: Shared Prettier configuration for GLSP projects
+-   `@eclipse-glsp/mocha-config`: Shared for GLSP projects that are using mocha as test framework.
 
 ## Install
 
@@ -69,6 +71,16 @@ module.exports = {
 "@eclipse-glsp/prettier-config"
 ```
 
+### Mocha
+
+**Create a `.mocharc.json`**:
+
+```json
+{
+    "$schema": "https://json.schemastore.org/mocharc",
+    "extends": "@eclipse-glsp/mocha-config"
+}
+```
 ## More information
 
 For more information, please visit the [Eclipse GLSP Umbrella repository](https://github.com/eclipse-glsp/glsp) and the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).
