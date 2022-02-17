@@ -10,7 +10,7 @@ Parts of the protocol and the web-based client implementation is based on [Sprot
 For more information, please have a look at the [protocol](PROTOCOL.md) or visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).
 If you have questions, please raise them in the [discussions](https://github.com/eclipse-glsp/glsp/discussions) and have a look at our [communication and support options](https://www.eclipse.org/glsp/contact/).
 
-![alt](https://www.eclipse.org/glsp/images/diagramanimated.gif)
+https://user-images.githubusercontent.com/588090/154459938-849ca684-11b3-472c-8a59-98ea6cb0b4c1.mp4
 
 ## Features
 
