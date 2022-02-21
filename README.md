@@ -7,7 +7,7 @@ The **G**raphical **L**anguage **S**erver **P**latform provides extensible compo
 It follows the architectural pattern of the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol), but applies it to graphical modeling and diagram editors for browser/cloud-based deployments.
 Parts of the protocol and the web-based client implementation is based on [Sprotty](https://github.com/eclipse/sprotty) but extends it with editing functionality and GLSP-specific communication with the server.
 
-For more information, please have a look at the [protocol](PROTOCOL.md) or visit the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).
+For more information, please have a look at the [GLSP documentation](https://www.eclipse.org/glsp/documentation/), visit the [GLSP website](https://www.eclipse.org/glsp/) and the [protocol spec](PROTOCOL.md).
 If you have questions, please raise them in the [discussions](https://github.com/eclipse-glsp/glsp/discussions) and have a look at our [communication and support options](https://www.eclipse.org/glsp/contact/).
 
 https://user-images.githubusercontent.com/588090/154459938-849ca684-11b3-472c-8a59-98ea6cb0b4c1.mp4
