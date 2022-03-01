@@ -18,8 +18,8 @@ Below is a list of features that are supported by the different base technologie
 
 | Feature                                                           |   Standalone    | Theia Integration | Eclipse Integration | VS Code Integration |
 | ----------------------------------------------------------------- | :-------------: | :---------------: | :-----------------: | :-----------------: |
-| Model Saving                                                      |                 |         ✓         |          ✓          |                     |
-| Model Dirty State                                                 |                 |         ✓         |          ✓          |                     |
+| Model Saving                                                      |                 |         ✓         |          ✓          |          ✓          |
+| Model Dirty State                                                 |                 |         ✓         |          ✓          |          ✓          |
 | Model SVG Export                                                  |                 |         ✓         |                     |                     |
 | Model Layout                                                      |        ✓        |         ✓         |          ✓          |          ✓          |
 | Restoring viewport on re-open                                     |                 |         ✓         |                     |                     |
@@ -30,7 +30,7 @@ Below is a list of features that are supported by the different base technologie
 | Element Selection                                                 |        ✓        |         ✓         |          ✓          |          ✓          |
 | Element Hover                                                     |        ✓        |         ✓         |          ✓          |          ✓          |
 | Element Validation                                                |        ✓        |         ✓         |          ✓          |          ✓          |
-| Element Navigation                                                |                 |         ✓         |          ✓          |                     |
+| Element Navigation                                                |                 |         ✓         |          ✓          |          ✓          |
 | Element Type Hints                                                |        ✓        |         ✓         |          ✓          |          ✓          |
 | Element Creation and Deletion                                     |        ✓        |         ✓         |          ✓          |          ✓          |
 | Node Change Bounds<br>- Move<br>- Resize                          |   <br>✓<br>✓    |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
@@ -38,8 +38,8 @@ Below is a list of features that are supported by the different base technologie
 | Edge Reconnect                                                    |        ✓        |         ✓         |          ✓          |          ✓          |
 | Edge Routing Points                                               |        ✓        |         ✓         |          ✓          |          ✓          |
 | Element Text Editing                                              |        ✓        |         ✓         |          ✓          |          ✓          |
-| Clipboard (Cut, Copy, Paste)                                      |                 |         ✓         |                     |                     |
-| Undo / Redo                                                       |                 |         ✓         |          ✓          |                     |
+| Clipboard (Cut, Copy, Paste)                                      |                 |         ✓         |                     |          ✓          |
+| Undo / Redo                                                       |                 |         ✓         |          ✓          |          ✓          |
 | Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette | <br><br>✓<br>✓  |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br><br>✓<br>✓    |
 
 ## Repositories
