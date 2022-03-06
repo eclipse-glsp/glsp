@@ -23,6 +23,9 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
+  "peerDependencies": {
+    "typescript": ">=4.5.5"
+  },
   "files": [
     "tsconfig.json"
   ],

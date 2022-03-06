@@ -27,13 +27,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.32.0",
-    "@typescript-eslint/parser": "^4.32.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-chai-friendly": "^0.7.2"
-  }
+  },
+  "main": "index.js"
 }

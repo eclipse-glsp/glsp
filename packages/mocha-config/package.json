@@ -37,7 +37,7 @@
   "peerDependencies": {
     "reflect-metadata": ">=0.1.13",
     "@types/node": ">=12.x",
-    "typescript": ">=3.9.0"
+    "typescript": ">=4.5.5"
   },
   "files": [
     ".mocharc.json"
