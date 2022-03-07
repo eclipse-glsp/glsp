@@ -26,5 +26,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "tsconfig.json"
+  "main": "index.json"
 }
