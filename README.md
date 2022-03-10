@@ -48,7 +48,7 @@ The GLSP source code consists of the following repositories:
 
 -   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the default ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
 -   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
--   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a node-based framework to create GLSP server components.
+-   [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a node-based framework to create GLSP server components.
 -   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples to demonstrate GLSP in action.
 -   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 -   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
