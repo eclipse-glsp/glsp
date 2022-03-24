@@ -75,6 +75,9 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/type-annotation-spacing': 'warn',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-this-alias': 'off'
+        '@typescript-eslint/no-this-alias': 'off',
+
+        /// eslint-plugin-deprecation plugin
+        'deprecation/deprecation': 'warn'
     }
 };
