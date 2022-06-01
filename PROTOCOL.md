@@ -31,7 +31,7 @@
         -   [2.4.1. RequestModelAction](#241-requestmodelaction)
         -   [2.4.2. SetModelAction](#242-setmodelaction)
         -   [2.4.3. UpdateModelAction](#243-updatemodelaction)
-        -   [2.4.4. ModelSourceChangedAction](#244-modelsourcechangedaction)
+        -   [2.4.4. SourceModelChangedAction](#244-sourcemodelchangedaction)
     -   [2.5. Model Saving](#25-model-saving)
         -   [2.5.1. SaveModelAction](#251-savemodelaction)
         -   [2.5.2. SetDirtyStateAction](#252-setdirtystateaction)
@@ -957,23 +957,23 @@ interface Match {
 
 </details>
 
-### 2.4.4. ModelSourceChangedAction
+### 2.4.4. SourceModelChangedAction
 
-Sent from the server to the client in order to indicate that the model source has changed. The model source denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ingore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
+Sent from the server to the client in order to indicate that the source model has changed. The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
 
 <details open><summary>Code</summary>
 
 ```typescript
-class ModelSourceChangedAction implements Action {
+class SourceModelChangedAction implements Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'modelSourceChanged';
+    public readonly kind = 'sourceModelChanged';
 
     /**
-     * A human readable name of the model source (e.g. the file name).
+     * A human readable name of the source model (e.g. the file name).
      */
-    public readonly modelSourceName: string;
+    public readonly sourceModelName: string;
 }
 ```
 
@@ -983,8 +983,8 @@ class ModelSourceChangedAction implements Action {
 
 ### 2.5.1. SaveModelAction
 
-Sent from the client to the server in order to persist the current model state back to the model source.
-A new `fileUri` can be defined to save the model to a new destination different from its original model source.
+Sent from the client to the server in order to persist the current model state back to the source model.
+A new `fileUri` can be defined to save the model to a new destination different from its original source model.
 
 <details open><summary>Code</summary>
 
@@ -1006,7 +1006,7 @@ class SaveModelAction implements Action {
 
 ### 2.5.2. SetDirtyStateAction
 
-The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the model source. A client may ignore such an action or use it to indicate to the user the dirty state.
+The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model. A client may ignore such an action or use it to indicate to the user the dirty state.
 
 <details open><summary>Code</summary>
 
@@ -1701,7 +1701,7 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
 
 ### 2.11.5. NavigateToExternalTargetAction
 
-If a navigation target cannot be resolved or the resolved target is something that is not part of our model source, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
+If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
 <details open><summary>Code</summary>
 
