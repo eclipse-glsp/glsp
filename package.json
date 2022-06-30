@@ -7,12 +7,14 @@
     "node": ">=12.14.1"
   },
   "scripts": {
-    "version:minor": "lerna version minor --exact --ignore-scripts --yes --no-push",
-    "publish:latest": "yarn version:minor && lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push",
+    "publish:prepare": "lerna version --ignore-scripts --yes --no-push",
+    "publish:latest": "yarn prepare:prepare minor && lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push",
     "publish:next": "SHA=$(git rev-parse --short HEAD) && lerna publish preminor --exact --canary --preid next.${SHA} --dist-tag next --no-git-reset --no-git-tag-version --no-push --ignore-scripts --yes --no-verify-access"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "typescript": "^4.5.0",
+    "@types/node": "12.x"
   },
   "workspaces": [
     "packages/*"

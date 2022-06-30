@@ -35,6 +35,9 @@
     "@types/sinon": "^10.0.6",
     "ignore-styles": "^5.0.1"
   },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "peerDependencies": {
     "reflect-metadata": ">=0.1.13",
     "@types/node": ">=12.x",

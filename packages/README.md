@@ -81,6 +81,7 @@ module.exports = {
     "extends": "@eclipse-glsp/mocha-config"
 }
 ```
+
 ## More information
 
 For more information, please visit the [Eclipse GLSP Umbrella repository](https://github.com/eclipse-glsp/glsp) and the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).
