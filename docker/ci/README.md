@@ -13,10 +13,10 @@
 
 ## Supported tags and respective `Dockerfile` links
 
--   [`latest`, `ubuntu`, `ubuntu-18.04`, `ubuntu-base`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
--   [`uitest`, `uitest-ubuntu-18.04`, `ubuntu-chrome`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
+-   [`latest`, `ubuntu`, `ubuntu-v2.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
+-   [`uitest`,`uitest-v2.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
 
--   [`alpine`, `alpine-3.12`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   [`alpine`, `alpine-v2.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
 Note that these tags are fluent and not bound to a fixed image version. If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`. An increment of the major version number (e.g. v1.0-> v2.0) indicates an update of a major component e.g a new OS, Node or Java version.
 
@@ -27,7 +27,7 @@ Collection of images that are used in Continuos Integration jobs of Eclipse GLSP
 Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
--   Node 12 and yarn 1.22.4
+-   Node 14 and yarn 1.22.4
 -   OpenJDK 11 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
@@ -51,13 +51,13 @@ This is the defacto base image. If you are unsure about what your needs are, you
 
 As the name indicates this image builds onto of [Ubuntu](https://ubuntu.com/). This makes it very easy to use and customize but also results in a larger image size compared to the `alpine` variant.
 
-## `node:alpine<-suffix>`
+## `ci:alpine<-suffix>`
 
 This image is based on the popular [Alpine Linux project](https://alpinelinux.org), available in [the `alpine` official image](https://hub.docker.com/_/alpine). Alpine Linux is much smaller than most distribution base images (~5MB), and thus leads to much slimmer images in general.
 
 It only provides the essential libraries needed for building client and server components and is the recommended image for classical CI jobs like building branches or PRs on change, or deploying build artifacts. Due to its slim size, it cannot be used for more sophisticated jobs like UI-Testing out-of-the-box, because essential components like a display server or a browser are not included.
 
-## `node:uitest<-suffix>`
+## `ci:uitest<-suffix>`
 
 This is the recommend image for CI jobs that execute any sort of UI tests. It uses the same base as the `ubuntu` image but has additional libraries installed (including Xvfb which enables headless UI testing). In addition, Google Chrome is installed which enables browser-based UI testing of client components.
 
