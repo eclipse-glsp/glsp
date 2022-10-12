@@ -12,6 +12,10 @@ If you have questions, please raise them in the [discussions](https://github.com
 
 https://user-images.githubusercontent.com/588090/154459938-849ca684-11b3-472c-8a59-98ea6cb0b4c1.mp4
 
+## Getting started
+
+The best way to getting started is to read the [overview in the documentation](https://www.eclipse.org/glsp/documentation/overview) and follow the [getting started guide](https://www.eclipse.org/glsp/documentation/gettingstarted).
+
 ## Features
 
 Below is a list of features that are supported by the different base technologies that can be used with GLSP.
