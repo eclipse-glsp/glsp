@@ -142,7 +142,7 @@ interface GLSPClient {
     /**
      * Send an `initializeClientSession` request to the server. One client application may open several session.
      * Each individual diagram on the client side counts as one session and has to provide
-     * a unique clientId.
+     * a unique clientSessionId.
      *
      * @param params InitializeClientSession parameters
      * @returns A promise that resolves if the initialization was successful
