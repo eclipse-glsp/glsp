@@ -1,189 +1,170 @@
 {
-  "folders": [
-    {
-      "name": "glsp",
-      "path": "."
-    },
-    {
-      "name": "glsp-client",
-      "path": "../glsp-client"
-    },
-    {
-      "name": "glsp-theia-integration",
-      "path": "../glsp-theia-integration"
-    }
-  ],
-  "settings": {
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll.eslint": true
-    },
-    "eslint.validate": [
-      "javascript",
-      "typescript"
+    "folders": [
+        {
+            "name": "glsp",
+            "path": "."
+        },
+        {
+            "name": "glsp-client",
+            "path": "../glsp-client"
+        },
+        {
+            "name": "glsp-theia-integration",
+            "path": "../glsp-theia-integration"
+        },
+        {
+            "path": "../glsp-server-node"
+        }
     ],
-    "prettier.prettierPath": "node_modules/prettier",
-    "search.exclude": {
-      "**/node_modules": true,
-      "**/lib": true
+    "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+            "source.fixAll.eslint": true
+        },
+        "eslint.validate": ["javascript", "typescript"],
+        "prettier.prettierPath": "node_modules/prettier",
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/lib": true
+        },
+        "task.autoDetect": "off",
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "[css]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascriptreact]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[markdown]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[yaml]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
     },
-    "task.autoDetect": "off",
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "[css]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "extensions": {
+        "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"]
     },
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[javascriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[markdown]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[yaml]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Build all",
+                "type": "shell",
+                "detail": "Build all packages (Client, protocol, Theia backend, and workflow example)",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "echo": false,
+                    "focus": false,
+                    "panel": "shared",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "command": "echo 😎 Finished building all packages",
+                "isBackground": true,
+                "problemMatcher": [],
+                "dependsOrder": "sequence",
+                "dependsOn": ["Build glsp-client", "Build glsp-theia-integration"]
+            },
+            {
+                "label": "Build glsp-client",
+                "detail": "Build client packages",
+                "type": "shell",
+                "group": "build",
+                "presentation": {
+                    "focus": false,
+                    "panel": "shared",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "options": {
+                    "cwd": "${workspaceFolder}/../glsp-client"
+                },
+                "command": "yarn",
+                "problemMatcher": ["$tsc", "$eslint-stylish"]
+            },
+            {
+                "label": "Build glsp-theia-integration",
+                "detail": "Build glsp-theia-integration packages",
+                "type": "shell",
+                "group": "build",
+                "presentation": {
+                    "focus": false,
+                    "panel": "shared",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "options": {
+                    "cwd": "${workspaceFolder}/../glsp-theia-integration"
+                },
+                "command": "yarn",
+                "problemMatcher": ["$tsc", "$eslint-stylish"]
+            },
+            {
+                "label": "Watch all",
+                "detail": "Watch all client packages, Theia backend, and workflow example",
+                "type": "shell",
+                "group": "none",
+                "presentation": {
+                    "echo": false,
+                    "focus": false,
+                    "panel": "dedicated",
+                    "showReuseMessage": false,
+                    "clear": true
+                },
+                "command": "echo",
+                "problemMatcher": [],
+                "dependsOrder": "parallel",
+                "dependsOn": ["Watch glsp-client", "Watch glsp-theia-integration"]
+            },
+            {
+                "label": "Watch glsp-client",
+                "type": "shell",
+                "group": "none",
+                "options": {
+                    "cwd": "${workspaceFolder}/../glsp-client"
+                },
+                "presentation": {
+                    "focus": false,
+                    "panel": "dedicated",
+                    "showReuseMessage": false,
+                    "clear": true
+                },
+                "command": "yarn watch",
+                "problemMatcher": ["$tsc-watch"]
+            },
+            {
+                "label": "Watch glsp-theia-integration",
+                "type": "shell",
+                "group": "none",
+                "options": {
+                    "cwd": "${workspaceFolder}/../glsp-theia-integration"
+                },
+                "presentation": {
+                    "focus": false,
+                    "panel": "dedicated",
+                    "showReuseMessage": false,
+                    "clear": true
+                },
+                "command": "yarn watch",
+                "problemMatcher": ["$tsc-watch"]
+            }
+        ]
     }
-  },
-  "extensions": {
-    "recommendations": [
-      "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint"
-    ]
-  },
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Build all",
-        "type": "shell",
-        "detail": "Build all packages (Client, protocol, Theia backend, and workflow example)",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "presentation": {
-          "echo": false,
-          "focus": false,
-          "panel": "shared",
-          "showReuseMessage": false,
-          "clear": false
-        },
-        "command": "echo 😎 Finished building all packages",
-        "isBackground": true,
-        "problemMatcher": [],
-        "dependsOrder": "sequence",
-        "dependsOn": [
-          "Build glsp-client",
-          "Build glsp-theia-integration"
-        ]
-      },
-      {
-        "label": "Build glsp-client",
-        "detail": "Build client packages",
-        "type": "shell",
-        "group": "build",
-        "presentation": {
-          "focus": false,
-          "panel": "shared",
-          "showReuseMessage": false,
-          "clear": false
-        },
-        "options": {
-          "cwd": "${workspaceFolder}/../glsp-client"
-        },
-        "command": "yarn",
-        "problemMatcher": [
-          "$tsc",
-          "$eslint-stylish"
-        ]
-      },
-      {
-        "label": "Build glsp-theia-integration",
-        "detail": "Build glsp-theia-integration packages",
-        "type": "shell",
-        "group": "build",
-        "presentation": {
-          "focus": false,
-          "panel": "shared",
-          "showReuseMessage": false,
-          "clear": false
-        },
-        "options": {
-          "cwd": "${workspaceFolder}/../glsp-theia-integration"
-        },
-        "command": "yarn",
-        "problemMatcher": [
-          "$tsc",
-          "$eslint-stylish"
-        ]
-      },
-      {
-        "label": "Watch all",
-        "detail": "Watch all client packages, Theia backend, and workflow example",
-        "type": "shell",
-        "group": "none",
-        "presentation": {
-          "echo": false,
-          "focus": false,
-          "panel": "dedicated",
-          "showReuseMessage": false,
-          "clear": true
-        },
-        "command": "echo",
-        "problemMatcher": [],
-        "dependsOrder": "parallel",
-        "dependsOn": [
-          "Watch glsp-client",
-          "Watch glsp-theia-integration"
-        ]
-      },
-      {
-        "label": "Watch glsp-client",
-        "type": "shell",
-        "group": "none",
-        "options": {
-          "cwd": "${workspaceFolder}/../glsp-client"
-        },
-        "presentation": {
-          "focus": false,
-          "panel": "dedicated",
-          "showReuseMessage": false,
-          "clear": true
-        },
-        "command": "yarn watch",
-        "problemMatcher": [
-          "$tsc-watch"
-        ]
-      },
-      {
-        "label": "Watch glsp-theia-integration",
-        "type": "shell",
-        "group": "none",
-        "options": {
-          "cwd": "${workspaceFolder}/../glsp-theia-integration"
-        },
-        "presentation": {
-          "focus": false,
-          "panel": "dedicated",
-          "showReuseMessage": false,
-          "clear": true
-        },
-        "command": "yarn watch",
-        "problemMatcher": [
-          "$tsc-watch"
-        ]
-      }
-    ]
-  }
 }

@@ -4,7 +4,7 @@ kind: Pod
 spec:
   containers:
   - name: node
-    image: node:14
+    image: eclipseglsp/ci:alpine-v3.1
     tty: true
     resources:
       limits:
@@ -65,12 +65,12 @@ pipeline {
                     expression {  
                       /* Only trigger the deployment job if the changeset contains changes in 
                       the `configs/packages` directory */
-                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep --quiet "^packages"') == 0
+                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep --quiet "^dev-packages"') == 0
                     }
                 }
             }
             steps {
-                build job: 'deploy-npm-glsp-config', wait: false
+                build job: 'deploy-npm-glsp-config', wait: true
             }
         }
     }

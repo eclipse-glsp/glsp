@@ -1,0 +1,61 @@
+{
+  "name": "@eclipse-glsp/cli",
+  "version": "1.0.0",
+  "description": "CLI Tooling & scripts for GLSP components",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "keywords": [
+    "eclipse",
+    "tsconfig"
+  ],
+  "author": {
+    "name": "Eclipse GLSP"
+  },
+  "homepage": "https://www.eclipse.org/glsp/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse-glsp/glsp.git"
+  },
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "contributors": [
+    {
+      "name": "Eclipse GLSP Project",
+      "email": "glsp-dev@eclipse.org",
+      "url": "https://projects.eclipse.org/projects/ecd.glsp"
+    }
+  ],
+  "scripts": {
+    "prepare": "yarn clean && yarn build && yarn lint",
+    "clean": "rimraf lib tsconfig.tsbuildinfo ",
+    "build": "tsc",
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
+    "test": "node --enable-source-maps lib/app.js"
+  },
+  "dependencies": {
+    "commander": "^9.4.0",
+    "shelljs": "0.8.5",
+    "semver": "^7.3.7",
+    "node-fetch": "2.6.7",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "rimraf": "3.0.2",
+    "@types/shelljs": "0.8.11",
+    "@types/semver": "7.3.12",
+    "typescript": "^4.5.0",
+    "@types/node": "14.x",
+    "@types/readline-sync": "1.4.4",
+    "@eclipse-glsp/config": "1.0.0",
+    "reflect-metadata": "0.1.13",
+    "@types/node-fetch": "2.6.2"
+  },
+  "bin": {
+    "glsp": "bin/glsp"
+  },
+  "files": [
+    "src",
+    "bin",
+    "lib"
+  ]
+}
