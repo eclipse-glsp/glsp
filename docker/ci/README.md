@@ -55,9 +55,9 @@ The `ci` images come in different flavors, each designed for a specific use case
 ### `ci:ubuntu<-suffix>`
 
 This is the defacto base image. If you are unsure about what your needs are, you probably want to use this one.
-It is designed to be used both as a throw away container (mount your source code and start the container to start your app), as well as the base to build other images off of.
+It is designed to be used both as a throw-away container (mount your source code and start the container to start your app) and as the base to build other images from.
 
-As the name indicates this image builds onto of [Ubuntu](https://ubuntu.com/).
+As the name indicates this image is based on [Ubuntu](https://ubuntu.com/).
 This makes it very easy to use and customize but also results in a larger image size compared to the `alpine` variant.
 
 ### `ci:alpine<-suffix>`
@@ -66,7 +66,7 @@ This image is based on the popular [Alpine Linux project](https://alpinelinux.or
 Alpine Linux is much smaller than most distribution base images (~5MB), and thus leads to much slimmer images in general.
 
 It only provides the essential libraries needed for building client and server components and is the recommended image for classical CI jobs like building branches or PRs on change, or deploying build artifacts.
-Due to its slim size, it cannot be used for more sophisticated jobs like UI-Testing out-of-the-box, because essential components like a display server or a browser are not included.
+Due to its slim size, it cannot be used for more sophisticated jobs like end-to-end testing without further extension, because essential components, such as a display server or a browser are not included.
 
 ### `ci:uitest<-suffix>`
 
