@@ -13,6 +13,7 @@ RUN  apk -U upgrade && apk add --repository https://dl-cdn.alpinelinux.org/alpin
     yarn \
     curl
 
+RUN npm install -g lerna
 # Has to be set explictly to find binaries 
 ENV PATH=$PATH:${JAVA_HOME}/
 
