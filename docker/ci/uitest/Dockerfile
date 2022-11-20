@@ -8,7 +8,7 @@ RUN apt-get update && \
     #Install node
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install nodejs -y && \
-    npm install -g yarn &&\
+    npm install -g yarn lerna &&\
     apt-get install lsof xvfb -y
 
 # Install chrome
