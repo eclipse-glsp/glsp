@@ -4,7 +4,7 @@ kind: Pod
 spec:
   containers:
   - name: node
-    image: node:12.22.10
+    image: node:14
     tty: true
     resources:
       limits:
@@ -77,19 +77,34 @@ pipeline {
 
     post {
         failure {
-            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
-                    to: "${EMAIL_TO}", 
-                    subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    echo "Build result FAILURE: Send email notification to ${EMAIL_TO}"
+                    emailext attachLog: true,
+                    body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
+                    mimeType: 'text/html', subject: 'Build ${JOB_NAME} (#${BUILD_NUMBER}) FAILURE', to: "${EMAIL_TO}"
+                }
+            }
         }
         unstable {
-            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
-                    to: "${EMAIL_TO}", 
-                    subject: 'Unstable build in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    echo "Build result UNSTABLE: Send email notification to ${EMAIL_TO}"
+                    emailext attachLog: true,
+                    body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
+                    mimeType: 'text/html', subject: 'Build ${JOB_NAME} (#${BUILD_NUMBER}) UNSTABLE', to: "${EMAIL_TO}"
+                }
+            }
         }
-        changed {
-            emailext body: 'Check console output at $BUILD_URL to view the results.', 
-                    to: "${EMAIL_TO}", 
-                    subject: 'Jenkins build is back to normal: $PROJECT_NAME - #$BUILD_NUMBER'
+        fixed {
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    echo "Build back to normal: Send email notification to ${EMAIL_TO}"
+                    emailext attachLog: false,
+                    body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
+                    mimeType: 'text/html', subject: 'Build ${JOB_NAME} back to normal (#${BUILD_NUMBER})', to: "${EMAIL_TO}"
+                }
+            }
         }
     }
 }
