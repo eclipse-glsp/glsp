@@ -31,6 +31,9 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
     "test": "node --enable-source-maps lib/app.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "commander": "^9.4.0",
     "shelljs": "0.8.5",
