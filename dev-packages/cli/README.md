@@ -5,10 +5,38 @@ The contributed `glsp`, is a command line tool that offers all contributed comma
 
 ## Getting Started
 
-Install `@theia/glsp` as a dev dependency in your application.
+Install `@eclipse-glsp/cli` as a dev dependency in your application.
 
 ```bash
-yarn add @theia/cli@latest --dev
+yarn add @eclipse-glsp/cli --dev
+```
+
+## Commands
+
+Eclipse GLSP committers can use the `release` following command to prepare & publish a new Github release
+for a specific GLSP component.
+
+```bash
+$ glsp release -h
+Usage: glsp release [options] <component> <releaseType> [customVersion]
+
+Prepare & publish a new release for a glsp component
+
+Arguments:
+  component                        The glsp component to be released (choices: "client", "theia-integration", "vscode-integration", "eclipse-integration", "server-node", "server-java")
+  releaseType                      The release type (choices: "major", "minor", "patch", "rc", "custom")
+  customVersion                    Custom version number. Will be ignored if the release type is not "custom"
+
+Options:
+  -V, --version                    output the version number
+  -f, --force                      Enable force mode (default: false)
+  -d, --checkoutDir <checkoutDir>  The git checkout directory (default: "/home/tobias/Git/OpenSource/glsp/glsp/dev-packages/cli")
+  -b, --branch <branch>            The git branch to checkout (default: "master")
+  -v, --verbose                    Enable verbose (debug) log output (default: false)
+  --no-publish                     Only prepare release but do not publish to github
+  --draft                          Publish github releases as drafts (default: false)
+  --npm-dryRun                     Execute a npm dry-run for inspection. Publishes to the local npm registry and does not publish to github (default: false)
+  -h, --help                       display help for command
 ```
 
 ## More information

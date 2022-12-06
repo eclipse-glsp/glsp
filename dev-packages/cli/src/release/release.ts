@@ -32,7 +32,7 @@ import {
     ReleaseType,
     VERDACCIO_REGISTRY
 } from './common';
-import { releaseClient } from './prepare-client';
+import { releaseClient } from './release-client';
 import { releaseEclipseIntegration } from './release-eclipse-integration';
 import { releaseJavaServer } from './release-java-server';
 import { releaseServerNode } from './release-server-node';
@@ -49,7 +49,7 @@ interface ReleaseCmdOptions extends BaseCmdOptions {
 
 let verdaccioChildProcess: ChildProcess | undefined = undefined;
 
-export async function releaseCommandHandler(
+export async function release(
     component: Component,
     releaseType: ReleaseType,
     customVersion: string | undefined,
@@ -144,8 +144,8 @@ function getRCVersion(): string {
     if (currentRcBaseVersion !== newBaseVersion) {
         return `${newBaseVersion}-RC01`;
     }
-    const rcNumber = Number.parseInt(currentRcVersion.replace(`${currentRcBaseVersion}-RC`, ''), 10);
-    // rcNumber++;
+    let rcNumber = Number.parseInt(currentRcVersion.replace(`${currentRcBaseVersion}-RC`, ''), 10);
+    rcNumber++;
 
     return `${newBaseVersion}-RC` + `${rcNumber}`.padStart(2, '0');
 }

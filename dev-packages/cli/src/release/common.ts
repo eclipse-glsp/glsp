@@ -179,16 +179,21 @@ export function publish(repositoryPath: string, options: ReleaseOptions): void {
     const localTag = getLatestTag();
     validateTag(latestReleaseTag, localTag);
     const preRelease = options.releaseType === 'rc' || localTag.includes('-');
-    doPublish(localTag, preRelease, options.draft);
+    doPublish(localTag, preRelease, latestReleaseTag, options.draft);
 }
 
-function doPublish(tag: string, preRelease: boolean, draft: boolean): void {
+function doPublish(tag: string, preRelease: boolean, latestRelease: string, draft: boolean): void {
     fatalExec(`git push origin HEAD:${tag}`, 'Could not push release branch to Github', getShellConfig({ silent: false }));
     fatalExec(`git push origin tag ${tag}`, 'Could not push tag to Github', getShellConfig({ silent: false }));
     const version = tagToVersion(tag);
     const titleSuffix = preRelease ? ` Candiate ${version.substring(version.length - 1)}` : '';
     const title = `${version.replace(/-.*/, '')} Release${titleSuffix} `;
-    sh.exec(`gh release create ${tag} -t "${title}" --generate-notes ${draft ? '-d' : ''} ${preRelease ? '-p' : ''}`, getShellConfig());
+    sh.exec(
+        `gh release create ${tag} -t "${title}" --notes-start-tag ${latestRelease} --generate-notes ${draft ? '-d' : ''} ${
+            preRelease ? '-p' : ''
+        }`,
+        getShellConfig()
+    );
 }
 
 function validateTag(currentReleaseTag: string, newTag: string): void {

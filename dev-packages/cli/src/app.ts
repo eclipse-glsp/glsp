@@ -16,8 +16,8 @@
  ********************************************************************************/
 import { Argument, Command } from 'commander';
 import * as sh from 'shelljs';
-import { releaseCommandHandler } from './release/command-handler';
 import { Component, ReleaseType } from './release/common';
+import { release } from './release/release';
 import { baseConfiguration } from './util/command-util';
 import { validateDirectory, validateVersion } from './util/validation-util';
 
@@ -38,7 +38,7 @@ export const ReleaseCommand = baseConfiguration(new Command())
         'Execute a npm dry-run for inspection. Publishes to the local npm registry and does not publish to github',
         false
     )
-    .action(releaseCommandHandler);
+    .action(release);
 
 const app = baseConfiguration(new Command())
     .showSuggestionAfterError(true)

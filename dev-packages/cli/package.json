@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/cli",
-  "version": "1.0.0",
+  "version": "1.0.0-next",
   "description": "CLI Tooling & scripts for GLSP components",
   "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
@@ -46,7 +46,7 @@
     "typescript": "^4.5.0",
     "@types/node": "14.x",
     "@types/readline-sync": "1.4.4",
-    "@eclipse-glsp/config": "1.0.0",
+    "@eclipse-glsp/config": "1.0.0-next",
     "reflect-metadata": "0.1.13",
     "@types/node-fetch": "2.6.2"
   },
