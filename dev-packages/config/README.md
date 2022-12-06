@@ -1,4 +1,4 @@
-# Eclipse GLSP - Shared configuration [![build-status](https://img.shields.io/jenkins/build?jobUrl=https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master) [![build-status-server](https://img.shields.io/jenkins/build?jobUrl=https://ci.eclipse.org/glsp/job/deploy-npm-glsp-config/&label=publish)](https://ci.eclipse.org/glsp/job/deploy-npm-glsp-config/)
+# Eclipse GLSP - Shared configuration
 
 Common shared configuration for Eclipse GLSP components that are implemented with Typescript.
 Provides a meta package that export common configuration objects for:
