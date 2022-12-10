@@ -24,12 +24,12 @@
     }
   ],
   "scripts": {
-    "prepare": "yarn clean && yarn build && yarn lint",
-    "clean": "rimraf lib tsconfig.tsbuildinfo ",
+    "prepare": "yarn clean && yarn build",
     "build": "tsc",
+    "clean": "rimraf lib tsconfig.tsbuildinfo ",
     "lint": "eslint --ext .ts,.tsx ./src",
-    "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
-    "test": "node --enable-source-maps lib/app.js"
+    "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
+    "test:cli": "node --enable-source-maps lib/app.js"
   },
   "publishConfig": {
     "access": "public"
@@ -39,7 +39,8 @@
     "shelljs": "0.8.5",
     "semver": "^7.3.7",
     "node-fetch": "2.6.7",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "mvn-artifact-download": "^6.0.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

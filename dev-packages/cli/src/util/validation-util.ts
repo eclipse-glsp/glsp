@@ -24,7 +24,11 @@ export const COMMAND_VERSION = '1.1.0-next';
 export function validateDirectory(rootDir: string): string {
     const path = resolve(rootDir);
     if (!fs.existsSync(path)) {
-        throw new InvalidArgumentError('Not a valid file path!');
+        try {
+            fs.mkdirSync(path);
+        } catch (err) {
+            throw new InvalidArgumentError('Not a valid file path!');
+        }
     }
 
     if (!fs.statSync(path).isDirectory()) {
@@ -33,18 +37,30 @@ export function validateDirectory(rootDir: string): string {
     return path;
 }
 
+export function validateFile(filePath: string): string {
+    const path = resolve(filePath);
+    if (!fs.existsSync(path)) {
+        throw new InvalidArgumentError('Not a valid file path!');
+    }
+    return path;
+}
+
 export function validateVersion(version: string): string {
     LOGGER.debug(`Validate version format of: ${version}`);
     if (!semver.valid(version)) {
-        throw new Error(`Not a valid version: ${version}`);
+        throw new InvalidArgumentError('Not a valid semver version');
     }
     return version;
+}
+
+export function validateBaseVersion(version: string): string {
+    return validateVersion(version).replace(/-.*/, '');
 }
 
 export function validateGitDirectory(repository: string): string {
     const repoPath = validateDirectory(repository);
     if (!isGitRepository(repoPath)) {
-        throw new Error('Not a valid git repository');
+        throw new InvalidArgumentError('Not a valid git repository');
     }
     return repoPath;
 }

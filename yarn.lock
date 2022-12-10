@@ -4050,6 +4050,35 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
+mvn-artifact-download@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/mvn-artifact-download/-/mvn-artifact-download-6.0.0.tgz#0036e6f67a45bcf20adb54447a3cfcf7abf7bc6a"
+  integrity sha512-/eIZ3/cgIm8NeE+ICq3xCvSNf3uvS7Tb/yEf8x5ACEoDcDuOwM88m2HXFUCeiqavF3irk0vWgX9VJN2tZkbqkQ==
+  dependencies:
+    mvn-artifact-filename "^6.0.0"
+    mvn-artifact-name-parser "^6.0.0"
+    mvn-artifact-url "^6.0.0"
+    node-fetch "^2.6.1"
+
+mvn-artifact-filename@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/mvn-artifact-filename/-/mvn-artifact-filename-6.0.0.tgz#bcb010f14f726371074e9af71856621baa0fb56d"
+  integrity sha512-sDHE+LMJBylCSnRZYKBVhNAslJR9fdLaRynhHVdicxgRa36+TxvHHJl+AaEje1F0VSjejRr2ab/PG7lgV9Ar5Q==
+
+mvn-artifact-name-parser@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/mvn-artifact-name-parser/-/mvn-artifact-name-parser-6.0.0.tgz#441506503326d4633b922e3d3dd843daebfa6cc9"
+  integrity sha512-ZWnGAMB/tHREFrH/6L3M13r+xiPJtyskKTnv7rHAbNoEKrzP6E3jeaLEwNceEVqfO7Px4iowVlYijJbCdDmijw==
+
+mvn-artifact-url@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/mvn-artifact-url/-/mvn-artifact-url-6.0.0.tgz#060456cb3bd7aa82096f133534af5da0ce8dd1a9"
+  integrity sha512-OOhwPzybaBV5KH4LJ2tR6MHC9cBiPSMtbY1e/mOqJ+ZYNyr6cILktLLDWmm3R46UVzALeOqFRK0sJnMq8ixeHA==
+  dependencies:
+    mvn-artifact-filename "^6.0.0"
+    node-fetch "^2.6.1"
+    xml2js "^0.4.23"
+
 nanoid@3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.3.tgz#fd8e8b7aa761fe807dba2d1b98fb7241bb724a25"
@@ -4985,6 +5014,11 @@ safe-regex-test@^1.0.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+sax@>=0.6.0:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
+  integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+
 "semver@2 || 3 || 4 || 5", semver@^5.6.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
@@ -5714,10 +5748,23 @@ write-pkg@^4.0.0:
     type-fest "^0.4.1"
     write-json-file "^3.2.0"
 
+xml2js@^0.4.23:
+  version "0.4.23"
+  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.23.tgz#a0c69516752421eb2ac758ee4d4ccf58843eac66"
+  integrity sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==
+  dependencies:
+    sax ">=0.6.0"
+    xmlbuilder "~11.0.0"
+
 xml@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/xml/-/xml-1.0.1.tgz#78ba72020029c5bc87b8a81a3cfcd74b4a2fc1e5"
   integrity sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==
+
+xmlbuilder@~11.0.0:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-11.0.1.tgz#be9bae1c8a046e76b31127726347d0ad7002beb3"
+  integrity sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==
 
 xtend@~4.0.1:
   version "4.0.2"
