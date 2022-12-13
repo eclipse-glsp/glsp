@@ -120,9 +120,9 @@ function launchVerdaccio(): Promise<void> {
     return Promise.resolve();
 }
 
-function deriveVersion(release: ReleaseType, customVersion?: string): string {
+function deriveVersion(releaseType: ReleaseType, customVersion?: string): string {
     LOGGER.debug(`Derive version from release type: ${release}`);
-    switch (release) {
+    switch (releaseType) {
         case 'custom':
             return getCustomVersion(customVersion);
         case 'rc':
@@ -130,7 +130,7 @@ function deriveVersion(release: ReleaseType, customVersion?: string): string {
         case 'patch':
         case 'major':
         case 'minor':
-            return semverInc(release);
+            return semverInc(releaseType);
     }
 }
 
