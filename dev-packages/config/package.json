@@ -32,10 +32,5 @@
     "@eclipse-glsp/prettier-config": "1.0.0-next",
     "@eclipse-glsp/ts-config": "1.0.0-next",
     "prettier": "^2.8.0"
-  },
-  "devDependencies": {
-    "@types/node": ">=14.x",
-    "reflect-metadata": ">=0.1.13",
-    "typescript": ">=4.5.5"
   }
 }

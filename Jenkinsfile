@@ -43,7 +43,7 @@ pipeline {
     environment {
         YARN_CACHE_FOLDER = "${env.WORKSPACE}/yarn-cache"
         SPAWN_WRAP_SHIM_ROOT = "${env.WORKSPACE}"
-        EMAIL_TO= "tortmayr+eclipseci@eclipsesource.com"
+        EMAIL_TO= "glsp-build@eclipse.org"
     }
     
     stages {
@@ -52,9 +52,26 @@ pipeline {
                 // Dont fail build on stage failure => always execute next stage
                 container('node') {
                     timeout(30){
-                        sh "yarn"
+                        sh "yarn install"
+                        script {
+                            // Fail the step if there are uncommited changes to the yarn.lock file
+                            if (sh(returnStatus: true, script: 'git diff --name-only | grep -q "^yarn.lock"') == 0) {
+                                echo 'The yarn.lock file has uncommited changes!'
+                                error 'The yarn.lock file has uncommited changes!'
+                            } 
+                        }
                     }
                 }          
+            }
+        }
+
+        stage('Codechecks (ESLint)'){
+            steps {
+                container('node') {
+                    timeout(30){
+                        sh "yarn lint:ci"                      
+                    }
+                }
             }
         }
 
@@ -64,23 +81,39 @@ pipeline {
                     branch 'master'
                     expression {  
                       /* Only trigger the deployment job if the changeset contains changes in 
-                      the `configs/packages` directory */
-                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep --quiet "^dev-packages"') == 0
+                      the `dev-packages` directory */
+                      sh(returnStatus: true, script: 'git diff --name-only HEAD^ | grep -q "^dev-packages"') == 0
                     }
                 }
             }
-            steps {
-                build job: 'deploy-npm-glsp-config', wait: true
+            steps { 
+                container('node') {
+                    timeout(30) {
+                        withCredentials([string(credentialsId: 'npmjs-token', variable: 'NPM_AUTH_TOKEN')]) {
+                                sh 'printf "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}\n" >> $WORKSPACE/.npmrc'
+                        }
+                        sh 'git config  user.email "eclipse-glsp-bot@eclipse.org"'
+                        sh 'git config  user.name "eclipse-glsp-bot"'
+                        sh 'yarn publish:next'
+                    }
+                }
             }
         }
     }
 
     post {
+        success {
+            // Record & publish ESLint issues
+            recordIssues enabledForFailure: true, publishAllIssues: true, aggregatingResults: true, 
+            tools: [esLint(pattern: 'node_modules/**/*/eslint.xml')], 
+            qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
+        }
         failure {
             script {
                 if (env.BRANCH_NAME == 'master') {
                     echo "Build result FAILURE: Send email notification to ${EMAIL_TO}"
                     emailext attachLog: true,
+                    from: 'glsp-bot@eclipse.org',
                     body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
                     mimeType: 'text/html', subject: 'Build ${JOB_NAME} (#${BUILD_NUMBER}) FAILURE', to: "${EMAIL_TO}"
                 }
@@ -91,6 +124,7 @@ pipeline {
                 if (env.BRANCH_NAME == 'master') {
                     echo "Build result UNSTABLE: Send email notification to ${EMAIL_TO}"
                     emailext attachLog: true,
+                    from: 'glsp-bot@eclipse.org',
                     body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
                     mimeType: 'text/html', subject: 'Build ${JOB_NAME} (#${BUILD_NUMBER}) UNSTABLE', to: "${EMAIL_TO}"
                 }
@@ -101,6 +135,7 @@ pipeline {
                 if (env.BRANCH_NAME == 'master') {
                     echo "Build back to normal: Send email notification to ${EMAIL_TO}"
                     emailext attachLog: false,
+                    from: 'glsp-bot@eclipse.org',
                     body: 'Job: ${JOB_NAME}<br>Build Number: ${BUILD_NUMBER}<br>Build URL: ${BUILD_URL}',
                     mimeType: 'text/html', subject: 'Build ${JOB_NAME} back to normal (#${BUILD_NUMBER})', to: "${EMAIL_TO}"
                 }
