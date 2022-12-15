@@ -34,8 +34,8 @@ export const CoverageReportCommand = baseCommand() //
     .action(generateCoverageReport);
 
 /**
- * Generates and aggregated 'nyc' coverage report for lerna/yarn workspaces mono repositories.
- * First individual reports for each package are generatedwhich are then aggregated into one combined HTML report.
+ * Generates and aggregates an 'nyc' coverage report for lerna/yarn mono repositories.
+ * First, individual reports for each package are generated. Then, they are aggregated into one combined HTML report.
  * @param options configuration options
  */
 export function generateCoverageReport(options: CoverageCmdOptions): void {
@@ -93,8 +93,8 @@ function combineReports(reportFiles: string[], options: CoverageCmdOptions): voi
     for (let i = 0; i < reportFiles.length; i++) {
         fs.copyFileSync(reportFiles[i], path.resolve('.nyc_output', `coverage-final-${i}.json`));
     }
-    // Temporary remove root nyc configs otherwise the report command might fail.
 
+    // Temporarily remove root nyc configs otherwise the report command might fail.
     sh.cd(options.projectRoot);
     const configFiles = ['.nycrc', '.nycrc.json', '.nyc-config.js'];
     const tempFiles: string[] = [];

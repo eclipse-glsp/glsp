@@ -7,7 +7,7 @@ Provides a meta package that export common configuration objects for:
 -   [ESLint](https://eslint.org/) (`.eslintrc`)
 -   [Prettier](https://prettier.io/) (`.prettierrc`).
 
-The package is available via npm and are used by all GLSP components implemented with Typescript.
+The package is available via npm and is used by all GLSP components implemented with Typescript.
 ESLint and prettier are included as direct dependencies.
 
 ## Components
