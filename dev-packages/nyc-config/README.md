@@ -1,29 +1,22 @@
-# Eclipse GLSP - Shared Prettier configuration
+# Eclipse GLSP - Shared NYC configuration
 
-Common shared configuration for Eclipse GLSP components that use Prettier for code formatting.
+Common shared configuration for Eclipse GLSP components that use test coverage reporting.
 
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/prettier-config
+yarn add --dev @eclipse-glsp/nyc-config
 ```
 
 ## Usage
 
-**Add to the `package.json`**:
+**Add a `.nycrc.json` to your project root**:
 
 ```json
-{
-    // ...
-    "prettier": "@eclipse-glsp/prettier-config"
-}
+"@eclipse-glsp/nyc-config"
 ```
 
-**Or add a `.prettierrc.json` to the workspace root**:
-
-```json
-"@eclipse-glsp/prettier-config"
-```
+Configuration can also be provided by `nyc.config.js` if programmed logic is required.
 
 ## More information
 

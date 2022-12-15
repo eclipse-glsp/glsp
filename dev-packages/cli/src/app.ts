@@ -14,36 +14,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { Argument, Command } from 'commander';
-import * as sh from 'shelljs';
-import { Component, ReleaseType } from './release/common';
-import { release } from './release/release';
-import { baseConfiguration } from './util/command-util';
-import { validateDirectory, validateVersion } from './util/validation-util';
+import { CoverageReportCommand } from './commands/coverage-report';
+import { ReleaseCommand } from './commands/release/release';
+import { baseCommand } from './util/command-util';
+export const COMMAND_VERSION = '1.1.0-next';
 
-export const ReleaseCommand = baseConfiguration(new Command())
-    .name('release')
-    .description('Prepare & publish a new release for a glsp component')
-    .addArgument(new Argument('<component>', 'The glsp component to be released').choices(Component.CLI_CHOICES).argParser(Component.parse))
-    .addArgument(new Argument('<releaseType>', 'The release type').choices(ReleaseType.CLI_CHOICES))
-    .argument('[customVersion]', 'Custom version number. Will be ignored if the release type is not "custom"', validateVersion)
-    .option('-f, --force', 'Enable force mode', false)
-    .option('-d, --checkoutDir <checkoutDir>', 'The git checkout directory', validateDirectory, sh.pwd().stdout)
-    .option('-b, --branch <branch>', 'The git branch to checkout', 'master')
-    .option('-v, --verbose', 'Enable verbose (debug) log output', false)
-    .option('--no-publish', 'Only prepare release but do not publish to github', true)
-    .option('--draft', 'Publish github releases as drafts', false)
-    .option(
-        '--npm-dryRun',
-        'Execute a npm dry-run for inspection. Publishes to the local npm registry and does not publish to github',
-        false
-    )
-    .action(release);
-
-const app = baseConfiguration(new Command())
-    .showSuggestionAfterError(true)
-    .showHelpAfterError(true)
+const app = baseCommand() //
+    .version(COMMAND_VERSION)
     .name('glsp')
-    .addCommand(ReleaseCommand);
+    .addCommand(ReleaseCommand)
+    .addCommand(CoverageReportCommand);
 
 app.parse(process.argv);

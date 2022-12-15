@@ -14,8 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import * as sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../util/command-util';
-import { LOGGER } from '../util/logger';
+import { fatalExec, getShellConfig } from '../../util/command-util';
+import { LOGGER } from '../../util/logger';
 import { asMvnVersion, checkoutAndCd, commitAndTag, publish, ReleaseOptions } from './common';
 
 let REPO_ROOT: string;
@@ -25,6 +25,7 @@ export async function releaseJavaServer(options: ReleaseOptions): Promise<void> 
     LOGGER.debug('Release options: ', options);
     const mvnVersion = asMvnVersion(options.version);
     REPO_ROOT = checkoutAndCd(options);
+    sh.find();
     setVersion(mvnVersion);
     build();
     generateChangeLog();

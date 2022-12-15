@@ -16,11 +16,9 @@
 import { Command } from 'commander';
 import * as sh from 'shelljs';
 import { configureLogger } from './logger';
-export const COMMAND_VERSION = '1.1.0-next';
 
-export function baseConfiguration(cmd: Command): Command {
-    return cmd
-        .version(COMMAND_VERSION) //
+export function baseCommand(cmd = new Command()): Command {
+    return cmd //
         .showSuggestionAfterError(true)
         .showHelpAfterError(true)
         .allowUnknownOption(false);

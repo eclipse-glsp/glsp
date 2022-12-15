@@ -15,8 +15,8 @@
  ********************************************************************************/
 
 import * as sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../util/command-util';
-import { LOGGER } from '../util/logger';
+import { fatalExec, getShellConfig } from '../../util/command-util';
+import { LOGGER } from '../../util/logger';
 import {
     asMvnVersion,
     checkJavaServerVersion,

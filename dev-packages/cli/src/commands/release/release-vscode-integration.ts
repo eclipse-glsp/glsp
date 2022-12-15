@@ -13,28 +13,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+
 import * as sh from 'shelljs';
-import { LOGGER } from '../util/logger';
+import { LOGGER } from '../../util/logger';
 import {
-    asMvnVersion,
-    checkJavaServerVersion,
     checkoutAndCd,
     commitAndTag,
     lernaSetVersion,
     publish,
     ReleaseOptions,
     updateLernaForDryRun,
-    updateServerConfig,
+    updateVersion,
     yarnInstall
 } from './common';
 
 let REPO_ROOT: string;
 
-export async function releaseClient(options: ReleaseOptions): Promise<void> {
-    LOGGER.info('Prepare glsp-client release');
-    LOGGER.debug('Release options: ', options.version);
+export async function releaseVscodeIntegration(options: ReleaseOptions): Promise<void> {
+    LOGGER.info('Prepare glsp-vscode-integration release');
+    LOGGER.debug('Release options: ', options);
     REPO_ROOT = checkoutAndCd(options);
-    await updateDownloadServerScript(options.version, options.force);
+    updateExternalGLSPDependencies(options.version);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -45,20 +44,22 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     publish(REPO_ROOT, options);
 }
 
-async function updateDownloadServerScript(version: string, force: boolean): Promise<void> {
-    LOGGER.info('Update example server download config');
-    const mvnVersion = asMvnVersion(version);
-    checkJavaServerVersion(version, force);
-    sh.cd(`${REPO_ROOT}/examples/workflow-glsp/scripts`);
-    updateServerConfig('config.json', mvnVersion, false);
-}
-
-function generateChangeLog(): void {
-    // do nothing for now
+function updateExternalGLSPDependencies(version: string): void {
+    LOGGER.info('Update external GLSP dependencies (Protocol)');
+    sh.cd(REPO_ROOT);
+    updateVersion(
+        { name: '@eclipse-glsp/protocol', version },
+        { name: '@eclipse-glsp/client', version },
+        { name: '@eclipse-glsp-examples/workflow-glsp', version }
+    );
 }
 
 function build(): void {
     LOGGER.info('Install & Build with yarn');
     yarnInstall(REPO_ROOT);
     LOGGER.debug('Build successful');
+}
+
+function generateChangeLog(): void {
+    // do nothing for now
 }
