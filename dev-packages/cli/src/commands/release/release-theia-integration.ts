@@ -15,25 +15,29 @@
  ********************************************************************************/
 
 import * as sh from 'shelljs';
-import { LOGGER } from '../util/logger';
+import { LOGGER } from '../../util/logger';
 import {
+    asMvnVersion,
     checkoutAndCd,
     commitAndTag,
+    isExistingMavenVersion,
     lernaSetVersion,
     publish,
     ReleaseOptions,
     updateLernaForDryRun,
+    updateServerConfig,
     updateVersion,
     yarnInstall
 } from './common';
 
 let REPO_ROOT: string;
 
-export async function releaseVscodeIntegration(options: ReleaseOptions): Promise<void> {
-    LOGGER.info('Prepare glsp-vscode-integration release');
+export async function releaseTheiaIntegration(options: ReleaseOptions): Promise<void> {
+    LOGGER.info('Prepare glsp-theia-integration release');
     LOGGER.debug('Release options: ', options);
     REPO_ROOT = checkoutAndCd(options);
     updateExternalGLSPDependencies(options.version);
+    await updateDownloadServerScript(options.version);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -45,13 +49,21 @@ export async function releaseVscodeIntegration(options: ReleaseOptions): Promise
 }
 
 function updateExternalGLSPDependencies(version: string): void {
-    LOGGER.info('Update external GLSP dependencies (Protocol)');
+    LOGGER.info('Update external GLSP dependencies (Client and workflow example)');
     sh.cd(REPO_ROOT);
-    updateVersion(
-        { name: '@eclipse-glsp/protocol', version },
-        { name: '@eclipse-glsp/client', version },
-        { name: '@eclipse-glsp-examples/workflow-glsp', version }
-    );
+    updateVersion({ name: '@eclipse-glsp/client', version }, { name: '@eclipse-glsp-examples/workflow-glsp', version });
+}
+
+async function updateDownloadServerScript(version: string): Promise<void> {
+    LOGGER.info('Update example server download config');
+    const mvnVersion = asMvnVersion(version);
+    if (!isExistingMavenVersion('org.eclipse.glsp', 'org.eclipse.glsp.server', mvnVersion)) {
+        LOGGER.warn(`No Java GLSP server with version ${mvnVersion} found on maven central!. Please release a new Java GLSP Server version
+        before publishing this release!`);
+    }
+
+    sh.cd(`${REPO_ROOT}/examples/workflow-theia/src/node`);
+    updateServerConfig('server-config.json', mvnVersion, false);
 }
 
 function build(): void {
