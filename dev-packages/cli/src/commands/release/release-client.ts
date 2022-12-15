@@ -13,27 +13,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-
 import * as sh from 'shelljs';
-import { LOGGER } from '../util/logger';
+import { LOGGER } from '../../util/logger';
 import {
+    asMvnVersion,
+    checkJavaServerVersion,
     checkoutAndCd,
     commitAndTag,
     lernaSetVersion,
     publish,
     ReleaseOptions,
     updateLernaForDryRun,
-    updateVersion,
+    updateServerConfig,
     yarnInstall
 } from './common';
 
 let REPO_ROOT: string;
 
-export async function releaseServerNode(options: ReleaseOptions): Promise<void> {
-    LOGGER.info('Prepare glsp-server-node release');
-    LOGGER.debug('Release options: ', options);
+export async function releaseClient(options: ReleaseOptions): Promise<void> {
+    LOGGER.info('Prepare glsp-client release');
+    LOGGER.debug('Release options: ', options.version);
     REPO_ROOT = checkoutAndCd(options);
-    updateExternalGLSPDependencies(options.version);
+    await updateDownloadServerScript(options.version, options.force);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -44,18 +45,20 @@ export async function releaseServerNode(options: ReleaseOptions): Promise<void> 
     publish(REPO_ROOT, options);
 }
 
-function updateExternalGLSPDependencies(version: string): void {
-    LOGGER.info('Update external GLSP dependencies (Protocol)');
-    sh.cd(REPO_ROOT);
-    updateVersion({ name: '@eclipse-glsp/protocol', version });
+async function updateDownloadServerScript(version: string, force: boolean): Promise<void> {
+    LOGGER.info('Update example server download config');
+    const mvnVersion = asMvnVersion(version);
+    checkJavaServerVersion(version, force);
+    sh.cd(`${REPO_ROOT}/examples/workflow-glsp/scripts`);
+    updateServerConfig('config.json', mvnVersion, false);
+}
+
+function generateChangeLog(): void {
+    // do nothing for now
 }
 
 function build(): void {
     LOGGER.info('Install & Build with yarn');
     yarnInstall(REPO_ROOT);
     LOGGER.debug('Build successful');
-}
-
-function generateChangeLog(): void {
-    // do nothing for now
 }

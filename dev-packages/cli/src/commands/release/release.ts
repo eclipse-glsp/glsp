@@ -14,15 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { ChildProcess } from 'child_process';
+import { Argument } from 'commander';
 import { exit } from 'process';
 import { createInterface } from 'readline';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import * as sh from 'shelljs';
-import { BaseCmdOptions, fatalExec, getShellConfig, initialConfiguration } from '../util/command-util';
-import { isGithubCLIAuthenticated } from '../util/git-util';
-import { LOGGER } from '../util/logger';
-import { validateVersion } from '../util/validation-util';
+import { BaseCmdOptions, baseCommand, fatalExec, getShellConfig, initialConfiguration } from '../../util/command-util';
+import { isGithubCLIAuthenticated } from '../../util/git-util';
+import { LOGGER } from '../../util/logger';
+import { validateDirectory, validateVersion } from '../../util/validation-util';
 import {
     asMvnVersion,
     checkIfMavenVersionExists,
@@ -38,6 +39,7 @@ import { releaseJavaServer } from './release-java-server';
 import { releaseServerNode } from './release-server-node';
 import { releaseTheiaIntegration } from './release-theia-integration';
 import { releaseVscodeIntegration } from './release-vscode-integration';
+
 interface ReleaseCmdOptions extends BaseCmdOptions {
     checkoutDir: string;
     branch: string;
@@ -46,6 +48,25 @@ interface ReleaseCmdOptions extends BaseCmdOptions {
     npmDryRun: boolean;
     draft: boolean;
 }
+
+export const ReleaseCommand = baseCommand()
+    .name('release')
+    .description('Prepare & publish a new release for a glsp component')
+    .addArgument(new Argument('<component>', 'The glsp component to be released').choices(Component.CLI_CHOICES).argParser(Component.parse))
+    .addArgument(new Argument('<releaseType>', 'The release type').choices(ReleaseType.CLI_CHOICES))
+    .argument('[customVersion]', 'Custom version number. Will be ignored if the release type is not "custom"', validateVersion)
+    .option('-f, --force', 'Enable force mode', false)
+    .option('-d, --checkoutDir <checkoutDir>', 'The git checkout directory', validateDirectory, process.cwd())
+    .option('-b, --branch <branch>', 'The git branch to checkout', 'master')
+    .option('-v, --verbose', 'Enable verbose (debug) log output', false)
+    .option('--no-publish', 'Only prepare release but do not publish to github', true)
+    .option('--draft', 'Publish github releases as drafts', false)
+    .option(
+        '--npm-dryRun',
+        'Execute a npm dry-run for inspection. Publishes to the local npm registry and does not publish to github',
+        false
+    )
+    .action(release);
 
 let verdaccioChildProcess: ChildProcess | undefined = undefined;
 

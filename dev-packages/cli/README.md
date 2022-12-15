@@ -11,10 +11,26 @@ Install `@eclipse-glsp/cli` as a dev dependency in your application.
 yarn add @eclipse-glsp/cli --dev
 ```
 
-## Commands
+## coverageReport
 
-Eclipse GLSP committers can use the `release` following command to prepare & publish a new Github release
-for a specific GLSP component.
+The `coverageReport` command can be used to create a full nyc test coverage report for a lerna/yarn mono repository.
+Individual coverage reports for each package are created and then combined to a full report.
+
+```console
+$ glsp coverageReport -h
+Usage: glsp coverageReport [options]
+
+Generate a test coverage report for a glsp component
+
+Options:
+  -p, --projectRoot <projectRoot>  The root directory of the GLSP component (default: "<cwd>")
+  -c, --coverageScript <script>    Script command of the package root for creating coverage reports (default: "test:coverage")
+  -h, --help                       display help for command
+```
+
+## release
+
+Eclipse GLSP committers can use the `release` command to prepare & publish a new Github release for a specific GLSP component.
 
 ```bash
 $ glsp release -h
@@ -28,9 +44,8 @@ Arguments:
   customVersion                    Custom version number. Will be ignored if the release type is not "custom"
 
 Options:
-  -V, --version                    output the version number
   -f, --force                      Enable force mode (default: false)
-  -d, --checkoutDir <checkoutDir>  The git checkout directory (default: "/home/tobias/Git/OpenSource/glsp/glsp/dev-packages/cli")
+  -d, --checkoutDir <checkoutDir>  The git checkout directory (default: "<cwd>")
   -b, --branch <branch>            The git branch to checkout (default: "master")
   -v, --verbose                    Enable verbose (debug) log output (default: false)
   --no-publish                     Only prepare release but do not publish to github
