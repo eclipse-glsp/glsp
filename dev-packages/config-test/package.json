@@ -2,21 +2,21 @@
   "name": "@eclipse-glsp/config-test",
   "version": "1.0.0-next",
   "description": "Wrapper package that provides Mocha and nyc configurations for GLSP projects",
-  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
     "eclipse",
     "testing",
     "config"
   ],
-  "author": {
-    "name": "Eclipse GLSP"
-  },
   "homepage": "https://www.eclipse.org/glsp/",
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/eclipse-glsp/glsp.git"
   },
-  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "author": {
+    "name": "Eclipse GLSP"
+  },
   "contributors": [
     {
       "name": "Eclipse GLSP Project",
@@ -24,23 +24,23 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@eclipse-glsp/mocha-config": "1.0.0-next",
     "@eclipse-glsp/nyc-config": "1.0.0-next",
+    "@istanbuljs/nyc-config-typescript": "^1.0.0",
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "@types/sinon": "^10.0.13",
     "chai": "^4.3.7",
+    "ignore-styles": "^5.0.1",
     "mocha": "^10.1.0",
     "mocha-jenkins-reporter": "^0.4.8",
-    "sinon": "^15.0.0",
-    "ts-node": "^10.9.1",
     "nyc": "^15.0.0",
-    "@istanbuljs/nyc-config-typescript": "^1.0.0",
-    "ignore-styles": "^5.0.1",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "sinon": "^15.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -2,26 +2,34 @@
   "name": "@eclipse-glsp/cli",
   "version": "1.0.0-next",
   "description": "CLI Tooling & scripts for GLSP components",
-  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
     "eclipse",
     "tsconfig"
   ],
-  "author": {
-    "name": "Eclipse GLSP"
-  },
   "homepage": "https://www.eclipse.org/glsp/",
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/eclipse-glsp/glsp.git"
   },
-  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "author": {
+    "name": "Eclipse GLSP"
+  },
   "contributors": [
     {
       "name": "Eclipse GLSP Project",
       "email": "glsp-dev@eclipse.org",
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
+  ],
+  "bin": {
+    "glsp": "bin/glsp"
+  },
+  "files": [
+    "src",
+    "bin",
+    "lib"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -32,30 +40,22 @@
     "start": "node --enable-source-maps lib/app.js",
     "watch": "tsc -w"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "commander": "^9.4.0",
-    "shelljs": "0.8.5",
-    "semver": "^7.3.7",
     "node-fetch": "2.6.7",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "semver": "^7.3.7",
+    "shelljs": "0.8.5"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1",
-    "@types/shelljs": "0.8.11",
-    "@types/semver": "7.3.12",
-    "@types/readline-sync": "1.4.4",
     "@eclipse-glsp/config": "1.0.0-next",
-    "@types/node-fetch": "2.6.2"
+    "@types/node-fetch": "2.6.2",
+    "@types/readline-sync": "1.4.4",
+    "@types/semver": "7.3.12",
+    "@types/shelljs": "0.8.11",
+    "ts-node": "^10.9.1"
   },
-  "bin": {
-    "glsp": "bin/glsp"
-  },
-  "files": [
-    "src",
-    "bin",
-    "lib"
-  ]
+  "publishConfig": {
+    "access": "public"
+  }
 }
