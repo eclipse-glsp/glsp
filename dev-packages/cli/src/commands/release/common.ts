@@ -21,7 +21,7 @@ import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import * as sh from 'shelljs';
 import { fatalExec, getShellConfig } from '../../util/command-util';
-import { getLatestRelease, getLatestTag, hasGitChanges, isGitRepository } from '../../util/git-util';
+import { getLatestGithubRelease, getLatestTag, hasGitChanges, isGitRepository } from '../../util/git-util';
 import { LOGGER } from '../../util/logger';
 import { validateVersion } from '../../util/validation-util';
 
@@ -175,7 +175,7 @@ export function publish(repositoryPath: string, options: ReleaseOptions): void {
         throw new Error('Publish failed. The repository has pending changes');
     }
 
-    const latestReleaseTag = getLatestRelease();
+    const latestReleaseTag = getLatestGithubRelease();
     const localTag = getLatestTag();
     validateTag(latestReleaseTag, localTag);
     const preRelease = options.releaseType === 'rc' || localTag.includes('-');

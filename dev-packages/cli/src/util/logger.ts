@@ -13,26 +13,45 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-let verbose = false;
 
-export const LOGGER: Logger = {
-    info: (message, ...args) => console.info(`[INFO] ${message}`, ...args),
-    error: (message, ...args) => console.error(`[ERROR] ${message}`, ...args),
-    warn: (message, ...args) => console.warn(`[WARNING] ${message}`, ...args),
-    debug: (message, ...args) => {
-        if (verbose) {
-            console.log(`[DEBUG] ${message}`, ...args);
-        }
-    }
-};
-
-export function configureLogger(isVerbose: boolean): void {
-    verbose = isVerbose;
+export interface Logger extends Pick<Console, LogLevel> {
+    newLine(): void;
 }
 
-export interface Logger {
-    info(message: string, ...args: any[]): void;
-    error(message: string, ...args: any[]): void;
-    warn(message: string, ...args: any[]): void;
-    debug(message: string, ...args: any[]): void;
+export type LogLevel = 'info' | 'debug' | 'error' | 'warn';
+
+const levels: Record<LogLevel, { threshold: number; color: string }> = {
+    error: { threshold: 0, color: '\x1b[31m' }, // red
+    warn: { threshold: 1, color: '\x1b[33m' }, // yellow
+    info: { threshold: 2, color: '\x1b[0m' }, // default terminal color
+    debug: { threshold: 3, color: '\x1b[32m' } // green
+};
+
+let levelThreshold: number = levels.info.threshold;
+
+export const LOGGER: Logger = {
+    info: (...args) => log('info', ...args),
+    error: (...args) => log('error', ...args),
+    warn: (...args) => log('warn', ...args),
+    debug: (...args) => log('debug', ...args),
+    newLine: () => console.log('')
+} as const;
+
+function log(level: LogLevel, ...args: any[]): void {
+    const levelData = levels[level];
+    if (levelThreshold < levelData.threshold) {
+        return;
+    }
+    console[level](levelData.color, ...args, '\x1b[0m');
+}
+
+export function configureLogger(level: LogLevel): void;
+export function configureLogger(verbose: boolean): void;
+export function configureLogger(levelOrVerbose: LogLevel | boolean): void {
+    if (typeof levelOrVerbose === 'boolean') {
+        const level: LogLevel = levelOrVerbose ? 'debug' : 'info';
+        levelThreshold = levels[level].threshold;
+    } else {
+        levelThreshold = levels[levelOrVerbose].threshold;
+    }
 }

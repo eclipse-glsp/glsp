@@ -15,28 +15,9 @@
  ********************************************************************************/
 
 import * as sh from 'shelljs';
-import { fatalExec, getShellConfig } from './command-util';
+import { getShellConfig } from './command-util';
 import { LOGGER } from './logger';
 import { validateGitDirectory } from './validation-util';
-
-export function isGithubCLIAuthenticated(): boolean {
-    LOGGER.debug('Verify that Github CLI is installed');
-    fatalExec('which gh', 'Github CLI is not installed!');
-
-    const status = sh.exec('gh auth status', getShellConfig());
-    if (status.code !== 0) {
-        if (status.stderr.includes('You are not logged into any GitHub hosts')) {
-            return false;
-        }
-        throw new Error(status.stderr);
-    }
-    if (!status.stderr.trim().includes('Logged in to github.com')) {
-        LOGGER.debug("No user is logged in for host 'github.com'");
-        return false;
-    }
-    LOGGER.debug('Github CLI is authenticated and ready to use');
-    return true;
-}
 
 export function isGitRepository(path: string): boolean {
     LOGGER.debug(`Check if the given directory is a git repo: ${path}`);
@@ -50,7 +31,7 @@ export function hasGitChanges(path?: string): boolean {
     return sh.exec('git status --porcelain').stdout.trim().length !== 0;
 }
 
-export function getLatestRelease(path?: string): string {
+export function getLatestGithubRelease(path?: string): string {
     LOGGER.debug(`Retrieve latest release from repo:  ${asDebugArg(path)}`);
     cdIfPresent(path);
     const release = sh.exec('gh release list --exclude-drafts -L 1', getShellConfig()).stdout.trim().split('\t');

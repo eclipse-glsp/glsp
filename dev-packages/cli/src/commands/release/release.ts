@@ -20,9 +20,8 @@ import { createInterface } from 'readline';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import * as sh from 'shelljs';
-import { BaseCmdOptions, baseCommand, fatalExec, getShellConfig, initialConfiguration } from '../../util/command-util';
-import { isGithubCLIAuthenticated } from '../../util/git-util';
-import { LOGGER } from '../../util/logger';
+import { baseCommand, configureShell, fatalExec, getShellConfig } from '../../util/command-util';
+import { configureLogger, LOGGER } from '../../util/logger';
 import { validateDirectory, validateVersion } from '../../util/validation-util';
 import {
     asMvnVersion,
@@ -40,13 +39,14 @@ import { releaseServerNode } from './release-server-node';
 import { releaseTheiaIntegration } from './release-theia-integration';
 import { releaseVscodeIntegration } from './release-vscode-integration';
 
-interface ReleaseCmdOptions extends BaseCmdOptions {
+interface ReleaseCmdOptions {
     checkoutDir: string;
     branch: string;
     force: boolean;
     publish: boolean;
     npmDryRun: boolean;
     draft: boolean;
+    verbose: boolean;
 }
 
 export const ReleaseCommand = baseCommand()
@@ -78,7 +78,8 @@ export async function release(
 ): Promise<void> {
     try {
         LOGGER.debug('Cli options:', cliOptions);
-        initialConfiguration(cliOptions.verbose);
+        configureShell({ silent: !cliOptions.verbose });
+        configureLogger(cliOptions.verbose);
         checkGHCli();
         const version = deriveVersion(releaseType, customVersion);
         const options: ReleaseOptions = { ...cliOptions, component, releaseType, version };
@@ -120,6 +121,25 @@ function checkGHCli(): void {
     if (!isGithubCLIAuthenticated()) {
         throw new Error("Github CLI is not configured properly. No user is logged in for host 'github.com'");
     }
+}
+
+function isGithubCLIAuthenticated(): boolean {
+    LOGGER.debug('Verify that Github CLI is installed');
+    fatalExec('which gh', 'Github CLI is not installed!');
+
+    const status = sh.exec('gh auth status', getShellConfig());
+    if (status.code !== 0) {
+        if (status.stderr.includes('You are not logged into any GitHub hosts')) {
+            return false;
+        }
+        throw new Error(status.stderr);
+    }
+    if (!status.stderr.trim().includes('Logged in to github.com')) {
+        LOGGER.debug("No user is logged in for host 'github.com'");
+        return false;
+    }
+    LOGGER.debug('Github CLI is authenticated and ready to use');
+    return true;
 }
 
 function launchVerdaccio(): Promise<void> {
