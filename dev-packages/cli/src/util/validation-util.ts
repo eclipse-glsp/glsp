@@ -17,7 +17,7 @@ import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import * as semver from 'semver';
-import { isGitRepository } from './git-util';
+import { getGitRoot, isGitRepository } from './git-util';
 import { LOGGER } from './logger';
 export const COMMAND_VERSION = '1.1.0-next';
 
@@ -58,5 +58,6 @@ export function validateGitDirectory(repository: string): string {
     if (!isGitRepository(repoPath)) {
         throw new InvalidArgumentError('Not a valid git repository');
     }
-    return repoPath;
+
+    return getGitRoot(repository);
 }

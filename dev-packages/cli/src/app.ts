@@ -14,6 +14,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+import { CheckHeaderCommand } from './commands/check-header';
 import { CoverageReportCommand } from './commands/coverage-report';
 import { ReleaseCommand } from './commands/release/release';
 import { baseCommand } from './util/command-util';
@@ -22,7 +23,8 @@ export const COMMAND_VERSION = '1.1.0-next';
 const app = baseCommand() //
     .version(COMMAND_VERSION)
     .name('glsp')
+    .addCommand(CoverageReportCommand)
     .addCommand(ReleaseCommand)
-    .addCommand(CoverageReportCommand);
+    .addCommand(CheckHeaderCommand);
 
 app.parse(process.argv);
