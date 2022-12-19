@@ -2,7 +2,6 @@
 
 -   [1. Server-Client Lifecycle](#1-server-client-lifecycle)
 -   [2. Graphical Language Server Protocol](#2-graphical-language-server-protocol)
-
     -   [2.1. Base Protocol](#21-base-protocol)
         -   [2.1.1. ActionMessage](#211-actionmessage)
         -   [2.1.2. Action](#212-action)
@@ -47,8 +46,9 @@
             -   [2.8.1.1. CenterAction](#2811-centeraction)
             -   [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
         -   [2.8.2. Client Notification](#282-client-notification)
-            -   [2.8.2.1. GLSPServerStatusAction](#2821-glspserverstatusaction)
+            -   [2.8.2.1. SPServerStatusAction](#2821-spserverstatusaction)
             -   [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
+            -   [2.8.2.3. ServerSeverity](#2823-serverseverity)
         -   [2.8.3. Element Selection](#283-element-selection)
             -   [2.8.3.1. SelectAction](#2831-selectaction)
             -   [2.8.3.2. SelectAllAction](#2832-selectallaction)
@@ -89,18 +89,18 @@
         -   [2.17.3. CutOperation](#2173-cutoperation)
         -   [2.17.4. PasteOperation](#2174-pasteoperation)
     -   [2.18. Undo / Redo](#218-undo--redo)
-        -   [2.18.1. UndoOperation](#2181-undooperation)
-        -   [2.18.2. RedoOperation](#2182-redooperation)
+        -   [2.18.1. UndoAction](#2181-undoaction)
+        -   [2.18.2. RedoAction](#2182-redoaction)
     -   [2.19. Contexts](#219-contexts)
-    -   [2.19.1. RequestContextActions](#2191-requestcontextactions)
-    -   [2.19.2. SetContextActions](#2192-setcontextactions)
-    -   [2.19.3. Context Menu](#2193-context-menu)
-    -   [2.19.4. Command Palette](#2194-command-palette)
-    -   [2.19.5. Tool Palette](#2195-tool-palette)
-        -   [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
-        -   [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
+        -   [2.19.1. RequestContextActions](#2191-requestcontextactions)
+        -   [2.19.2. SetContextActions](#2192-setcontextactions)
+        -   [2.19.3. Context Menu](#2193-context-menu)
+        -   [2.19.4. Command Palette](#2194-command-palette)
+        -   [2.19.5. Tool Palette](#2195-tool-palette)
+            -   [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
+            -   [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
 
-    </details>
+</details>
 
 # 1. Server-Client Lifecycle
 
@@ -354,16 +354,16 @@ A general message serves as an envelope carrying an action to be transmitted bet
 /**
  * Sprotty's ActionMessage.
  */
-class ActionMessage {
+interface ActionMessage<A extends Action = Action> {
     /**
      * Used to identify a specific client session.
      */
-    public readonly clientId: string;
+    clientId: string;
 
     /**
      * The action to execute.
      */
-    public readonly action: Action;
+    Action: A;
 }
 ```
 
@@ -383,7 +383,7 @@ interface Action {
     /**
      * Unique identifier specifying the kind of action to process.
      */
-    readonly kind: string;
+    kind: string;
 }
 ```
 
@@ -403,7 +403,7 @@ interface RequestAction<Res extends ResponseAction> extends Action {
     /**
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
      */
-    readonly requestId: string;
+    requestId: string;
 }
 ```
 
@@ -423,7 +423,7 @@ interface ResponseAction extends Action {
     /**
      * Id corresponding to the request this action responds to.
      */
-    readonly responseId: string;
+    responseId: string;
 }
 ```
 
@@ -439,8 +439,19 @@ A reject action is a response fired to indicate that a request must be rejected.
 /**
  * Sprotty's RejectAction.
  */
-class RejectAction implements ResponseAction {
-    readonly kind = 'rejectRequest';
+interface RejectAction extends ResponseAction {
+    kind: 'rejectRequest';
+
+    /**
+     * A human-readable description of the reject reason. Typically this is an error message
+     * that has been thrown when handling the corresponding RequestAction.
+     */
+    message: string;
+
+    /**
+     * Optional additional details.
+     */
+    detail?: JsonAny;
 }
 ```
 
@@ -456,12 +467,17 @@ Operations are actions that denote requests from the client to _modify_ the mode
 /**
  * Marker interface for operations.
  */
-interface Operation extends Action {}
+interface Operation extends Action {
+    /**
+     * Discriminator property to make operations distinguishable from plain Actions.
+     */
+    isOperation: true;
+}
 
 /**
  * An operation that executes a list of operations.
  */
-class CompoundOperation implements Operation {
+interface CompoundOperation extends Operation {
     readonly kind = 'compound';
 
     /**
@@ -601,6 +617,26 @@ class SParentElement extends SModelElement {
      * Children of this element.
      */
     readonly children: ReadonlyArray<SChildElement>;
+
+    /**
+     * Adds a child element to this element.
+     */
+    add(child: SChildElement, index?: number);
+
+    /**
+     * Removes a child element from this element.
+     */
+    remove(child: SChildElement);
+
+    /**
+     * Removes all child elements from this element.
+     */
+    removeAll(filter?: (e: SChildElement) => boolean);
+
+    /**
+     * Moves a child element to a new index.
+     */
+    move(child: SChildElement, newIndex: number);
 }
 ```
 
@@ -680,16 +716,16 @@ A `Point` is composed of the (x,y) coordinates of an object.
 /**
  * Sprotty's Point.
  */
-class Point {
+interface Point {
     /**
      * The abscissa of the point.
      */
-    public readonly x: number;
+    readonly x: number;
 
     /**
      * The ordinate of the point.
      */
-    public readonly y: number;
+    readonly y: number;
 }
 ```
 
@@ -705,16 +741,16 @@ The `Dimension` of an object is composed of its width and height.
 /**
  * Sprotty's Dimension.
  */
-class Dimension {
+interface Dimension {
     /**
      * The width of an element.
      */
-    public readonly width: number;
+    readonly width: number;
 
     /**
      * the height of an element.
      */
-    public readonly height: number;
+    readonly height: number;
 }
 ```
 
@@ -730,8 +766,7 @@ The bounds are the position (x, y) and dimension (width, height) of an object. A
 /**
  * Sprotty's Bounds.
  */
-class Bounds extends Point, Dimension {
-}
+interface Bounds extends Point, Dimension {}
 ```
 
 </details>
@@ -746,16 +781,21 @@ The `ElementAndBounds` type is used to associate new bounds with a model element
 /**
  * Sprotty's ElementAndBounds.
  */
-class ElementAndBounds {
+interface ElementAndBounds {
     /**
      * The identifier of the element.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
-     * The new bounds of the element.
+     * The new size of the element.
      */
-    public readonly newBounds: Bounds;
+    newSize: Dimension;
+
+    /**
+     * The new position of the element.
+     */
+    newPosition?: Point;
 }
 ```
 
@@ -771,16 +811,16 @@ The `ElementAndAlignment` type is used to associate a new alignment with a model
 /**
  * Sprotty's ElementAndAlignment.
  */
-class ElementAndAlignment {
+interface ElementAndAlignment {
     /**
      * The identifier of an element.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The new alignment of the element.
      */
-    public readonly newAlignment: Point;
+    newAlignment: Point;
 }
 ```
 
@@ -845,21 +885,21 @@ Labeled actions are used to denote a group of actions in a user-interface contex
 /**
  * Sprotty's LabeledAction.
  */
-class LabeledAction {
+interface LabeledAction {
     /**
      * Group label.
      */
-    readonly label: string;
+    label: string;
 
     /**
      * Actions in the group.
      */
-    readonly actions: Action[];
+    actions: Action[];
 
     /**
      * Optional group icon.
      */
-    readonly icon?: string;
+    icon?: string;
 }
 ```
 
@@ -877,16 +917,16 @@ Sent from the client to the server in order to request a graphical model. Usuall
 /**
  * Sprotty's RequestModelAction.
  */
-class RequestModelAction implements Action {
+interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * The kind of the action.
    */
-  public readonly kind = "requestModel";
+  kind = "requestModel";
 
   /**
    * Additional options used to compute the graphical model.
    */
-  public readonly options?: { [key: string]: string });
+  options?: { [key: string]: string });
 }
 ```
 
@@ -902,16 +942,16 @@ Sent from the server to the client in order to set the model. If a model is alre
 /**
  * Sprotty's SetModelAction.
  */
-class SetModelAction implements Action {
+interface SetModelAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setModel';
+    kind = 'setModel';
 
     /**
      * The new graphical model elements.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -927,21 +967,21 @@ Sent from the server to the client in order to update the model. If no model is 
 /**
  * Sprotty's UpdateModelAction.
  */
-class UpdateModelAction implements Action {
+interface UpdateModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'updateModel';
+    kind = 'updateModel';
 
     /**
      * The new root element of the graphical model.
      */
-    public readonly newRoot?: SModelRootSchema;
+    newRoot?: SModelRootSchema;
 
     /**
-     * Matches that link the elements of two root elements.
+     * Boolean flag to indicate wether updated/changed elements should be animated in the diagram.
      */
-    public readonly matches?: Match[];
+    animate?: boolean;
 }
 
 /**
@@ -964,16 +1004,16 @@ Sent from the server to the client in order to indicate that the source model ha
 <details open><summary>Code</summary>
 
 ```typescript
-class SourceModelChangedAction implements Action {
+interface SourceModelChangedAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'sourceModelChanged';
+    kind = 'sourceModelChanged';
 
     /**
      * A human readable name of the source model (e.g. the file name).
      */
-    public readonly sourceModelName: string;
+    sourceModelName: string;
 }
 ```
 
@@ -989,16 +1029,16 @@ A new `fileUri` can be defined to save the model to a new destination different 
 <details open><summary>Code</summary>
 
 ```typescript
-class SaveModelAction implements Action {
+interface SaveModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'saveModel';
+    kind = 'saveModel';
 
     /**
      *  The optional destination file uri.
      */
-    public readonly fileUri?: string;
+    fileUri?: string;
 }
 ```
 
@@ -1011,21 +1051,21 @@ The server sends a `SetDirtyStateAction` to indicate to the client that the curr
 <details open><summary>Code</summary>
 
 ```typescript
-class SetDirtyStateAction implements Action {
+interface SetDirtyStateAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setDirtyState';
+    kind = 'setDirtyState';
 
     /**
      * True if the current model state is dirty
      */
-    public readonly isDirty: boolean;
+    isDirty: boolean;
 
     /**
      * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
      */
-    public readonly reason?: string;
+    reason?: string;
 }
 ```
 
@@ -1042,11 +1082,21 @@ The client (or the server) sends an `ExportSvgAction` to indicate that the diagr
  * Sprotty's ExportSvgAction.
  * Note that sprotty also provides a `RequestExportSvgAction` which is currently not supported in GLSP.
  */
-class ExportSvgAction implements ResponseAction {
+interface ExportSvgAction extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'exportSvg';
+
     /**
      * The diagram SModel as serializable SVG.
      */
-    public readonly svg: string;
+    svg: string;
+
+    /**
+     * Id corresponding to the request this action responds to.
+     */
+    responseId: string;
 }
 ```
 
@@ -1068,16 +1118,16 @@ Sent from the server to the client to request bounds for the given model. The mo
 /**
  * Sprotty's RequestBoundsAction.
  */
-class RequestBoundsAction implements Action {
+interface RequestBoundsAction extends RequestAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestBounds';
+    kind = 'requestBounds';
 
     /**
      * The model elements to consider to compute the new bounds.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -1093,26 +1143,31 @@ Sent from the client to the server to transmit the result of bounds computation 
 /**
  * Sprotty's ComputedBoundsAction.
  */
-class ComputedBoundsAction implements Action {
+interface ComputedBoundsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'computedBounds';
+    kind = 'computedBounds';
 
     /**
      * The new bounds of the model elements.
      */
-    public readonly bounds: ElementAndBounds[];
+    bounds: ElementAndBounds[];
 
     /*
      * The revision number.
      */
-    public readonly revision?: number;
+    revision?: number;
 
     /**
      * The new alignment of the model elements.
      */
-    public readonly alignments?: ElementAndAlignment[];
+    alignments?: ElementAndAlignment[];
+
+    /**
+     * The route of the model elements.
+     */
+    routes?: ElementAndRoutingPoints[];
 }
 ```
 
@@ -1128,21 +1183,16 @@ Request a layout of the diagram or selected elements from the server.
 /**
  * Layout Operation based on Sprotty's LayoutAction.
  */
-class LayoutOperation implements Operation {
+interface LayoutOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'layout';
-
-    /**
-     * The layout type.
-     */
-    public readonly layoutType: string;
+    kind = 'layout';
 
     /**
      * The identifiers of the elements that should be layouted, may be just the root element.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 }
 ```
 
@@ -1159,16 +1209,16 @@ Sent from the client to the server to set the model into a specific editor mode,
 <details open><summary>Code</summary>
 
 ```typescript
-class SetEditModeAction implements Action {
+interface SetEditModeAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setEditMode';
+    kind = 'setEditMode';
 
     /**
      * The new edit mode of the diagram.
      */
-    public readonly editMode: string;
+    editMode: string;
 }
 ```
 
@@ -1192,26 +1242,26 @@ Centers the viewport on the elements with the given identifiers. It changes the 
 /**
  * Sprotty's CenterAction.
  */
-class CenterAction implements Action {
+interface CenterAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'center';
+    kind = 'center';
 
     /**
      * The identifier of the elements on which the viewport should be centered.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * Indicate if the modification of the viewport should be realized with or without support of animations.
      */
-    public readonly animate: boolean = true;
+    animate: boolean = true;
 
     /**
      * Indicates whether the zoom level should be kept.
      */
-    public readonly retainZoom: boolean = false;
+    retainZoom: boolean = false;
 }
 ```
 
@@ -1227,31 +1277,31 @@ Triggers to fit all or a list of elements into the available drawing area. The r
 /**
  * Sprotty's FitToScreenAction.
  */
-class FitToScreenAction implements Action {
+interface FitToScreenAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'fit';
+    kind = 'fit';
 
     /**
      * The identifier of the elements to fit on screen.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * The padding that should be visible on the viewport.
      */
-    public readonly padding?: number;
+    padding?: number;
 
     /**
      * The max zoom level authorized.
      */
-    public readonly maxZoom?: number;
+    maxZoom?: number;
 
     /**
      * Indicate if the action should be performed with animation support or not.
      */
-    public readonly animate: boolean = true;
+    animate: boolean = true;
 }
 ```
 
@@ -1261,7 +1311,7 @@ class FitToScreenAction implements Action {
 
 In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
-#### 2.8.2.1. GLSPServerStatusAction
+#### 2.8.2.1. SPServerStatusAction
 
 This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
 
@@ -1271,26 +1321,26 @@ This action is typically sent by the server to signal a state change. This actio
 /**
  * Based on Sprotty's ServerStatusAction but extended with a timeout.
  */
-class GLSPServerStatusAction implements Action {
+interface ServerStatusAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'serverStatus';
+    kind = 'serverStatus';
 
     /**
      * The severity of the status.
      */
-    public readonly severity: string;
+    severity: ServerSeverity;
 
     /**
      * The message describing the status.
      */
-    public readonly message: string;
+    message: string;
 
     /**
      * Timeout after which a displayed status disappears.
      */
-    public timeout: number = 1;
+    timeout?: number;
 }
 ```
 
@@ -1303,16 +1353,16 @@ This action is typically sent by the server to notify the user about something o
 <details open><summary>Code</summary>
 
 ```typescript
-class ServerMessageAction implements Action {
+interface ServerMessageAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'serverMessage';
+    kind = 'serverMessage';
 
     /**
      * The severity of the message.
      */
-    severity: 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL';
+    severity: ServerSeverity;
 
     /**
      * The message text.
@@ -1322,13 +1372,28 @@ class ServerMessageAction implements Action {
     /**
      * Further details on the message.
      */
-    details: string = '';
+    details: string;
 
     /**
      * Timeout after which a displayed message disappears.
      */
-    timeout: number = -1;
+    timeout?: number;
 }
+```
+
+</details>
+
+#### 2.8.2.3. ServerSeverity
+
+The severity of a status or message.
+
+<details open><summary>Code</summary>
+
+```typescript
+/**
+ * The possible server status severity levels.
+ */
+type ServerSeverity = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
 ```
 
 </details>
@@ -1345,21 +1410,21 @@ Triggered when the user changes the selection, e.g. by clicking on a selectable 
 /**
  * Sprotty's SelectAction.
  */
-class SelectAction implements Action {
+interface SelectAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'elementSelected';
+    kind = 'elementSelected';
 
     /**
      * The identifier of the elements to mark as selected.
      */
-    public readonly selectedElementsIDs: string[] = [];
+    selectedElementsIDs: string[];
 
     /**
      * The identifier of the elements to mark as not selected.
      */
-    public readonly deselectedElementsIDs: string[] = [];
+    deselectedElementsIDs: string[];
 }
 ```
 
@@ -1375,16 +1440,16 @@ Used for selecting or deselecting all elements.
 /**
  * Sprotty's SelectAllAction.
  */
-class SelectAllAction implements Action {
+interface SelectAllAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'allSelected';
+    kind = 'allSelected';
 
     /**
      * If `select` is true, all elements are selected, otherwise they are deselected.
      */
-    public readonly select: boolean = true;
+    select: boolean;
 }
 ```
 
@@ -1402,21 +1467,21 @@ Triggered when the user hovers the mouse pointer over an element to get a popup 
 /**
  * Sprotty's RequestPopupModelAction.
  */
-class RequestPopupModelAction implements Action {
+interface RequestPopupModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestPopupModel';
+    kind = 'requestPopupModel';
 
     /**
      * The identifier of the elements for which a popup is requested.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The bounds.
      */
-    public readonly bounds: Bounds;
+    bounds: Bounds;
 }
 ```
 
@@ -1432,16 +1497,16 @@ Sent from the server to the client to display a popup in response to a `RequestP
 /**
  * Sprotty's SetPopupModelAction.
  */
-class SetPopupModelAction implements Action {
+interface SetPopupModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setPopupModel';
+    kind = 'setPopupModel';
 
     /**
      * The model elements composing the popup to display.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -1486,16 +1551,16 @@ Action to retrieve markers for the specified model elements. Sent from the clien
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestMarkersAction implements Action {
+interface RequestMarkersAction extends RequestAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestMarkers';
+    kind = 'requestMarkers';
 
     /**
      * The elements for which markers are requested, may be just the root element.
      */
-    public readonly elementsIDs: string[];
+    elementsIDs: string[];
 }
 ```
 
@@ -1508,16 +1573,16 @@ Response to the `RequestMarkersAction` containing all validation markers. Sent f
 <details open><summary>Code</summary>
 
 ```typescript
-class SetMarkersAction implements Action {
+interface SetMarkersAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setMarkers';
+    kind = 'setMarkers';
 
     /**
      * The list of markers that has been requested by the `RequestMarkersAction`.
      */
-    public readonly markers: Marker[];
+    markers: Marker[];
 }
 ```
 
@@ -1530,16 +1595,16 @@ To remove markers for elements a client or server may send a `DeleteMarkersActio
 <details open><summary>Code</summary>
 
 ```typescript
-class DeleteMarkersAction implements Action {
+interface DeleteMarkersAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'deleteMarkers';
+    kind = 'deleteMarkers';
 
     /**
      * The list of markers that should be deleted.
      */
-    public readonly markers: Marker[];
+    markers: Marker[];
 }
 ```
 
@@ -1581,21 +1646,21 @@ Action that is usually sent from the client to the server to request navigation 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestNavigationTargetsAction implements RequestAction<SetNavigationTargetsAction> {
+interface RequestNavigationTargetsAction extends RequestAction<SetNavigationTargetsAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestNavigationTargets';
+    kind = 'requestNavigationTargets';
 
     /**
      * Identifier of the type of navigation targets we want to retrieve, e.g., 'documentation', 'implementation', etc.
      */
-    public readonly targetTypeId: string;
+    targetTypeId: string;
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -1608,21 +1673,21 @@ Response action from the server following a `RequestNavigationTargetsAction`. It
 <details open><summary>Code</summary>
 
 ```typescript
-class SetNavigationTargetsAction implements ResponseAction {
+interface SetNavigationTargetsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setNavigationTargets';
+    kind = 'setNavigationTargets';
 
     /**
      * A list of navigation targets.
      */
-    public readonly targets: NavigationTarget[];
+    targets: NavigationTarget[];
 
     /**
      * Custom arguments that may be interpreted by the client.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -1635,16 +1700,16 @@ Action that triggers the navigation to a particular navigation target. This may 
 <details open><summary>Code</summary>
 
 ```typescript
-class NavigateToTargetAction implements Action {
+interface NavigateToTargetAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'navigateToTarget';
+    kind = 'navigateToTarget';
 
     /**
      * The target to which we navigate.
      */
-    public readonly target: NavigationTarget;
+    target: NavigationTarget;
 }
 ```
 
@@ -1657,16 +1722,16 @@ If a client cannot navigate to a target directly, a `ResolveNavigationTargetActi
 <details open><summary>Code</summary>
 
 ```typescript
-class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigationTargetAction> {
+interface ResolveNavigationTargetAction extends RequestAction<SetResolvedNavigationTargetAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'resolveNavigationTarget';
+    kind = 'resolveNavigationTarget';
 
     /**
      * The navigation target to resolve.
      */
-    public readonly navigationTarget: NavigationTarget;
+    navigationTarget: NavigationTarget;
 }
 ```
 
@@ -1679,21 +1744,21 @@ An action sent from the server in response to a `ResolveNavigationTargetAction`.
 <details open><summary>Code</summary>
 
 ```typescript
-class SetResolvedNavigationTargetAction implements ResponseAction {
+interface SetResolvedNavigationTargetAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setResolvedNavigationTarget';
+    kind = 'setResolvedNavigationTarget';
 
     /**
      * The element ids of the resolved navigation target.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * Custom arguments that may be interpreted by the client.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -1706,16 +1771,16 @@ If a navigation target cannot be resolved or the resolved target is something th
 <details open><summary>Code</summary>
 
 ```typescript
-class NavigateToExternalTargetAction implements Action {
+interface NavigateToExternalTargetAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'navigateToExternalTarget';
+    kind = 'navigateToExternalTarget';
 
     /**
      * The target to which we navigate.
      */
-    public readonly target: NavigationTarget;
+    target: NavigationTarget;
 }
 ```
 
@@ -1791,11 +1856,11 @@ Sent from the client to the server in order to request hints on whether certain 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestTypeHintsAction implements Action {
+interface RequestTypeHintsAction extends RequestAction<SetTypeHintsAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestTypeHints';
+    kind = 'requestTypeHints';
 }
 ```
 
@@ -1808,21 +1873,21 @@ Sent from the server to the client in order to provide hints certain modificatio
 <details open><summary>Code</summary>
 
 ```typescript
-class SetTypeHintsAction implements Action {
+interface SetTypeHintsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setTypeHints';
+    kind = 'setTypeHints';
 
     /**
-     * The hints for node types.
+     * The hints for shape types.
      */
-    public readonly nodeHints: ShapeTypeHint[];
+    shapeHints: ShapeTypeHint[];
 
     /**
      * The hints for edge types.
      */
-    public readonly edgeHints: EdgeTypeHint[];
+    edgeHints: EdgeTypeHint[];
 }
 ```
 
@@ -1837,31 +1902,21 @@ class SetTypeHintsAction implements Action {
 In order to create a node in the model the client can send a `CreateNodeOperation` with the necessary information to create that node.
 
 ```typescript
-class CreateNodeOperation implements Operation {
+interface CreateNodeOperation extends CreateOperation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'createNode';
-
-    /**
-     * The type of the element to be created.
-     */
-    public readonly elementTypeId: string;
+    kind = 'createNode';
 
     /*
      * The location at which the operation shall be executed.
      */
-    public readonly location?: Point;
+    location?: Point;
 
     /*
      * The container in which the operation shall be executed.
      */
-    public readonly containerId?: string;
-
-    /*
-     * Additional arguments for custom behavior.
-     */
-    public readonly args?: Args;
+    containerId?: string;
 }
 ```
 
@@ -1874,31 +1929,21 @@ In order to create an edge in the model the client can send a `CreateEdgeOperati
 <details open><summary>Code</summary>
 
 ```typescript
-class CreateEdgeOperation implements Operation {
+interface CreateEdgeOperation extends CreateOperation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'createEdge';
-
-    /**
-     * The type of the element to be created.
-     */
-    public readonly elementTypeId: string;
+    kind = 'createEdge';
 
     /*
      * The source element.
      */
-    public readonly sourceElementId: string;
+    sourceElementId: string;
 
     /*
      * The target element.
      */
-    public readonly targetElementId: string;
-
-    /*
-     * Additional arguments for custom behavior.
-     */
-    public readonly args?: Args;
+    targetElementId: string;
 }
 ```
 
@@ -1911,16 +1956,16 @@ The client sends a `DeleteElementOperation` to the server to request the deletio
 <details open><summary>Code</summary>
 
 ```typescript
-class DeleteElementOperation implements Operation {
+interface DeleteElementOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'deleteElement';
+    kind = 'deleteElement';
 
     /**
      * The elements to be deleted.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 }
 ```
 
@@ -1935,16 +1980,16 @@ Triggers the position or size change of elements. This action concerns only the 
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeBoundsOperation implements Action {
+interface ChangeBoundsOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeBounds';
+    kind = 'changeBounds';
 
     /**
      * The new bounds of the respective elements.
      */
-    public readonly newBounds: ElementAndBounds[];
+    newBounds: ElementAndBounds[];
 }
 ```
 
@@ -1957,26 +2002,26 @@ The client sends a `ChangeContainerOperation` to the server to request the execu
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeContainerOperation implements Operation {
+interface ChangeContainerOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeContainer';
+    kind = 'changeContainer';
 
     /**
      * The element to be changed.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The element container of the changeContainer operation.
      */
-    public readonly targetContainerId: string;
+    targetContainerId: string;
 
     /**
      * The graphical location.
      */
-    public readonly location?: string;
+    location?: string;
 }
 ```
 
@@ -1991,26 +2036,31 @@ If the source and/or target element of an edge should be adapted, the client can
 <details open><summary>Code</summary>
 
 ```typescript
-class ReconnectEdgeOperation implements Operation {
+interface ReconnectEdgeOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'reconnectEdge';
+    kind = 'reconnectEdge';
 
     /**
      * The edge element that should be reconnected.
      */
-    public readonly edgeElementId: string;
+    edgeElementId: string;
 
     /**
      * The (new) source element of the edge.
      */
-    public readonly sourceElementId: string;
+    sourceElementId: string;
 
     /**
      * The (new) target element of the edge.
      */
-    public readonly targetElementId: string;
+    targetElementId: string;
+
+    /*
+     * Additional arguments for custom behavior.
+     */
+    args?: Args;
 }
 ```
 
@@ -2023,16 +2073,16 @@ An edge may have zero or more routing points that "re-direct" the edge between t
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeRoutingPointsOperation implements Operation {
+interface ChangeRoutingPointsOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeRoutingPoints';
+    kind = 'changeRoutingPoints';
 
     /**
      * The routing points of the edge (may be empty).
      */
-    public readonly newRoutingPoints: ElementAndRoutingPoints[];
+    newRoutingPoints: ElementAndRoutingPoints[];
 }
 ```
 
@@ -2102,26 +2152,26 @@ Requests the validation of the given text in the context of the provided model e
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestEditValidationAction implements RequestAction<SetEditValidationResultAction> {
+interface RequestEditValidationAction extends RequestAction<SetEditValidationResultAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestEditValidation';
+    kind = 'requestEditValidation';
 
     /**
      * Context in which the text is validated, e.g., 'label-edit'.
      */
-    public readonly contextId: string;
+    contextId: string;
 
     /**
      * Model element that is being edited.
      */
-    public readonly modelElementId: string;
+    modelElementId: string;
 
     /**
      * Text that should be considered for the model element.
      */
-    public readonly text: string;
+    text: string;
 }
 ```
 
@@ -2134,21 +2184,21 @@ Response to a `RequestEditValidationAction` containing the validation result for
 <details open><summary>Code</summary>
 
 ```typescript
-class SetEditValidationResultAction implements ResponseAction {
+interface SetEditValidationResultAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setEditValidationResult';
+    kind = 'setEditValidationResult';
 
     /**
      * Validation status.
      */
-    public readonly status: ValidationStatus;
+    status: ValidationStatus;
 
     /*
      * Additional arguments for custom behavior.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -2161,21 +2211,21 @@ A very common use case in domain models is the support of labels that display te
 <details open><summary>Code</summary>
 
 ```typescript
-class ApplyLabelEditOperation implements Operation {
+interface ApplyLabelEditOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'applyLabelEdit';
+    kind = 'applyLabelEdit';
 
     /**
      * Identifier of the label model element.
      */
-    public readonly labelId: string;
+    labelId: string;
 
     /**
      * Text that should be applied on the label.
      */
-    public readonly text: string;
+    text: string;
 }
 ```
 
@@ -2200,16 +2250,16 @@ Requests the clipboard data for the current editor context, i.e., the selected e
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestClipboardDataAction implements RequestAction<SetClipboardDataAction> {
+interface RequestClipboardDataAction extends RequestAction<SetClipboardDataAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestClipboardData';
+    kind = 'requestClipboardData';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2222,16 +2272,16 @@ Server response to a `RequestClipboardDataAction` containing the selected elemen
 <details open><summary>Code</summary>
 
 ```typescript
-class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
+interface SetClipboardDataAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setClipboardData';
+    kind = 'setClipboardData';
 
     /**
      * The selected elements from the editor context as clipboard data.
      */
-    public readonly clipboardData: ClipboardData;
+    clipboardData: ClipboardData;
 }
 ```
 
@@ -2244,16 +2294,16 @@ Requests a cut operation from the server, i.e., deleting the selected elements f
 <details open><summary>Code</summary>
 
 ```typescript
-class CutOperation implements Operation {
+interface CutOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'cut';
+    kind = 'cut';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2266,21 +2316,21 @@ Requests a paste operation from the server by providing the current clipboard da
 <details open><summary>Code</summary>
 
 ```typescript
-class PasteOperation implements Operation {
+interface PasteOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'paste';
+    kind = 'paste';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 
     /**
      * The clipboard data that should be pasted to the editor's last recorded mouse position (see `editorContext`).
      */
-    public readonly clipboardData: ClipboardData;
+    clipboardData: ClipboardData;
 }
 ```
 
@@ -2297,11 +2347,11 @@ Trigger an undo of the latest executed command.
 <details open><summary>Code</summary>
 
 ```typescript
-class UndoAction implements Action {
+interface UndoAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'glspUndo';
+    kind = 'glspUndo';
 }
 ```
 
@@ -2314,11 +2364,11 @@ Trigger a redo of the latest undone command.
 <details open><summary>Code</summary>
 
 ```typescript
-class RedoAction implements Action {
+interface RedoAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'glspRedo';
+    kind = 'glspRedo';
 }
 ```
 
@@ -2339,21 +2389,21 @@ A context is a dedicated space in the client that is identified via a unique id.
 The RequestContextActions is sent from the client to the server to request the available actions for the context with id `contextId`.
 
 ```typescript
-class RequestContextActions implements RequestAction<SetContextActions> {
+interface RequestContextActions extends RequestAction<SetContextActions> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestContextActions';
+    kind = 'requestContextActions';
 
     /**
      * The identifier for the context.
      */
-    public readonly contextId: string;
+    contextId: string;
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2366,21 +2416,21 @@ The `SetContextActions` is the response to a `RequestContextActions` containing 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetContextActions implements ResponseAction {
+interface SetContextActions extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setContextActions';
+    kind = 'setContextActions';
 
     /**
      * The actions available in the queried context.
      */
-    public readonly actions: LabeledAction[];
+    readonly actions: LabeledAction[];
 
     /**
      * Custom arguments.
      */
-    public readonly args: ?Args;
+    args: ?Args;
 }
 ```
 
@@ -2440,21 +2490,21 @@ Triggers the enablement of the tool that is responsible for creating nodes and i
 <details open><summary>Code</summary>
 
 ```typescript
-class TriggerNodeCreationAction extends TriggerElementCreationAction {
+interface TriggerNodeCreationAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'triggerNodeCreation';
+    kind = 'triggerNodeCreation';
 
     /**
      * The type of node that should be created by the node creation tool.
      */
-    public readonly elementTypeId: string;
+    elementTypeId: string;
 
     /**
      * Custom arguments.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -2467,21 +2517,21 @@ Triggers the enablement of the tool that is responsible for creating edges and i
 <details open><summary>Code</summary>
 
 ```typescript
-class TriggerEdgeCreationAction extends TriggerElementCreationAction {
+interface TriggerEdgeCreationAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'triggerEdgeCreation';
+    kind = 'triggerEdgeCreation';
 
     /**
      * The type of edge that should be created by the edge creation tool.
      */
-    public readonly elementTypeId: string;
+    elementTypeId: string;
 
     /**
      * Custom arguments.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
