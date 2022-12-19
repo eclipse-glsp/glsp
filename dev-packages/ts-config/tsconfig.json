@@ -19,7 +19,7 @@
     "downlevelIteration": true,
     "resolveJsonModule": true,
     "module": "commonjs",
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "target": "ES2017",
     "jsx": "react",
     "lib": ["ES2017", "dom"],
