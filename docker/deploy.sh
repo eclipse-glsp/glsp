@@ -15,7 +15,7 @@ cd ../..
 
 echo "[INFO] Build eclipseglsp/ci:ubuntu"
 cd ci/ubuntu || exit
-docker build -t eclipseglsp/ci:ubuntu -t eclipseglsp/ci:ubuntu-v${version} -t eclipseglsp/ci:latest . --no-cache
+docker build -t eclipseglsp/ci:ubuntu -t eclipseglsp/ci:ubuntu-v${version} -t eclipseglsp/ci . --no-cache
 cd ../..
 
 echo "[INFO] Build eclipseglsp/ci:uitest"

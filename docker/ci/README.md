@@ -34,7 +34,7 @@ They are mainly used for CI jobs that require the possibility to build client an
 Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
--   Node 14, yarn 1.22.4 and lerna
+-   Node 16, yarn 1.22.19 and lerna
 -   OpenJDK 11 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
@@ -80,6 +80,7 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v2.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v2.0): Update preinstalled dependencies to support Theia >=1.15.0
 -   [v3.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.0): Update to node 14
 -   [v3.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.1): Pre-install latest lerna version
+-   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
 
 ## License
 
