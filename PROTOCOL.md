@@ -2290,14 +2290,14 @@ class PasteOperation implements Operation {
 
 A server usually keeps a command stack of all commands executed on the model. To navigate the command stack the following actions can be used.
 
-### 2.18.1. UndoOperation
+### 2.18.1. UndoAction
 
 Trigger an undo of the latest executed command.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class UndoOperation implements Action {
+class UndoAction implements Action {
     /**
      * The kind of the action.
      */
@@ -2307,14 +2307,14 @@ class UndoOperation implements Action {
 
 </details>
 
-### 2.18.2. RedoOperation
+### 2.18.2. RedoAction
 
 Trigger a redo of the latest undone command.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class RedoOperation implements Action {
+class RedoAction implements Action {
     /**
      * The kind of the action.
      */
