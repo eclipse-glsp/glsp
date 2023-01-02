@@ -199,7 +199,7 @@ function validateSingleYear(result: DateValidationResult): void {
         return;
     }
 
-    // Cornercase: For files of the initial contribution the copyright header  predates the first git modification date.
+    // Cornercase: For files of the initial contribution the copyright header predates the first git modification date.
     // => declare as warning if not part of the initial contribution.
     if (expectedStartYear === currentEndYear && currentStartYear < expectedStartYear) {
         if (getFirstCommit(result.file) === getInitialCommit()) {

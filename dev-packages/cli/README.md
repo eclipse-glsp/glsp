@@ -14,7 +14,7 @@ yarn add @eclipse-glsp/cli --dev
 ## checkHeaders
 
 The `checkHeaders` command can be used to validate the copyright year (range) of license headers.
-It checks for each file (matching the include pattern) whether the defined copyright range is inline with the first and last modification state in the git repository.
+It checks for each file (matching the include pattern) whether the defined copyright range is in line with the first and last modification date in the git repository.
 Found violations are printed to the console.
 The validation check can be restricted to pending changes and/or the last commit e.g. to validate a commit before creating a PR.
 
