@@ -259,7 +259,7 @@ export function displayValidationResult(rootDir: string, results: ValidationResu
     } else if (options.severity === 'warn') {
         toPrint = results.filter(result => result.severity !== 'ok');
     }
-    toPrint.forEach((result, i) => LOGGER.info(`${i}. `, result.file, ':', toPrintMessage(result)));
+    toPrint.forEach((result, i) => LOGGER.info(`${i + 1}. `, result.file, ':', toPrintMessage(result)));
 
     LOGGER.newLine();
 

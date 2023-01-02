@@ -20,12 +20,12 @@ import { getShellConfig } from './command-util';
 
 export function isGitRepository(path?: string): boolean {
     cdIfPresent(path);
-    return (
+    const isGitRepo =
         sh
             .exec('git rev-parse --is-inside-work-tree', getShellConfig({ silent: true }))
             .stdout.trim()
-            .toLocaleLowerCase() === 'true'
-    );
+            .toLocaleLowerCase() === 'true';
+    return isGitRepo;
 }
 
 export function getGitRoot(path?: string): string {
@@ -44,14 +44,14 @@ export function hasGitChanges(path?: string): boolean {
  */
 export function getUncommittedChanges(path?: string): string[] {
     cdIfPresent(path);
-    return (
-        sh
-            .exec('git status --porcelain', getShellConfig())
-            .stdout.trim()
-            .split('\n')
+    return sh
+        .exec('git status --porcelain', getShellConfig())
+        .stdout.trim()
+        .split('\n')
+        .map(fileInfo =>
             // Extract relative file path from the info string and convert to absolute path
-            .map(fileInfo => resolve(path ?? process.cwd(), fileInfo.trim().split(' ').pop() ?? ''))
-    );
+            resolve(path ?? process.cwd(), fileInfo.trim().split(' ').pop() ?? '')
+        );
 }
 
 /**
