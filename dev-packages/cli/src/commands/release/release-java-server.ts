@@ -67,7 +67,7 @@ function build(): void {
     LOGGER.info('Build M2 & P2');
     LOGGER.debug('M2');
     fatalExec('mvn clean install -Pm2', 'M2 build failed', getShellConfig({ silent: false }));
-    console.log('');
+    LOGGER.newLine();
     LOGGER.debug('P2');
     fatalExec('mvn clean install -Pp2', 'P2 build failed', getShellConfig({ silent: false }));
 }

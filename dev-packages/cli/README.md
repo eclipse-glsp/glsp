@@ -11,6 +11,35 @@ Install `@eclipse-glsp/cli` as a dev dependency in your application.
 yarn add @eclipse-glsp/cli --dev
 ```
 
+## checkHeaders
+
+The `checkHeaders` command can be used to validate the copyright year (range) of license headers.
+It checks for each file (matching the include pattern) whether the defined copyright range is in line with the first and last modification date in the git repository.
+Found violations are printed to the console.
+The validation check can be restricted to pending changes and/or the last commit e.g. to validate a commit before creating a PR.
+
+```console
+$ glsp checkHeaders -h
+
+Usage: glsp checkHeaders [options] <rootDir>
+
+Validates the copyright year range of license header files
+
+Arguments:
+  rootDir                               The starting directory for the check
+
+Options:
+  -t, --type <type>                     The scope of the check. In addition to a full recursive check, is also possible to only consider pending changes or the last commit (choices: "full", "changes", "lastCommit",
+                                        default: "full")
+  -f, --fileExtensions <extensions...>  File extensions that should be checked (default: ["ts","tsx"])
+  -e, --exclude <exclude...>            File patterns that should be excluded from the check. New exclude patterns are added to the default patterns (default: [**/@(node_modules|lib|dist|bundle)/**])
+  --no-exclude-defaults                 Disables the default excludes patterns. Only explicitly passed exclude patterns (-e, --exclude) are considered
+  -p, --headerPattern <pattern>         Regex pattern to extract the copyright year (range) from the header (default: "Copyright \\([cC]\\) \\d{4}(-d{4})?")
+  -j, --json                            Also persist validation results as json file (default: false)
+  -s, --severity <severity>             The severity of validation results that should be printed. (choices: "error", "warn", "ok", default: "error" (only))
+  -h, --help                            display help for command
+```
+
 ## coverageReport
 
 The `coverageReport` command can be used to create a full nyc test coverage report for a lerna/yarn mono repository.
@@ -32,7 +61,7 @@ Options:
 
 Eclipse GLSP committers can use the `release` command to prepare & publish a new Github release for a specific GLSP component.
 
-```bash
+```console
 $ glsp release -h
 Usage: glsp release [options] <component> <releaseType> [customVersion]
 

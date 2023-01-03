@@ -14,74 +14,159 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
+import { resolve } from 'path';
 import * as sh from 'shelljs';
-import { fatalExec, getShellConfig } from './command-util';
-import { LOGGER } from './logger';
-import { validateGitDirectory } from './validation-util';
+import { getShellConfig } from './command-util';
 
-export function isGithubCLIAuthenticated(): boolean {
-    LOGGER.debug('Verify that Github CLI is installed');
-    fatalExec('which gh', 'Github CLI is not installed!');
-
-    const status = sh.exec('gh auth status', getShellConfig());
-    if (status.code !== 0) {
-        if (status.stderr.includes('You are not logged into any GitHub hosts')) {
-            return false;
-        }
-        throw new Error(status.stderr);
-    }
-    if (!status.stderr.trim().includes('Logged in to github.com')) {
-        LOGGER.debug("No user is logged in for host 'github.com'");
-        return false;
-    }
-    LOGGER.debug('Github CLI is authenticated and ready to use');
-    return true;
+export function isGitRepository(path?: string): boolean {
+    cdIfPresent(path);
+    const isGitRepo =
+        sh
+            .exec('git rev-parse --is-inside-work-tree', getShellConfig({ silent: true }))
+            .stdout.trim()
+            .toLocaleLowerCase() === 'true';
+    return isGitRepo;
 }
 
-export function isGitRepository(path: string): boolean {
-    LOGGER.debug(`Check if the given directory is a git repo: ${path}`);
-    sh.cd(path);
-    return sh.exec('git rev-parse --is-inside-work-tree', getShellConfig()).stdout.trim().toLocaleLowerCase() === 'true';
+export function getGitRoot(path?: string): string {
+    cdIfPresent(path);
+    const fileString = sh.exec('git rev-parse --show-toplevel', getShellConfig()).stdout.trim();
+    return resolve(fileString);
 }
 
 export function hasGitChanges(path?: string): boolean {
-    LOGGER.debug(`Check if the directory has git changes:  ${asDebugArg(path)}`);
-    cdIfPresent(path);
-    return sh.exec('git status --porcelain').stdout.trim().length !== 0;
+    return getUncommittedChanges(path).length > 0;
 }
 
-export function getLatestRelease(path?: string): string {
-    LOGGER.debug(`Retrieve latest release from repo:  ${asDebugArg(path)}`);
+/**
+ * Returns the files that have uncommitted changes (staged, not staged and untracked) of a git repository.
+ * Filepaths are absolute.
+ */
+export function getUncommittedChanges(path?: string): string[] {
+    cdIfPresent(path);
+    return sh
+        .exec('git status --porcelain', getShellConfig())
+        .stdout.trim()
+        .split('\n')
+        .map(fileInfo =>
+            // Extract relative file path from the info string and convert to absolute path
+            resolve(path ?? process.cwd(), fileInfo.trim().split(' ').pop() ?? '')
+        );
+}
+
+/**
+ * Returns the files tha have been changed with the last commit (also includes currently staged but uncommitted changes)
+ * Filepaths are absolute.
+ */
+export function getChangesOfLastCommit(path?: string): string[] {
+    cdIfPresent(path);
+    return sh
+        .exec('git diff --name-only HEAD^', getShellConfig())
+        .stdout.trim()
+        .split('\n')
+        .map(file => resolve(path ?? process.cwd(), file));
+}
+
+/**
+ * Returns the last modification date of a file (or the last commit) in a git repo.
+ * @param filePath The file. If undefined the modification date of the last commit will be returned
+ * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ * @returns The date or undefined if the file is outside of the git repo.
+ */
+export function getLastModificationDate(filePath?: string, repoRoot?: string): Date | undefined {
+    cdIfPresent(repoRoot);
+    const result = sh.exec(`git log -1 --pretty="format:%ci" ${filePath ?? ''}`, getShellConfig());
+    if (result.code !== 0) {
+        return undefined;
+    }
+    return new Date(result.stdout.trim());
+}
+/**
+ * Returns the last modification date of a file in a git repo.
+ * @param filePath The file
+ * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ * @returns The date or undefined if the file is outside of the git repo.
+ */
+export function getFirstModificationDate(filePath: string, repoRoot?: string): Date | undefined {
+    cdIfPresent(repoRoot);
+    const result = sh.exec(`git log --pretty="format:%ci" --follow ${filePath}`, getShellConfig());
+    if (result.code !== 0) {
+        return undefined;
+    }
+    const datesString = result.stdout.trim();
+    if (datesString.length === 0) {
+        return new Date();
+    }
+
+    const date = datesString.split('\n').pop();
+    return date ? new Date(date) : undefined;
+}
+
+export function getFilesOfCommit(commitHash: string, repoRoot?: string): string[] {
+    cdIfPresent(repoRoot);
+    const result = sh.exec(`git show --pretty="" --name-only ${commitHash}`, getShellConfig());
+    if (result.code !== 0) {
+        return [];
+    }
+
+    return result.stdout.trim().split('\n');
+}
+
+/**
+ * Returns the commit hash of the initial commit of the given repository
+ * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ * @returns The commit hash or undefined if something went wrong.
+ */
+export function getInitialCommit(repoRoot?: string): string | undefined {
+    cdIfPresent(repoRoot);
+    const result = sh.exec('git log --pretty=oneline --reverse', getShellConfig());
+    if (result.code !== 0) {
+        return undefined;
+    }
+    const commits = result.stdout.trim();
+    if (commits.length === 0) {
+        return undefined;
+    }
+    return commits.substring(0, commits.indexOf(' '));
+}
+
+/**
+ * Returns the commit hash of the first commit for a given file (across renames).
+ * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ * @returns The commit hash or undefined if something went wrong.
+ */
+export function getFirstCommit(filePath: string, repoRoot?: string): string | undefined {
+    cdIfPresent(repoRoot);
+    const result = sh.exec(`git log --follow  --pretty=format:"%H" ${filePath}`, getShellConfig());
+    if (result.code !== 0) {
+        return undefined;
+    }
+    return result.stdout.trim().split('\n').pop();
+}
+
+export function getLatestGithubRelease(path?: string): string {
     cdIfPresent(path);
     const release = sh.exec('gh release list --exclude-drafts -L 1', getShellConfig()).stdout.trim().split('\t');
     return release[release.length - 2];
 }
 
 export function getLatestTag(path?: string): string {
-    LOGGER.debug(`Retrieve latest tag from local repo :  ${asDebugArg(path)}`);
     cdIfPresent(path);
     return sh.exec('git describe --abbrev=0 --tags', getShellConfig()).stdout.trim();
 }
 
 export function hasBranch(branch: string, path?: string): boolean {
-    LOGGER.debug(`Check if branch exists:  ${asDebugArg(path)}`);
     cdIfPresent(path);
     return sh.exec(`git branch --list ${branch}`, getShellConfig()).stdout.trim().length !== 0;
 }
 
 export function getRemoteUrl(path?: string): string {
-    LOGGER.debug(`Retrieve remote git url for:  ${asDebugArg(path)}`);
     cdIfPresent(path);
     return sh.exec('git config --get remote.origin.url', getShellConfig()).stdout.trim();
 }
 
 function cdIfPresent(path?: string): void {
     if (path) {
-        validateGitDirectory(path);
         sh.cd(path);
     }
-}
-
-function asDebugArg(path?: string): string {
-    return path ?? sh.pwd().stdout;
 }

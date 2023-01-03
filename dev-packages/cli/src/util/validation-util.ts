@@ -17,7 +17,7 @@ import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import * as semver from 'semver';
-import { isGitRepository } from './git-util';
+import { getGitRoot, isGitRepository } from './git-util';
 import { LOGGER } from './logger';
 export const COMMAND_VERSION = '1.1.0-next';
 
@@ -33,10 +33,22 @@ export function validateDirectory(rootDir: string): string {
     return path;
 }
 
+export function validateFile(filePath: string, hasToExist = false): string {
+    const path = resolve(filePath);
+
+    if (hasToExist && !fs.existsSync(path)) {
+        throw new InvalidArgumentError('Not a valid file path!');
+    }
+    if (!fs.statSync(path).isFile()) {
+        throw new InvalidArgumentError('Not a file!');
+    }
+    return path;
+}
+
 export function validateVersion(version: string): string {
     LOGGER.debug(`Validate version format of: ${version}`);
     if (!semver.valid(version)) {
-        throw new Error(`Not a valid version: ${version}`);
+        throw new InvalidArgumentError(`Not a valid version: ${version}`);
     }
     return version;
 }
@@ -44,7 +56,8 @@ export function validateVersion(version: string): string {
 export function validateGitDirectory(repository: string): string {
     const repoPath = validateDirectory(repository);
     if (!isGitRepository(repoPath)) {
-        throw new Error('Not a valid git repository');
+        throw new InvalidArgumentError('Not a valid git repository');
     }
-    return repoPath;
+
+    return getGitRoot(repository);
 }

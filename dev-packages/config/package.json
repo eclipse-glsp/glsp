@@ -2,20 +2,20 @@
   "name": "@eclipse-glsp/config",
   "version": "1.0.0-next",
   "description": "Wrapper package that provides Typescript, eslint and prettier configurations and common dev dependencies for GLSP projects",
-  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
     "eclipse",
     "config"
   ],
-  "author": {
-    "name": "Eclipse GLSP"
-  },
   "homepage": "https://www.eclipse.org/glsp/",
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/eclipse-glsp/glsp.git"
   },
-  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "author": {
+    "name": "Eclipse GLSP"
+  },
   "contributors": [
     {
       "name": "Eclipse GLSP Project",
@@ -23,9 +23,6 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@eclipse-glsp/eslint-config": "1.0.0-next",
     "@eclipse-glsp/prettier-config": "1.0.0-next",
@@ -44,5 +41,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "typescript": "^4.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

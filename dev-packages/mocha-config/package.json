@@ -2,22 +2,22 @@
   "name": "@eclipse-glsp/mocha-config",
   "version": "1.0.0-next",
   "description": "Shared Mocha test configuration for GLSP projects",
-  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
   "keywords": [
     "eclipse",
     "glsp",
     "mocha",
     "testing"
   ],
-  "author": {
-    "name": "Eclipse GLSP"
-  },
   "homepage": "https://www.eclipse.org/glsp/",
+  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/eclipse-glsp/glsp.git"
   },
-  "bugs": "https://github.com/eclipse-glsp/glsp/issues",
+  "license": "(EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0)",
+  "author": {
+    "name": "Eclipse GLSP"
+  },
   "contributors": [
     {
       "name": "Eclipse GLSP Project",
@@ -25,17 +25,17 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "peerDependencies": {
-    "reflect-metadata": ">=0.1.13",
-    "ignore-styles": "^5.0.1",
-    "mocha": "^10.1.0",
-    "ts-node": "^10.9.1"
-  },
+  "main": ".mocharc.json",
   "files": [
     ".mocharc.json"
   ],
+  "peerDependencies": {
+    "ignore-styles": "^5.0.1",
+    "mocha": "^10.1.0",
+    "reflect-metadata": ">=0.1.13",
+    "ts-node": "^10.9.1"
+  },
   "publishConfig": {
     "access": "public"
-  },
-  "main": ".mocharc.json"
+  }
 }

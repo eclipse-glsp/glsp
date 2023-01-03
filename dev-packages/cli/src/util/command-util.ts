@@ -15,8 +15,8 @@
  ********************************************************************************/
 import { Command } from 'commander';
 import * as sh from 'shelljs';
-import { configureLogger } from './logger';
 
+// Commander.js utils
 export function baseCommand(cmd = new Command()): Command {
     return cmd //
         .showSuggestionAfterError(true)
@@ -24,35 +24,28 @@ export function baseCommand(cmd = new Command()): Command {
         .allowUnknownOption(false);
 }
 
-export interface BaseCmdOptions {
-    verbose: boolean;
-}
-
-export const SH_CONFIG: sh.ExecOptions & { async: false } = {
+export type ShellConfig = sh.ExecOptions & { async: false };
+export const SH_CONFIG: ShellConfig = {
     async: false,
     fatal: true,
     silent: false
 };
 
-export function getShellConfig(options: Partial<Omit<sh.ExecOptions, 'async'>> = {}): sh.ExecOptions & { async: false } {
+export function getShellConfig(options: Partial<Omit<ShellConfig, 'async'>> = {}): ShellConfig {
     return {
         ...SH_CONFIG,
         ...options
     };
 }
 
-export function initialConfiguration(verbose: boolean): void {
+export function configureShell(config: Partial<sh.ShellConfig>): void {
     sh.config.reset();
-
-    SH_CONFIG.silent = !verbose;
-    configureLogger(verbose);
+    getShellConfig({});
+    SH_CONFIG.silent = config.silent;
+    SH_CONFIG.fatal = config.fatal;
 }
 
-export function fatalExec(
-    command: string,
-    fatalErrorMessage: string,
-    options: Partial<Omit<sh.ExecOptions, 'async'>> = {}
-): sh.ShellString {
+export function fatalExec(command: string, fatalErrorMessage: string, options: Partial<Omit<ShellConfig, 'async'>> = {}): sh.ShellString {
     const result = sh.exec(command, getShellConfig(options));
     if (result.code !== 0) {
         throw new Error(fatalErrorMessage);
