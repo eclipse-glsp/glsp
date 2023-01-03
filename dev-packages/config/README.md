@@ -13,9 +13,9 @@ In addition, common GLSP dev dependencies like lerna,typescript,rimraf etc. are 
 
 ## Components
 
--   `@eclipse-glsp/ts-config`: Shared Typescript configuration for GLSP projects
--   `@eclipse-glsp/eslint-config`: Shared ESLint configuration for GLSP projects
--   `@eclipse-glsp/prettier-config`: Shared Prettier configuration for GLSP projects
+-   [`@eclipse-glsp/ts-config`](https://www.npmjs.com/package/@eclipse-glsp/ts-config): Shared Typescript configuration for GLSP projects
+-   [`@eclipse-glsp/eslint-config`](https://www.npmjs.com/package/@eclipse-glsp/eslint-config): Shared ESLint configuration for GLSP projects
+-   [`@eclipse-glsp/prettier-config`](https://www.npmjs.com/package/@eclipse-glsp/prettier-config): Shared Prettier configuration for GLSP projects
 
 ## Install
 

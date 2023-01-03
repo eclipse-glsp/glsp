@@ -1,7 +1,7 @@
 {
   "name": "@eclipse-glsp/config",
   "version": "1.0.0-next",
-  "description": "Wrapper package that provides Typescript, eslint and prettier configurations and common dev dependencies for GLSP projects",
+  "description": "Meta package that provides Typescript, eslint and prettier configurations and common dev dependencies for GLSP projects",
   "keywords": [
     "eclipse",
     "config"
