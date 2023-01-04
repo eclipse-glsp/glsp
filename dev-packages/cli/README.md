@@ -15,7 +15,7 @@ yarn add @eclipse-glsp/cli --dev
 
 The `checkHeaders` command can be used to validate the copyright year (range) of license headers.
 It checks for each file (matching the include pattern) whether the defined copyright range is in line with the first and last modification date in the git repository.
-Found violations are printed to the console.
+Found violations are printed to the console and can be fixed automatically.
 The validation check can be restricted to pending changes and/or the last commit e.g. to validate a commit before creating a PR.
 
 ```console
@@ -29,14 +29,14 @@ Arguments:
   rootDir                               The starting directory for the check
 
 Options:
-  -t, --type <type>                     The scope of the check. In addition to a full recursive check, is also possible to only consider pending changes or the last commit (choices: "full", "changes", "lastCommit",
-                                        default: "full")
+  -t, --type <type>                     The scope of the check. In addition to a full recursive check, is also possible to only consider pending changes or the last commit (choices: "full", "changes", "lastCommit", default:
+                                        "full")
   -f, --fileExtensions <extensions...>  File extensions that should be checked (default: ["ts","tsx"])
   -e, --exclude <exclude...>            File patterns that should be excluded from the check. New exclude patterns are added to the default patterns (default: [**/@(node_modules|lib|dist|bundle)/**])
   --no-exclude-defaults                 Disables the default excludes patterns. Only explicitly passed exclude patterns (-e, --exclude) are considered
-  -p, --headerPattern <pattern>         Regex pattern to extract the copyright year (range) from the header (default: "Copyright \\([cC]\\) \\d{4}(-d{4})?")
   -j, --json                            Also persist validation results as json file (default: false)
   -s, --severity <severity>             The severity of validation results that should be printed. (choices: "error", "warn", "ok", default: "error" (only))
+  -a, --autoFix                         Auto apply & commit fixes without prompting the user (default: false)
   -h, --help                            display help for command
 ```
 

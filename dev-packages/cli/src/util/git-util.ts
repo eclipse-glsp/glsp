@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -71,11 +71,14 @@ export function getChangesOfLastCommit(path?: string): string[] {
  * Returns the last modification date of a file (or the last commit) in a git repo.
  * @param filePath The file. If undefined the modification date of the last commit will be returned
  * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ *  @param excludeMessage Only consider commits that don`t match the excludeMessage
+
  * @returns The date or undefined if the file is outside of the git repo.
  */
-export function getLastModificationDate(filePath?: string, repoRoot?: string): Date | undefined {
+export function getLastModificationDate(filePath?: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
     cdIfPresent(repoRoot);
-    const result = sh.exec(`git log -1 --pretty="format:%ci" ${filePath ?? ''}`, getShellConfig());
+    const additionalArgs = excludeMessage ? `--grep="${excludeMessage}" --invert-grep` : '';
+    const result = sh.exec(`git log -1 ${additionalArgs} --pretty="format:%ci" ${filePath ?? ''}`, getShellConfig());
     if (result.code !== 0) {
         return undefined;
     }
@@ -85,11 +88,13 @@ export function getLastModificationDate(filePath?: string, repoRoot?: string): D
  * Returns the last modification date of a file in a git repo.
  * @param filePath The file
  * @param repoRoot The path to the repo root. If undefined the current working directory is used.
+ * @param excludeMessage Only consider commits that don`t match the excludeMessage
  * @returns The date or undefined if the file is outside of the git repo.
  */
-export function getFirstModificationDate(filePath: string, repoRoot?: string): Date | undefined {
+export function getFirstModificationDate(filePath: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
     cdIfPresent(repoRoot);
-    const result = sh.exec(`git log --pretty="format:%ci" --follow ${filePath}`, getShellConfig());
+    const additionalArgs = excludeMessage ? `--grep="${excludeMessage}" --invert-grep` : '';
+    const result = sh.exec(`git log ${additionalArgs} --pretty="format:%ci" --follow ${filePath}`, getShellConfig());
     if (result.code !== 0) {
         return undefined;
     }
