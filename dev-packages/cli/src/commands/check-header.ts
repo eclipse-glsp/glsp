@@ -239,10 +239,15 @@ function validateTimePeriod(result: DateValidationResult): void {
     }
 }
 
-function printFileProgress(currentFileCount: number, maxFileCount: number, message: string): void {
-    process.stdout.clearLine(0);
-    process.stdout.cursorTo(0);
+function printFileProgress(currentFileCount: number, maxFileCount: number, message: string, clear = true): void {
+    if (clear) {
+        process.stdout.clearLine(0);
+        process.stdout.cursorTo(0);
+    }
     process.stdout.write(`[${currentFileCount} of ${maxFileCount}] ${message}`);
+    if (!clear) {
+        process.stdout.write('\n');
+    }
 }
 
 export function handleValidationResults(rootDir: string, results: ValidationResult[], options: HeaderCheckOptions): void {
@@ -304,8 +309,9 @@ function toPrintMessage(result: ValidationResult): string {
 }
 
 function fixViolations(rootDir: string, violations: DateValidationResult[], options: HeaderCheckOptions): void {
+    LOGGER.newLine();
     violations.forEach((violation, i) => {
-        printFileProgress(i + 1, violations.length, `Fix ${violation.file}`);
+        printFileProgress(i + 1, violations.length, `Fix ${violation.file}`, false);
         const fixedStartYear =
             violation.currentStartYear < violation.expectedStartYear ? violation.currentStartYear : violation.expectedStartYear;
 
@@ -318,11 +324,13 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
 
         sh.sed('-i', RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`, violation.file);
     });
-
+    LOGGER.newLine();
     if (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?')) {
+        LOGGER.newLine();
         const files = violations.map(violation => violation.file).join(' ');
         sh.exec(`git add ${files}`, getShellConfig());
         sh.exec(`git commit -m "${AUTO_FIX_MESSAGE}"`);
+        LOGGER.newLine();
     }
 }
 

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2023 EclipseSource and others.
+ * Copyright (c) 2022-2022 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -71,8 +71,7 @@ export function getChangesOfLastCommit(path?: string): string[] {
  * Returns the last modification date of a file (or the last commit) in a git repo.
  * @param filePath The file. If undefined the modification date of the last commit will be returned
  * @param repoRoot The path to the repo root. If undefined the current working directory is used.
- *  @param excludeMessage Only consider commits that don`t match the excludeMessage
-
+ * @param excludeMessage Only consider commits that don`t match the excludeMessage
  * @returns The date or undefined if the file is outside of the git repo.
  */
 export function getLastModificationDate(filePath?: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
