@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -18,8 +18,9 @@ import { Option } from 'commander';
 import * as fs from 'fs';
 import { glob } from 'glob';
 import * as minimatch from 'minimatch';
+import * as readline from 'readline-sync';
 import * as sh from 'shelljs';
-import { baseCommand, configureShell } from '../util/command-util';
+import { baseCommand, configureShell, getShellConfig } from '../util/command-util';
 import {
     getChangesOfLastCommit,
     getFirstCommit,
@@ -28,6 +29,7 @@ import {
     getLastModificationDate,
     getUncommittedChanges
 } from '../util/git-util';
+
 import { LOGGER } from '../util/logger';
 import { validateGitDirectory } from '../util/validation-util';
 import path = require('path');
@@ -35,9 +37,9 @@ export interface HeaderCheckOptions {
     type: CheckType;
     exclude: string[];
     fileExtensions: string[];
-    headerPattern: string;
     json: boolean;
     excludeDefaults: boolean;
+    autoFix: boolean;
     severity: Severity;
 }
 
@@ -50,6 +52,8 @@ type Severity = typeof severityTypes[number];
 
 const DEFAULT_EXCLUDES = ['**/@(node_modules|lib|dist|bundle)/**'];
 const YEAR_RANGE_REGEX = /\d{4}(?:-d{4})?/g;
+const HEADER_PATTERN = 'Copyright \\([cC]\\) \\d{4}(-d{4})?';
+const AUTO_FIX_MESSAGE = 'Fix copyright header violations';
 
 export const CheckHeaderCommand = baseCommand() //
     .name('checkHeaders')
@@ -75,17 +79,13 @@ export const CheckHeaderCommand = baseCommand() //
         '--no-exclude-defaults',
         'Disables the default excludes patterns. Only explicitly passed exclude patterns (-e, --exclude) are considered'
     )
-    .option(
-        '-p, --headerPattern <pattern>',
-        'Regex pattern to extract the copyright year (range) from the header',
-        'Copyright \\([cC]\\) \\d{4}(-d{4})?'
-    )
     .option('-j, --json', 'Also persist validation results as json file', false)
     .addOption(
         new Option('-s, --severity <severity>', 'The severity of validation results that should be printed.')
             .choices(severityTypes)
             .default('error', '"error" (only)')
     )
+    .option('-a, --autoFix', 'Auto apply & commit fixes without prompting the user', false)
     .action(checkHeaders);
 
 export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void {
@@ -102,8 +102,8 @@ export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void
         LOGGER.info('Check completed');
         return;
     }
-    const result = validate(rootDir, files, options);
-    displayValidationResult(rootDir, result, options);
+    const results = validate(rootDir, files, options);
+    handleValidationResults(rootDir, results, options);
 }
 
 function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
@@ -128,9 +128,9 @@ function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
 
 function validate(rootDir: string, files: string[], options: HeaderCheckOptions): ValidationResult[] {
     // Derives all files with valid headers, their copyright years and all files with no or invalid headers
-    const filesWithHeader = sh.grep('-l', options.headerPattern, files).stdout.trim().split('\n');
+    const filesWithHeader = sh.grep('-l', HEADER_PATTERN, files).stdout.trim().split('\n');
     const copyrightYears = sh
-        .grep(options.headerPattern, files)
+        .grep(HEADER_PATTERN, files)
         .stdout.trim()
         .split('\n')
         .map(line => line.match(YEAR_RANGE_REGEX)!.map(string => Number.parseInt(string, 10)));
@@ -146,7 +146,7 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
         LOGGER.info(`Found ${noHeadersLength} files with no (or an invalid) copyright header`);
     }
     noHeaders.forEach((file, i) => {
-        printValidationProgress(i + 1, allFilesLength, file);
+        printFileProgress(i + 1, allFilesLength, `Validating ${file}`);
         results.push({ file: path.resolve(rootDir, file), violation: 'noOrMissingHeader', severity: 'error' });
     });
 
@@ -160,13 +160,13 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
 
     // Create validation results for all files with valid headers
     filesWithHeader.forEach((file, i) => {
-        printValidationProgress(i + 1 + noHeadersLength, allFilesLength, file);
+        printFileProgress(i + 1 + noHeadersLength, allFilesLength, `Validating ${file}`);
 
         const result: DateValidationResult = {
             currentStartYear: copyrightYears[i].shift()!,
-            expectedStartYear: getFirstModificationDate(file)!.getFullYear(),
+            expectedStartYear: getFirstModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
             currentEndYear: copyrightYears[i].shift(),
-            expectedEndYear: defaultEndYear ?? getLastModificationDate(file)!.getFullYear(),
+            expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
             file,
             severity: 'ok',
             violation: 'none'
@@ -239,19 +239,21 @@ function validateTimePeriod(result: DateValidationResult): void {
     }
 }
 
-function printValidationProgress(currentFileCount: number, maxFileCount: number, file: string): void {
-    process.stdout.clearLine(0);
-    process.stdout.cursorTo(0);
-    process.stdout.write(`[${currentFileCount} of ${maxFileCount}] Validating ${file}`);
+function printFileProgress(currentFileCount: number, maxFileCount: number, message: string, clear = true): void {
+    if (clear) {
+        process.stdout.clearLine(0);
+        process.stdout.cursorTo(0);
+    }
+    process.stdout.write(`[${currentFileCount} of ${maxFileCount}] ${message}`);
+    if (!clear) {
+        process.stdout.write('\n');
+    }
 }
 
-export function displayValidationResult(rootDir: string, results: ValidationResult[], options: HeaderCheckOptions): void {
+export function handleValidationResults(rootDir: string, results: ValidationResult[], options: HeaderCheckOptions): void {
     LOGGER.newLine();
     LOGGER.info(`Header validation for ${results.length} files completed`);
     const violations = results.filter(result => result.severity === 'error');
-    LOGGER.info(`Found ${violations.length} copyright header violations:`);
-    LOGGER.newLine();
-
     // Adjust results to print based on configured severity level
     let toPrint = results;
     if (options.severity === 'error') {
@@ -259,6 +261,10 @@ export function displayValidationResult(rootDir: string, results: ValidationResu
     } else if (options.severity === 'warn') {
         toPrint = results.filter(result => result.severity !== 'ok');
     }
+
+    LOGGER.info(`Found ${toPrint.length} copyright header violations:`);
+    LOGGER.newLine();
+
     toPrint.forEach((result, i) => LOGGER.info(`${i + 1}. `, result.file, ':', toPrintMessage(result)));
 
     LOGGER.newLine();
@@ -266,6 +272,14 @@ export function displayValidationResult(rootDir: string, results: ValidationResu
     if (options.json) {
         fs.writeFileSync(path.join(rootDir, 'headerCheck.json'), JSON.stringify(results, undefined, 2));
     }
+
+    if (violations.length > 0 && (options.autoFix || readline.keyInYN('Do you want automatically fix copyright year range violations?'))) {
+        const toFix = violations.filter(
+            violation => violation.severity === 'error' && isDateValidationResult(violation)
+        ) as DateValidationResult[];
+        fixViolations(rootDir, toFix, options);
+    }
+
     LOGGER.info('Check completed');
 }
 
@@ -292,6 +306,32 @@ function toPrintMessage(result: ValidationResult): string {
     }
 
     return `${colors[result.severity]} OK`;
+}
+
+function fixViolations(rootDir: string, violations: DateValidationResult[], options: HeaderCheckOptions): void {
+    LOGGER.newLine();
+    violations.forEach((violation, i) => {
+        printFileProgress(i + 1, violations.length, `Fix ${violation.file}`, false);
+        const fixedStartYear =
+            violation.currentStartYear < violation.expectedStartYear ? violation.currentStartYear : violation.expectedStartYear;
+
+        const currentRange = `${violation.currentStartYear}${violation.currentEndYear ? '-' + violation.currentEndYear : ''}`;
+
+        let fixedRange = `${fixedStartYear}`;
+        if (violation.expectedEndYear !== violation.expectedStartYear || fixedStartYear !== violation.expectedStartYear) {
+            fixedRange = `${fixedStartYear}-${violation.expectedEndYear}`;
+        }
+
+        sh.sed('-i', RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`, violation.file);
+    });
+    LOGGER.newLine();
+    if (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?')) {
+        LOGGER.newLine();
+        const files = violations.map(violation => violation.file).join(' ');
+        sh.exec(`git add ${files}`, getShellConfig());
+        sh.exec(`git commit -m "${AUTO_FIX_MESSAGE}"`);
+        LOGGER.newLine();
+    }
 }
 
 // Helper types
