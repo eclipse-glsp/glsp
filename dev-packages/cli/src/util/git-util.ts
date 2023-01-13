@@ -48,6 +48,7 @@ export function getUncommittedChanges(path?: string): string[] {
         .exec('git status --porcelain', getShellConfig())
         .stdout.trim()
         .split('\n')
+        .filter(value => value.trim().length !== 0)
         .map(fileInfo =>
             // Extract relative file path from the info string and convert to absolute path
             resolve(path ?? process.cwd(), fileInfo.trim().split(' ').pop() ?? '')
