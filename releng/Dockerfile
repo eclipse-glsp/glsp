@@ -1,7 +1,6 @@
 # Releng Docker Image
 FROM eclipseglsp/ci:uitest
 
-
 RUN useradd -m releng
 # Install node & other Theia related dependencies
 
@@ -10,9 +9,10 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/g
 RUN apt-get update && apt-get install -y gh jq zsh &&\
 	npm install -g verdaccio lerna-update-wizard lerna@^4.0.0
 RUN chsh -s $(which zsh)
-COPY ./dev-packages/cli /cli-build/cli
-RUN cd  /cli-build/cli && \
-	yarn && yarn link && export PATH=$(yarn global bin):$PATH
+COPY . /glsp-build/
+RUN cd  /glsp-build && \
+	yarn && cd dev-packages/cli && \
+	yarn link && export PATH=$(yarn global bin):$PATH
 RUN mkdir -p /home/releng/workspace
 RUN chown -R releng:releng /home/releng/workspace
 WORKDIR /home/releng/workspace
