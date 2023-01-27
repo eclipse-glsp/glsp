@@ -123,7 +123,7 @@ function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
     excludePattern.forEach(pattern => {
         changedFiles = changedFiles.filter(minimatch.filter(`!${pattern}`));
     });
-    return changedFiles;
+    return changedFiles.filter(file => fs.existsSync(file));
 }
 
 function validate(rootDir: string, files: string[], options: HeaderCheckOptions): ValidationResult[] {
