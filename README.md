@@ -1,7 +1,7 @@
 # Eclipse GLSP
 
-[![Client Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/badge/icon?subject=client)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/) 
-[![ServerJava Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/badge/icon?subject=server-java)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/) 
+[![Client Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/badge/icon?subject=client)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/)
+[![ServerJava Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/badge/icon?subject=server-java)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/)
 [![ServerNode Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/badge/icon?subject=server-node)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/)
 [![Dev Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/badge/icon?subject=dev-packages)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/)
 
@@ -61,7 +61,7 @@ The GLSP source code consists of the following repositories:
 -   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the default ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
 -   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
 -   [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a node-based framework to create GLSP server components.
--   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples to demonstrate GLSP in action.
+-   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
 -   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 -   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
 -   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
@@ -95,11 +95,11 @@ All changes on the master branch are deployed automatically to the corresponding
 
 ### Client packages
 
-You’ll need node in version 12:
+We recommend node in version 16:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
-nvm install 12
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+nvm install 16
 ```
 
 and Yarn
@@ -116,7 +116,7 @@ npm install -g lerna
 
 ### Server/Ide packages
 
-You'll need Java 11 and maven.
+You'll need Java 11 or Java 17 and maven.
 
 ## Building
 
@@ -124,11 +124,39 @@ You'll need Java 11 and maven.
 > To build an optional integration component like the integration for VSCode or
 > Eclipse IDE please follow the build instructions in the corresponding repository.
 
-To build the client packages, just invoke `yarn` in `glsp-client`, `glsp-theia-integration`.
-If you want to build the example too, run `yarn` in `glsp-examples/client`.
+To build the client packages, just invoke
 
-The server components are built with `mvn clean verify` in `glsp-server`.
-If you want to build the example server, run `mvn clean install` in `glsp-examples/server`.
+```bash
+yarn install
+```
+
+in `glsp-client` and `glsp-theia-integration`.  
+To start an example server, you can either
+
+-   run
+    ```bash
+    yarn start:exampleServer
+    ```
+    in `glsp-client` and open the `glsp-client/examples/workflow-standalone/app/diagram.html` file in your browser of choice
+-   run
+    ```bash
+    yarn start
+    ```
+    in `glsp-theia-integration` and head your favorite browser to http://localhost:3000.
+
+The server components are built with
+
+```bash
+mvn clean verify
+```
+
+in `glsp-server`, and
+
+```bash
+yarn
+```
+
+in `glsp-server-node`.
 
 ## Building and starting the Workflow Diagram example
 
