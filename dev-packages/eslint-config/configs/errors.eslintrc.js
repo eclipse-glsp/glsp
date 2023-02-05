@@ -74,7 +74,6 @@ module.exports = {
         ],
         // eslint-plugin-import
         'import/export': 'off', // we have multiple exports due to namespaces, enums and classes that share the same name
-        'import/no-deprecated': 'error',
         // eslint-plugin-no-null
         'no-null/no-null': 'error',
         // chai friendly

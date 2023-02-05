@@ -78,6 +78,7 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 'off',
 
         /// eslint-plugin-deprecation plugin
+        'import/no-deprecated': 'warn',
         'deprecation/deprecation': 'warn'
     }
 };
