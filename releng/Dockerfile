@@ -14,7 +14,9 @@ RUN cd  /glsp-build && \
 	yarn && cd dev-packages/cli && \
 	yarn link && export PATH=$(yarn global bin):$PATH
 RUN mkdir -p /home/releng/workspace
-RUN chown -R releng:releng /home/releng/workspace
+RUN chown -R releng:releng /home/releng/workspace/
+RUN chown -R releng:releng /glsp-build/
+
 WORKDIR /home/releng/workspace
 USER releng 
 
