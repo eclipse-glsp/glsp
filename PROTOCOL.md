@@ -46,7 +46,7 @@
             -   [2.8.1.1. CenterAction](#2811-centeraction)
             -   [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
         -   [2.8.2. Client Notification](#282-client-notification)
-            -   [2.8.2.1. SPServerStatusAction](#2821-spserverstatusaction)
+            -   [2.8.2.1. ServerStatusAction](#2821-serverstatusaction)
             -   [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
             -   [2.8.2.3. ServerSeverity](#2823-serverseverity)
         -   [2.8.3. Element Selection](#283-element-selection)
@@ -1311,7 +1311,7 @@ interface FitToScreenAction extends Action {
 
 In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
-#### 2.8.2.1. SPServerStatusAction
+#### 2.8.2.1. ServerStatusAction
 
 This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
 
