@@ -104,7 +104,8 @@
 
 # 1. Server-Client Lifecycle
 
-The base communication between the client and server is performed using [action messages](#211-actionmessage) whereas we assume that each client connection will start their own server instance. Thus each server is only responsible for a single client.
+The base communication between the client and server is performed using [action messages](#211-actionmessage) whereas we assume that each client connection will start their own server instance.
+Thus each server is only responsible for a single client.
 
 A client implementation must consider the following interface:
 
@@ -233,7 +234,11 @@ In GLSP we provide a default client implementation based on [JSON-RPC messages](
 
 **Initialize Request**
 
-The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
+The `initialize` request has to be the first request from the client to the server.
+Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error.
+A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
+The request returns an `InitializeResult` that encapsulates server information and capabilities.
+The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
@@ -279,7 +284,9 @@ interface ServerActions {
 
 **InitializeClientSession Request**
 
-When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server. Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
+When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server.
+Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`.
+In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
 
 <details open><summary>Code</summary>
 
@@ -306,7 +313,9 @@ interface InitializeClientSessionParameters {
 
 **DisposeClientSession Request**
 
-When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a `DisposeClientSession` request has to be sent to the server. The session is identified by its unique `clientSessionId`. In addition, custom arguments can be provided in the `args` map to allow for custom dispose behavior on the server.
+When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a `DisposeClientSession` request has to be sent to the server.
+The session is identified by its unique `clientSessionId`.
+In addition, custom arguments can be provided in the `args` map to allow for custom dispose behavior on the server.
 
 <details open><summary>Code</summary>
 
@@ -328,15 +337,20 @@ interface DisposeClientSessionParameters {
 
 **Shutdown Notification**
 
-If the client disconnects from the server, it may send a `shutdown` notification to give the server a chance to clean up any resources dedicated to the client. The shutdown request does not have any parameters as the server is already aware of the client.
+If the client disconnects from the server, it may send a `shutdown` notification to give the server a chance to clean up any resources dedicated to the client.
+The shutdown request does not have any parameters as the server is already aware of the client.
 
 **Action Messages**
 
-Any communication that is performed between initialization and shutdown is handled by sending action messages, either from the client to the server or from the server to the client. This is the core part of the Graphical Language Server Protocol.
+Any communication that is performed between initialization and shutdown is handled by sending action messages, either from the client to the server or from the server to the client.
+This is the core part of the Graphical Language Server Protocol.
 
 # 2. Graphical Language Server Protocol
 
-The graphical language server protocol defines how the client and the server communicate and which actions are sent between them. It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities. Actions that are re-used from Sprotty are marked as such in their code and we re-use their documentation where applicable. Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
+The graphical language server protocol defines how the client and the server communicate and which actions are sent between them.
+It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities.
+Actions that are re-used from Sprotty are marked as such in their code and we re-use their documentation where applicable.
+Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
 
 Please note that there are several actions that are used purely on the client side. Such actions are not part of this protocol.
 
@@ -368,7 +382,12 @@ interface ActionMessage<A extends Action = Action> {
 
 ### 2.1.2. Action
 
-An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface.
+An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action.
+It is a plain data structure, and as such transferable between server and client.
+Actions contained in action messages are identified by their `kind` attribute.
+This attribute is required for all actions.
+Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server.
+All actions must extend the default action interface.
 
 <details open><summary>Code</summary>
 
@@ -385,7 +404,8 @@ interface Action {
 
 #### 2.1.2.1. RequestAction
 
-A request action is tied to the expectation of receiving a corresponding response action. The `requestId` property is used to match the received response with the original request.
+A request action is tied to the expectation of receiving a corresponding response action.
+The `requestId` property is used to match the received response with the original request.
 
 <details open><summary>Code</summary>
 
@@ -402,7 +422,9 @@ interface RequestAction<Res extends ResponseAction> extends Action {
 
 #### 2.1.2.2. ResponseAction
 
-A response action is sent to respond to a request action. The `responseId` must match the `requestId` of the preceding request. In case the `responseId` is empty or undefined, the action is handled as standalone, i.e. it was fired without a preceding request.
+A response action is sent to respond to a request action.
+The `responseId` must match the `requestId` of the preceding request.
+In case the `responseId` is empty or undefined, the action is handled as standalone, i.e. it was fired without a preceding request.
 
 <details open><summary>Code</summary>
 
@@ -444,7 +466,9 @@ interface RejectAction extends ResponseAction {
 
 #### 2.1.2.4. Operation
 
-Operations are actions that denote requests from the client to _modify_ the model. Model modifications are always performed by the server. After a successful modification, the server sends the updated model back to the client using the [`UpdateModelAction`](#253-updatemodelaction).
+Operations are actions that denote requests from the client to _modify_ the model.
+Model modifications are always performed by the server.
+After a successful modification, the server sends the updated model back to the client using the [`UpdateModelAction`](#253-updatemodelaction).
 
 <details open><summary>Code</summary>
 
@@ -476,13 +500,17 @@ interface CompoundOperation extends Operation {
 
 ## 2.2. Model Structure
 
-The basic structure in Sprotty is called an `SModel`. Such a model consists of `SModelElements` conforming to an `SModelElementSchema`.
+The basic structure in Sprotty is called an `SModel`.
+Such a model consists of `SModelElements` conforming to an `SModelElementSchema`.
 
-Based on those classes Sprotty already defines a graph-like model called `SGraph` conforming to the `SGraphSchema`. This graph consists nodes, edges, compartments, labels, and ports.
+Based on those classes Sprotty already defines a graph-like model called `SGraph` conforming to the `SGraphSchema`.
+This graph consists nodes, edges, compartments, labels, and ports.
 
 ### 2.2.1. SModelElementSchema
 
-The schema of an `SModelElement` describes its serializable form. The actual model is created from its schema with an `IModelFactory`. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
+The schema of an `SModelElement` describes its serializable form.
+The actual model is created from its schema with an `IModelFactory`.
+Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
 
 <details open><summary>Code</summary>
 
@@ -514,7 +542,10 @@ interface SModelElementSchema {
 
 #### 2.2.1.1. SModelRootSchema
 
-Serializable schema for the root element of the model tree. Usually actions refer to elements in the graphical model via an `elementId`. However, a few actions actually need to transfer the graphical model. In such cases, the graphical model needs to be represented as a serializable `SModelRootSchema`.
+Serializable schema for the root element of the model tree.
+Usually actions refer to elements in the graphical model via an `elementId`.
+However, a few actions actually need to transfer the graphical model.
+In such cases, the graphical model needs to be represented as a serializable `SModelRootSchema`.
 
 <details open><summary>Code</summary>
 
@@ -536,9 +567,13 @@ interface SModelRootSchema extends SModelElementSchema {
 
 ### 2.2.2. SModelElement
 
-All elements of the diagram model inherit from base class `SModelElement`. Each model element must have a unique ID and a type that is used to look up its view. Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
+All elements of the diagram model inherit from base class `SModelElement`.
+Each model element must have a unique ID and a type that is used to look up its view.
+Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
 
-Each model element has a set of features. A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a `resizeFeature`. The set of supported features is determined by the `features` property.
+Each model element has a set of features.
+A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a `resizeFeature`.
+The set of supported features is determined by the `features` property.
 
 <details open><summary>Code</summary>
 
@@ -617,7 +652,9 @@ class SParentElement extends SModelElement {
 
 #### 2.2.2.2. SChildElement
 
-A child element is contained in a parent element. All elements except the model root are child elements. In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).
+A child element is contained in a parent element.
+All elements except the model root are child elements.
+In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).
 
 <details open><summary>Code</summary>
 
@@ -719,7 +756,8 @@ interface Dimension {
 
 ### 2.3.4. Bounds
 
-The bounds are the position (x, y) and dimension (width, height) of an object. As such the `Bounds` type extends both `Point` and `Dimension`.
+The bounds are the position (x, y) and dimension (width, height) of an object.
+As such the `Bounds` type extends both `Point` and `Dimension`.
 
 <details open><summary>Code</summary>
 
@@ -802,7 +840,8 @@ interface ElementAndRoutingPoints {
 
 ### 2.3.8. EditorContext
 
-The `EditorContext` may be used to represent the current state of the editor for particular actions. It encompasses the last recorded mouse position, the list of selected elements, and may contain custom arguments to encode additional state information.
+The `EditorContext` may be used to represent the current state of the editor for particular actions.
+It encompasses the last recorded mouse position, the list of selected elements, and may contain custom arguments to encode additional state information.
 
 <details open><summary>Code</summary>
 
@@ -858,7 +897,9 @@ interface LabeledAction {
 
 ### 2.4.1. RequestModelAction
 
-Sent from the client to the server in order to request a graphical model. Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication. The response is a `SetModelAction` or an `UpdateModelAction`.
+Sent from the client to the server in order to request a graphical model.
+Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication.
+The response is a `SetModelAction` or an `UpdateModelAction`.
 
 <details open><summary>Code</summary>
 
@@ -880,7 +921,8 @@ interface RequestModelAction extends RequestAction<SetModelAction> {
 
 ### 2.4.2. SetModelAction
 
-Sent from the server to the client in order to set the model. If a model is already present, it is replaced.
+Sent from the server to the client in order to set the model.
+If a model is already present, it is replaced.
 
 <details open><summary>Code</summary>
 
@@ -902,7 +944,9 @@ interface SetModelAction extends ResponseAction {
 
 ### 2.4.3. UpdateModelAction
 
-Sent from the server to the client in order to update the model. If no model is present yet, this behaves the same as a `SetModelAction`. The transition from the old model to the new one can be animated.
+Sent from the server to the client in order to update the model.
+If no model is present yet, this behaves the same as a `SetModelAction`.
+The transition from the old model to the new one can be animated.
 
 <details open><summary>Code</summary>
 
@@ -936,7 +980,10 @@ interface Match {
 
 ### 2.4.4. SourceModelChangedAction
 
-Sent from the server to the client in order to indicate that the source model has changed. The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
+Sent from the server to the client in order to indicate that the source model has changed.
+The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.).
+Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing.
+If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
 
 <details open><summary>Code</summary>
 
@@ -983,7 +1030,8 @@ interface SaveModelAction extends Action {
 
 ### 2.5.2. SetDirtyStateAction
 
-The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model. A client may ignore such an action or use it to indicate to the user the dirty state.
+The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model.
+A client may ignore such an action or use it to indicate to the user the dirty state.
 
 <details open><summary>Code</summary>
 
@@ -1010,7 +1058,11 @@ interface SetDirtyStateAction extends Action {
 
 ### 2.5.3. ExportSvgAction
 
-The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
+The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format.
+The action only provides the diagram SVG as plain string.
+The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem.
+However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
+So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
 
 <details open><summary>Code</summary>
 
@@ -1040,13 +1092,19 @@ interface ExportSvgAction extends ResponseAction {
 
 ## 2.6. Model Layout
 
-In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
+In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)).
+However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
 
-On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
+On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers.
+The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas.
+If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
 
 ### 2.6.1. RequestBoundsAction
 
-Sent from the server to the client to request bounds for the given model. The model is rendered invisibly so the bounds can derived from the DOM. The response is a `ComputedBoundsAction`. This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.
+Sent from the server to the client to request bounds for the given model.
+The model is rendered invisibly so the bounds can derived from the DOM.
+The response is a `ComputedBoundsAction`.
+This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.
 
 <details open><summary>Code</summary>
 
@@ -1071,7 +1129,9 @@ interface RequestBoundsAction extends RequestAction {
 
 ### 2.6.2. ComputedBoundsAction
 
-Sent from the client to the server to transmit the result of bounds computation as a response to a `RequestBoundsAction`. If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action. Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.
+Sent from the client to the server to transmit the result of bounds computation as a response to a `RequestBoundsAction`.
+If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action.
+Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.
 
 <details open><summary>Code</summary>
 
@@ -1136,11 +1196,14 @@ interface LayoutOperation extends Operation {
 
 ## 2.7. Model Edit Mode
 
-GLSP supports setting the model into different edit modes. We pre-define two such modes: `readonly` and `editable`. However these modes can be customized as need be.
+GLSP supports setting the model into different edit modes.
+We pre-define two such modes: `readonly` and `editable`.
+However these modes can be customized as need be.
 
 ### 2.7.1. SetEditModeAction
 
-Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode. A client may also listen to this action to prevent certain user interactions preemptively.
+Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode.
+A client may also listen to this action to prevent certain user interactions preemptively.
 
 <details open><summary>Code</summary>
 
@@ -1162,7 +1225,9 @@ interface SetEditModeAction extends Action {
 
 ## 2.8. Client-Side Actions
 
-There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
+There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc.
+Those actions may also be sent by the server to trigger the respective client behavior.
+Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
 
 ### 2.8.1. View Port
 
@@ -1170,7 +1235,9 @@ View port actions manipulate the viewport on the client-side and may be sent fro
 
 #### 2.8.1.1. CenterAction
 
-Centers the viewport on the elements with the given identifiers. It changes the scroll setting of the viewport accordingly and resets the zoom to its default. This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.
+Centers the viewport on the elements with the given identifiers.
+It changes the scroll setting of the viewport accordingly and resets the zoom to its default.
+This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.
 
 <details open><summary>Code</summary>
 
@@ -1205,7 +1272,9 @@ interface CenterAction extends Action {
 
 #### 2.8.1.2. FitToScreenAction
 
-Triggers to fit all or a list of elements into the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
+Triggers to fit all or a list of elements into the available drawing area.
+The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely.
+This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
 
 <details open><summary>Code</summary>
 
@@ -1245,11 +1314,14 @@ interface FitToScreenAction extends Action {
 
 ### 2.8.2. Client Notification
 
-In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
+In GLSP we distinguish between a status and a message which may be displayed differently on the client.
+For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
 #### 2.8.2.1. ServerStatusAction
 
-This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
+This action is typically sent by the server to signal a state change.
+This action extends the corresponding Sprotty action to include a timeout.
+If a timeout is given the respective status should disappear after the timeout is reached.
 
 <details open><summary>Code</summary>
 
@@ -1335,7 +1407,9 @@ type ServerSeverity = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
 
 #### 2.8.3.1. SelectAction
 
-Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently. The server can send such an action to the client in order to change the selection remotely.
+Triggered when the user changes the selection, e.g. by clicking on a selectable element.
+The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently.
+The server can send such an action to the client in order to change the selection remotely.
 
 <details open><summary>Code</summary>
 
@@ -1392,7 +1466,9 @@ interface SelectAllAction extends Action {
 
 ### 2.9.1. RequestPopupModelAction
 
-Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element. This action is sent from the client to the server. The response is a `SetPopupModelAction`.
+Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element.
+This action is sent from the client to the server.
+The response is a `SetPopupModelAction`.
 
 <details open><summary>Code</summary>
 
@@ -1422,7 +1498,8 @@ interface RequestPopupModelAction extends Action {
 
 ### 2.9.2. SetPopupModelAction
 
-Sent from the server to the client to display a popup in response to a `RequestPopupModelAction`. This action can also be used to remove any existing popup by choosing `EMPTY_ROOT` as root element.
+Sent from the server to the client to display a popup in response to a `RequestPopupModelAction`.
+This action can also be used to remove any existing popup by choosing `EMPTY_ROOT` as root element.
 
 <details open><summary>Code</summary>
 
@@ -1447,7 +1524,8 @@ interface SetPopupModelAction extends Action {
 
 ## 2.10. Element Validation
 
-Validation in GLSP is performed by using validation markers. A marker represents the validation result for a single model element:
+Validation in GLSP is performed by using validation markers.
+A marker represents the validation result for a single model element:
 
 <details open><summary>Code</summary>
 
@@ -1479,7 +1557,8 @@ interface Marker {
 
 ### 2.10.1. RequestMarkersAction
 
-Action to retrieve markers for the specified model elements. Sent from the client to the server.
+Action to retrieve markers for the specified model elements.
+Sent from the client to the server.
 
 <details open><summary>Code</summary>
 
@@ -1501,7 +1580,8 @@ interface RequestMarkersAction extends RequestAction {
 
 ### 2.10.2. SetMarkersAction
 
-Response to the `RequestMarkersAction` containing all validation markers. Sent from the server to the client.
+Response to the `RequestMarkersAction` containing all validation markers.
+Sent from the server to the client.
 
 <details open><summary>Code</summary>
 
@@ -1545,9 +1625,13 @@ interface DeleteMarkersAction extends Action {
 
 ## 2.11. Element Navigation
 
-GLSP makes no assumption about the type of navigation a user may want to perform. Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc. The type of navigation is identified by the `targetTypeId`.
+GLSP makes no assumption about the type of navigation a user may want to perform.
+Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc.
+The type of navigation is identified by the `targetTypeId`.
 
-A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets. A `NavigationTarget` identifies the object we want to navigate to via its uri and may further provide a label to display for the client. Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.
+A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets.
+A `NavigationTarget` identifies the object we want to navigate to via its uri and may further provide a label to display for the client.
+Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.
 
 <details open><summary>Code</summary>
 
@@ -1601,7 +1685,9 @@ interface RequestNavigationTargetsAction extends RequestAction<SetNavigationTarg
 
 ### 2.11.2. SetNavigationTargetsAction
 
-Response action from the server following a `RequestNavigationTargetsAction`. It contains all available navigation targets for the queried target type in the provided editor context. The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.
+Response action from the server following a `RequestNavigationTargetsAction`.
+It contains all available navigation targets for the queried target type in the provided editor context.
+The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.
 
 <details open><summary>Code</summary>
 
@@ -1628,7 +1714,8 @@ interface SetNavigationTargetsAction extends ResponseAction {
 
 ### 2.11.3. NavigateToTargetAction
 
-Action that triggers the navigation to a particular navigation target. This may be used by the client internally or may be sent from the server.
+Action that triggers the navigation to a particular navigation target.
+This may be used by the client internally or may be sent from the server.
 
 <details open><summary>Code</summary>
 
@@ -1650,7 +1737,8 @@ interface NavigateToTargetAction extends Action {
 
 ### 2.11.4. ResolveNavigationTargetAction
 
-If a client cannot navigate to a target directly, a `ResolveNavigationTargetAction` may be sent to the server to resolve the navigation target to one or more model elements. This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.
+If a client cannot navigate to a target directly, a `ResolveNavigationTargetAction` may be sent to the server to resolve the navigation target to one or more model elements.
+This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.
 
 <details open><summary>Code</summary>
 
@@ -1672,7 +1760,8 @@ interface ResolveNavigationTargetAction extends RequestAction<SetResolvedNavigat
 
 ### 2.11.4. SetResolvedNavigationTargetAction
 
-An action sent from the server in response to a `ResolveNavigationTargetAction`. The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
+An action sent from the server in response to a `ResolveNavigationTargetAction`.
+The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
 
 <details open><summary>Code</summary>
 
@@ -1699,7 +1788,8 @@ interface SetResolvedNavigationTargetAction extends ResponseAction {
 
 ### 2.11.5. NavigateToExternalTargetAction
 
-If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
+If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent.
+Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
 <details open><summary>Code</summary>
 
@@ -1721,9 +1811,13 @@ interface NavigateToExternalTargetAction extends Action {
 
 ## 2.12. Element Type Hints
 
-Type hints are used to define what modifications are supported on the different element types. Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level. The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
+Type hints are used to define what modifications are supported on the different element types.
+Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level.
+The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
 
-In GLSP we distinguish between `ShapeTypeHints` and `EdgeTypeHints`. These hints specify whether an element can be resized, relocated and/or deleted. Optionally, they specify a list of element types that can be contained/connected by this element.
+In GLSP we distinguish between `ShapeTypeHints` and `EdgeTypeHints`.
+These hints specify whether an element can be resized, relocated and/or deleted.
+Optionally, they specify a list of element types that can be contained/connected by this element.
 
 <details open><summary>Code</summary>
 
@@ -1784,7 +1878,9 @@ interface EdgeTypeHint extends TypeHint {
 
 ### 2.12.1. RequestTypeHintsAction
 
-Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type. The `RequestTypeHintsAction` is optional, but should usually be among the first messages sent from the client to the server after receiving the model via `RequestModelAction`. The response is a `SetTypeHintsAction`.
+Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type.
+The `RequestTypeHintsAction` is optional, but should usually be among the first messages sent from the client to the server after receiving the model via `RequestModelAction`.
+The response is a `SetTypeHintsAction`.
 
 <details open><summary>Code</summary>
 
@@ -1908,7 +2004,9 @@ interface DeleteElementOperation extends Operation {
 
 ### 2.14.1. ChangeBoundsOperation
 
-Triggers the position or size change of elements. This action concerns only the element's graphical size and position. Whether an element can be resized or repositioned may be specified by the server with a [`TypeHint`](#213-element-type-hints) to allow for immediate user feedback before resizing or repositioning.
+Triggers the position or size change of elements.
+This action concerns only the element's graphical size and position.
+Whether an element can be resized or repositioned may be specified by the server with a [`TypeHint`](#213-element-type-hints) to allow for immediate user feedback before resizing or repositioning.
 
 <details open><summary>Code</summary>
 
@@ -2001,7 +2099,8 @@ interface ReconnectEdgeOperation extends Operation {
 
 ### 2.15.2. ChangeRoutingPointsOperation
 
-An edge may have zero or more routing points that "re-direct" the edge between the source and the target element. In order to set these routing points the client may send a `ChangeRoutingPointsOperation`.
+An edge may have zero or more routing points that "re-direct" the edge between the source and the target element.
+In order to set these routing points the client may send a `ChangeRoutingPointsOperation`.
 
 <details open><summary>Code</summary>
 
@@ -2080,7 +2179,8 @@ namespace ValidationStatus {
 
 ### 2.16.1. RequestEditValidationAction
 
-Requests the validation of the given text in the context of the provided model element. Typically sent from the client to the server.
+Requests the validation of the given text in the context of the provided model element.
+Typically sent from the client to the server.
 
 <details open><summary>Code</summary>
 
@@ -2139,7 +2239,9 @@ interface SetEditValidationResultAction extends ResponseAction {
 
 ### 2.16.3. ApplyLabelEditOperation
 
-A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
+A very common use case in domain models is the support of labels that display textual information to the user.
+For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view.
+To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
 
 <details open><summary>Code</summary>
 
@@ -2166,7 +2268,8 @@ interface ApplyLabelEditOperation extends Operation {
 
 ## 2.17. Clipboard
 
-In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server. By default, GLSP use `application/json` as exchange format.
+In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server.
+By default, GLSP use `application/json` as exchange format.
 
 <details open><summary>Code</summary>
 
@@ -2222,7 +2325,8 @@ interface SetClipboardDataAction extends ResponseAction {
 
 ### 2.17.3. CutOperation
 
-Requests a cut operation from the server, i.e., deleting the selected elements from the model. Before submitting a `CutOperation` a client should ensure that the cut elements are put into the clipboard.
+Requests a cut operation from the server, i.e., deleting the selected elements from the model.
+Before submitting a `CutOperation` a client should ensure that the cut elements are put into the clipboard.
 
 <details open><summary>Code</summary>
 
@@ -2244,7 +2348,8 @@ interface CutOperation extends Operation {
 
 ### 2.17.4. PasteOperation
 
-Requests a paste operation from the server by providing the current clipboard data. Typically this means that elements should be created based on the data in the clipboard.
+Requests a paste operation from the server by providing the current clipboard data.
+Typically this means that elements should be created based on the data in the clipboard.
 
 <details open><summary>Code</summary>
 
@@ -2271,7 +2376,8 @@ interface PasteOperation extends Operation {
 
 ## 2.18. Undo / Redo
 
-A server usually keeps a command stack of all commands executed on the model. To navigate the command stack the following actions can be used.
+A server usually keeps a command stack of all commands executed on the model.
+To navigate the command stack the following actions can be used.
 
 ### 2.18.1. UndoAction
 
@@ -2309,7 +2415,9 @@ interface RedoAction {
 
 ## 2.19. Contexts
 
-A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:
+A context is a dedicated space in the client that is identified via a unique id.
+Context actions are a specific set of actions that are available in that context id.
+At the moment we support three such contexts:
 
 -   The Context Menu with the context id `context-menu`
 -   The Command Palette with the context id `command-palette`
@@ -2371,17 +2479,23 @@ interface SetContextActions extends ResponseAction {
 
 ### 2.19.3. Context Menu
 
-The context menu is an overlay that is triggered by a right click from the user. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `context-menu` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a context menu.
+The context menu is an overlay that is triggered by a right click from the user.
+The menu may be filled with actions from the client but may also be filled with actions from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `context-menu` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a context menu.
 
 ### 2.19.4. Command Palette
 
-The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
+The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`.
+The menu may be filled with actions from the client but may also be filled with actions from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
 
 ### 2.19.5. Tool Palette
 
-The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions.
+The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model.
+As such the tool palette consists of two parts: tools and labeled actions.
 
-A tool is a uniquely identified functionality that can be either enabled or disabled. Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.
+A tool is a uniquely identified functionality that can be either enabled or disabled.
+Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.
 
  <details open><summary>Code</summary>
 
@@ -2412,9 +2526,13 @@ By default, the tool palette in GLSP includes the following tools in the palette
 -   Mouse Delete Tool
 -   Validation Tool
 
-The supported actions of the tool palette come from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette. A user may click on any of the entries in the tool palette to trigger the corresponding action.
+The supported actions of the tool palette come from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette.
+A user may click on any of the entries in the tool palette to trigger the corresponding action.
 
-For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the `Node Creation Tool` or the `Edge Creation Tool` respectively. This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge. After all information is available, the actual creation operation is triggered.
+For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the `Node Creation Tool` or the `Edge Creation Tool` respectively.
+This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge.
+After all information is available, the actual creation operation is triggered.
 
 #### 2.19.5.1. TriggerNodeCreationAction
 
