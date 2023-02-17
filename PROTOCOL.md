@@ -351,9 +351,6 @@ A general message serves as an envelope carrying an action to be transmitted bet
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ActionMessage.
- */
 interface ActionMessage<A extends Action = Action> {
     /**
      * Used to identify a specific client session.
@@ -376,9 +373,6 @@ An action is a declarative description of a behavior that shall be invoked by th
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Action.
- */
 interface Action {
     /**
      * Unique identifier specifying the kind of action to process.
@@ -396,9 +390,6 @@ A request action is tied to the expectation of receiving a corresponding respons
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestAction.
- */
 interface RequestAction<Res extends ResponseAction> extends Action {
     /**
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
@@ -416,9 +407,6 @@ A response action is sent to respond to a request action. The `responseId` must 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ResponseAction.
- */
 interface ResponseAction extends Action {
     /**
      * Id corresponding to the request this action responds to.
@@ -436,9 +424,6 @@ A reject action is a response fired to indicate that a request must be rejected.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RejectAction.
- */
 interface RejectAction extends ResponseAction {
     kind: 'rejectRequest';
 
@@ -502,9 +487,6 @@ The schema of an `SModelElement` describes its serializable form. The actual mod
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElementSchema.
- */
 interface SModelElementSchema {
     /**
      * Unique identifier for this element.
@@ -537,9 +519,6 @@ Serializable schema for the root element of the model tree. Usually actions refe
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRootSchema.
- */
 interface SModelRootSchema extends SModelElementSchema {
     /**
      * Bounds of this element in the canvas.
@@ -564,9 +543,6 @@ Each model element has a set of features. A feature is a symbol identifying some
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElement.
- */
 class SModelElement {
     /**
      * Unique identifier for this element.
@@ -609,9 +585,6 @@ A parent element may contain child elements, thus the diagram model forms a tree
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SParentElement.
- */
 class SParentElement extends SModelElement {
     /**
      * Children of this element.
@@ -649,9 +622,6 @@ A child element is contained in a parent element. All elements except the model 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SChildElement.
- */
 class SChildElement extends SParentElement {
     /**
      * Parent of this element.
@@ -669,9 +639,6 @@ Base class for the root element of the diagram model tree.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRoot.
- */
 class SModelRoot extends SParentElement {
     /**
      * Access to the index which is built up for faster element lookup.
@@ -713,9 +680,6 @@ A `Point` is composed of the (x,y) coordinates of an object.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Point.
- */
 interface Point {
     /**
      * The abscissa of the point.
@@ -738,9 +702,6 @@ The `Dimension` of an object is composed of its width and height.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Dimension.
- */
 interface Dimension {
     /**
      * The width of an element.
@@ -763,9 +724,6 @@ The bounds are the position (x, y) and dimension (width, height) of an object. A
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Bounds.
- */
 interface Bounds extends Point, Dimension {}
 ```
 
@@ -778,9 +736,6 @@ The `ElementAndBounds` type is used to associate new bounds with a model element
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndBounds.
- */
 interface ElementAndBounds {
     /**
      * The identifier of the element.
@@ -808,9 +763,6 @@ The `ElementAndAlignment` type is used to associate a new alignment with a model
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndAlignment.
- */
 interface ElementAndAlignment {
     /**
      * The identifier of an element.
@@ -882,9 +834,6 @@ Labeled actions are used to denote a group of actions in a user-interface contex
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's LabeledAction.
- */
 interface LabeledAction {
     /**
      * Group label.
@@ -914,9 +863,6 @@ Sent from the client to the server in order to request a graphical model. Usuall
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestModelAction.
- */
 interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * The kind of the action.
@@ -939,9 +885,6 @@ Sent from the server to the client in order to set the model. If a model is alre
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SetModelAction.
- */
 interface SetModelAction extends ResponseAction {
     /**
      * The kind of the action.
@@ -964,9 +907,6 @@ Sent from the server to the client in order to update the model. If no model is 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's UpdateModelAction.
- */
 interface UpdateModelAction extends Action {
     /**
      * The kind of the action.
@@ -984,9 +924,6 @@ interface UpdateModelAction extends Action {
     animate?: boolean;
 }
 
-/**
- * Sprotty's Match.
- */
 interface Match {
     left?: SModelElementSchema;
     right?: SModelElementSchema;
@@ -1079,7 +1016,6 @@ The client (or the server) sends an `ExportSvgAction` to indicate that the diagr
 
 ```typescript
 /**
- * Sprotty's ExportSvgAction.
  * Note that sprotty also provides a `RequestExportSvgAction` which is currently not supported in GLSP.
  */
 interface ExportSvgAction extends ResponseAction {
@@ -1318,9 +1254,6 @@ This action is typically sent by the server to signal a state change. This actio
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Based on Sprotty's ServerStatusAction but extended with a timeout.
- */
 interface ServerStatusAction extends Action {
     /**
      * The kind of the action.
