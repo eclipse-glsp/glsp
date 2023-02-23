@@ -2,7 +2,6 @@
 
 -   [1. Server-Client Lifecycle](#1-server-client-lifecycle)
 -   [2. Graphical Language Server Protocol](#2-graphical-language-server-protocol)
-
     -   [2.1. Base Protocol](#21-base-protocol)
         -   [2.1.1. ActionMessage](#211-actionmessage)
         -   [2.1.2. Action](#212-action)
@@ -47,8 +46,9 @@
             -   [2.8.1.1. CenterAction](#2811-centeraction)
             -   [2.8.1.2. FitToScreenAction](#2812-fittoscreenaction)
         -   [2.8.2. Client Notification](#282-client-notification)
-            -   [2.8.2.1. GLSPServerStatusAction](#2821-glspserverstatusaction)
+            -   [2.8.2.1. ServerStatusAction](#2821-serverstatusaction)
             -   [2.8.2.2. ServerMessageAction](#2822-servermessageaction)
+            -   [2.8.2.3. ServerSeverity](#2823-serverseverity)
         -   [2.8.3. Element Selection](#283-element-selection)
             -   [2.8.3.1. SelectAction](#2831-selectaction)
             -   [2.8.3.2. SelectAllAction](#2832-selectallaction)
@@ -89,22 +89,23 @@
         -   [2.17.3. CutOperation](#2173-cutoperation)
         -   [2.17.4. PasteOperation](#2174-pasteoperation)
     -   [2.18. Undo / Redo](#218-undo--redo)
-        -   [2.18.1. UndoOperation](#2181-undooperation)
-        -   [2.18.2. RedoOperation](#2182-redooperation)
+        -   [2.18.1. UndoAction](#2181-undoaction)
+        -   [2.18.2. RedoAction](#2182-redoaction)
     -   [2.19. Contexts](#219-contexts)
-    -   [2.19.1. RequestContextActions](#2191-requestcontextactions)
-    -   [2.19.2. SetContextActions](#2192-setcontextactions)
-    -   [2.19.3. Context Menu](#2193-context-menu)
-    -   [2.19.4. Command Palette](#2194-command-palette)
-    -   [2.19.5. Tool Palette](#2195-tool-palette)
-        -   [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
-        -   [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
+        -   [2.19.1. RequestContextActions](#2191-requestcontextactions)
+        -   [2.19.2. SetContextActions](#2192-setcontextactions)
+        -   [2.19.3. Context Menu](#2193-context-menu)
+        -   [2.19.4. Command Palette](#2194-command-palette)
+        -   [2.19.5. Tool Palette](#2195-tool-palette)
+            -   [2.19.5.1. TriggerNodeCreationAction](#21951-triggernodecreationaction)
+            -   [2.19.5.2. TriggerEdgeCreationAction](#21952-triggeredgecreationaction)
 
-    </details>
+</details>
 
 # 1. Server-Client Lifecycle
 
-The base communication between the client and server is performed using [action messages](#211-actionmessage) whereas we assume that each client connection will start their own server instance. Thus each server is only responsible for a single client.
+The base communication between the client and server is performed using [action messages](#211-actionmessage) whereas we assume that each client connection will start their own server instance.
+Thus each server is only responsible for a single client.
 
 A client implementation must consider the following interface:
 
@@ -233,7 +234,11 @@ In GLSP we provide a default client implementation based on [JSON-RPC messages](
 
 **Initialize Request**
 
-The `initialize` request has to be the first request from the client to the server. Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error. A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server. The request returns an `InitializeResult` that encapsulates server information and capabilities. The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
+The `initialize` request has to be the first request from the client to the server.
+Until the server has responded with an `InitializeResult` no other request or notification can be handled and is expected to throw an error.
+A client is uniquely identified by an `applicationId` and has to specify on which `protocolVersion` it is based on. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
+The request returns an `InitializeResult` that encapsulates server information and capabilities.
+The `InitializeResult` is used inform the client about the action kinds that the server can handle for a specific `diagramType`.
 
 <details open><summary>Code</summary>
 
@@ -279,7 +284,9 @@ interface ServerActions {
 
 **InitializeClientSession Request**
 
-When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server. Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`. In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
+When a new graphical representation (diagram) is created a `InitializeClientSession` request has to be sent to the server.
+Each individual diagram on the client side counts as one session and has to provide a unique `clientSessionId` and its `diagramType`.
+In addition, custom arguments can be provided in the `args` map to allow for custom initialization behavior on the server.
 
 <details open><summary>Code</summary>
 
@@ -306,7 +313,9 @@ interface InitializeClientSessionParameters {
 
 **DisposeClientSession Request**
 
-When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a `DisposeClientSession` request has to be sent to the server. The session is identified by its unique `clientSessionId`. In addition, custom arguments can be provided in the `args` map to allow for custom dispose behavior on the server.
+When a graphical representation (diagram) is no longer needed, e.g. the tab containing the diagram widget has been closed, a `DisposeClientSession` request has to be sent to the server.
+The session is identified by its unique `clientSessionId`.
+In addition, custom arguments can be provided in the `args` map to allow for custom dispose behavior on the server.
 
 <details open><summary>Code</summary>
 
@@ -328,15 +337,20 @@ interface DisposeClientSessionParameters {
 
 **Shutdown Notification**
 
-If the client disconnects from the server, it may send a `shutdown` notification to give the server a chance to clean up any resources dedicated to the client. The shutdown request does not have any parameters as the server is already aware of the client.
+If the client disconnects from the server, it may send a `shutdown` notification to give the server a chance to clean up any resources dedicated to the client.
+The shutdown request does not have any parameters as the server is already aware of the client.
 
 **Action Messages**
 
-Any communication that is performed between initialization and shutdown is handled by sending action messages, either from the client to the server or from the server to the client. This is the core part of the Graphical Language Server Protocol.
+Any communication that is performed between initialization and shutdown is handled by sending action messages, either from the client to the server or from the server to the client.
+This is the core part of the Graphical Language Server Protocol.
 
 # 2. Graphical Language Server Protocol
 
-The graphical language server protocol defines how the client and the server communicate and which actions are sent between them. It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities. Actions that are re-used from Sprotty are marked as such in their code and we re-use their documentation where applicable. Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
+The graphical language server protocol defines how the client and the server communicate and which actions are sent between them.
+It heavily builds on the client-server protocol defined in [Sprotty](https://github.com/eclipse/sprotty) but adds additional actions to enable editing and other capabilities.
+Actions that are re-used from Sprotty are marked as such in their code and we re-use their documentation where applicable.
+Additional information regarding the lifecycle of some action messages can be found in the [Sprotty documentation](https://github.com/eclipse/sprotty/wiki/Client-Server-Protocol).
 
 Please note that there are several actions that are used purely on the client side. Such actions are not part of this protocol.
 
@@ -351,19 +365,16 @@ A general message serves as an envelope carrying an action to be transmitted bet
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ActionMessage.
- */
-class ActionMessage {
+interface ActionMessage<A extends Action = Action> {
     /**
      * Used to identify a specific client session.
      */
-    public readonly clientId: string;
+    clientId: string;
 
     /**
      * The action to execute.
      */
-    public readonly action: Action;
+    Action: A;
 }
 ```
 
@@ -371,19 +382,21 @@ class ActionMessage {
 
 ### 2.1.2. Action
 
-An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action. It is a plain data structure, and as such transferable between server and client. Actions contained in action messages are identified by their `kind` attribute. This attribute is required for all actions. Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server. All actions must extend the default action interface.
+An action is a declarative description of a behavior that shall be invoked by the receiver upon receipt of the action.
+It is a plain data structure, and as such transferable between server and client.
+Actions contained in action messages are identified by their `kind` attribute.
+This attribute is required for all actions.
+Certain actions are meant to be sent from the client to the server or vice versa, while other actions can be sent both ways, by the client or the server.
+All actions must extend the default action interface.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Action.
- */
 interface Action {
     /**
      * Unique identifier specifying the kind of action to process.
      */
-    readonly kind: string;
+    kind: string;
 }
 ```
 
@@ -391,19 +404,17 @@ interface Action {
 
 #### 2.1.2.1. RequestAction
 
-A request action is tied to the expectation of receiving a corresponding response action. The `requestId` property is used to match the received response with the original request.
+A request action is tied to the expectation of receiving a corresponding response action.
+The `requestId` property is used to match the received response with the original request.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestAction.
- */
 interface RequestAction<Res extends ResponseAction> extends Action {
     /**
      * Unique id for this request. In order to match a response to this request, the response needs to have the same id.
      */
-    readonly requestId: string;
+    requestId: string;
 }
 ```
 
@@ -411,19 +422,18 @@ interface RequestAction<Res extends ResponseAction> extends Action {
 
 #### 2.1.2.2. ResponseAction
 
-A response action is sent to respond to a request action. The `responseId` must match the `requestId` of the preceding request. In case the `responseId` is empty or undefined, the action is handled as standalone, i.e. it was fired without a preceding request.
+A response action is sent to respond to a request action.
+The `responseId` must match the `requestId` of the preceding request.
+In case the `responseId` is empty or undefined, the action is handled as standalone, i.e. it was fired without a preceding request.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ResponseAction.
- */
 interface ResponseAction extends Action {
     /**
      * Id corresponding to the request this action responds to.
      */
-    readonly responseId: string;
+    responseId: string;
 }
 ```
 
@@ -436,11 +446,19 @@ A reject action is a response fired to indicate that a request must be rejected.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RejectAction.
- */
-class RejectAction implements ResponseAction {
-    readonly kind = 'rejectRequest';
+interface RejectAction extends ResponseAction {
+    kind: 'rejectRequest';
+
+    /**
+     * A human-readable description of the reject reason. Typically this is an error message
+     * that has been thrown when handling the corresponding RequestAction.
+     */
+    message: string;
+
+    /**
+     * Optional additional details.
+     */
+    detail?: JsonAny;
 }
 ```
 
@@ -448,7 +466,9 @@ class RejectAction implements ResponseAction {
 
 #### 2.1.2.4. Operation
 
-Operations are actions that denote requests from the client to _modify_ the model. Model modifications are always performed by the server. After a successful modification, the server sends the updated model back to the client using the [`UpdateModelAction`](#253-updatemodelaction).
+Operations are actions that denote requests from the client to _modify_ the model.
+Model modifications are always performed by the server.
+After a successful modification, the server sends the updated model back to the client using the [`UpdateModelAction`](#253-updatemodelaction).
 
 <details open><summary>Code</summary>
 
@@ -456,12 +476,17 @@ Operations are actions that denote requests from the client to _modify_ the mode
 /**
  * Marker interface for operations.
  */
-interface Operation extends Action {}
+interface Operation extends Action {
+    /**
+     * Discriminator property to make operations distinguishable from plain Actions.
+     */
+    isOperation: true;
+}
 
 /**
  * An operation that executes a list of operations.
  */
-class CompoundOperation implements Operation {
+interface CompoundOperation extends Operation {
     readonly kind = 'compound';
 
     /**
@@ -475,20 +500,21 @@ class CompoundOperation implements Operation {
 
 ## 2.2. Model Structure
 
-The basic structure in Sprotty is called an `SModel`. Such a model consists of `SModelElements` conforming to an `SModelElementSchema`.
+The basic structure in Sprotty is called an `SModel`.
+Such a model consists of `SModelElements` conforming to an `SModelElementSchema`.
 
-Based on those classes Sprotty already defines a graph-like model called `SGraph` conforming to the `SGraphSchema`. This graph consists nodes, edges, compartments, labels, and ports.
+Based on those classes Sprotty already defines a graph-like model called `SGraph` conforming to the `SGraphSchema`.
+This graph consists nodes, edges, compartments, labels, and ports.
 
 ### 2.2.1. SModelElementSchema
 
-The schema of an `SModelElement` describes its serializable form. The actual model is created from its schema with an `IModelFactory`. Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
+The schema of an `SModelElement` describes its serializable form.
+The actual model is created from its schema with an `IModelFactory`.
+Each model element must have a unique ID and a type that is used to look up its view, i.e., the graphical representation.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElementSchema.
- */
 interface SModelElementSchema {
     /**
      * Unique identifier for this element.
@@ -516,14 +542,14 @@ interface SModelElementSchema {
 
 #### 2.2.1.1. SModelRootSchema
 
-Serializable schema for the root element of the model tree. Usually actions refer to elements in the graphical model via an `elementId`. However, a few actions actually need to transfer the graphical model. In such cases, the graphical model needs to be represented as a serializable `SModelRootSchema`.
+Serializable schema for the root element of the model tree.
+Usually actions refer to elements in the graphical model via an `elementId`.
+However, a few actions actually need to transfer the graphical model.
+In such cases, the graphical model needs to be represented as a serializable `SModelRootSchema`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRootSchema.
- */
 interface SModelRootSchema extends SModelElementSchema {
     /**
      * Bounds of this element in the canvas.
@@ -541,16 +567,17 @@ interface SModelRootSchema extends SModelElementSchema {
 
 ### 2.2.2. SModelElement
 
-All elements of the diagram model inherit from base class `SModelElement`. Each model element must have a unique ID and a type that is used to look up its view. Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
+All elements of the diagram model inherit from base class `SModelElement`.
+Each model element must have a unique ID and a type that is used to look up its view.
+Additionally, each element provides access to its root element and holds an index to speed up the model element lookup.
 
-Each model element has a set of features. A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a `resizeFeature`. The set of supported features is determined by the `features` property.
+Each model element has a set of features.
+A feature is a symbol identifying some functionality that can be enabled or disabled for a model element, e.g. a `resizeFeature`.
+The set of supported features is determined by the `features` property.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelElement.
- */
 class SModelElement {
     /**
      * Unique identifier for this element.
@@ -593,14 +620,31 @@ A parent element may contain child elements, thus the diagram model forms a tree
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SParentElement.
- */
 class SParentElement extends SModelElement {
     /**
      * Children of this element.
      */
     readonly children: ReadonlyArray<SChildElement>;
+
+    /**
+     * Adds a child element to this element.
+     */
+    add(child: SChildElement, index?: number);
+
+    /**
+     * Removes a child element from this element.
+     */
+    remove(child: SChildElement);
+
+    /**
+     * Removes all child elements from this element.
+     */
+    removeAll(filter?: (e: SChildElement) => boolean);
+
+    /**
+     * Moves a child element to a new index.
+     */
+    move(child: SChildElement, newIndex: number);
 }
 ```
 
@@ -608,14 +652,13 @@ class SParentElement extends SModelElement {
 
 #### 2.2.2.2. SChildElement
 
-A child element is contained in a parent element. All elements except the model root are child elements. In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).
+A child element is contained in a parent element.
+All elements except the model root are child elements.
+In order to keep the model class hierarchy simple, every child element is also a parent element, although for many elements the array of children is empty (i.e. they are leafs in the model element tree).
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SChildElement.
- */
 class SChildElement extends SParentElement {
     /**
      * Parent of this element.
@@ -633,9 +676,6 @@ Base class for the root element of the diagram model tree.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SModelRoot.
- */
 class SModelRoot extends SParentElement {
     /**
      * Access to the index which is built up for faster element lookup.
@@ -677,19 +717,16 @@ A `Point` is composed of the (x,y) coordinates of an object.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Point.
- */
-class Point {
+interface Point {
     /**
      * The abscissa of the point.
      */
-    public readonly x: number;
+    readonly x: number;
 
     /**
      * The ordinate of the point.
      */
-    public readonly y: number;
+    readonly y: number;
 }
 ```
 
@@ -702,19 +739,16 @@ The `Dimension` of an object is composed of its width and height.
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Dimension.
- */
-class Dimension {
+interface Dimension {
     /**
      * The width of an element.
      */
-    public readonly width: number;
+    readonly width: number;
 
     /**
      * the height of an element.
      */
-    public readonly height: number;
+    readonly height: number;
 }
 ```
 
@@ -722,16 +756,13 @@ class Dimension {
 
 ### 2.3.4. Bounds
 
-The bounds are the position (x, y) and dimension (width, height) of an object. As such the `Bounds` type extends both `Point` and `Dimension`.
+The bounds are the position (x, y) and dimension (width, height) of an object.
+As such the `Bounds` type extends both `Point` and `Dimension`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's Bounds.
- */
-class Bounds extends Point, Dimension {
-}
+interface Bounds extends Point, Dimension {}
 ```
 
 </details>
@@ -743,19 +774,21 @@ The `ElementAndBounds` type is used to associate new bounds with a model element
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndBounds.
- */
-class ElementAndBounds {
+interface ElementAndBounds {
     /**
      * The identifier of the element.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
-     * The new bounds of the element.
+     * The new size of the element.
      */
-    public readonly newBounds: Bounds;
+    newSize: Dimension;
+
+    /**
+     * The new position of the element.
+     */
+    newPosition?: Point;
 }
 ```
 
@@ -768,19 +801,16 @@ The `ElementAndAlignment` type is used to associate a new alignment with a model
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's ElementAndAlignment.
- */
-class ElementAndAlignment {
+interface ElementAndAlignment {
     /**
      * The identifier of an element.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The new alignment of the element.
      */
-    public readonly newAlignment: Point;
+    newAlignment: Point;
 }
 ```
 
@@ -810,7 +840,8 @@ interface ElementAndRoutingPoints {
 
 ### 2.3.8. EditorContext
 
-The `EditorContext` may be used to represent the current state of the editor for particular actions. It encompasses the last recorded mouse position, the list of selected elements, and may contain custom arguments to encode additional state information.
+The `EditorContext` may be used to represent the current state of the editor for particular actions.
+It encompasses the last recorded mouse position, the list of selected elements, and may contain custom arguments to encode additional state information.
 
 <details open><summary>Code</summary>
 
@@ -842,24 +873,21 @@ Labeled actions are used to denote a group of actions in a user-interface contex
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's LabeledAction.
- */
-class LabeledAction {
+interface LabeledAction {
     /**
      * Group label.
      */
-    readonly label: string;
+    label: string;
 
     /**
      * Actions in the group.
      */
-    readonly actions: Action[];
+    actions: Action[];
 
     /**
      * Optional group icon.
      */
-    readonly icon?: string;
+    icon?: string;
 }
 ```
 
@@ -869,24 +897,23 @@ class LabeledAction {
 
 ### 2.4.1. RequestModelAction
 
-Sent from the client to the server in order to request a graphical model. Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication. The response is a `SetModelAction` or an `UpdateModelAction`.
+Sent from the client to the server in order to request a graphical model.
+Usually this is the first message that is sent from the client to the server, so it is also used to initiate the communication.
+The response is a `SetModelAction` or an `UpdateModelAction`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's RequestModelAction.
- */
-class RequestModelAction implements Action {
+interface RequestModelAction extends RequestAction<SetModelAction> {
   /**
    * The kind of the action.
    */
-  public readonly kind = "requestModel";
+  kind = "requestModel";
 
   /**
    * Additional options used to compute the graphical model.
    */
-  public readonly options?: { [key: string]: string });
+  options?: { [key: string]: string });
 }
 ```
 
@@ -894,24 +921,22 @@ class RequestModelAction implements Action {
 
 ### 2.4.2. SetModelAction
 
-Sent from the server to the client in order to set the model. If a model is already present, it is replaced.
+Sent from the server to the client in order to set the model.
+If a model is already present, it is replaced.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's SetModelAction.
- */
-class SetModelAction implements Action {
+interface SetModelAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setModel';
+    kind = 'setModel';
 
     /**
      * The new graphical model elements.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -919,34 +944,30 @@ class SetModelAction implements Action {
 
 ### 2.4.3. UpdateModelAction
 
-Sent from the server to the client in order to update the model. If no model is present yet, this behaves the same as a `SetModelAction`. The transition from the old model to the new one can be animated.
+Sent from the server to the client in order to update the model.
+If no model is present yet, this behaves the same as a `SetModelAction`.
+The transition from the old model to the new one can be animated.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Sprotty's UpdateModelAction.
- */
-class UpdateModelAction implements Action {
+interface UpdateModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'updateModel';
+    kind = 'updateModel';
 
     /**
      * The new root element of the graphical model.
      */
-    public readonly newRoot?: SModelRootSchema;
+    newRoot?: SModelRootSchema;
 
     /**
-     * Matches that link the elements of two root elements.
+     * Boolean flag to indicate wether updated/changed elements should be animated in the diagram.
      */
-    public readonly matches?: Match[];
+    animate?: boolean;
 }
 
-/**
- * Sprotty's Match.
- */
 interface Match {
     left?: SModelElementSchema;
     right?: SModelElementSchema;
@@ -959,21 +980,24 @@ interface Match {
 
 ### 2.4.4. SourceModelChangedAction
 
-Sent from the server to the client in order to indicate that the source model has changed. The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.). Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing. If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
+Sent from the server to the client in order to indicate that the source model has changed.
+The source model denotes the data source from which the diagram has been originally derived (such as a file, a database, etc.).
+Typically clients would react to such an action by asking the user whether she wants to reload the diagram or ignore the changes and continue editing.
+If the editor has no changes (i.e. is not dirty), clients may also choose to directly refresh the editor by sending a [RequestModelAction](#251-requestmodelaction).
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SourceModelChangedAction implements Action {
+interface SourceModelChangedAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'sourceModelChanged';
+    kind = 'sourceModelChanged';
 
     /**
      * A human readable name of the source model (e.g. the file name).
      */
-    public readonly sourceModelName: string;
+    sourceModelName: string;
 }
 ```
 
@@ -989,16 +1013,16 @@ A new `fileUri` can be defined to save the model to a new destination different 
 <details open><summary>Code</summary>
 
 ```typescript
-class SaveModelAction implements Action {
+interface SaveModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'saveModel';
+    kind = 'saveModel';
 
     /**
      *  The optional destination file uri.
      */
-    public readonly fileUri?: string;
+    fileUri?: string;
 }
 ```
 
@@ -1006,26 +1030,27 @@ class SaveModelAction implements Action {
 
 ### 2.5.2. SetDirtyStateAction
 
-The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model. A client may ignore such an action or use it to indicate to the user the dirty state.
+The server sends a `SetDirtyStateAction` to indicate to the client that the current model state on the server does not correspond to the persisted model state of the source model.
+A client may ignore such an action or use it to indicate to the user the dirty state.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetDirtyStateAction implements Action {
+interface SetDirtyStateAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setDirtyState';
+    kind = 'setDirtyState';
 
     /**
      * True if the current model state is dirty
      */
-    public readonly isDirty: boolean;
+    isDirty: boolean;
 
     /**
      * A string indicating the reason for the dirty state change e.g 'operation', 'undo' ...
      */
-    public readonly reason?: string;
+    reason?: string;
 }
 ```
 
@@ -1033,20 +1058,33 @@ class SetDirtyStateAction implements Action {
 
 ### 2.5.3. ExportSvgAction
 
-The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format. The action only provides the diagram SVG as plain string. The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem. However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol. So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
+The client (or the server) sends an `ExportSvgAction` to indicate that the diagram, which represents the current model state, should be exported in SVG format.
+The action only provides the diagram SVG as plain string.
+The expected result of executing an `ExportSvgAction` is a new file in SVG-format on the underlying filesystem.
+However, other details like the target destination, concrete file name, file extension etc. are not specified in the protocol.
+So it is the responsibility of the action handler to process this information accordingly and export the result to the underlying filesystem.
 
 <details open><summary>Code</summary>
 
 ```typescript
 /**
- * Sprotty's ExportSvgAction.
  * Note that sprotty also provides a `RequestExportSvgAction` which is currently not supported in GLSP.
  */
-class ExportSvgAction implements ResponseAction {
+interface ExportSvgAction extends ResponseAction {
+    /**
+     * The kind of the action.
+     */
+    kind = 'exportSvg';
+
     /**
      * The diagram SModel as serializable SVG.
      */
-    public readonly svg: string;
+    svg: string;
+
+    /**
+     * Id corresponding to the request this action responds to.
+     */
+    responseId: string;
 }
 ```
 
@@ -1054,13 +1092,19 @@ class ExportSvgAction implements ResponseAction {
 
 ## 2.6. Model Layout
 
-In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)). However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
+In GLSP the server usually controls the model's layout by applying bounds to all elements and sending an updated model to the client ([SetModelAction](#252-setmodelaction), [UpdateModelAction](#253-updatemodelaction)).
+However, calculating the correct bounds of each element may not be straight-forward as it may depend on certain client-side rendering properties, such as label size.
 
-On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers. The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas. If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
+On the client-side Sprotty calculates the layout on two levels: The `Micro Layout` is responsible to layout a single element with all its labels, icons, compartments in a horizontal box, vertical box, or other layout containers.
+The `Macro Layout` is responsible for layouting the network of nodes and edges on the canvas.
+If a server needs information from the micro layout, it can send a `RequestBoundsAction` to the client who will respond with a `ComputedBoundsAction` containing all elements and their bounds.
 
 ### 2.6.1. RequestBoundsAction
 
-Sent from the server to the client to request bounds for the given model. The model is rendered invisibly so the bounds can derived from the DOM. The response is a `ComputedBoundsAction`. This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.
+Sent from the server to the client to request bounds for the given model.
+The model is rendered invisibly so the bounds can derived from the DOM.
+The response is a `ComputedBoundsAction`.
+This hidden rendering round-trip is necessary if the client is responsible for parts of the layout.
 
 <details open><summary>Code</summary>
 
@@ -1068,16 +1112,16 @@ Sent from the server to the client to request bounds for the given model. The mo
 /**
  * Sprotty's RequestBoundsAction.
  */
-class RequestBoundsAction implements Action {
+interface RequestBoundsAction extends RequestAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestBounds';
+    kind = 'requestBounds';
 
     /**
      * The model elements to consider to compute the new bounds.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -1085,7 +1129,9 @@ class RequestBoundsAction implements Action {
 
 ### 2.6.2. ComputedBoundsAction
 
-Sent from the client to the server to transmit the result of bounds computation as a response to a `RequestBoundsAction`. If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action. Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.
+Sent from the client to the server to transmit the result of bounds computation as a response to a `RequestBoundsAction`.
+If the server is responsible for parts of the layout, it can do so after applying the computed bounds received with this action.
+Otherwise there is no need to send the computed bounds to the server, so they can be processed locally by the client.
 
 <details open><summary>Code</summary>
 
@@ -1093,26 +1139,31 @@ Sent from the client to the server to transmit the result of bounds computation 
 /**
  * Sprotty's ComputedBoundsAction.
  */
-class ComputedBoundsAction implements Action {
+interface ComputedBoundsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'computedBounds';
+    kind = 'computedBounds';
 
     /**
      * The new bounds of the model elements.
      */
-    public readonly bounds: ElementAndBounds[];
+    bounds: ElementAndBounds[];
 
     /*
      * The revision number.
      */
-    public readonly revision?: number;
+    revision?: number;
 
     /**
      * The new alignment of the model elements.
      */
-    public readonly alignments?: ElementAndAlignment[];
+    alignments?: ElementAndAlignment[];
+
+    /**
+     * The route of the model elements.
+     */
+    routes?: ElementAndRoutingPoints[];
 }
 ```
 
@@ -1128,21 +1179,16 @@ Request a layout of the diagram or selected elements from the server.
 /**
  * Layout Operation based on Sprotty's LayoutAction.
  */
-class LayoutOperation implements Operation {
+interface LayoutOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'layout';
-
-    /**
-     * The layout type.
-     */
-    public readonly layoutType: string;
+    kind = 'layout';
 
     /**
      * The identifiers of the elements that should be layouted, may be just the root element.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 }
 ```
 
@@ -1150,25 +1196,28 @@ class LayoutOperation implements Operation {
 
 ## 2.7. Model Edit Mode
 
-GLSP supports setting the model into different edit modes. We pre-define two such modes: `readonly` and `editable`. However these modes can be customized as need be.
+GLSP supports setting the model into different edit modes.
+We pre-define two such modes: `readonly` and `editable`.
+However these modes can be customized as need be.
 
 ### 2.7.1. SetEditModeAction
 
-Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode. A client may also listen to this action to prevent certain user interactions preemptively.
+Sent from the client to the server to set the model into a specific editor mode, allowing the server to react to certain requests differently depending on the mode.
+A client may also listen to this action to prevent certain user interactions preemptively.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetEditModeAction implements Action {
+interface SetEditModeAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setEditMode';
+    kind = 'setEditMode';
 
     /**
      * The new edit mode of the diagram.
      */
-    public readonly editMode: string;
+    editMode: string;
 }
 ```
 
@@ -1176,7 +1225,9 @@ class SetEditModeAction implements Action {
 
 ## 2.8. Client-Side Actions
 
-There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc. Those actions may also be sent by the server to trigger the respective client behavior. Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
+There are several actions that are issued and processed on the client to manipulate the view port, select elements, etc.
+Those actions may also be sent by the server to trigger the respective client behavior.
+Please note that we only list actions here that are actually used by the current default implementation of the GLSP server.
 
 ### 2.8.1. View Port
 
@@ -1184,7 +1235,9 @@ View port actions manipulate the viewport on the client-side and may be sent fro
 
 #### 2.8.1.1. CenterAction
 
-Centers the viewport on the elements with the given identifiers. It changes the scroll setting of the viewport accordingly and resets the zoom to its default. This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.
+Centers the viewport on the elements with the given identifiers.
+It changes the scroll setting of the viewport accordingly and resets the zoom to its default.
+This action can also be created on the client but it can also be sent by the server in order to perform such a viewport change remotely.
 
 <details open><summary>Code</summary>
 
@@ -1192,26 +1245,26 @@ Centers the viewport on the elements with the given identifiers. It changes the 
 /**
  * Sprotty's CenterAction.
  */
-class CenterAction implements Action {
+interface CenterAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'center';
+    kind = 'center';
 
     /**
      * The identifier of the elements on which the viewport should be centered.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * Indicate if the modification of the viewport should be realized with or without support of animations.
      */
-    public readonly animate: boolean = true;
+    animate: boolean = true;
 
     /**
      * Indicates whether the zoom level should be kept.
      */
-    public readonly retainZoom: boolean = false;
+    retainZoom: boolean = false;
 }
 ```
 
@@ -1219,7 +1272,9 @@ class CenterAction implements Action {
 
 #### 2.8.1.2. FitToScreenAction
 
-Triggers to fit all or a list of elements into the available drawing area. The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely. This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
+Triggers to fit all or a list of elements into the available drawing area.
+The resulting fit-to-screen command changes the zoom and scroll settings of the viewport so the model can be shown completely.
+This action can also be sent from the server to the client in order to perform such a viewport change programmatically.
 
 <details open><summary>Code</summary>
 
@@ -1227,31 +1282,31 @@ Triggers to fit all or a list of elements into the available drawing area. The r
 /**
  * Sprotty's FitToScreenAction.
  */
-class FitToScreenAction implements Action {
+interface FitToScreenAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'fit';
+    kind = 'fit';
 
     /**
      * The identifier of the elements to fit on screen.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * The padding that should be visible on the viewport.
      */
-    public readonly padding?: number;
+    padding?: number;
 
     /**
      * The max zoom level authorized.
      */
-    public readonly maxZoom?: number;
+    maxZoom?: number;
 
     /**
      * Indicate if the action should be performed with animation support or not.
      */
-    public readonly animate: boolean = true;
+    animate: boolean = true;
 }
 ```
 
@@ -1259,38 +1314,38 @@ class FitToScreenAction implements Action {
 
 ### 2.8.2. Client Notification
 
-In GLSP we distinguish between a status and a message which may be displayed differently on the client. For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
+In GLSP we distinguish between a status and a message which may be displayed differently on the client.
+For instance, in the Theia Integration status updates are shown directly on the diagram as an overlay whereas messages are shown in separate message popups.
 
-#### 2.8.2.1. GLSPServerStatusAction
+#### 2.8.2.1. ServerStatusAction
 
-This action is typically sent by the server to signal a state change. This action extends the corresponding Sprotty action to include a timeout. If a timeout is given the respective status should disappear after the timeout is reached.
+This action is typically sent by the server to signal a state change.
+This action extends the corresponding Sprotty action to include a timeout.
+If a timeout is given the respective status should disappear after the timeout is reached.
 
 <details open><summary>Code</summary>
 
 ```typescript
-/**
- * Based on Sprotty's ServerStatusAction but extended with a timeout.
- */
-class GLSPServerStatusAction implements Action {
+interface ServerStatusAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'serverStatus';
+    kind = 'serverStatus';
 
     /**
      * The severity of the status.
      */
-    public readonly severity: string;
+    severity: ServerSeverity;
 
     /**
      * The message describing the status.
      */
-    public readonly message: string;
+    message: string;
 
     /**
      * Timeout after which a displayed status disappears.
      */
-    public timeout: number = 1;
+    timeout?: number;
 }
 ```
 
@@ -1303,16 +1358,16 @@ This action is typically sent by the server to notify the user about something o
 <details open><summary>Code</summary>
 
 ```typescript
-class ServerMessageAction implements Action {
+interface ServerMessageAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'serverMessage';
+    kind = 'serverMessage';
 
     /**
      * The severity of the message.
      */
-    severity: 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL';
+    severity: ServerSeverity;
 
     /**
      * The message text.
@@ -1322,13 +1377,28 @@ class ServerMessageAction implements Action {
     /**
      * Further details on the message.
      */
-    details: string = '';
+    details: string;
 
     /**
      * Timeout after which a displayed message disappears.
      */
-    timeout: number = -1;
+    timeout?: number;
 }
+```
+
+</details>
+
+#### 2.8.2.3. ServerSeverity
+
+The severity of a status or message.
+
+<details open><summary>Code</summary>
+
+```typescript
+/**
+ * The possible server status severity levels.
+ */
+type ServerSeverity = 'NONE' | 'INFO' | 'WARNING' | 'ERROR' | 'FATAL' | 'OK';
 ```
 
 </details>
@@ -1337,7 +1407,9 @@ class ServerMessageAction implements Action {
 
 #### 2.8.3.1. SelectAction
 
-Triggered when the user changes the selection, e.g. by clicking on a selectable element. The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently. The server can send such an action to the client in order to change the selection remotely.
+Triggered when the user changes the selection, e.g. by clicking on a selectable element.
+The action should trigger a change in the `selected` state accordingly, so the elements can be rendered differently.
+The server can send such an action to the client in order to change the selection remotely.
 
 <details open><summary>Code</summary>
 
@@ -1345,21 +1417,21 @@ Triggered when the user changes the selection, e.g. by clicking on a selectable 
 /**
  * Sprotty's SelectAction.
  */
-class SelectAction implements Action {
+interface SelectAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'elementSelected';
+    kind = 'elementSelected';
 
     /**
      * The identifier of the elements to mark as selected.
      */
-    public readonly selectedElementsIDs: string[] = [];
+    selectedElementsIDs: string[];
 
     /**
      * The identifier of the elements to mark as not selected.
      */
-    public readonly deselectedElementsIDs: string[] = [];
+    deselectedElementsIDs: string[];
 }
 ```
 
@@ -1375,16 +1447,16 @@ Used for selecting or deselecting all elements.
 /**
  * Sprotty's SelectAllAction.
  */
-class SelectAllAction implements Action {
+interface SelectAllAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'allSelected';
+    kind = 'allSelected';
 
     /**
      * If `select` is true, all elements are selected, otherwise they are deselected.
      */
-    public readonly select: boolean = true;
+    select: boolean;
 }
 ```
 
@@ -1394,7 +1466,9 @@ class SelectAllAction implements Action {
 
 ### 2.9.1. RequestPopupModelAction
 
-Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element. This action is sent from the client to the server. The response is a `SetPopupModelAction`.
+Triggered when the user hovers the mouse pointer over an element to get a popup with details on that element.
+This action is sent from the client to the server.
+The response is a `SetPopupModelAction`.
 
 <details open><summary>Code</summary>
 
@@ -1402,21 +1476,21 @@ Triggered when the user hovers the mouse pointer over an element to get a popup 
 /**
  * Sprotty's RequestPopupModelAction.
  */
-class RequestPopupModelAction implements Action {
+interface RequestPopupModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestPopupModel';
+    kind = 'requestPopupModel';
 
     /**
      * The identifier of the elements for which a popup is requested.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The bounds.
      */
-    public readonly bounds: Bounds;
+    bounds: Bounds;
 }
 ```
 
@@ -1424,7 +1498,8 @@ class RequestPopupModelAction implements Action {
 
 ### 2.9.2. SetPopupModelAction
 
-Sent from the server to the client to display a popup in response to a `RequestPopupModelAction`. This action can also be used to remove any existing popup by choosing `EMPTY_ROOT` as root element.
+Sent from the server to the client to display a popup in response to a `RequestPopupModelAction`.
+This action can also be used to remove any existing popup by choosing `EMPTY_ROOT` as root element.
 
 <details open><summary>Code</summary>
 
@@ -1432,16 +1507,16 @@ Sent from the server to the client to display a popup in response to a `RequestP
 /**
  * Sprotty's SetPopupModelAction.
  */
-class SetPopupModelAction implements Action {
+interface SetPopupModelAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setPopupModel';
+    kind = 'setPopupModel';
 
     /**
      * The model elements composing the popup to display.
      */
-    public readonly newRoot: SModelRootSchema;
+    newRoot: SModelRootSchema;
 }
 ```
 
@@ -1449,7 +1524,8 @@ class SetPopupModelAction implements Action {
 
 ## 2.10. Element Validation
 
-Validation in GLSP is performed by using validation markers. A marker represents the validation result for a single model element:
+Validation in GLSP is performed by using validation markers.
+A marker represents the validation result for a single model element:
 
 <details open><summary>Code</summary>
 
@@ -1481,21 +1557,22 @@ interface Marker {
 
 ### 2.10.1. RequestMarkersAction
 
-Action to retrieve markers for the specified model elements. Sent from the client to the server.
+Action to retrieve markers for the specified model elements.
+Sent from the client to the server.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestMarkersAction implements Action {
+interface RequestMarkersAction extends RequestAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestMarkers';
+    kind = 'requestMarkers';
 
     /**
      * The elements for which markers are requested, may be just the root element.
      */
-    public readonly elementsIDs: string[];
+    elementsIDs: string[];
 }
 ```
 
@@ -1503,21 +1580,22 @@ class RequestMarkersAction implements Action {
 
 ### 2.10.2. SetMarkersAction
 
-Response to the `RequestMarkersAction` containing all validation markers. Sent from the server to the client.
+Response to the `RequestMarkersAction` containing all validation markers.
+Sent from the server to the client.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetMarkersAction implements Action {
+interface SetMarkersAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setMarkers';
+    kind = 'setMarkers';
 
     /**
      * The list of markers that has been requested by the `RequestMarkersAction`.
      */
-    public readonly markers: Marker[];
+    markers: Marker[];
 }
 ```
 
@@ -1530,16 +1608,16 @@ To remove markers for elements a client or server may send a `DeleteMarkersActio
 <details open><summary>Code</summary>
 
 ```typescript
-class DeleteMarkersAction implements Action {
+interface DeleteMarkersAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'deleteMarkers';
+    kind = 'deleteMarkers';
 
     /**
      * The list of markers that should be deleted.
      */
-    public readonly markers: Marker[];
+    markers: Marker[];
 }
 ```
 
@@ -1547,9 +1625,13 @@ class DeleteMarkersAction implements Action {
 
 ## 2.11. Element Navigation
 
-GLSP makes no assumption about the type of navigation a user may want to perform. Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc. The type of navigation is identified by the `targetTypeId`.
+GLSP makes no assumption about the type of navigation a user may want to perform.
+Thus a generic infrastructure is provided that the client and server can use to implement specific navigation types, e.g., navigation to documentation, implementation, etc.
+The type of navigation is identified by the `targetTypeId`.
 
-A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets. A `NavigationTarget` identifies the object we want to navigate to via its uri and may further provide a label to display for the client. Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.
+A client may request the targets for a specific type of navigation by querying the server to which the server will respond with a set of navigation targets.
+A `NavigationTarget` identifies the object we want to navigate to via its uri and may further provide a label to display for the client.
+Additionally, generic arguments may be used to to encode any domain- or navigation type-specific information.
 
 <details open><summary>Code</summary>
 
@@ -1581,21 +1663,21 @@ Action that is usually sent from the client to the server to request navigation 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestNavigationTargetsAction implements RequestAction<SetNavigationTargetsAction> {
+interface RequestNavigationTargetsAction extends RequestAction<SetNavigationTargetsAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestNavigationTargets';
+    kind = 'requestNavigationTargets';
 
     /**
      * Identifier of the type of navigation targets we want to retrieve, e.g., 'documentation', 'implementation', etc.
      */
-    public readonly targetTypeId: string;
+    targetTypeId: string;
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -1603,26 +1685,28 @@ class RequestNavigationTargetsAction implements RequestAction<SetNavigationTarge
 
 ### 2.11.2. SetNavigationTargetsAction
 
-Response action from the server following a `RequestNavigationTargetsAction`. It contains all available navigation targets for the queried target type in the provided editor context. The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.
+Response action from the server following a `RequestNavigationTargetsAction`.
+It contains all available navigation targets for the queried target type in the provided editor context.
+The server may also provide additional information using the arguments, e.g., warnings, that can be interpreted by the client.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetNavigationTargetsAction implements ResponseAction {
+interface SetNavigationTargetsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setNavigationTargets';
+    kind = 'setNavigationTargets';
 
     /**
      * A list of navigation targets.
      */
-    public readonly targets: NavigationTarget[];
+    targets: NavigationTarget[];
 
     /**
      * Custom arguments that may be interpreted by the client.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -1630,21 +1714,22 @@ class SetNavigationTargetsAction implements ResponseAction {
 
 ### 2.11.3. NavigateToTargetAction
 
-Action that triggers the navigation to a particular navigation target. This may be used by the client internally or may be sent from the server.
+Action that triggers the navigation to a particular navigation target.
+This may be used by the client internally or may be sent from the server.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class NavigateToTargetAction implements Action {
+interface NavigateToTargetAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'navigateToTarget';
+    kind = 'navigateToTarget';
 
     /**
      * The target to which we navigate.
      */
-    public readonly target: NavigationTarget;
+    target: NavigationTarget;
 }
 ```
 
@@ -1652,21 +1737,22 @@ class NavigateToTargetAction implements Action {
 
 ### 2.11.4. ResolveNavigationTargetAction
 
-If a client cannot navigate to a target directly, a `ResolveNavigationTargetAction` may be sent to the server to resolve the navigation target to one or more model elements. This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.
+If a client cannot navigate to a target directly, a `ResolveNavigationTargetAction` may be sent to the server to resolve the navigation target to one or more model elements.
+This may be useful in cases where the resolution of each target is expensive or the client architecture requires an indirection.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigationTargetAction> {
+interface ResolveNavigationTargetAction extends RequestAction<SetResolvedNavigationTargetAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'resolveNavigationTarget';
+    kind = 'resolveNavigationTarget';
 
     /**
      * The navigation target to resolve.
      */
-    public readonly navigationTarget: NavigationTarget;
+    navigationTarget: NavigationTarget;
 }
 ```
 
@@ -1674,26 +1760,27 @@ class ResolveNavigationTargetAction implements RequestAction<SetResolvedNavigati
 
 ### 2.11.4. SetResolvedNavigationTargetAction
 
-An action sent from the server in response to a `ResolveNavigationTargetAction`. The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
+An action sent from the server in response to a `ResolveNavigationTargetAction`.
+The response contains the resolved element ids for the given target and may contain additional information in the `args` property.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetResolvedNavigationTargetAction implements ResponseAction {
+interface SetResolvedNavigationTargetAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setResolvedNavigationTarget';
+    kind = 'setResolvedNavigationTarget';
 
     /**
      * The element ids of the resolved navigation target.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 
     /**
      * Custom arguments that may be interpreted by the client.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -1701,21 +1788,22 @@ class SetResolvedNavigationTargetAction implements ResponseAction {
 
 ### 2.11.5. NavigateToExternalTargetAction
 
-If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent. Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
+If a navigation target cannot be resolved or the resolved target is something that is not part of our source model, e.g., a separate documentation file, a `NavigateToExternalTargetAction` may be sent.
+Since the target it outside of the model scope such an action would be typically handled by an integration layer (such as the surrounding IDE).
 
 <details open><summary>Code</summary>
 
 ```typescript
-class NavigateToExternalTargetAction implements Action {
+interface NavigateToExternalTargetAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'navigateToExternalTarget';
+    kind = 'navigateToExternalTarget';
 
     /**
      * The target to which we navigate.
      */
-    public readonly target: NavigationTarget;
+    target: NavigationTarget;
 }
 ```
 
@@ -1723,9 +1811,13 @@ class NavigateToExternalTargetAction implements Action {
 
 ## 2.12. Element Type Hints
 
-Type hints are used to define what modifications are supported on the different element types. Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level. The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
+Type hints are used to define what modifications are supported on the different element types.
+Conceptually type hints are similar to `features` of a model elements but define the functionality on a type level.
+The rationale is to avoid a client-server round-trip for user feedback of each synchronous user interaction.
 
-In GLSP we distinguish between `ShapeTypeHints` and `EdgeTypeHints`. These hints specify whether an element can be resized, relocated and/or deleted. Optionally, they specify a list of element types that can be contained/connected by this element.
+In GLSP we distinguish between `ShapeTypeHints` and `EdgeTypeHints`.
+These hints specify whether an element can be resized, relocated and/or deleted.
+Optionally, they specify a list of element types that can be contained/connected by this element.
 
 <details open><summary>Code</summary>
 
@@ -1786,16 +1878,18 @@ interface EdgeTypeHint extends TypeHint {
 
 ### 2.12.1. RequestTypeHintsAction
 
-Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type. The `RequestTypeHintsAction` is optional, but should usually be among the first messages sent from the client to the server after receiving the model via `RequestModelAction`. The response is a `SetTypeHintsAction`.
+Sent from the client to the server in order to request hints on whether certain modifications are allowed for a specific element type.
+The `RequestTypeHintsAction` is optional, but should usually be among the first messages sent from the client to the server after receiving the model via `RequestModelAction`.
+The response is a `SetTypeHintsAction`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestTypeHintsAction implements Action {
+interface RequestTypeHintsAction extends RequestAction<SetTypeHintsAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestTypeHints';
+    kind = 'requestTypeHints';
 }
 ```
 
@@ -1808,21 +1902,21 @@ Sent from the server to the client in order to provide hints certain modificatio
 <details open><summary>Code</summary>
 
 ```typescript
-class SetTypeHintsAction implements Action {
+interface SetTypeHintsAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setTypeHints';
+    kind = 'setTypeHints';
 
     /**
-     * The hints for node types.
+     * The hints for shape types.
      */
-    public readonly nodeHints: ShapeTypeHint[];
+    shapeHints: ShapeTypeHint[];
 
     /**
      * The hints for edge types.
      */
-    public readonly edgeHints: EdgeTypeHint[];
+    edgeHints: EdgeTypeHint[];
 }
 ```
 
@@ -1837,31 +1931,21 @@ class SetTypeHintsAction implements Action {
 In order to create a node in the model the client can send a `CreateNodeOperation` with the necessary information to create that node.
 
 ```typescript
-class CreateNodeOperation implements Operation {
+interface CreateNodeOperation extends CreateOperation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'createNode';
-
-    /**
-     * The type of the element to be created.
-     */
-    public readonly elementTypeId: string;
+    kind = 'createNode';
 
     /*
      * The location at which the operation shall be executed.
      */
-    public readonly location?: Point;
+    location?: Point;
 
     /*
      * The container in which the operation shall be executed.
      */
-    public readonly containerId?: string;
-
-    /*
-     * Additional arguments for custom behavior.
-     */
-    public readonly args?: Args;
+    containerId?: string;
 }
 ```
 
@@ -1874,31 +1958,21 @@ In order to create an edge in the model the client can send a `CreateEdgeOperati
 <details open><summary>Code</summary>
 
 ```typescript
-class CreateEdgeOperation implements Operation {
+interface CreateEdgeOperation extends CreateOperation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'createEdge';
-
-    /**
-     * The type of the element to be created.
-     */
-    public readonly elementTypeId: string;
+    kind = 'createEdge';
 
     /*
      * The source element.
      */
-    public readonly sourceElementId: string;
+    sourceElementId: string;
 
     /*
      * The target element.
      */
-    public readonly targetElementId: string;
-
-    /*
-     * Additional arguments for custom behavior.
-     */
-    public readonly args?: Args;
+    targetElementId: string;
 }
 ```
 
@@ -1911,16 +1985,16 @@ The client sends a `DeleteElementOperation` to the server to request the deletio
 <details open><summary>Code</summary>
 
 ```typescript
-class DeleteElementOperation implements Operation {
+interface DeleteElementOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'deleteElement';
+    kind = 'deleteElement';
 
     /**
      * The elements to be deleted.
      */
-    public readonly elementIds: string[];
+    elementIds: string[];
 }
 ```
 
@@ -1930,21 +2004,23 @@ class DeleteElementOperation implements Operation {
 
 ### 2.14.1. ChangeBoundsOperation
 
-Triggers the position or size change of elements. This action concerns only the element's graphical size and position. Whether an element can be resized or repositioned may be specified by the server with a [`TypeHint`](#213-element-type-hints) to allow for immediate user feedback before resizing or repositioning.
+Triggers the position or size change of elements.
+This action concerns only the element's graphical size and position.
+Whether an element can be resized or repositioned may be specified by the server with a [`TypeHint`](#213-element-type-hints) to allow for immediate user feedback before resizing or repositioning.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeBoundsOperation implements Action {
+interface ChangeBoundsOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeBounds';
+    kind = 'changeBounds';
 
     /**
      * The new bounds of the respective elements.
      */
-    public readonly newBounds: ElementAndBounds[];
+    newBounds: ElementAndBounds[];
 }
 ```
 
@@ -1957,26 +2033,26 @@ The client sends a `ChangeContainerOperation` to the server to request the execu
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeContainerOperation implements Operation {
+interface ChangeContainerOperation implements Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeContainer';
+    kind = 'changeContainer';
 
     /**
      * The element to be changed.
      */
-    public readonly elementId: string;
+    elementId: string;
 
     /**
      * The element container of the changeContainer operation.
      */
-    public readonly targetContainerId: string;
+    targetContainerId: string;
 
     /**
      * The graphical location.
      */
-    public readonly location?: string;
+    location?: string;
 }
 ```
 
@@ -1991,26 +2067,31 @@ If the source and/or target element of an edge should be adapted, the client can
 <details open><summary>Code</summary>
 
 ```typescript
-class ReconnectEdgeOperation implements Operation {
+interface ReconnectEdgeOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'reconnectEdge';
+    kind = 'reconnectEdge';
 
     /**
      * The edge element that should be reconnected.
      */
-    public readonly edgeElementId: string;
+    edgeElementId: string;
 
     /**
      * The (new) source element of the edge.
      */
-    public readonly sourceElementId: string;
+    sourceElementId: string;
 
     /**
      * The (new) target element of the edge.
      */
-    public readonly targetElementId: string;
+    targetElementId: string;
+
+    /*
+     * Additional arguments for custom behavior.
+     */
+    args?: Args;
 }
 ```
 
@@ -2018,21 +2099,22 @@ class ReconnectEdgeOperation implements Operation {
 
 ### 2.15.2. ChangeRoutingPointsOperation
 
-An edge may have zero or more routing points that "re-direct" the edge between the source and the target element. In order to set these routing points the client may send a `ChangeRoutingPointsOperation`.
+An edge may have zero or more routing points that "re-direct" the edge between the source and the target element.
+In order to set these routing points the client may send a `ChangeRoutingPointsOperation`.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class ChangeRoutingPointsOperation implements Operation {
+interface ChangeRoutingPointsOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'changeRoutingPoints';
+    kind = 'changeRoutingPoints';
 
     /**
      * The routing points of the edge (may be empty).
      */
-    public readonly newRoutingPoints: ElementAndRoutingPoints[];
+    newRoutingPoints: ElementAndRoutingPoints[];
 }
 ```
 
@@ -2097,31 +2179,32 @@ namespace ValidationStatus {
 
 ### 2.16.1. RequestEditValidationAction
 
-Requests the validation of the given text in the context of the provided model element. Typically sent from the client to the server.
+Requests the validation of the given text in the context of the provided model element.
+Typically sent from the client to the server.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestEditValidationAction implements RequestAction<SetEditValidationResultAction> {
+interface RequestEditValidationAction extends RequestAction<SetEditValidationResultAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestEditValidation';
+    kind = 'requestEditValidation';
 
     /**
      * Context in which the text is validated, e.g., 'label-edit'.
      */
-    public readonly contextId: string;
+    contextId: string;
 
     /**
      * Model element that is being edited.
      */
-    public readonly modelElementId: string;
+    modelElementId: string;
 
     /**
      * Text that should be considered for the model element.
      */
-    public readonly text: string;
+    text: string;
 }
 ```
 
@@ -2134,21 +2217,21 @@ Response to a `RequestEditValidationAction` containing the validation result for
 <details open><summary>Code</summary>
 
 ```typescript
-class SetEditValidationResultAction implements ResponseAction {
+interface SetEditValidationResultAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setEditValidationResult';
+    kind = 'setEditValidationResult';
 
     /**
      * Validation status.
      */
-    public readonly status: ValidationStatus;
+    status: ValidationStatus;
 
     /*
      * Additional arguments for custom behavior.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -2156,26 +2239,28 @@ class SetEditValidationResultAction implements ResponseAction {
 
 ### 2.16.3. ApplyLabelEditOperation
 
-A very common use case in domain models is the support of labels that display textual information to the user. For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view. To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
+A very common use case in domain models is the support of labels that display textual information to the user.
+For instance, the `SGraph` model of Sprotty has support for labels that can be attached to a node, edge, or port, and that contain some text that is rendered in the view.
+To apply new text to such a label element the client may send an `ApplyLabelEditOperation` to the server.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class ApplyLabelEditOperation implements Operation {
+interface ApplyLabelEditOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'applyLabelEdit';
+    kind = 'applyLabelEdit';
 
     /**
      * Identifier of the label model element.
      */
-    public readonly labelId: string;
+    labelId: string;
 
     /**
      * Text that should be applied on the label.
      */
-    public readonly text: string;
+    text: string;
 }
 ```
 
@@ -2183,7 +2268,8 @@ class ApplyLabelEditOperation implements Operation {
 
 ## 2.17. Clipboard
 
-In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server. By default, GLSP use `application/json` as exchange format.
+In GLSP the clipboard needs to be managed by the client but the conversion from the selection to be copied into a clipboard-compatible format is handled by the server.
+By default, GLSP use `application/json` as exchange format.
 
 <details open><summary>Code</summary>
 
@@ -2200,16 +2286,16 @@ Requests the clipboard data for the current editor context, i.e., the selected e
 <details open><summary>Code</summary>
 
 ```typescript
-class RequestClipboardDataAction implements RequestAction<SetClipboardDataAction> {
+interface RequestClipboardDataAction extends RequestAction<SetClipboardDataAction> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestClipboardData';
+    kind = 'requestClipboardData';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2222,16 +2308,16 @@ Server response to a `RequestClipboardDataAction` containing the selected elemen
 <details open><summary>Code</summary>
 
 ```typescript
-class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
+interface SetClipboardDataAction extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setClipboardData';
+    kind = 'setClipboardData';
 
     /**
      * The selected elements from the editor context as clipboard data.
      */
-    public readonly clipboardData: ClipboardData;
+    clipboardData: ClipboardData;
 }
 ```
 
@@ -2239,21 +2325,22 @@ class SetClipboardDataAction implements RequestAction<SetClipboardDataAction> {
 
 ### 2.17.3. CutOperation
 
-Requests a cut operation from the server, i.e., deleting the selected elements from the model. Before submitting a `CutOperation` a client should ensure that the cut elements are put into the clipboard.
+Requests a cut operation from the server, i.e., deleting the selected elements from the model.
+Before submitting a `CutOperation` a client should ensure that the cut elements are put into the clipboard.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class CutOperation implements Operation {
+interface CutOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'cut';
+    kind = 'cut';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2261,26 +2348,27 @@ class CutOperation implements Operation {
 
 ### 2.17.4. PasteOperation
 
-Requests a paste operation from the server by providing the current clipboard data. Typically this means that elements should be created based on the data in the clipboard.
+Requests a paste operation from the server by providing the current clipboard data.
+Typically this means that elements should be created based on the data in the clipboard.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class PasteOperation implements Operation {
+interface PasteOperation extends Operation {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'paste';
+    kind = 'paste';
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 
     /**
      * The clipboard data that should be pasted to the editor's last recorded mouse position (see `editorContext`).
      */
-    public readonly clipboardData: ClipboardData;
+    clipboardData: ClipboardData;
 }
 ```
 
@@ -2288,37 +2376,38 @@ class PasteOperation implements Operation {
 
 ## 2.18. Undo / Redo
 
-A server usually keeps a command stack of all commands executed on the model. To navigate the command stack the following actions can be used.
+A server usually keeps a command stack of all commands executed on the model.
+To navigate the command stack the following actions can be used.
 
-### 2.18.1. UndoOperation
+### 2.18.1. UndoAction
 
 Trigger an undo of the latest executed command.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class UndoOperation implements Action {
+interface UndoAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'glspUndo';
+    kind = 'glspUndo';
 }
 ```
 
 </details>
 
-### 2.18.2. RedoOperation
+### 2.18.2. RedoAction
 
 Trigger a redo of the latest undone command.
 
 <details open><summary>Code</summary>
 
 ```typescript
-class RedoOperation implements Action {
+interface RedoAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'glspRedo';
+    kind = 'glspRedo';
 }
 ```
 
@@ -2326,7 +2415,9 @@ class RedoOperation implements Action {
 
 ## 2.19. Contexts
 
-A context is a dedicated space in the client that is identified via a unique id. Context actions are a specific set of actions that are available in that context id. At the moment we support three such contexts:
+A context is a dedicated space in the client that is identified via a unique id.
+Context actions are a specific set of actions that are available in that context id.
+At the moment we support three such contexts:
 
 -   The Context Menu with the context id `context-menu`
 -   The Command Palette with the context id `command-palette`
@@ -2339,21 +2430,21 @@ A context is a dedicated space in the client that is identified via a unique id.
 The RequestContextActions is sent from the client to the server to request the available actions for the context with id `contextId`.
 
 ```typescript
-class RequestContextActions implements RequestAction<SetContextActions> {
+interface RequestContextActions extends RequestAction<SetContextActions> {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'requestContextActions';
+    kind = 'requestContextActions';
 
     /**
      * The identifier for the context.
      */
-    public readonly contextId: string;
+    contextId: string;
 
     /**
      * The current editor context.
      */
-    public readonly editorContext: EditorContext;
+    editorContext: EditorContext;
 }
 ```
 
@@ -2366,21 +2457,21 @@ The `SetContextActions` is the response to a `RequestContextActions` containing 
 <details open><summary>Code</summary>
 
 ```typescript
-class SetContextActions implements ResponseAction {
+interface SetContextActions extends ResponseAction {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'setContextActions';
+    kind = 'setContextActions';
 
     /**
      * The actions available in the queried context.
      */
-    public readonly actions: LabeledAction[];
+    readonly actions: LabeledAction[];
 
     /**
      * Custom arguments.
      */
-    public readonly args: ?Args;
+    args: ?Args;
 }
 ```
 
@@ -2388,17 +2479,23 @@ class SetContextActions implements ResponseAction {
 
 ### 2.19.3. Context Menu
 
-The context menu is an overlay that is triggered by a right click from the user. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `context-menu` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a context menu.
+The context menu is an overlay that is triggered by a right click from the user.
+The menu may be filled with actions from the client but may also be filled with actions from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `context-menu` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in a context menu.
 
 ### 2.19.4. Command Palette
 
-The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`. The menu may be filled with actions from the client but may also be filled with actions from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
+The command palette is an "auto-complete" widget that is triggered when the user hits `Ctrl+Space`.
+The menu may be filled with actions from the client but may also be filled with actions from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `command-palette` and handle the returned actions from the `SetContextActions` response accordingly, i.e., rendering them in a auto-complete widget.
 
 ### 2.19.5. Tool Palette
 
-The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model. As such the tool palette consists of two parts: tools and labeled actions.
+The tool palette is a widget on the graph's canvas that displays a set of tools and actions that the user can use to interact with the model.
+As such the tool palette consists of two parts: tools and labeled actions.
 
-A tool is a uniquely identified functionality that can be either enabled or disabled. Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.
+A tool is a uniquely identified functionality that can be either enabled or disabled.
+Tools can be activated and de-activated from the user by clicking their rendered representation in the platte or may be activated using dedicated actions.
 
  <details open><summary>Code</summary>
 
@@ -2429,9 +2526,13 @@ By default, the tool palette in GLSP includes the following tools in the palette
 -   Mouse Delete Tool
 -   Validation Tool
 
-The supported actions of the tool palette come from the server. If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette. A user may click on any of the entries in the tool palette to trigger the corresponding action.
+The supported actions of the tool palette come from the server.
+If server actions are to be used, the client needs to send a `RequestContextActions` action with context id `tool-palette` and handle the returned actions from the `SetContextActions` response accordingly, e.g., rendering them in the tool palette.
+A user may click on any of the entries in the tool palette to trigger the corresponding action.
 
-For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the `Node Creation Tool` or the `Edge Creation Tool` respectively. This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge. After all information is available, the actual creation operation is triggered.
+For creating new elements we provide two dedicated trigger actions that can be sent from the server to activate and configure the `Node Creation Tool` or the `Edge Creation Tool` respectively.
+This indirection is necessary as the user, after clicking on the respective action, still needs to provide additional information, i.e., the location of the new node or which elements should be connected through an edge.
+After all information is available, the actual creation operation is triggered.
 
 #### 2.19.5.1. TriggerNodeCreationAction
 
@@ -2440,21 +2541,21 @@ Triggers the enablement of the tool that is responsible for creating nodes and i
 <details open><summary>Code</summary>
 
 ```typescript
-class TriggerNodeCreationAction extends TriggerElementCreationAction {
+interface TriggerNodeCreationAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'triggerNodeCreation';
+    kind = 'triggerNodeCreation';
 
     /**
      * The type of node that should be created by the node creation tool.
      */
-    public readonly elementTypeId: string;
+    elementTypeId: string;
 
     /**
      * Custom arguments.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
@@ -2467,21 +2568,21 @@ Triggers the enablement of the tool that is responsible for creating edges and i
 <details open><summary>Code</summary>
 
 ```typescript
-class TriggerEdgeCreationAction extends TriggerElementCreationAction {
+interface TriggerEdgeCreationAction extends Action {
     /**
      * The kind of the action.
      */
-    public readonly kind = 'triggerEdgeCreation';
+    kind = 'triggerEdgeCreation';
 
     /**
      * The type of edge that should be created by the edge creation tool.
      */
-    public readonly elementTypeId: string;
+    elementTypeId: string;
 
     /**
      * Custom arguments.
      */
-    public readonly args?: Args;
+    args?: Args;
 }
 ```
 
