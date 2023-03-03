@@ -12,13 +12,6 @@ module.exports = {
         'no-restricted-imports': ['error', '..', '../index', '../..', '../../index', 'src'],
         'no-sequences': 'error',
         'no-throw-literal': 'error',
-        'no-unused-expressions': [
-            'error',
-            {
-                allowShortCircuit: true,
-                allowTernary: true
-            }
-        ],
         // Variables
         'no-unused-vars': 'off', // typescript-eslint rule activated instead
         'no-use-before-define': 'off', // typescript-eslint rule activated instead
@@ -78,6 +71,12 @@ module.exports = {
         'no-null/no-null': 'error',
         // chai friendly
         'no-unused-expressions': 'off',
-        'chai-friendly/no-unused-expressions': 'error'
+        'chai-friendly/no-unused-expressions':  [
+            'error',
+            {
+                allowShortCircuit: true,
+                allowTernary: true
+            }
+        ],
     }
 };
