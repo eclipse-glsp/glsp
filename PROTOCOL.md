@@ -1186,9 +1186,9 @@ interface LayoutOperation extends Operation {
     kind = 'layout';
 
     /**
-     * The identifiers of the elements that should be layouted, may be just the root element.
+     * The identifiers of the elements that should be layouted, will default to the root element if not defined.
      */
-    elementIds: string[];
+    elementIds?: string[];
 }
 ```
 
