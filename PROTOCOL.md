@@ -1573,6 +1573,11 @@ interface RequestMarkersAction extends RequestAction {
      * The elements for which markers are requested, may be just the root element.
      */
     elementsIDs: string[];
+
+    /**
+     * The reason for this request, e.g. a `batch` validation or a `live` validation.
+     */
+    readonly reason?: string;
 }
 ```
 
@@ -1596,6 +1601,11 @@ interface SetMarkersAction extends ResponseAction {
      * The list of markers that has been requested by the `RequestMarkersAction`.
      */
     markers: Marker[];
+
+    /**
+     * The reason for this response, e.g. a `batch` validation or a `live` validation.
+     */
+    readonly reason?: string;
 }
 ```
 
