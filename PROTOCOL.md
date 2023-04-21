@@ -1577,7 +1577,7 @@ interface RequestMarkersAction extends RequestAction {
     /**
      * The reason for this request, e.g. a `batch` validation or a `live` validation.
      */
-    readonly reason?: string;
+     reason?: string;
 }
 ```
 
@@ -1605,7 +1605,7 @@ interface SetMarkersAction extends ResponseAction {
     /**
      * The reason for this response, e.g. a `batch` validation or a `live` validation.
      */
-    readonly reason?: string;
+     reason?: string;
 }
 ```
 
