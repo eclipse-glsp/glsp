@@ -134,8 +134,8 @@ export function checkoutAndCd(options: ReleaseOptions): string {
     sh.exec(`gh repo clone ${ghUrl}`, getShellConfig());
     LOGGER.debug(`Successfully cloned to ${directory}`);
     sh.cd(directory);
-    if (options.checkoutDir !== 'master') {
-        sh.exec(`git switch ${options.branch} `);
+    if (options.branch !== 'master' && options.branch !== 'main') {
+        sh.exec(`git checkout ${options.branch} `);
     }
     return sh.pwd();
 }
