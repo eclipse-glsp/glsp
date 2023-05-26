@@ -24,12 +24,13 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "main": "tsconfig.json",
+  "main": "./tsconfig.json",
   "files": [
-    "tsconfig.json"
+    "tsconfig.json",
+    "mocha.json"
   ],
   "peerDependencies": {
-    "typescript": ">=4.9.3"
+    "typescript": ">=4.9.x"
   },
   "publishConfig": {
     "access": "public"

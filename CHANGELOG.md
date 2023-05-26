@@ -12,10 +12,12 @@
 -   [cli] Introduce [`@eclipse-glsp/cli`](https://www.npmjs.com/package/@eclipse-glsp/cli)
     package to offer CLI tooling & utility scripts for GLSP projects. [#755](https://github.com/eclipse-glsp/glsp/pull/755) - Contributed on behalf of STMicroelectronics
     -   Contribute the `release` command to prepare & publish a new Github release for a specific GLSP component
+-   [deps] Updates dependencies of `@eclipse-glsp/config` and `@eclipse-glsp/config-test` packages to the latest version [#XXX](https://github.com/eclipse-glsp/glsp/pull/XXX)
 
 ### Breaking Changes
 
 -   [node] Update minimum requirements for Node to >=16.11.0 [#829](https://github.com/eclipse-glsp/glsp/pull/829)
+-   [mocha-config] The default mocha config no longer uses `ts-node`-> test files have to be compiled before running tests [#XXX](https://github.com/eclipse-glsp/glsp/pull/XXX)
 
 ## [v1.0.0 - 30/06/2022](https://github.com/eclipse-glsp/glsp/releases/tag/v1.0.0)
 

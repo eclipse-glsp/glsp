@@ -10,10 +10,12 @@ yarn add --dev @eclipse-glsp/nyc-config
 
 ## Usage
 
-**Add a `.nycrc.json` to your project root**:
+**Add a `.nycrc` to your project root**:
 
 ```json
-"@eclipse-glsp/nyc-config"
+{
+    "extends": "@eclipse-glsp/nyc-config"
+}
 ```
 
 Configuration can also be provided by `nyc.config.js` if programmed logic is required.
