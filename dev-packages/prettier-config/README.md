@@ -19,7 +19,7 @@ yarn add --dev @eclipse-glsp/prettier-config
 }
 ```
 
-**Or add a `.prettierrc.json` to the workspace root**:
+**Or add a `.prettierrc` to the workspace root**:
 
 ```json
 "@eclipse-glsp/prettier-config"
