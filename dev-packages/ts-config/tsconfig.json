@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "skipLibCheck": true,
     "declaration": true,
@@ -25,6 +24,6 @@
     "jsx": "react",
     "lib": ["ES2017", "dom"],
     "sourceMap": true,
-    "types": ["node", "reflect-metadata"]
+    "types": ["node", "mocha", "reflect-metadata"]
   }
 }

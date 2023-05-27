@@ -18,7 +18,6 @@ import { CheckHeaderCommand } from './commands/check-header';
 import { CoverageReportCommand } from './commands/coverage-report';
 import { ReleaseCommand } from './commands/release/release';
 import { baseCommand } from './util/command-util';
-
 export const COMMAND_VERSION = '1.1.0-next';
 
 const app = baseCommand() //

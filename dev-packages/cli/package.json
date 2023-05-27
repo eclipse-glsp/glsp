@@ -41,12 +41,12 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "commander": "^10.0.1",
-    "glob": "^10.2.6",
-    "node-fetch": "^2.6.11",
+    "commander": "^9.4.0",
+    "glob": "^8.0.3",
+    "node-fetch": "2.6.7",
     "readline-sync": "^1.4.10",
-    "semver": "^7.5.1",
-    "shelljs": "^0.8.5"
+    "semver": "^7.3.7",
+    "shelljs": "0.8.5"
   },
   "devDependencies": {
     "@eclipse-glsp/config": "1.0.0-next",
@@ -54,7 +54,8 @@
     "@types/node-fetch": "2.6.2",
     "@types/readline-sync": "1.4.4",
     "@types/semver": "7.3.12",
-    "@types/shelljs": "0.8.11"
+    "@types/shelljs": "0.8.11",
+    "ts-node": "^10.9.1"
   },
   "publishConfig": {
     "access": "public"
