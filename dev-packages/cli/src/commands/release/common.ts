@@ -257,8 +257,8 @@ export function asMvnVersion(version: string): string {
     return mavenVersion;
 }
 
-export async function checkIfNpmVersionExists(pckgName: string, newVersion: string): Promise<void> {
-    LOGGER.debug(`Check if version exists on npm: ${newVersion}`);
+export async function checkIfNpmVersionIsNew(pckgName: string, newVersion: string): Promise<void> {
+    LOGGER.debug(`Check that the release version is new i.e. does not exist on npm: ${newVersion}`);
 
     const response = await fetch(`https://registry.npmjs.org/${pckgName}/${newVersion}`);
     const data = await response.json();

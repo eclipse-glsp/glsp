@@ -50,7 +50,8 @@ function updateExternalGLSPDependencies(version: string): void {
     updateVersion(
         { name: '@eclipse-glsp/protocol', version },
         { name: '@eclipse-glsp/client', version },
-        { name: '@eclipse-glsp-examples/workflow-glsp', version }
+        { name: '@eclipse-glsp-examples/workflow-glsp', version },
+        { name: '@eclipse-glsp-examples/workflow-server', version }
     );
 }
 
