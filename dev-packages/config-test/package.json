@@ -27,17 +27,17 @@
   "dependencies": {
     "@eclipse-glsp/mocha-config": "1.0.0-next",
     "@eclipse-glsp/nyc-config": "1.0.0-next",
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/chai": "^4.3.5",
+    "@istanbuljs/nyc-config-typescript": "^1.0.0",
+    "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "@types/sinon": "^10.0.13",
     "chai": "^4.3.7",
     "ignore-styles": "^5.0.1",
-    "mocha": "^10.2.0",
+    "mocha": "^10.1.0",
     "mocha-jenkins-reporter": "^0.4.8",
-    "nyc": "^15.1.0",
+    "nyc": "^15.0.0",
     "reflect-metadata": "^0.1.13",
-    "sinon": "^15.1.0",
+    "sinon": "^15.0.0",
     "ts-node": "^10.9.1"
   },
   "publishConfig": {

@@ -26,7 +26,7 @@
   ],
   "main": "index.json",
   "dependencies": {
-    "prettier-plugin-packagejson": "~2.4.3"
+    "prettier-plugin-packagejson": "^2.3.0"
   },
   "publishConfig": {
     "access": "public"

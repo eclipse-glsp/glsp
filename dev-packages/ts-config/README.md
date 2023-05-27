@@ -14,17 +14,13 @@ yarn add --dev @eclipse-glsp/ts-config
 
 ```json
 {
-    "extends": "@eclipse-glsp/ts-config",
+    "extends": "@eclipse-glsp/ts-config/tsconfig.json",
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "lib"
     }
 }
 ```
-
-In addition, a custom configuration for projects that use `mocha` is available:
-
--   `@eclipse-glsp/ts-config/mocha`
 
 ## More information
 

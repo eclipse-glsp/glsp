@@ -9,7 +9,7 @@ Provides a meta package that export common configuration objects for:
 
 The package is available via npm and is used by all GLSP components implemented with Typescript.
 ESLint and prettier are included as direct dependencies.
-In addition, common GLSP dev dependencies like `lerna`, `typescript`, `rimraf`, etc. are included.
+In addition, common GLSP dev dependencies like lerna,typescript,rimraf etc. are included.
 
 ## Components
 
@@ -31,17 +31,13 @@ yarn add --dev @eclipse-glsp/config
 
 ```json
 {
-    "extends": "@eclipse-glsp/ts-config",
+    "extends": "@eclipse-glsp/ts-config/tsconfig.json",
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "lib"
     }
 }
 ```
-
-In addition, a custom configuration for projects that use `mocha` is available:
-
--   `@eclipse-glsp/ts-config/mocha`
 
 ### ESLint
 
@@ -69,7 +65,7 @@ module.exports = {
 }
 ```
 
-**Or add a `.prettierrc` file to the workspace root**:
+**Or add a `.prettierrc.json` to the workspace root**:
 
 ```json
 "@eclipse-glsp/prettier-config"

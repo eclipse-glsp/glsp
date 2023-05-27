@@ -1,13 +1,10 @@
 {
-  "extends": "@eclipse-glsp/ts-config",
+  "extends": "@eclipse-glsp/ts-config/tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "baseUrl": "."
   },
-  "include": [
-    "src"
-  ]
+
+  "include": ["src"]
 }
