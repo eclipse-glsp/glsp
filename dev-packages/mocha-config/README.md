@@ -10,7 +10,7 @@ yarn add --dev @eclipse-glsp/mocha-config
 
 ## Usage
 
-**Create a `.mocharc.json`**:
+**Create a `.mocharc` file **:
 
 ```json
 {
