@@ -16,15 +16,13 @@
 import * as sh from 'shelljs';
 import { LOGGER } from '../../util/logger';
 import {
-    asMvnVersion,
-    checkJavaServerVersion,
     checkoutAndCd,
     commitAndTag,
     lernaSetVersion,
     publish,
     ReleaseOptions,
     updateLernaForDryRun,
-    updateServerConfig,
+    updateVersion,
     yarnInstall
 } from './common';
 
@@ -34,7 +32,7 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     LOGGER.info('Prepare glsp-client release');
     LOGGER.debug('Release options: ', options.version);
     REPO_ROOT = checkoutAndCd(options);
-    await updateDownloadServerScript(options.version, options.force);
+    updateExternalGLSPDependencies(options.version);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -45,12 +43,10 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     publish(REPO_ROOT, options);
 }
 
-async function updateDownloadServerScript(version: string, force: boolean): Promise<void> {
-    LOGGER.info('Update example server download config');
-    const mvnVersion = asMvnVersion(version);
-    checkJavaServerVersion(version, force);
-    sh.cd(`${REPO_ROOT}/examples/workflow-glsp/scripts`);
-    updateServerConfig('config.json', mvnVersion, false);
+function updateExternalGLSPDependencies(version: string): void {
+    LOGGER.info('Update external GLSP dependencies (workflow example server)');
+    sh.cd(REPO_ROOT);
+    updateVersion({ name: '@eclipse-glsp-examples/workflow-server', version });
 }
 
 function generateChangeLog(): void {

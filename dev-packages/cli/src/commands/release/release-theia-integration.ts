@@ -17,15 +17,12 @@
 import * as sh from 'shelljs';
 import { LOGGER } from '../../util/logger';
 import {
-    asMvnVersion,
     checkoutAndCd,
     commitAndTag,
-    isExistingMavenVersion,
     lernaSetVersion,
     publish,
     ReleaseOptions,
     updateLernaForDryRun,
-    updateServerConfig,
     updateVersion,
     yarnInstall
 } from './common';
@@ -37,7 +34,6 @@ export async function releaseTheiaIntegration(options: ReleaseOptions): Promise<
     LOGGER.debug('Release options: ', options);
     REPO_ROOT = checkoutAndCd(options);
     updateExternalGLSPDependencies(options.version);
-    await updateDownloadServerScript(options.version);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -49,21 +45,13 @@ export async function releaseTheiaIntegration(options: ReleaseOptions): Promise<
 }
 
 function updateExternalGLSPDependencies(version: string): void {
-    LOGGER.info('Update external GLSP dependencies (Client and workflow example)');
+    LOGGER.info('Update external GLSP dependencies (Client and workflow example & server)');
     sh.cd(REPO_ROOT);
-    updateVersion({ name: '@eclipse-glsp/client', version }, { name: '@eclipse-glsp-examples/workflow-glsp', version });
-}
-
-async function updateDownloadServerScript(version: string): Promise<void> {
-    LOGGER.info('Update example server download config');
-    const mvnVersion = asMvnVersion(version);
-    if (!isExistingMavenVersion('org.eclipse.glsp', 'org.eclipse.glsp.server', mvnVersion)) {
-        LOGGER.warn(`No Java GLSP server with version ${mvnVersion} found on maven central!. Please release a new Java GLSP Server version
-        before publishing this release!`);
-    }
-
-    sh.cd(`${REPO_ROOT}/examples/workflow-theia/src/node`);
-    updateServerConfig('server-config.json', mvnVersion, false);
+    updateVersion(
+        { name: '@eclipse-glsp/client', version },
+        { name: '@eclipse-glsp-examples/workflow-glsp', version },
+        { name: '@eclipse-glsp-examples/workflow-server', version }
+    );
 }
 
 function build(): void {

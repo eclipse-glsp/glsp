@@ -21,16 +21,16 @@ import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import * as sh from 'shelljs';
 import { baseCommand, configureShell, fatalExec, getShellConfig } from '../../util/command-util';
-import { configureLogger, LOGGER } from '../../util/logger';
+import { LOGGER, configureLogger } from '../../util/logger';
 import { validateDirectory, validateVersion } from '../../util/validation-util';
 import {
-    asMvnVersion,
-    checkIfMavenVersionExists,
-    checkIfNpmVersionExists,
     Component,
     ReleaseOptions,
     ReleaseType,
-    VERDACCIO_REGISTRY
+    VERDACCIO_REGISTRY,
+    asMvnVersion,
+    checkIfMavenVersionExists,
+    checkIfNpmVersionIsNew
 } from './common';
 import { releaseClient } from './release-client';
 import { releaseEclipseIntegration } from './release-eclipse-integration';
@@ -91,19 +91,19 @@ export async function release(
                 checkIfMavenVersionExists('org.eclipse.glsp', 'org.eclipse.glsp.server', asMvnVersion(version));
                 return releaseJavaServer(options);
             case 'server-node':
-                await checkIfNpmVersionExists('@eclipse-glsp/server-node', version);
+                await checkIfNpmVersionIsNew('@eclipse-glsp/server-node', version);
                 return releaseServerNode(options);
             case 'client':
-                await checkIfNpmVersionExists('@eclipse-glsp/client', version);
+                await checkIfNpmVersionIsNew('@eclipse-glsp/client', version);
                 return releaseClient(options);
             case 'theia-integration':
-                await checkIfNpmVersionExists('@eclipse-glsp/theia-integration', version);
+                await checkIfNpmVersionIsNew('@eclipse-glsp/theia-integration', version);
                 return releaseTheiaIntegration(options);
             case 'vscode-integration':
-                await checkIfNpmVersionExists('@eclipse-glsp/vscode-integration', version);
+                await checkIfNpmVersionIsNew('@eclipse-glsp/vscode-integration', version);
                 return releaseVscodeIntegration(options);
             case 'eclipse-integration':
-                await checkIfNpmVersionExists('@eclipse-glsp/ide', version);
+                await checkIfNpmVersionIsNew('@eclipse-glsp/ide', version);
                 return releaseEclipseIntegration(options);
         }
     } catch (err) {
