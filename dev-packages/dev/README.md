@@ -1,7 +1,7 @@
 # Eclipse GLSP - All-in-one dev package
 
 A meta package that includes all shared configuration packages Eclipse GLSP components.
-In addition, it also provides the GLSP CLI application
+In addition, it also provides the GLSP CLI application.
 
 The package is available via npm and can be used by all GLSP components implemented with Typescript.
 
@@ -38,6 +38,10 @@ yarn add --dev @eclipse-glsp/dev
 }
 ```
 
+In addition, a custom configuration for projects that use `mocha` is available:
+
+-   `@eclipse-glsp/ts-config/mocha`
+
 ### ESLint
 
 **Create a `.eslintrc.js`**:
@@ -64,7 +68,7 @@ module.exports = {
 }
 ```
 
-**Or add a `.prettierrc.json` to the workspace root**:
+**Or add a `.prettierrc` to the workspace root**:
 
 ```json
 "@eclipse-glsp/prettier-config"
@@ -72,7 +76,7 @@ module.exports = {
 
 ### Mocha
 
-**Create a `.mocharc.json`**:
+**Create a `.mocharc`**:
 
 ```json
 {
@@ -83,10 +87,12 @@ module.exports = {
 
 ### Nyc
 
-**Add a `.nycrc.json` to your project root**:
+**Add a `.nycrc` to your project root**:
 
 ```json
-"@eclipse-glsp/prettier-config"
+{
+    "extends": "@eclipse-glsp/nyc-config"
+}
 ```
 
 Configuration can also be provided by `nyc.config.js` if programmed logic is required.

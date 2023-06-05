@@ -9,12 +9,7 @@ module.exports = {
         'no-new-wrappers': 'warn',
         'no-return-await': 'warn',
         'no-redeclare': 'off',
-        'no-shadow': [
-            'warn',
-            {
-                hoist: 'all'
-            }
-        ],
+        'no-shadow': 'off',
         'no-multiple-empty-lines': [
             'warn',
             {
@@ -76,7 +71,7 @@ module.exports = {
         '@typescript-eslint/type-annotation-spacing': 'warn',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-this-alias': 'off',
-
+        '@typescript-eslint/no-shadow': 'warn',
         /// eslint-plugin-deprecation plugin
         'import/no-deprecated': 'warn',
         'deprecation/deprecation': 'warn'

@@ -24,7 +24,7 @@ yarn add --dev @eclipse-glsp/config-test
 
 ### Mocha
 
-**Create a `.mocharc.json`**:
+**Create a `.mocharc`**:
 
 ```json
 {
