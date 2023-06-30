@@ -43,7 +43,7 @@ export interface ReleaseOptions {
 export type ReleaseRepository = 'npm' | 'm2' | 'm2&p2' | 'p2';
 
 export interface Component {
-    type: (typeof Component.CLI_CHOICES)[number];
+    type: typeof Component.CLI_CHOICES[number];
     releaseRepo: ReleaseRepository;
     githubRepo: string;
     directory: string;
@@ -114,7 +114,7 @@ export namespace ReleaseType {
     export const CLI_CHOICES = ['major', 'minor', 'patch', 'rc', 'custom'] as const;
 }
 
-export type ReleaseType = (typeof ReleaseType.CLI_CHOICES)[number];
+export type ReleaseType = typeof ReleaseType.CLI_CHOICES[number];
 
 export function checkoutAndCd(options: ReleaseOptions): string {
     const ghUrl = options.component.githubRepo;
@@ -186,7 +186,7 @@ function doPublish(tag: string, preRelease: boolean, latestRelease: string, draf
     fatalExec(`git push origin HEAD:${tag}`, 'Could not push release branch to Github', getShellConfig({ silent: false }));
     fatalExec(`git push origin tag ${tag}`, 'Could not push tag to Github', getShellConfig({ silent: false }));
     const version = tagToVersion(tag);
-    const titleSuffix = preRelease ? ` Candiate ${version.substring(version.lastIndexOf('-RC')) + 3}` : '';
+    const titleSuffix = preRelease ? ` Candidate ${version.substring(version.lastIndexOf('-RC') + 3)}` : '';
     const title = `${version.replace(/-.*/, '')} Release${titleSuffix} `;
     sh.exec(
         `gh release create ${tag} -t "${title}" --notes-start-tag ${latestRelease} --generate-notes ${draft ? '-d' : ''} ${
