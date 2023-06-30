@@ -13,10 +13,8 @@
             "path": "../glsp-theia-integration"
         },
         {
+            "name": "glsp-server-node",
             "path": "../glsp-server-node"
-        },
-        {
-            "path": "../../sprotty/sprotty"
         }
     ],
     "settings": {
