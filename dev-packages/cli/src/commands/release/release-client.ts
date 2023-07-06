@@ -46,7 +46,7 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
 function updateExternalGLSPDependencies(version: string): void {
     LOGGER.info('Update external GLSP dependencies (workflow example server)');
     sh.cd(REPO_ROOT);
-    updateVersion({ name: '@eclipse-glsp-examples/workflow-server', version });
+    updateVersion({ name: '@eclipse-glsp-examples/workflow-server-bundled', version });
 }
 
 function generateChangeLog(): void {

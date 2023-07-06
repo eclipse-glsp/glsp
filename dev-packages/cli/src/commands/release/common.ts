@@ -186,7 +186,7 @@ function doPublish(tag: string, preRelease: boolean, latestRelease: string, draf
     fatalExec(`git push origin HEAD:${tag}`, 'Could not push release branch to Github', getShellConfig({ silent: false }));
     fatalExec(`git push origin tag ${tag}`, 'Could not push tag to Github', getShellConfig({ silent: false }));
     const version = tagToVersion(tag);
-    const titleSuffix = preRelease ? ` Candiate ${version.substring(version.length - 1)}` : '';
+    const titleSuffix = preRelease ? ` Candidate ${version.substring(version.lastIndexOf('-RC') + 3)}` : '';
     const title = `${version.replace(/-.*/, '')} Release${titleSuffix} `;
     sh.exec(
         `gh release create ${tag} -t "${title}" --notes-start-tag ${latestRelease} --generate-notes ${draft ? '-d' : ''} ${

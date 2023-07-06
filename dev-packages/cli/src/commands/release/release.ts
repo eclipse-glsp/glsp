@@ -134,7 +134,7 @@ function isGithubCLIAuthenticated(): boolean {
         }
         throw new Error(status.stderr);
     }
-    if (!status.stderr.trim().includes('Logged in to github.com')) {
+    if (!status.stdout.trim().includes('Logged in to github.com')) {
         LOGGER.debug("No user is logged in for host 'github.com'");
         return false;
     }
