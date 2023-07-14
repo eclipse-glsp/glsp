@@ -38,7 +38,8 @@ Below is a list of features that are supported by the different base technologie
 | Model Edit Modes<br>- Edit<br>- Read-only                             |   <br>✓<br>&nbsp;    |    <br>✓<br>✓     |   <br>✓<br>&nbsp;   |   <br>✓<br>&nbsp;   |
 | Client View Port<br>- Center<br>- Fit to Screen                       |      <br>✓<br>✓      |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
 | Client Status Notification                                            |          ✓           |         ✓         |          ✓          |          ✓          |
-| Client Message Notification                                           |          ✓           |         ✓         |                     |                     |
+| Client Message Notification                                           |          ✓           |         ✓         |                     |          ✓          |
+| Client Progress Reporting                                             |                      |         ✓         |                     |          ✓          |
 | Element Selection                                                     |          ✓           |         ✓         |          ✓          |          ✓          |
 | Element Hover                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
 | Element Validation                                                    |          ✓           |         ✓         |          ✓          |          ✓          |
