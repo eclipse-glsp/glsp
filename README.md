@@ -66,7 +66,7 @@ The GLSP source code consists of the following repositories:
 -   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
 -   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 -   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
--   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VSCode](https://github.com/microsoft/vscode).
+-   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
 
 ## Shared artifacts
 
@@ -118,12 +118,12 @@ npm install -g lerna
 
 ### Server/Ide packages
 
-You'll need Java 11 or Java 17 and maven.
+You'll need Java 17 and maven.
 
 ## Building
 
 > **_NOTE:_** This section describes how to build the core components of glsp.
-> To build an optional integration component like the integration for VSCode or
+> To build an optional integration component like the integration for VS Code or
 > Eclipse IDE please follow the build instructions in the corresponding repository.
 
 To build the client packages, just invoke
@@ -164,7 +164,7 @@ in `glsp-server-node`.
 
 The Workflow Diagram is a consistent example provided by all GLSP components.
 The example implements a simple flow chart diagram editor with different types of nodes and edges (see screenshot below).
-The example can be used to try out different GLSP features, as well as several available integrations with IDE platforms (Theia, VSCode, Eclipse, Standalone).
+The example can be used to try out different GLSP features, as well as several available integrations with IDE platforms (Theia, VS Code, Eclipse, Standalone).
 As the example is fully open source, you can also use it as a blueprint for a custom implementation of a GLSP diagram editor.
 The workflow example consists of the following components: the Workflow Diagram Server, the client, and optionally an IDE integration of the Workflow Diagram Editor.
 Please follow the steps below to build and run each of those components.
@@ -209,9 +209,9 @@ Now open a browser and point it to <http://localhost:3000>.
 If you open this the first time and you don't have selected a workspace yet, point it to [`glsp-theia-integration/examples/workspace`](https://github.com/eclipse-glsp/glsp-theia-integration/tree/master/examples/workspace) of your repository clone.
 This will already include an up to date workflow file `example1.wf` that you can open by double-clicking it in the navigator.
 
-In order to start the workflow diagram editor example with VSCode, Eclipse, or standalone, please see the documentation of the respective integration modules:
+In order to start the workflow diagram editor example with VS Code, Eclipse, or standalone, please see the documentation of the respective integration modules:
 
--   [VSCode Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
+-   [VS Code Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
 -   [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
 -   [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
 -   [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
@@ -227,8 +227,8 @@ If you want to explore or extend the GLSP source code in any of the available co
 -   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
 -   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
 
-For the client-side code (Typescript), we recommend using VSCode.
-Therefore, this repository provides a VSCode [workspace file](glsp.code-workspace), which you can open in VSCode and it will import all client-side folders for you -- given that you kept the repository structure specified above.
+For the client-side code (Typescript), we recommend using VS Code.
+Therefore, this repository provides a VS Code [workspace file](glsp.code-workspace), which you can open in VS Code and it will import all client-side folders for you -- given that you kept the repository structure specified above.
 
 The [GLSP workspace file](glsp.theia.code-workspace) provides build & watch tasks, so that you can build all packages with the task `Build all` or start watching all client packages with `Watch all`.
 
@@ -240,4 +240,4 @@ We recommend an IDE that supports maven, though, to import the maven modules fro
 When you are planning to change more than one client package at a time, or if you want to test your changes with the workflow example, we recommend to `yarn link` your local sources.
 Therefore, we provide the [yarn-link script](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/configs/local-linking.sh) that automatically links all the relevant packages.
 Currently, this script is only available for Linux and Mac (shell script).
-The [GLSP VSCode workspace](glsp.theia.code-workspace) also includes a dedicated VSCode task called `Yarn link all packages` and `Yarn unlink all packages`.
+The [GLSP VS Code workspace](glsp.theia.code-workspace) also includes a dedicated VS Code task called `Yarn link all packages` and `Yarn unlink all packages`.
