@@ -3,5 +3,5 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "types": ["node", "mocha", "reflect-metadata"]
-  },
+  }
 }
