@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "commander": "^10.0.1",
-    "glob": "^8.0.3",
+    "glob": "^10.3.10",
     "node-fetch": "^2.6.11",
     "readline-sync": "^1.4.10",
     "semver": "^7.5.1",
@@ -50,11 +50,11 @@
   },
   "devDependencies": {
     "@eclipse-glsp/config": "1.0.0-next",
-    "@types/glob": "^8.0.0",
-    "@types/node-fetch": "2.6.2",
-    "@types/readline-sync": "1.4.4",
-    "@types/semver": "7.3.12",
-    "@types/shelljs": "0.8.11"
+    "@types/glob": "^8.1.0",
+    "@types/node-fetch": "^2.6.6",
+    "@types/readline-sync": "^1.4.5",
+    "@types/semver": "^7.5.3",
+    "@types/shelljs": "^0.8.13"
   },
   "publishConfig": {
     "access": "public"

@@ -27,18 +27,18 @@
     "@eclipse-glsp/eslint-config": "1.0.0-next",
     "@eclipse-glsp/prettier-config": "1.0.0-next",
     "@eclipse-glsp/ts-config": "1.0.0-next",
-    "@typescript-eslint/eslint-plugin": "^5.59.7",
-    "@typescript-eslint/parser": "^5.59.7",
-    "eslint": "^8.41.0",
-    "eslint-config-prettier": "^8.8.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
-    "eslint-plugin-deprecation": "^1.4.1",
+    "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-no-null": "^1.0.2",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.3",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^5.0.1"
+    "rimraf": "^5.0.5"
   },
   "publishConfig": {
     "access": "public"
