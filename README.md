@@ -28,45 +28,46 @@ The best way to getting started is to read the [overview in the documentation](h
 
 Below is a list of features that are supported by the different base technologies that can be used with GLSP.
 
-| Feature                                                               |      Standalone      | Theia Integration | Eclipse Integration | VS Code Integration |
-| --------------------------------------------------------------------- | :------------------: | :---------------: | :-----------------: | :-----------------: |
-| Model Saving                                                          |                      |         ✓         |          ✓          |          ✓          |
-| Model Dirty State                                                     |                      |         ✓         |          ✓          |          ✓          |
-| Model SVG Export                                                      |                      |         ✓         |                     |                     |
-| Model Layout                                                          |          ✓           |         ✓         |          ✓          |          ✓          |
-| Restoring viewport on re-open                                         |                      |         ✓         |                     |                     |
-| Model Edit Modes<br>- Edit<br>- Read-only                             |   <br>✓<br>&nbsp;    |    <br>✓<br>✓     |   <br>✓<br>&nbsp;   |   <br>✓<br>&nbsp;   |
-| Client View Port<br>- Center<br>- Fit to Screen                       |      <br>✓<br>✓      |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
-| Client Status Notification                                            |          ✓           |         ✓         |          ✓          |          ✓          |
-| Client Message Notification                                           |          ✓           |         ✓         |                     |          ✓          |
-| Client Progress Reporting                                             |                      |         ✓         |                     |          ✓          |
-| Element Selection                                                     |          ✓           |         ✓         |          ✓          |          ✓          |
-| Element Hover                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
-| Element Validation                                                    |          ✓           |         ✓         |          ✓          |          ✓          |
-| Element Navigation                                                    |                      |         ✓         |          ✓          |          ✓          |
-| Element Type Hints                                                    |          ✓           |         ✓         |          ✓          |          ✓          |
-| Element Creation and Deletion                                         |          ✓           |         ✓         |          ✓          |          ✓          |
-| Node Change Bounds<br>- Move<br>- Resize                              |      <br>✓<br>✓      |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
-| Node Change Container                                                 |          ✓           |         ✓         |          ✓          |          ✓          |
-| Edge Reconnect                                                        |          ✓           |         ✓         |          ✓          |          ✓          |
-| Edge Routing Points                                                   |          ✓           |         ✓         |          ✓          |          ✓          |
-| Element Text Editing                                                  |          ✓           |         ✓         |          ✓          |          ✓          |
-| Clipboard (Cut, Copy, Paste)                                          |                      |         ✓         |                     |          ✓          |
-| Undo / Redo                                                           |                      |         ✓         |          ✓          |          ✓          |
-| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette     |    <br><br>✓<br>✓    |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br><br>✓<br>✓    |
-| Accessibility Features <br>- Search<br>- Move <br>- Zoom <br>- Resize | <br>✓<br>✓<br>✓<br>✓ |                   |                     |                     |
+| Feature                                                                              |      Standalone      | Theia Integration | Eclipse Integration | VS Code Integration |
+| ------------------------------------------------------------------------------------ | :------------------: | :---------------: | :-----------------: | :-----------------: |
+| Model Saving                                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
+| Model Dirty State                                                                    |                      |         ✓         |          ✓          |          ✓          |
+| Model SVG Export                                                                     |          ✓           |         ✓         |          ✓          |          ✓          |
+| Model Layout                                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
+| Restoring viewport on re-open                                                        |                      |         ✓         |                     |                     |
+| Model Edit Modes<br>- Edit<br>- Read-only                                            |   <br>✓<br>✓&nbsp;   |    <br>✓<br>✓     |   <br>✓<br>&nbsp;   |  <br>✓<br>✓&nbsp;   |
+| Client View Port<br>- Center<br>- Fit to Screen                                      |      <br>✓<br>✓      |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Client Status Notification                                                           |          ✓           |         ✓         |          ✓          |          ✓          |
+| Client Message Notification                                                          |          ✓           |         ✓         |                     |          ✓          |
+| Client Progress Reporting                                                            |                      |         ✓         |                     |          ✓          |
+| Element Selection                                                                    |          ✓           |         ✓         |          ✓          |          ✓          |
+| Element Hover                                                                        |          ✓           |         ✓         |          ✓          |          ✓          |
+| Element Validation                                                                   |          ✓           |         ✓         |          ✓          |          ✓          |
+| Element Navigation                                                                   |                      |         ✓         |          ✓          |          ✓          |
+| Element Type Hints                                                                   |          ✓           |         ✓         |          ✓          |          ✓          |
+| Element Creation and Deletion                                                        |          ✓           |         ✓         |          ✓          |          ✓          |
+| Node Change Bounds<br>- Move<br>- Resize                                             |      <br>✓<br>✓      |    <br>✓<br>✓     |     <br>✓<br>✓      |     <br>✓<br>✓      |
+| Node Change Container                                                                |          ✓           |         ✓         |          ✓          |          ✓          |
+| Edge Reconnect                                                                       |          ✓           |         ✓         |          ✓          |          ✓          |
+| Edge Routing Points                                                                  |          ✓           |         ✓         |          ✓          |          ✓          |
+| Element Text Editing                                                                 |          ✓           |         ✓         |          ✓          |          ✓          |
+| Clipboard (Cut, Copy, Paste)                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
+| Undo / Redo                                                                          |          ✓           |         ✓         |          ✓          |          ✓          |
+| Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette                    |    <br><br>✓<br>✓    |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br>✓<br>✓<br>✓   |
+| Accessibility Features (experimental) <br>- Search<br>- Move <br>- Zoom <br>- Resize | <br>✓<br>✓<br>✓<br>✓ |                   |                     |                     |
 
 ## Repositories
 
 The GLSP source code consists of the following repositories:
 
--   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the default ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
+-   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
 -   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
--   [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a node-based framework to create GLSP server components.
--   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
+-   [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a typescript-based framework to create GLSP server components running in node or pure browser applications.
 -   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 -   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
 -   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
+-   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
+-   [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright): Playwright-based framework for testing GLSP diagram editors.
 
 ## Shared artifacts
 
@@ -77,19 +78,25 @@ This repository provides the following packages and artifacts that are shared ac
 
 ## Build artifacts
 
-The client packages are available via [npmjs](https://www.npmjs.com/search?q=%40eclipse-glsp), such as the [glsp-client](https://www.npmjs.com/package/@eclipse-glsp/client) and the [theia integration](https://www.npmjs.com/package/@eclipse-glsp/theia-integration).
+Packages are available via [npmjs](https://www.npmjs.com/search?q=%40eclipse-glsp), such as the [glsp-client](https://www.npmjs.com/package/@eclipse-glsp/client) and the [theia integration](https://www.npmjs.com/package/@eclipse-glsp/theia-integration).
 The [examples](https://www.npmjs.com/search?q=%40eclipse-glsp-examples) are available on npmjs too.
 
-The server packages are available as maven as well as p2 dependency from the following maven repository or p2 update site.
+The Java server packages are available as maven as well as p2 dependency from the following maven repository or p2 update site.
 
 ### Maven Repositories
 
 -   _Snapshots_: <https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/>
+-   _Releases/Release Candidates_: <https://central.sonatype.com/search?q=org.eclipse.glsp&namespace=org.eclipse.glsp>
 
 ### P2 Update Sites
 
 -   _Server Snapshots_: <https://download.eclipse.org/glsp/server/p2/nightly/>
--   _Eclipse Integration Snapshots_: </i> <https://download.eclipse.org/glsp/server/ide/nightly/>
+-   _Server Release Candidates_: <https://download.eclipse.org/glsp/server/p2/staging/>
+-   _Server Releases_: <https://download.eclipse.org/glsp/server/p2/releases/>
+    <br><br>
+-   _Eclipse Integration Snapshots_: </i> <https://download.eclipse.org/glsp/ide/p2/nightly/>
+-   _Eclipse Integration Release Candidates_: </i> <https://download.eclipse.org/glsp/ide/p2/staging/>
+-   _Eclipse Integration Releases_: </i> <https://download.eclipse.org/glsp/ide/p2/releases/>
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
@@ -97,11 +104,11 @@ All changes on the master branch are deployed automatically to the corresponding
 
 ### Client packages
 
-We recommend node in version 16:
+We recommend node in version 18 or higher:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-nvm install 16
+nvm install 18
 ```
 
 and Yarn

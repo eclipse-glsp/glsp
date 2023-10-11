@@ -24,7 +24,6 @@
             "source.fixAll.eslint": true
         },
         "eslint.validate": ["javascript", "typescript"],
-        "prettier.prettierPath": "node_modules/prettier",
         "search.exclude": {
             "**/node_modules": true,
             "**/lib": true

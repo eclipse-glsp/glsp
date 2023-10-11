@@ -1,7 +1,11 @@
 # Eclipse GLSP Dev Packages Changelog
 
-## v1.1.0 - upcoming
+## 2.0.0 - 13/10/2023
 
+-   [config] Update all dependencies & peerDependencies of the dev to the latest version [#1136](https://github.com/eclipse-glsp/glsp/pull/1136)
+-   [protocol] Removed `Protocol.MD` file. [#892](https://github.com/eclipse-glsp/glsp/pull/982)
+    -   The protocol documentation is now maintained on <https://eclipse.dev/glsp/documentation/protocol/>
+-   [eslint-config] Tweaked `chai-friendly/no-unused expression` rule to enable `allowTenary` and `allowShortCircuit` options. [#936](https://github.com/eclipse-glsp/glsp/pull/936)
 -   [config] Introduce all-in-one [`@eclipse-glsp/dev`](https://www.npmjs.com/package/@eclipse-glsp/dev) meta package. [#842](https://github.com/eclipse-glsp/glsp/pull/842)
 -   [cli] Contribute the `checkHeaders` command to validate the copyright year (range) of license headers. [#834](https://github.com/eclipse-glsp/glsp/pull/834)
 -   [config] Introduce [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config)

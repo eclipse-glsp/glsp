@@ -1,12 +1,15 @@
 # eclipseglsp/ci:ubuntu
-# 4.0
-FROM ubuntu:18.04 
+# 5.0
+FROM ubuntu:22.04 
 # Install node & other Theia related dependencies
 RUN apt-get update && \
     #Install tools
-    apt-get install wget gnupg curl make maven git g++-multilib g++-5-multilib \
-    libx11-dev libxkbfile-dev libsecret-1-dev rsync -y && \
+    apt-get install wget gnupg curl make maven git \
+    openjdk-17-jdk \
+    libxkbfile-dev \
+    libsecret-1-dev \
+    build-essential libssl-dev rsync -y && \
     #Install node
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install nodejs -y && \
     npm install -g yarn lerna
