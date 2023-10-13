@@ -1,10 +1,10 @@
 # eclipseglsp/ci:alpine
-# 4.0
-FROM node:16-alpine3.17
+# 5.0
+FROM node:18-alpine3.17
 
 # Install Java, Maven, Git and dependecies for Theia
 ENV JAVA_HOME="/usr/lib/jvm/default-jvm/"
-RUN apk add --no-cache openjdk11 maven git openssh \
+RUN apk add --no-cache openjdk17 maven git openssh \
     make pkgconfig gcc g++ python3  libx11-dev libxkbfile-dev libsecret-dev rsync \
     yarn curl
 
