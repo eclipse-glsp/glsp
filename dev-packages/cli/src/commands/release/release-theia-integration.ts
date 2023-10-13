@@ -51,6 +51,7 @@ function updateExternalGLSPDependencies(version: string): void {
         { name: '@eclipse-glsp/client', version },
         { name: '@eclipse-glsp-examples/workflow-glsp', version },
         { name: '@eclipse-glsp-examples/workflow-server', version }
+        { name: '@eclipse-glsp-examples/workflow-server-bundled', version }
     );
 }
 
