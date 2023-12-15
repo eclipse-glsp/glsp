@@ -15,8 +15,8 @@
  ********************************************************************************/
 
 import { resolve } from 'path';
-import * as sh from 'shelljs';
-import { getShellConfig } from './command-util';
+import sh from 'shelljs';
+import { getShellConfig } from './command-util.js';
 
 export function isGitRepository(path?: string): boolean {
     cdIfPresent(path);

@@ -99,6 +99,30 @@ Options:
   -h, --help     display help for command
 ```
 
+## generateIndex
+
+Use this command to create an index file of all sources for a given directory and all it's sub directories.
+
+```console
+$ glsp generateIndex -h
+Usage: glsp generateIndex [options] <rootDir>
+
+Generate index files in a given source directory.
+
+Arguments:
+  rootDir                            The source directory for index generation.
+
+Options:
+  -s, --singleIndex                  Generate a single index file in the source directory instead of indices in each sub-directory (default: false)
+  -f, --forceOverwrite               Overwrite existing index files and remove them if there are no entries (default: false)
+  -m, --match [match patterns...]    File patterns to consider during indexing (default: ["**/*.ts","**/*.tsx"])
+  -i, --ignore [ignore patterns...]  File patterns to ignore during indexing (default: ["**/*.spec.ts","**/*.spec.tsx","**/*.d.ts"])
+  -s, --style <importStyle>          Import Style (choices: "commonjs", "esm", default: "commonjs")
+  --ignoreFile <ignoreFile>          The file that is used to specify patterns that should be ignored during indexing (default: ".indexignore")
+  -v, --verbose                      Generate verbose output during generation (default: false)
+  -h, --help                         display help for command
+```
+
 ## More information
 
 For more information, please visit the [Eclipse GLSP Umbrella repository](https://github.com/eclipse-glsp/glsp) and the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).

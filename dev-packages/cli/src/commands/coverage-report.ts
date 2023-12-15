@@ -16,10 +16,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sh from 'shelljs';
-import { baseCommand, fatalExec, getShellConfig } from '../util/command-util';
-import { LOGGER } from '../util/logger';
-import { validateDirectory } from '../util/validation-util';
+import sh from 'shelljs';
+import { baseCommand, fatalExec, getShellConfig } from '../util/command-util.js';
+import { LOGGER } from '../util/logger.js';
+import { validateDirectory } from '../util/validation-util.js';
 
 export interface CoverageCmdOptions {
     coverageScript: string;
