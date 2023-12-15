@@ -14,22 +14,22 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import * as sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util';
-import { LOGGER } from '../../util/logger';
+import sh from 'shelljs';
+import { fatalExec, getShellConfig } from '../../util/command-util.js';
+import { LOGGER } from '../../util/logger.js';
 import {
+    ReleaseOptions,
+    ReleaseType,
     asMvnVersion,
     checkJavaServerVersion,
     checkoutAndCd,
     commitAndTag,
     lernaSetVersion,
     publish,
-    ReleaseOptions,
-    ReleaseType,
     updateLernaForDryRun,
     updateVersion,
     yarnInstall
-} from './common';
+} from './common.js';
 
 let REPO_ROOT: string;
 

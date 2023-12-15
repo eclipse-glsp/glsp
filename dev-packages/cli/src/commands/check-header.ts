@@ -19,13 +19,14 @@ import * as fs from 'fs';
 import { glob } from 'glob';
 import * as minimatch from 'minimatch';
 import * as readline from 'readline-sync';
-import * as sh from 'shelljs';
-import { baseCommand, configureShell, getShellConfig } from '../util/command-util';
-import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util';
+import sh from 'shelljs';
+import { baseCommand, configureShell, getShellConfig } from '../util/command-util.js';
+import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util.js';
 
-import { LOGGER } from '../util/logger';
-import { validateGitDirectory } from '../util/validation-util';
-import path = require('path');
+import * as path from 'path';
+import { LOGGER } from '../util/logger.js';
+import { validateGitDirectory } from '../util/validation-util.js';
+
 export interface HeaderCheckOptions {
     type: CheckType;
     exclude: string[];
@@ -140,19 +141,22 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
         printFileProgress(i + 1 + noHeadersLength, allFilesLength, `Validating ${file}`);
         const copyrightLine = sh.head({ '-n': 2 }, file).stdout.trim().split('\n')[1];
         const copyRightYears = copyrightLine.match(YEAR_RANGE_REGEX)!;
-        const currentStartYear = Number.parseInt(copyRightYears[0], 10);
-        const currentEndYear = copyRightYears[1] ? Number.parseInt(copyRightYears[1], 10) : undefined;
-        const result: DateValidationResult = {
-            currentStartYear,
-            currentEndYear,
-            expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
-            file,
-            violation: 'none'
-        };
-
-        validateEndYear(result);
-
-        results.push(result);
+        if (!copyRightYears) {
+            const result: ValidationResult = { file, violation: 'noYear', line: copyrightLine };
+            results.push(result);
+        } else {
+            const currentStartYear = Number.parseInt(copyRightYears[0], 10);
+            const currentEndYear = copyRightYears[1] ? Number.parseInt(copyRightYears[1], 10) : undefined;
+            const result: DateValidationResult = {
+                currentStartYear,
+                currentEndYear,
+                expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
+                file,
+                violation: 'none'
+            };
+            validateEndYear(result);
+            results.push(result);
+        }
     });
 
     results.sort((a, b) => a.file.localeCompare(b.file));
@@ -202,7 +206,10 @@ export function handleValidationResults(rootDir: string, results: ValidationResu
         fs.writeFileSync(path.join(rootDir, 'headerCheck.json'), JSON.stringify(results, undefined, 2));
     }
 
-    if (violations.length > 0 && (options.autoFix || readline.keyInYN('Do you want automatically fix copyright year range violations?'))) {
+    if (
+        violations.length > 0 &&
+        (options.autoFix || readline.keyInYN('Do you want to automatically fix copyright year range violations?'))
+    ) {
         const toFix = violations.filter(violation => isDateValidationResult(violation)) as DateValidationResult[];
         fixViolations(rootDir, toFix, options);
     }
@@ -223,6 +230,8 @@ function toPrintMessage(result: ValidationResult): string {
         return `${error} ${message}! Expected end year '${expected}' but is '${actual}'`;
     } else if (result.violation === 'noOrMissingHeader') {
         return `${error} No or invalid copyright header!`;
+    } else if (result.violation === 'noYear') {
+        return `${error} No year found!${result.line ? ' (line: ' + result.line + ')' : ''}`;
     }
 
     return `${info} OK`;
@@ -255,6 +264,7 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
 interface ValidationResult {
     file: string;
     violation: Violation;
+    line?: string;
 }
 
 interface DateValidationResult extends ValidationResult {
@@ -267,4 +277,4 @@ function isDateValidationResult(object: ValidationResult): object is DateValidat
     return 'currentStartYear' in object && 'expectedEndYear' in object;
 }
 
-type Violation = 'none' | 'noOrMissingHeader' | 'invalidEndYear';
+type Violation = 'none' | 'noOrMissingHeader' | 'invalidEndYear' | 'noYear';
