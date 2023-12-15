@@ -50,11 +50,13 @@ Below is a list of features that are supported by the different base technologie
 | Node Change Container                                                                |          ✓           |         ✓         |          ✓          |          ✓          |
 | Edge Reconnect                                                                       |          ✓           |         ✓         |          ✓          |          ✓          |
 | Edge Routing Points                                                                  |          ✓           |         ✓         |          ✓          |          ✓          |
+| Ghost Elements                                                                       |          ✓           |         ✓         |          ✓          |          ✓          |
 | Element Text Editing                                                                 |          ✓           |         ✓         |          ✓          |          ✓          |
 | Clipboard (Cut, Copy, Paste)                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
 | Undo / Redo                                                                          |          ✓           |         ✓         |          ✓          |          ✓          |
 | Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette                    |    <br><br>✓<br>✓    |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br>✓<br>✓<br>✓   |
 | Accessibility Features (experimental) <br>- Search<br>- Move <br>- Zoom <br>- Resize | <br>✓<br>✓<br>✓<br>✓ |                   |                     |                     |
+| Helper Lines (experimental)                                                          |          ✓           |         ✓         |          ✓          |          ✓          |
 
 ## Repositories
 
