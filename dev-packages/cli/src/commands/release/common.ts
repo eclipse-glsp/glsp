@@ -43,7 +43,7 @@ export interface ReleaseOptions {
 export type ReleaseRepository = 'npm' | 'm2' | 'm2&p2' | 'p2';
 
 export interface Component {
-    type: typeof Component.CLI_CHOICES[number];
+    type: (typeof Component.CLI_CHOICES)[number];
     releaseRepo: ReleaseRepository;
     githubRepo: string;
     directory: string;
@@ -114,7 +114,7 @@ export namespace ReleaseType {
     export const CLI_CHOICES = ['major', 'minor', 'patch', 'rc', 'custom'] as const;
 }
 
-export type ReleaseType = typeof ReleaseType.CLI_CHOICES[number];
+export type ReleaseType = (typeof ReleaseType.CLI_CHOICES)[number];
 
 export function checkoutAndCd(options: ReleaseOptions): string {
     const ghUrl = options.component.githubRepo;
@@ -242,12 +242,6 @@ export function updateVersion(...packages: { name: string; version: string }[]):
             throw new Error(errorMsg);
         }
     });
-}
-
-export function updateServerConfig(configFile: string, version: string, isSnapShot: boolean): void {
-    LOGGER.info('Update example server download config');
-    sh.exec(`jq '.isSnapShot=${isSnapShot}| .version="${version}"' ${configFile} > temp.json`, getShellConfig());
-    sh.exec(`mv temp.json ${configFile}`, getShellConfig());
 }
 
 export function asMvnVersion(version: string): string {

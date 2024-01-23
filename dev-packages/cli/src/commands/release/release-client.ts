@@ -14,17 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import * as sh from 'shelljs';
+import { getShellConfig } from '../../util/command-util';
 import { LOGGER } from '../../util/logger';
-import {
-    checkoutAndCd,
-    commitAndTag,
-    lernaSetVersion,
-    publish,
-    ReleaseOptions,
-    updateLernaForDryRun,
-    updateVersion,
-    yarnInstall
-} from './common';
+import { checkoutAndCd, commitAndTag, lernaSetVersion, publish, ReleaseOptions, updateLernaForDryRun, yarnInstall } from './common';
 
 let REPO_ROOT: string;
 
@@ -32,7 +24,7 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     LOGGER.info('Prepare glsp-client release');
     LOGGER.debug('Release options: ', options.version);
     REPO_ROOT = checkoutAndCd(options);
-    updateExternalGLSPDependencies(options.version);
+    updateDownloadServerScript(options.version);
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
@@ -43,10 +35,13 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     publish(REPO_ROOT, options);
 }
 
-function updateExternalGLSPDependencies(version: string): void {
-    LOGGER.info('Update external GLSP dependencies (workflow example server)');
-    sh.cd(REPO_ROOT);
-    updateVersion({ name: '@eclipse-glsp-examples/workflow-server-bundled', version });
+async function updateDownloadServerScript(version: string): Promise<void> {
+    LOGGER.info('Update example server download config');
+    sh.cd(`${REPO_ROOT}/examples/workflow-standalone/scripts`);
+    const configFile = 'config.json';
+    LOGGER.info('Update example server download config');
+    sh.exec(`jq '.version="${version}"' ${configFile} > temp.json`, getShellConfig());
+    sh.exec(`mv temp.json ${configFile}`, getShellConfig());
 }
 
 function generateChangeLog(): void {
