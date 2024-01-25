@@ -28,6 +28,8 @@ The best way to getting started is to read the [overview in the documentation](h
 
 Below is a list of features that are supported by the different base technologies that can be used with GLSP.
 
+<details>
+  <summary>Expand feature list</summary>
 | Feature                                                                              |      Standalone      | Theia Integration | Eclipse Integration | VS Code Integration |
 | ------------------------------------------------------------------------------------ | :------------------: | :---------------: | :-----------------: | :-----------------: |
 | Model Saving                                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
@@ -57,6 +59,7 @@ Below is a list of features that are supported by the different base technologie
 | Contexts<br>- Context Menu<br>- Command Palette<br>- Tool Palette                    |    <br><br>✓<br>✓    |  <br>✓<br>✓<br>✓  |   <br><br>✓<br>✓    |   <br>✓<br>✓<br>✓   |
 | Accessibility Features (experimental) <br>- Search<br>- Move <br>- Zoom <br>- Resize | <br>✓<br>✓<br>✓<br>✓ |                   |                     |                     |
 | Helper Lines (experimental)                                                          |          ✓           |         ✓         |          ✓          |          ✓          |
+</details>
 
 ## Repositories
 
@@ -70,6 +73,12 @@ The GLSP source code consists of the following repositories:
 -   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
 -   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
 -   [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright): Playwright-based framework for testing GLSP diagram editors.
+
+## Release plan
+
+We release a minor version of Eclipse GLSP every three months, aligned with the [Eclipse Theia Community Releases](https://theia-ide.org/releases/), focusing on bug fixes and adding functionality while ensuring backward compatibility.
+Currently, there are no major releases with API breaks planned.
+For a detailed history of past releases, visit our [releases page on GitHub](https://github.com/eclipse-glsp/glsp/releases).
 
 ## Shared artifacts
 
