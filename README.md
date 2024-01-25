@@ -30,6 +30,7 @@ Below is a list of features that are supported by the different base technologie
 
 <details>
   <summary>Expand feature list</summary>
+  
 | Feature                                                                              |      Standalone      | Theia Integration | Eclipse Integration | VS Code Integration |
 | ------------------------------------------------------------------------------------ | :------------------: | :---------------: | :-----------------: | :-----------------: |
 | Model Saving                                                                         |          ✓           |         ✓         |          ✓          |          ✓          |
