@@ -33,7 +33,7 @@ Please contribute any issues you experienced when upgrading to a newer version o
     -   [Application specific configuration](#application-specific-configuration)
     -   [Generic ModelSource](#generic-modelsource)
     -   [Introduction of FeatureModules](#introduction-of-featuremodules)
-    -   [Tools Module rework](#tools-module-rework)
+    -   [Tools Module Rework](#tools-module-rework)
     -   [Diagram Startup Hooks](#diagram-startup-hooks)
     -   [Event Listener](#event-listener)
     -   [Message API](#message-api)
