@@ -161,29 +161,29 @@ Naturally, this introduces a lof of compilation errors and breaks. We recommend 
 -   `SIssueSeverity` -> `GIssueSeverity`
 -   `SIssueMarker`-> `GIssueMarker`
 -   `SConnectableElement` -> `GConnectableElement`
--   `SDanglingAnchor` -> `GDanglingAnchor`,
--   `SRoutableElement` -> `GRoutableElement`,
--   `SRoutingHandle` -> `GRoutingHandle`,
+-   `SDanglingAnchor` -> `GDanglingAnchor`
+-   `SRoutableElement` -> `GRoutableElement`
+-   `SRoutingHandle` -> `GRoutingHandle`
 -   `ViewportRootElement` -> `GViewportRootElement`
--   `SCompartment` -> `GCompartment`,
--   `SGraphIndex` -> `GGraphIndex`,
--   `SLabel` -> `GLabel`,
--   `SNode` -> `GNode`,
+-   `SCompartment` -> `GCompartment`
+-   `SGraphIndex` -> `GGraphIndex`
+-   `SLabel` -> `GLabel`
+-   `SNode` -> `GNode`
 -   `SPort` -> `GPort`
 -   `SEdge` -> `GEdge`
 -   `SGraph` -> `GGraph`
 -   `GLSPGraph` -> `GGraph`
 -   `SModelFactory` -> `GModelFactory`
--   `SBezierControlHandleView` -> `GBezierControlHandleView`,
--   `SBezierCreateHandleView` -> `GBezierCreateHandleView`,
--   `SCompartmentView` -> `GCompartmentView`,
--   `SGraphView` -> `GGraphView`,
--   `SLabelView` -> `GLabelView`,
--   `SRoutingHandleView` -> `GRoutingHandleView`,
--   `ForeignObjectElement` -> `GForeignObjectElement`,
--   `HtmlRoot` -> `GHtmlRoot`,
--   `PreRenderedElement` -> `GPreRenderedElement`,
--   `ShapedPreRenderedElement` -> `GShapedPreRenderedElement`,
+-   `SBezierControlHandleView` -> `GBezierControlHandleView`
+-   `SBezierCreateHandleView` -> `GBezierCreateHandleView`
+-   `SCompartmentView` -> `GCompartmentView`
+-   `SGraphView` -> `GGraphView`
+-   `SLabelView` -> `GLabelView`
+-   `SRoutingHandleView` -> `GRoutingHandleView`
+-   `ForeignObjectElement` -> `GForeignObjectElement`
+-   `HtmlRoot` -> `GHtmlRoot`
+-   `PreRenderedElement` -> `GPreRenderedElement`
+-   `ShapedPreRenderedElement` -> `GShapedPreRenderedElement`
 -   `SModelElementConstructor` -> `GModelElementConstructor`
 -   `SModelElementRegistration` -> `GModelElementRegistration`
 -   `SArgumentable` -> `ArgsAware`
@@ -342,7 +342,7 @@ The `initialize` function needs to be reworked by:
 
 Previously the initialize function was also used to configure initial actions that should be dispatched.
 This behavior is now discouraged.
-Please use [Diagram Startup Hooks](#diagram-startup-hooks)'s to configure initial actions.
+Please use [Diagram Startup Hooks](#diagram-startup-hooks) to configure initial actions.
 
 ### Generic ModelSource
 
@@ -418,7 +418,7 @@ We recommend to use `Search & Replace` to migrate affected module references.
 
 </details>
 
-### Tools Module rework
+### Tools Module Rework
 
 In 1.0 the default tools where configured with two generic modules (`toolsModule` & `toolFeedbackModule`) that provided the configuration
 for all tools at once.
@@ -569,6 +569,7 @@ Please use the `configureButtonHandler` method in your diagram DI module instead
 **UndoRedo**
 
 `Undo` and `Redo` operations were incorrectly declared as actions in 1.0. With 2.x the have been migrated to operations.
+Also the `UndoRedoKeyListener` has been renamed to `GLSPUndoRedoKeyListener`.
 
 -   `UndoAction` -> `UndoOperation`
 -   `RedoAction` -> `RedoOperation`
