@@ -131,7 +131,6 @@ Naturally, this introduces a lof of compilation errors and breaks. We recommend 
 
 <details>
   <summary>List of changes</summary>
-
 -   SModelElement -> GModelElement
 -   SModelRoot -> GModelRoot
 -   SChildElement -> GChildElement
@@ -155,6 +154,7 @@ Naturally, this introduces a lof of compilation errors and breaks. We recommend 
 -   SPort -> GPort
 -   SEdge -> GEdge
 -   SGraph -> GGraph
+-   GLSPGraph -> GGraph
 -   SModelFactory -> GModelFactory
 -   SBezierControlHandleView -> GBezierControlHandleView,
 -   SBezierCreateHandleView -> GBezierCreateHandleView,
@@ -168,6 +168,9 @@ Naturally, this introduces a lof of compilation errors and breaks. We recommend 
 -   ShapedPreRenderedElement -> GShapedPreRenderedElement,
 -   SModelElementConstructor -> GModelElementConstructor
 -   SModelElementRegistration -> GModelElementRegistration
+-   SArgummentable -> ArgsAware
+    -   hasArguments -> hasArgs
+-   SModelExtension -> Removed. This was an empty marker interface that is no longer used by GLSP/sprotty
 
 </details>
 
@@ -214,6 +217,101 @@ In 1.0.0 adopters where responsible for properly configuring a `GLSPClient`, est
 With 2.x the initial configuration effort has been refactored into a common `DiagramLoader` component that takes care of configuring the underlying GLSP client and initial server communication.
 The `DiagramLoader` offers certain extension points to hook into the lifecycle of the diagram loading process and execute custom behavior (see [IDiagramStartup](#idiagramstartup))
 
+This also effects the initial configuration of standalone applications that are connected via Websocket.
+For example let's have a look at the configuration for the standalone workflow example:
+
+<details>
+  <summary>1.0.0</summary>
+
+```ts
+const port = 8081;
+const id = 'workflow';
+const diagramType = 'workflow-diagram';
+const websocket = new WebSocket(`ws://localhost:${port}/${id}`);
+
+const loc = window.location.pathname;
+const currentDir = loc.substring(0, loc.lastIndexOf('/'));
+const examplePath = resolve(join(currentDir, '..', 'app', 'example1.wf'));
+const clientId = ApplicationIdProvider.get() + '_' + examplePath;
+
+const container = createContainer();
+const diagramServer = container.get<GLSPDiagramServer>(TYPES.ModelSource);
+diagramServer.clientId = clientId;
+
+websocket.onopen = () => {
+    const connectionProvider = JsonrpcGLSPClient.createWebsocketConnectionProvider(websocket);
+    const glspClient = new BaseJsonrpcGLSPClient({ id, connectionProvider });
+    initialize(glspClient);
+};
+
+async function initialize(client: GLSPClient): Promise<void> {
+    await diagramServer.connect(client);
+    const result = await client.initializeServer({
+        applicationId: ApplicationIdProvider.get(),
+        protocolVersion: GLSPClient.protocolVersion
+    });
+    await configureServerActions(result, diagramType, container);
+
+    const actionDispatcher = container.get<IActionDispatcher>(TYPES.IActionDispatcher);
+
+    await client.initializeClientSession({ clientSessionId: diagramServer.clientId, diagramType });
+    actionDispatcher.dispatch(
+        RequestModelAction.create({
+            options: {
+                sourceUri: `file://${examplePath}`,
+                diagramType
+            }
+        })
+    );
+    actionDispatcher.dispatch(RequestTypeHintsAction.create());
+    actionDispatcher.dispatch(EnableToolPaletteAction.create());
+}
+```
+
+</details>
+<details open>
+  <summary>2.x</summary>
+
+```ts
+const port = 8081;
+const id = 'workflow';
+const diagramType = 'workflow-diagram';
+
+const loc = window.location.pathname;
+const currentDir = loc.substring(0, loc.lastIndexOf('/'));
+const examplePath = resolve(join(currentDir, '../app/example1.wf'));
+const clientId = 'sprotty';
+
+const webSocketUrl = `ws://localhost:${port}/${id}`;
+
+let glspClient: GLSPClient;
+let container: Container;
+const wsProvider = new GLSPWebSocketProvider(webSocketUrl);
+wsProvider.listen({ onConnection: initialize, onReconnect: reconnect, logger: console });
+
+async function initialize(connectionProvider: MessageConnection): Promise<void> {
+    glspClient = new BaseJsonrpcGLSPClient({ id, connectionProvider });
+    container = createContainer({ clientId, diagramType, glspClientProvider: async () => glspClient, sourceUri: examplePath });
+    const actionDispatcher = container.get(GLSPActionDispatcher);
+    const diagramLoader = container.get(DiagramLoader);
+    await diagramLoader.load();
+}
+```
+
+First with 2.x GLSP no longer depends on the `vscode-ws-websocket` package and instead provides its own glue code for setting up Websocket connections.
+Use the `GLSPWebSocketProvider` and its `listen` function to initialize the connection.
+The `initialize` function needs to be reworked by:
+
+-   Defining the `IDiagramOptions` for your application.
+    The diagram options provide diagram specific configuration information like the `clientId`, `diagramType` and `glspClient` instance that should be used.
+-   Creating your diagram container with the defined options
+-   Retrieve the `DiagramLoader` from the container and trigger the diagram loading with `diagramLoader.load()`.
+    If you want to use custom `requestModelOptions` you can pass them when calling the load method
+
+Previously the initialize function was also used to configure initial actions that should be dispatched.
+This behavior is now discouraged.
+Please use [IDiagramStartup](#idiagramstartup)`s to configure initial actions.
+
 ### Generic ModelSource
 
 In GLSP 1.0 each platform integration had to provide a dedicated `ModelSource` implementation.
@@ -221,9 +319,49 @@ With 2.x a generic `GLSPModelSource` has been introduced that can be reused acro
 This implementation is bound by default and platform specific `ModelSource` implementations have been removed.
 Please make sure to remove any explicit bindings of `ModelSource` in your DI configuration.
 
-### Renaming of feature modules
+For the standalone use case this means that the `GLSPDiagramServer` model source implementation is no longer available.
+Explicit bindings of this service identifier can be simply removed.
+In 1.0.0 the `GLSPDiagramServer` also served as explicit `ActionHandler`.
+This behavior is discouraged in 2.x.
+If you have been using a custom diagram server that handles additional actions please migrate the handling to an explicit action handler and configure in your diagram module (`configureActionHandler(...)`).
 
-The naming of feature modules in 1.0.0 was an inconsistent mix of modules with no prefix, prefixed with `glsp` and prefixed with `sprotty`.
+### Introduction of `FeatureModule`s
+
+With 2.x all base diagram feature modules have been refactored and now extend a custom `FeatureModule` class instead of the default inversify `ContainerModule`.
+`FeatureModule`s are special `ContainerModule`s that also bind a unique service identifier when loaded into the container.
+This allows runtime checks to see if a module is configured (i.e. loaded into the container) or not.
+In addition,this enables the declaration of dependency chains i.e. application-context specific modules that add additional functionality on top of a core feature module.
+For instance let's have a look at the `theiaSelectModule`
+
+```ts
+export const theiaSelectModule = new FeatureModule(
+    bind => {
+        bindAsService({ bind }, TYPES.ISelectionListener, TheiaGLSPSelectionForwarder);
+    },
+    { requires: selectModule }
+);
+```
+
+This module requires the `selectFeature` module.
+This means it will only be loaded into the container if the `selectModule` has been loaded before.
+
+Depending on your set of custom modules some migration effort might be necessary.
+Custom modules that are loaded in addition to core GLSP modules should work as before in 2.x without any changes.
+Custom modules that are a fullfledged replacement for a GLSP core feature module need to be migrated to a `FeatureModule`.
+To keep the dependency chain intact the replacement module has to reuse the `featureId` of the base module it is replacing.
+For instance if you have a custom `myViewportModule` that serves as a replacement for the base `viewportModule` than the module
+declaration should look like this:
+
+```ts
+export const myViewportModule = new FeatureModule(
+    (bind, _unbind, isBound) => {
+        /// your custom module configuration
+    },
+    { featureId: viewportModule.featureId }
+);
+```
+
+In addition, the naming of feature modules in 1.0.0 was an inconsistent mix of modules with no prefix, prefixed with `glsp` and prefixed with `sprotty`.
 In 2.x the naming has been aligned and all feature modules provided by GLSP now have no prefix.
 In addition, several modules have been renamed to better reflect the purpose of the module.
 We recommend to use `Search & Replace` to migrate affected module references.
@@ -248,6 +386,34 @@ We recommend to use `Search & Replace` to migrate affected module references.
 
 </details>
 
+### Tools module rework
+
+In 1.0 the default tools where configured with two generic modules (`toolsModule` & `toolFeedbackModule`) that provided the configuration
+for all tools at once.
+This made it quite hard to customize tools individually.
+In addition, the separation into a dedicated `feedbackModule` was not ideal as it split the tool configuration across two interdependent modules.
+With 2.x this has been reworked. The generic `toolsModule` & `toolFeedbackModule` have been removed in favor of individual tool modules:
+
+-   changeBoundsToolModule
+-   deletionToolModule
+-   edgeCreationToolModule
+-   edgeEditToolModule
+-   marqueeSelectionToolModule
+-   nodeCreationToolModule.
+
+So if you are using customized default tools in your project some migration effort is required to adapt to new imports and the new module structure.
+
+<details>
+  <summary>List of changes</summary>
+
+-   GLSPTool -> Tool
+-   <Basetool>.dispatchFeedback -> Basetool>.registerFeedback
+-   BaseEditTool: Reusable generic base class for edit tools
+-   BaseCreationTool: Reusable base class for edit tools based on a trigger action
+-   configureMarqueeTool: This function has been removed. Use the `marqueeSelectionToolModule` instead
+
+</details>
+
 ### IDiagramStartup
 
 GLSP 2.0 offers the `IDiagramStartup` API which enables adopters to hook into the model loading lifecycle and execute additional custom logic.
@@ -269,7 +435,7 @@ export class MyDiagramStartup implements IDiagramStartup {
 
 
 export const myDiagramModule= new ContainerModule(bind => {
-    bind(IDiagramStartup).to(MyDiagramStartup).inSingletonScope();
+    bind(TYPES.IDiagramStartup).to(MyDiagramStartup).inSingletonScope();
 }
 ```
 
@@ -338,6 +504,14 @@ export class MyService implements Disposable {
 }
 ```
 
+<details>
+  <summary>List of changes</summary>
+
+-   SelectionListener -> ISelectionListener
+-   EditModeListener -> IEditModeListener
+
+</details>
+
 ### Message API
 
 With 2.x the actions for sending information messages and/or status updates have been reworked.
@@ -370,6 +544,7 @@ Please use the `configureButtonHandler` method in your diagram DI module instead
 
 -   UndoAction -> UndoOperation
 -   RedoAction -> RedoOperation
+-   UndoRedoKeyListener -> GLSPUndoRedoKeyListener
 
 **SelectionService**
 
