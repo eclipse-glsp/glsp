@@ -8,6 +8,22 @@ This is a living artifact that will be continuously updated when new versions ar
 Please see the latest version (master) for the most up-to-date information.
 Please contribute any issues you experienced when upgrading to a newer version of Theia to this document, even for previous releases.
 
+<!-- TOC end -->
+
+<!-- TOC --><a name="glsp-migration-guide"></a>
+
+# GLSP Migration Guide
+
+<!-- TOC --><a name="description"></a>
+
+## Description
+
+The following guide highlights potential migration steps necessary when upgrading a GLSP project from
+version 1.0.0 to 2.x.x.
+This is a living artifact that will be continuously updated when new versions are released and/or new migration issues are encountered.
+Please see the latest version (master) for the most up-to-date information.
+Please contribute any issues you experienced when upgrading to a newer version of Theia to this document, even for previous releases.
+
 -   [General](#general)
     -   [Build dependencies](#build-dependencies)
     -   [Inversify 6](#inversify-6)
@@ -16,8 +32,9 @@ Please contribute any issues you experienced when upgrading to a newer version o
     -   [Diagram container configuration](#diagram-container-configuration)
     -   [Application specific configuration](#application-specific-configuration)
     -   [Generic ModelSource](#generic-modelsource)
-    -   [Renaming of feature modules](#renaming-of-feature-modules)
-    -   [IDiagramStartup](#idiagramstartup)
+    -   [Introduction of FeatureModules](#introduction-of-featuremodules)
+    -   [Tools Module rework](#tools-module-rework)
+    -   [Diagram Startup Hooks](#diagram-startup-hooks)
     -   [Event Listener](#event-listener)
     -   [Message API](#message-api)
     -   [Other breaking changes](#other-breaking-changes)
@@ -118,7 +135,7 @@ protected async doInit(): Promise<void> {
 ## Client
 
 This section covers the major migration steps necessary to migrate a 1.0.0 Client implementation to 2.x.
-Not all changes are covered here, for a complete list of changes please refer to the official [changelog](https://github.com/eclipse-glsp/glsp-client/blob/master/CHANGELOG.md)
+Not all changes are covered here, for a complete list of changes please refer to the official [changelog](https://github.com/eclipse-glsp/glsp-client/blob/master/CHANGELOG.md).
 
 ### GModel API Alignment
 
@@ -129,48 +146,49 @@ With GLSP **2.x** the `SModel` namespace on the client side has been deprecated/
 All base model classes and views from sprotty that are reused in GLSP have been transferred to the `GModel` namespace.
 Naturally, this introduces a lof of compilation errors and breaks. We recommend to use the `Search & Replace` functionality of the IDE of your choice to properly convert all usages of classes that are prefixed with an `S` in 1.x to the new namespace.
 
-<details>
+<details open>
   <summary>List of changes</summary>
--   SModelElement -> GModelElement
--   SModelRoot -> GModelRoot
--   SChildElement -> GChildElement
--   SParentElement -> GParentElement
--   SShapeElement -> GShapeElement
--   SButton -> GButton
--   SButtonSchema -> GButtonSchema
--   SDecoration -> GDecoration
--   SIssue -> GIssue
--   SIssueSeverity -> GIssueSeverity
--   SIssueMarker-> GIssueMarker
--   SConnectableElement -> GConnectableElement
--   SDanglingAnchor -> GDanglingAnchor,
--   SRoutableElement -> GRoutableElement,
--   SRoutingHandle -> GRoutingHandle,
--   ViewportRootElement -> GViewportRootElement
--   SCompartment -> GCompartment,
--   SGraphIndex -> GGraphIndex,
--   SLabel -> GLabel,
--   SNode -> GNode,
--   SPort -> GPort
--   SEdge -> GEdge
--   SGraph -> GGraph
--   GLSPGraph -> GGraph
--   SModelFactory -> GModelFactory
--   SBezierControlHandleView -> GBezierControlHandleView,
--   SBezierCreateHandleView -> GBezierCreateHandleView,
--   SCompartmentView -> GCompartmentView,
--   SGraphView -> GGraphView,
--   SLabelView -> GLabelView,
--   SRoutingHandleView -> GRoutingHandleView,
--   ForeignObjectElement -> GForeignObjectElement,
--   HtmlRoot -> GHtmlRoot,
--   PreRenderedElement -> GPreRenderedElement,
--   ShapedPreRenderedElement -> GShapedPreRenderedElement,
--   SModelElementConstructor -> GModelElementConstructor
--   SModelElementRegistration -> GModelElementRegistration
--   SArgummentable -> ArgsAware
-    -   hasArguments -> hasArgs
--   SModelExtension -> Removed. This was an empty marker interface that is no longer used by GLSP/sprotty
+  
+-   `SModelElement` -> `GModelElement`
+-   `SModelRoot` -> `GModelRoot`
+-   `SChildElement` -> `GChildElement`
+-   `SParentElement` -> `GParentElement`
+-   `SShapeElement` -> `GShapeElement`
+-   `SButton` -> `GButton`
+-   `SButtonSchema` -> `GButtonSchema`
+-   `SDecoration` -> `GDecoration`
+-   `SIssue` -> `GIssue`
+-   `SIssueSeverity` -> `GIssueSeverity`
+-   `SIssueMarker`-> `GIssueMarker`
+-   `SConnectableElement` -> `GConnectableElement`
+-   `SDanglingAnchor` -> `GDanglingAnchor`,
+-   `SRoutableElement` -> `GRoutableElement`,
+-   `SRoutingHandle` -> `GRoutingHandle`,
+-   `ViewportRootElement` -> `GViewportRootElement`
+-   `SCompartment` -> `GCompartment`,
+-   `SGraphIndex` -> `GGraphIndex`,
+-   `SLabel` -> `GLabel`,
+-   `SNode` -> `GNode`,
+-   `SPort` -> `GPort`
+-   `SEdge` -> `GEdge`
+-   `SGraph` -> `GGraph`
+-   `GLSPGraph` -> `GGraph`
+-   `SModelFactory` -> `GModelFactory`
+-   `SBezierControlHandleView` -> `GBezierControlHandleView`,
+-   `SBezierCreateHandleView` -> `GBezierCreateHandleView`,
+-   `SCompartmentView` -> `GCompartmentView`,
+-   `SGraphView` -> `GGraphView`,
+-   `SLabelView` -> `GLabelView`,
+-   `SRoutingHandleView` -> `GRoutingHandleView`,
+-   `ForeignObjectElement` -> `GForeignObjectElement`,
+-   `HtmlRoot` -> `GHtmlRoot`,
+-   `PreRenderedElement` -> `GPreRenderedElement`,
+-   `ShapedPreRenderedElement` -> `GShapedPreRenderedElement`,
+-   `SModelElementConstructor` -> `GModelElementConstructor`
+-   `SModelElementRegistration` -> `GModelElementRegistration`
+-   `SArgumentable` -> `ArgsAware`
+-   `hasArguments` -> `hasArgs`
+-   `SModelExtension` -> Removed. This was an empty marker interface that is no longer used by GLSP/sprotty
 
 </details>
 
@@ -179,6 +197,7 @@ Naturally, this introduces a lof of compilation errors and breaks. We recommend 
 The central entrypoint for configuring a diagram container with your custom diagram language has been changed.
 Previously it was expected that your function to create a diagram container provides a `widgetId`.
 This is no longer necessary, instead the function should take a destructured `ContainerConfiguration` array as argument.
+
 Container configurations are a set of DI modules that should be loaded into the container and/or a description of DI modules that should be loaded/excluded from the container.
 
 <details>
@@ -215,7 +234,7 @@ export function initializeWorkflowDiagramContainer(container: Container, ...cont
 
 In 1.0.0 adopters where responsible for properly configuring a `GLSPClient`, establishing a connection to the server and had to manually dispatch the set of initial actions when opening a new diagram.
 With 2.x the initial configuration effort has been refactored into a common `DiagramLoader` component that takes care of configuring the underlying GLSP client and initial server communication.
-The `DiagramLoader` offers certain extension points to hook into the lifecycle of the diagram loading process and execute custom behavior (see [IDiagramStartup](#idiagramstartup))
+The `DiagramLoader` offers certain extension points to hook into the lifecycle of the diagram loading process and execute custom behavior (see [Diagram Startup Hooks](#diagram-startup-hooks))
 
 This also effects the initial configuration of standalone applications that are connected via Websocket.
 For example let's have a look at the configuration for the standalone workflow example:
@@ -289,28 +308,41 @@ let container: Container;
 const wsProvider = new GLSPWebSocketProvider(webSocketUrl);
 wsProvider.listen({ onConnection: initialize, onReconnect: reconnect, logger: console });
 
-async function initialize(connectionProvider: MessageConnection): Promise<void> {
+async function initialize(connectionProvider: MessageConnection, isReconnecting = false): Promise<void> {
     glspClient = new BaseJsonrpcGLSPClient({ id, connectionProvider });
     container = createContainer({ clientId, diagramType, glspClientProvider: async () => glspClient, sourceUri: examplePath });
     const actionDispatcher = container.get(GLSPActionDispatcher);
     const diagramLoader = container.get(DiagramLoader);
-    await diagramLoader.load();
+    await diagramLoader.load({ requestModelOptions: { isReconnecting } });
+
+    if (isReconnecting) {
+        const message = `Connection to the ${id} glsp server got closed. Connection was successfully re-established.`;
+        const timeout = 5000;
+        const severity = 'WARNING';
+        actionDispatcher.dispatchAll([StatusAction.create(message, { severity, timeout }), MessageAction.create(message, { severity })]);
+        return;
+    }
+}
+
+async function reconnect(connectionProvider: MessageConnection): Promise<void> {
+    glspClient.stop();
+    initialize(connectionProvider, true /* isReconnecting */);
 }
 ```
 
-First with 2.x GLSP no longer depends on the `vscode-ws-websocket` package and instead provides its own glue code for setting up Websocket connections.
+GLSP 2.x no longer depends on the `vscode-ws-websocket` package and instead provides its own glue code for setting up Websocket connections.
 Use the `GLSPWebSocketProvider` and its `listen` function to initialize the connection.
 The `initialize` function needs to be reworked by:
 
 -   Defining the `IDiagramOptions` for your application.
     The diagram options provide diagram specific configuration information like the `clientId`, `diagramType` and `glspClient` instance that should be used.
 -   Creating your diagram container with the defined options
--   Retrieve the `DiagramLoader` from the container and trigger the diagram loading with `diagramLoader.load()`.
-    If you want to use custom `requestModelOptions` you can pass them when calling the load method
+-   Retrieving the `DiagramLoader` from the container and triggering the diagram loading with `diagramLoader.load()`.
+    If you want to use custom `requestModelOptions` you can pass them when calling the load method.
 
 Previously the initialize function was also used to configure initial actions that should be dispatched.
 This behavior is now discouraged.
-Please use [IDiagramStartup](#idiagramstartup)`s to configure initial actions.
+Please use [Diagram Startup Hooks](#diagram-startup-hooks)'s to configure initial actions.
 
 ### Generic ModelSource
 
@@ -323,14 +355,14 @@ For the standalone use case this means that the `GLSPDiagramServer` model source
 Explicit bindings of this service identifier can be simply removed.
 In 1.0.0 the `GLSPDiagramServer` also served as explicit `ActionHandler`.
 This behavior is discouraged in 2.x.
-If you have been using a custom diagram server that handles additional actions please migrate the handling to an explicit action handler and configure in your diagram module (`configureActionHandler(...)`).
+If you have been using a custom diagram server that handles additional actions please migrate the handling to an explicit action handler and configure in your diagram module (`configureActionHandler`).
 
-### Introduction of `FeatureModule`s
+### Introduction of FeatureModules
 
 With 2.x all base diagram feature modules have been refactored and now extend a custom `FeatureModule` class instead of the default inversify `ContainerModule`.
 `FeatureModule`s are special `ContainerModule`s that also bind a unique service identifier when loaded into the container.
 This allows runtime checks to see if a module is configured (i.e. loaded into the container) or not.
-In addition,this enables the declaration of dependency chains i.e. application-context specific modules that add additional functionality on top of a core feature module.
+In addition, this enables the declaration of dependency chains, i.e. application-context specific modules, that add additional functionality on top of a core feature module.
 For instance let's have a look at the `theiaSelectModule`
 
 ```ts
@@ -366,27 +398,27 @@ In 2.x the naming has been aligned and all feature modules provided by GLSP now 
 In addition, several modules have been renamed to better reflect the purpose of the module.
 We recommend to use `Search & Replace` to migrate affected module references.
 
-<details>
+<details open>
   <summary>List of changes</summary>
 
--   defaultGlspModule-> baseModule
--   glspExportModule -> exportModule
--   glspBoundsModule -> boundsModule
--   glspCommandPaletteModule -> commandPaletteModule
--   glspContextMenuModule -> contextMenuModule
--   glspDecorationModule -> decorationModule
--   glspEditLabelModule -> labelEditModule
--   glspHoverModule -> hoverModule
--   glspSelectModule -> selectModule
--   glspServerCopyPasteModule -> serverCopyPasteModule
--   glspViewportModule -> viewportModule
--   modelHintsModule -> typeHintsModule
--   glspRoutingModule -> routingModule
--   enableDefaultToolsOnFocusLossModule -> toolFocusLossModule
+-   `defaultGlspModule`-> `baseModule`
+-   `glspExportModule` -> `exportModule`
+-   `glspBoundsModule` -> `boundsModule`
+-   `glspCommandPaletteModule` -> `commandPaletteModule`
+-   `glspContextMenuModule` -> `contextMenuModule`
+-   `glspDecorationModule` -> `decorationModule`
+-   `glspEditLabelModule` -> `labelEditModule`
+-   `glspHoverModule` -> `hoverModule`
+-   `glspSelectModule` -> `selectModule`
+-   `glspServerCopyPasteModule` -> `serverCopyPasteModule`
+-   `glspViewportModule` -> `viewportModule`
+-   `modelHintsModule` -> `typeHintsModule`
+-   `glspRoutingModule` -> `routingModule`
+-   `enableDefaultToolsOnFocusLossModule` -> `toolFocusLossModule`
 
 </details>
 
-### Tools module rework
+### Tools Module rework
 
 In 1.0 the default tools where configured with two generic modules (`toolsModule` & `toolFeedbackModule`) that provided the configuration
 for all tools at once.
@@ -394,27 +426,27 @@ This made it quite hard to customize tools individually.
 In addition, the separation into a dedicated `feedbackModule` was not ideal as it split the tool configuration across two interdependent modules.
 With 2.x this has been reworked. The generic `toolsModule` & `toolFeedbackModule` have been removed in favor of individual tool modules:
 
--   changeBoundsToolModule
--   deletionToolModule
--   edgeCreationToolModule
--   edgeEditToolModule
--   marqueeSelectionToolModule
--   nodeCreationToolModule.
+-   `changeBoundsToolModule`
+-   `deletionToolModule`
+-   `edgeCreationToolModule`
+-   `edgeEditToolModule`
+-   `marqueeSelectionToolModule` (previously: `configureMarqueeTool`)
+-   `nodeCreationToolModule`
 
 So if you are using customized default tools in your project some migration effort is required to adapt to new imports and the new module structure.
 
-<details>
+<details open>
   <summary>List of changes</summary>
 
--   GLSPTool -> Tool
--   <Basetool>.dispatchFeedback -> Basetool>.registerFeedback
+-   `GLSPTool` -> `Tool`
+-   `dispatchFeedback` -> `registerFeedback`
 -   BaseEditTool: Reusable generic base class for edit tools
 -   BaseCreationTool: Reusable base class for edit tools based on a trigger action
 -   configureMarqueeTool: This function has been removed. Use the `marqueeSelectionToolModule` instead
 
 </details>
 
-### IDiagramStartup
+### Diagram Startup Hooks
 
 GLSP 2.0 offers the `IDiagramStartup` API which enables adopters to hook into the model loading lifecycle and execute additional custom logic.
 This enables typical use cases like dispatching additional initial actions, enabling a UI extension at diagram startup etc.
@@ -466,11 +498,7 @@ export class MyService {
                 console.log('selection changed');
             }
         };
-        this.selectionService.register({
-            selectionChanged: () => {
-                console.log('selection changed');
-            }
-        });
+        this.selectionService.register(this.listener);
     }
 
     dispose(): void {
@@ -504,11 +532,11 @@ export class MyService implements Disposable {
 }
 ```
 
-<details>
+<details open>
   <summary>List of changes</summary>
 
--   SelectionListener -> ISelectionListener
--   EditModeListener -> IEditModeListener
+-   `SelectionListener` -> `ISelectionListener`
+-   `EditModeListener` -> `IEditModeListener`
 
 </details>
 
@@ -517,17 +545,17 @@ export class MyService implements Disposable {
 With 2.x the actions for sending information messages and/or status updates have been reworked.
 First of all they have been renamed
 
--   ServerStatusAction -> StatusAction
--   ServerMessageAction -> MessageAction
+-   `ServerStatusAction` -> `StatusAction`
+-   `ServerMessageAction` -> `MessageAction`
 
 Second, the `timeout` support for `MessageAction`'s has been removed.
-This feature was only well supported in the Theia integration and its main purpose was to dispatch progress information for long-running operations.
+By default, this feature was only well supported in the Theia integration and its main purpose was to dispatch progress information for long-running operations.
 A new dedicated API for progress reporting has been introduced which can be used for this purpose.
 If you have a long running information and want to report the progress you can use the following new actions:
 
--   StartProgressAction
--   UpdateProgressAction
--   EndProgressAction
+-   `StartProgressAction`
+-   `UpdateProgressAction`
+-   `EndProgressAction`
 
 </details>
 
@@ -542,9 +570,9 @@ Please use the `configureButtonHandler` method in your diagram DI module instead
 
 `Undo` and `Redo` operations were incorrectly declared as actions in 1.0. With 2.x the have been migrated to operations.
 
--   UndoAction -> UndoOperation
--   RedoAction -> RedoOperation
--   UndoRedoKeyListener -> GLSPUndoRedoKeyListener
+-   `UndoAction` -> `UndoOperation`
+-   `RedoAction` -> `RedoOperation`
+-   `UndoRedoKeyListener` -> `GLSPUndoRedoKeyListener`
 
 **SelectionService**
 
@@ -591,7 +619,7 @@ Related bindings can simply be removed and don't need a replacement.
 
 In 1.0.0 the `GlspTheiaDiagramServer` also served as explicit `ActionHandler`.
 This behavior is discouraged in 2.x.
-If you have been using a custom diagram server that handles additional actions please migrate the handling to an explicit action handler and configure in in the [diagram configuration](<(#improved-diagramconfiguration)>).
+If you have been using a custom diagram server that handles additional actions please migrate the handling to an explicit action handler and configure it in the [diagram configuration](#improved-diagramconfiguration).
 
 ### Improved `DiagramConfiguration`
 
@@ -775,4 +803,4 @@ export class MyDiagramTheiaFrontendModule extends GLSPTheiaFrontendModule {
 
 </details>
 
-If the sole purpose of your custom diagram widget was to dispatch initial actions we recommend to completely remove the customization and instead use the new [IDiagramStartup](#idiagramstartup) API for that.
+If the sole purpose of your custom diagram widget was to dispatch initial actions we recommend to completely remove the customization and instead use the new [Diagram Startup Hooks](#diagram-startup-hooks) API for that.
