@@ -130,6 +130,16 @@ protected async doInit(): Promise<void> {
 }
 ```
 
+In addition, starting with 2.0.0 inversify is declared as `peerDependency` in sprotty & GLSP.
+This means instead of depending on a specific inversify version GLSP just declares the expected version range.
+It is the responsibility of the adopters to provide a compatible version has part of their project (i.e. declare a matching version in the package dependencies).
+Inversify only works properly if exactly one version is resolved in the project scope.
+With the `peerDependency` change this can be easier ensured as the adopter is in full control of the version that should be used.
+Currently the expected version range is `>= 6.0.1 > 7.0.0`.
+
+Note that for Theia integration projects explicit declaration of the inversify version should not be necessary as the Theia core package already
+depends on a compatible version.
+
 </details>
 
 ## Client
