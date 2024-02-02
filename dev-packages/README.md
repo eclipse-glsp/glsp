@@ -12,7 +12,7 @@ Common shared development packages for Eclipse GLSP components that are implemen
 -   [`@eclipse-glsp/config-test`](./config-test//README.md): Provides a meta package that exports common test configuration object on top of `@eclipse-glsp/config`:
     -   [Mocha](https://www.npmjs.com/package/@eclipse-glsp/mocha-config) (`.mocharc`)
     -   [NYC](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): (`.nycrc`)
--   [`@eclipse-glsp/dev`](./dev//README.md): Provides a all-in-one meta package that includes `@eclipse-glsp/cli`, `@eclipse-glsp/config` and `@eclipse-glsp/config-dev`
+-   [`@eclipse-glsp/dev`](./dev//README.md): Provides an all-in-one meta package that includes `@eclipse-glsp/cli`, `@eclipse-glsp/config` and `@eclipse-glsp/config-dev`
 
 The packages are available via npm and are used by all GLSP components implemented with Typescript.
 
