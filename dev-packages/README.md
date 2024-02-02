@@ -8,7 +8,6 @@ Common shared development packages for Eclipse GLSP components that are implemen
     -   [Typescript](https://www.typescriptlang.org/) (`tsconfig.json`)
     -   [ESLint](https://eslint.org/) (`.eslintrc`)
     -   [Prettier](https://prettier.io/) (`.prettierrc`).
-    -   [Mocha](https://mochajs.org/) (`.mocharc.json`).
 -   [`@eclipse-glsp/config-test`](./config-test//README.md): Provides a meta package that exports common test configuration object on top of `@eclipse-glsp/config`:
     -   [Mocha](https://www.npmjs.com/package/@eclipse-glsp/mocha-config) (`.mocharc`)
     -   [NYC](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): (`.nycrc`)
