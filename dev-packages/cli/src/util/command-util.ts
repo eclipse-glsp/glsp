@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { Command } from 'commander';
-import * as sh from 'shelljs';
+import sh from 'shelljs';
 
 // Commander.js utils
 export function baseCommand(cmd = new Command()): Command {
