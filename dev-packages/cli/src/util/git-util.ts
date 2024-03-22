@@ -84,28 +84,6 @@ export function getLastModificationDate(filePath?: string, repoRoot?: string, ex
     }
     return new Date(result.stdout.trim());
 }
-/**
- * Returns the last modification date of a file in a git repo.
- * @param filePath The file
- * @param repoRoot The path to the repo root. If undefined the current working directory is used.
- * @param excludeMessage Only consider commits that don`t match the excludeMessage
- * @returns The date or undefined if the file is outside of the git repo.
- */
-export function getFirstModificationDate(filePath: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
-    cdIfPresent(repoRoot);
-    const additionalArgs = excludeMessage ? `--grep="${excludeMessage}" --invert-grep` : '';
-    const result = sh.exec(`git log ${additionalArgs} --pretty="format:%ci" --follow ${filePath}`, getShellConfig());
-    if (result.code !== 0) {
-        return undefined;
-    }
-    const datesString = result.stdout.trim();
-    if (datesString.length === 0) {
-        return new Date();
-    }
-
-    const date = datesString.split('\n').pop();
-    return date ? new Date(date) : undefined;
-}
 
 export function getFilesOfCommit(commitHash: string, repoRoot?: string): string[] {
     cdIfPresent(repoRoot);
@@ -115,38 +93,6 @@ export function getFilesOfCommit(commitHash: string, repoRoot?: string): string[
     }
 
     return result.stdout.trim().split('\n');
-}
-
-/**
- * Returns the commit hash of the initial commit of the given repository
- * @param repoRoot The path to the repo root. If undefined the current working directory is used.
- * @returns The commit hash or undefined if something went wrong.
- */
-export function getInitialCommit(repoRoot?: string): string | undefined {
-    cdIfPresent(repoRoot);
-    const result = sh.exec('git log --pretty=oneline --reverse', getShellConfig());
-    if (result.code !== 0) {
-        return undefined;
-    }
-    const commits = result.stdout.trim();
-    if (commits.length === 0) {
-        return undefined;
-    }
-    return commits.substring(0, commits.indexOf(' '));
-}
-
-/**
- * Returns the commit hash of the first commit for a given file (across renames).
- * @param repoRoot The path to the repo root. If undefined the current working directory is used.
- * @returns The commit hash or undefined if something went wrong.
- */
-export function getFirstCommit(filePath: string, repoRoot?: string): string | undefined {
-    cdIfPresent(repoRoot);
-    const result = sh.exec(`git log --follow  --pretty=format:"%H" ${filePath}`, getShellConfig());
-    if (result.code !== 0) {
-        return undefined;
-    }
-    return result.stdout.trim().split('\n').pop();
 }
 
 export function getLatestGithubRelease(path?: string): string {

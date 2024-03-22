@@ -21,14 +21,7 @@ import * as minimatch from 'minimatch';
 import * as readline from 'readline-sync';
 import * as sh from 'shelljs';
 import { baseCommand, configureShell, getShellConfig } from '../util/command-util';
-import {
-    getChangesOfLastCommit,
-    getFirstCommit,
-    getFirstModificationDate,
-    getInitialCommit,
-    getLastModificationDate,
-    getUncommittedChanges
-} from '../util/git-util';
+import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util';
 
 import { LOGGER } from '../util/logger';
 import { validateGitDirectory } from '../util/validation-util';
@@ -40,24 +33,19 @@ export interface HeaderCheckOptions {
     json: boolean;
     excludeDefaults: boolean;
     autoFix: boolean;
-    severity: Severity;
 }
 
 const checkTypes = ['full', 'changes', 'lastCommit'] as const;
-type CheckType = typeof checkTypes[number];
-
-const severityTypes = ['error', 'warn', 'ok'] as const;
-
-type Severity = typeof severityTypes[number];
+type CheckType = (typeof checkTypes)[number];
 
 const DEFAULT_EXCLUDES = ['**/@(node_modules|lib|dist|bundle)/**'];
-const YEAR_RANGE_REGEX = /\d{4}(?:-d{4})?/g;
-const HEADER_PATTERN = 'Copyright \\([cC]\\) \\d{4}(-d{4})?';
+const YEAR_RANGE_REGEX = /\d{4}/g;
+const HEADER_PATTERN = 'Copyright \\([cC]\\) \\d{4}';
 const AUTO_FIX_MESSAGE = 'Fix copyright header violations';
 
 export const CheckHeaderCommand = baseCommand() //
     .name('checkHeaders')
-    .description('Validates the copyright year range of license header files')
+    .description('Validates the copyright year range (end year) of license header files')
     .argument('<rootDir>', 'The starting directory for the check', validateGitDirectory)
     .addOption(
         new Option(
@@ -80,11 +68,6 @@ export const CheckHeaderCommand = baseCommand() //
         'Disables the default excludes patterns. Only explicitly passed exclude patterns (-e, --exclude) are considered'
     )
     .option('-j, --json', 'Also persist validation results as json file', false)
-    .addOption(
-        new Option('-s, --severity <severity>', 'The severity of validation results that should be printed.')
-            .choices(severityTypes)
-            .default('error', '"error" (only)')
-    )
     .option('-a, --autoFix', 'Auto apply & commit fixes without prompting the user', false)
     .action(checkHeaders);
 
@@ -127,17 +110,11 @@ function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
 }
 
 function validate(rootDir: string, files: string[], options: HeaderCheckOptions): ValidationResult[] {
-    // Derives all files with valid headers, their copyright years and all files with no or invalid headers
+    // Derives all files with valid headers and all files with no or invalid headers
     const filesWithHeader = sh.grep('-l', HEADER_PATTERN, files).stdout.trim().split('\n');
-    const copyrightYears = sh
-        .grep(HEADER_PATTERN, files)
-        .stdout.trim()
-        .split('\n')
-        .map(line => line.match(YEAR_RANGE_REGEX)!.map(string => Number.parseInt(string, 10)));
     const noHeaders = files.filter(file => !filesWithHeader.includes(file));
 
     const results: ValidationResult[] = [];
-
     const allFilesLength = files.length;
 
     // Create validation results for all files with no or invalid headers
@@ -147,7 +124,7 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
     }
     noHeaders.forEach((file, i) => {
         printFileProgress(i + 1, allFilesLength, `Validating ${file}`);
-        results.push({ file: path.resolve(rootDir, file), violation: 'noOrMissingHeader', severity: 'error' });
+        results.push({ file: path.resolve(rootDir, file), violation: 'noOrMissingHeader' });
     });
 
     // Performance optimization: avoid retrieving the dates for each individual file by precalculating the endYear if possible.
@@ -161,22 +138,20 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
     // Create validation results for all files with valid headers
     filesWithHeader.forEach((file, i) => {
         printFileProgress(i + 1 + noHeadersLength, allFilesLength, `Validating ${file}`);
-
+        const copyrightLine = sh.head({ '-n': 2 }, file).stdout.trim().split('\n')[1];
+        const copyRightYears = copyrightLine.match(YEAR_RANGE_REGEX)!;
+        const currentStartYear = Number.parseInt(copyRightYears[0], 10);
+        const currentEndYear = copyRightYears[1] ? Number.parseInt(copyRightYears[1], 10) : undefined;
         const result: DateValidationResult = {
-            currentStartYear: copyrightYears[i].shift()!,
-            expectedStartYear: getFirstModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
-            currentEndYear: copyrightYears[i].shift(),
+            currentStartYear,
+            currentEndYear,
             expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
             file,
-            severity: 'ok',
             violation: 'none'
         };
 
-        if (result.expectedStartYear === result.expectedEndYear) {
-            validateSingleYear(result);
-        } else {
-            validateTimePeriod(result);
-        }
+        validateEndYear(result);
+
         results.push(result);
     });
 
@@ -186,56 +161,15 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
     return results;
 }
 
-function validateSingleYear(result: DateValidationResult): void {
-    const { currentStartYear, expectedStartYear, currentEndYear } = result;
-    result.violation = 'invalidCopyrightYear';
-    result.severity = 'error';
+function validateEndYear(result: DateValidationResult): void {
+    const { currentStartYear, expectedEndYear, currentEndYear } = result;
+    result.violation = 'invalidEndYear';
 
-    if (!currentEndYear) {
-        if (currentStartYear === expectedStartYear) {
-            result.violation = 'none';
-            result.severity = 'ok';
-        }
-        return;
-    }
+    const valid = currentEndYear ? currentEndYear === expectedEndYear : currentStartYear === expectedEndYear;
 
-    // Cornercase: For files of the initial contribution the copyright header predates the first git modification date.
-    // => declare as warning if not part of the initial contribution.
-    if (expectedStartYear === currentEndYear && currentStartYear < expectedStartYear) {
-        if (getFirstCommit(result.file) === getInitialCommit()) {
-            result.violation = 'none';
-            result.severity = 'ok';
-        } else {
-            result.severity = 'warn';
-        }
-    }
-}
-
-function validateTimePeriod(result: DateValidationResult): void {
-    const { currentStartYear, expectedStartYear, expectedEndYear, currentEndYear } = result;
-
-    result.violation = 'incorrectCopyrightPeriod';
-    result.severity = 'error';
-    if (!currentEndYear) {
-        result.severity = 'error';
-        return;
-    }
-
-    if (currentStartYear === expectedStartYear && currentEndYear === expectedEndYear) {
+    if (valid) {
         result.violation = 'none';
-        result.severity = 'ok';
         return;
-    }
-
-    // Cornercase: For files of the initial contribution the copyright header predates the first git modification date.
-    // => declare as warning if not part of the initial contribution.
-    if (currentEndYear === expectedEndYear && currentStartYear < expectedEndYear) {
-        if (getFirstCommit(result.file) === getInitialCommit()) {
-            result.violation = 'none';
-            result.severity = 'ok';
-        } else {
-            result.severity = 'warn';
-        }
     }
 }
 
@@ -253,14 +187,9 @@ function printFileProgress(currentFileCount: number, maxFileCount: number, messa
 export function handleValidationResults(rootDir: string, results: ValidationResult[], options: HeaderCheckOptions): void {
     LOGGER.newLine();
     LOGGER.info(`Header validation for ${results.length} files completed`);
-    const violations = results.filter(result => result.severity === 'error');
+    const violations = results.filter(result => result.violation !== 'none');
     // Adjust results to print based on configured severity level
-    let toPrint = results;
-    if (options.severity === 'error') {
-        toPrint = violations;
-    } else if (options.severity === 'warn') {
-        toPrint = results.filter(result => result.severity !== 'ok');
-    }
+    const toPrint = violations;
 
     LOGGER.info(`Found ${toPrint.length} copyright header violations:`);
     LOGGER.newLine();
@@ -274,9 +203,7 @@ export function handleValidationResults(rootDir: string, results: ValidationResu
     }
 
     if (violations.length > 0 && (options.autoFix || readline.keyInYN('Do you want automatically fix copyright year range violations?'))) {
-        const toFix = violations.filter(
-            violation => violation.severity === 'error' && isDateValidationResult(violation)
-        ) as DateValidationResult[];
+        const toFix = violations.filter(violation => isDateValidationResult(violation)) as DateValidationResult[];
         fixViolations(rootDir, toFix, options);
     }
 
@@ -284,43 +211,33 @@ export function handleValidationResults(rootDir: string, results: ValidationResu
 }
 
 function toPrintMessage(result: ValidationResult): string {
-    const colors: Record<Severity, string> = {
-        error: '\x1b[31m',
-        warn: '\x1b[33m',
-        ok: '\x1b[32m'
-    } as const;
+    const error = '\x1b[31m';
+    const info = '\x1b[32m';
 
-    if (
-        isDateValidationResult(result) &&
-        (result.violation === 'incorrectCopyrightPeriod' || result.violation === 'invalidCopyrightYear')
-    ) {
-        const expected =
-            result.expectedStartYear !== result.expectedEndYear
-                ? `${result.expectedStartYear}-${result.expectedEndYear}`
-                : result.expectedStartYear.toString();
-        const actual = result.currentEndYear ? `${result.currentStartYear}-${result.currentEndYear}` : result.currentStartYear.toString();
-        const message = result.violation === 'incorrectCopyrightPeriod' ? 'Invalid copyright period' : 'Invalid copyright year';
-        return `${colors[result.severity]} ${message}! Expected '${expected}' but is '${actual}'`;
+    if (isDateValidationResult(result) && result.violation === 'invalidEndYear') {
+        const expected = result.expectedEndYear.toString();
+        const actual = result.currentEndYear
+            ? `${result.currentEndYear} (${result.currentStartYear}-${result.currentEndYear})`
+            : result.currentStartYear.toString();
+        const message = 'Invalid copyright end year';
+        return `${error} ${message}! Expected end year '${expected}' but is '${actual}'`;
     } else if (result.violation === 'noOrMissingHeader') {
-        return `${colors[result.severity]} No or invalid copyright header!`;
+        return `${error} No or invalid copyright header!`;
     }
 
-    return `${colors[result.severity]} OK`;
+    return `${info} OK`;
 }
 
 function fixViolations(rootDir: string, violations: DateValidationResult[], options: HeaderCheckOptions): void {
     LOGGER.newLine();
     violations.forEach((violation, i) => {
         printFileProgress(i + 1, violations.length, `Fix ${violation.file}`, false);
-        const fixedStartYear =
-            violation.currentStartYear < violation.expectedStartYear ? violation.currentStartYear : violation.expectedStartYear;
 
         const currentRange = `${violation.currentStartYear}${violation.currentEndYear ? '-' + violation.currentEndYear : ''}`;
-
-        let fixedRange = `${fixedStartYear}`;
-        if (violation.expectedEndYear !== violation.expectedStartYear || fixedStartYear !== violation.expectedStartYear) {
-            fixedRange = `${fixedStartYear}-${violation.expectedEndYear}`;
-        }
+        const fixedRange =
+            violation.currentEndYear || violation.currentStartYear < violation.expectedEndYear
+                ? `${violation.currentStartYear}-${violation.expectedEndYear}`
+                : `${violation.expectedEndYear}`;
 
         sh.sed('-i', RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`, violation.file);
     });
@@ -337,19 +254,17 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
 // Helper types
 interface ValidationResult {
     file: string;
-    severity: Severity;
     violation: Violation;
 }
 
 interface DateValidationResult extends ValidationResult {
     currentStartYear: number;
-    expectedStartYear: number;
     currentEndYear?: number;
     expectedEndYear: number;
 }
 
 function isDateValidationResult(object: ValidationResult): object is DateValidationResult {
-    return 'currentStartYear' in object && 'expectedStartYear' in object && 'expectedEndYear' in object;
+    return 'currentStartYear' in object && 'expectedEndYear' in object;
 }
 
-type Violation = 'none' | 'noOrMissingHeader' | 'incorrectCopyrightPeriod' | 'invalidCopyrightYear';
+type Violation = 'none' | 'noOrMissingHeader' | 'invalidEndYear';
