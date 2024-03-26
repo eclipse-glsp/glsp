@@ -83,6 +83,22 @@ Options:
   -h, --help                       display help for command
 ```
 
+## updateNext
+
+```console
+$ glsp updateNext -h
+Usage: glsp updateNext|u [options] [rootDir]
+
+Updates all `next` dependencies in GLSP project to the latest version
+
+Arguments:
+  rootDir        The repository root (default: "<cwd>")
+
+Options:
+  -v, --verbose  Enable verbose (debug) log output (default: false)
+  -h, --help     display help for command
+```
+
 ## More information
 
 For more information, please visit the [Eclipse GLSP Umbrella repository](https://github.com/eclipse-glsp/glsp) and the [Eclipse GLSP Website](https://www.eclipse.org/glsp/).
