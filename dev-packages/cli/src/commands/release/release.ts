@@ -77,9 +77,9 @@ export async function release(
     cliOptions: ReleaseCmdOptions
 ): Promise<void> {
     try {
+        configureLogger(cliOptions.verbose);
         LOGGER.debug('Cli options:', cliOptions);
         configureShell({ silent: !cliOptions.verbose });
-        configureLogger(cliOptions.verbose);
         checkGHCli();
         const version = deriveVersion(releaseType, customVersion);
         const options: ReleaseOptions = { ...cliOptions, component, releaseType, version };
