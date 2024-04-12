@@ -20,6 +20,7 @@ import * as jq from 'node-jq';
 import * as path from 'path';
 import * as sh from 'shelljs';
 import { baseCommand, configureShell } from '../util/command-util';
+import { getUncommittedChanges } from '../util/git-util';
 import { LOGGER, configureLogger } from '../util/logger';
 import { validateGitDirectory } from '../util/validation-util';
 export const UpdateNextCommand = baseCommand() //
@@ -32,6 +33,14 @@ export const UpdateNextCommand = baseCommand() //
 
 export async function updateNext(rootDir: string, options: { verbose: boolean }): Promise<void> {
     configureLogger(options.verbose);
+    configureShell({ silent: true, fatal: true });
+
+    const rootPackage = path.join(rootDir, 'package.json');
+    if (getUncommittedChanges(rootDir).includes(rootPackage)) {
+        LOGGER.warn('Uncommitted changes in root `package.json`. Please commit or stash them before running this command.');
+        return;
+    }
+
     configureShell({ silent: false, fatal: true });
 
     LOGGER.info('Updating next dependencies ...');
@@ -39,7 +48,7 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
     const packages = await getWorkspacePackages(rootDir);
     LOGGER.debug(`Scanning ${packages.length} packages to derive resolutions`, packages);
     const resolutions = await getResolutions(packages);
-    if (!resolutions) {
+    if (Object.keys(resolutions).length === 0) {
         LOGGER.info('No next dependencies found');
         return;
     }
@@ -82,7 +91,7 @@ async function getResolutions(packages: string[]): Promise<Record<string, string
     let dependencies: string[] = [];
     for (const pkg of packages) {
         const deps = await jq.run(
-            '.dependencies + .devDependencies + .peerDependencies | with_entries(select(.value == "next")) | keys',
+            '.dependencies //{} + .devDependencies + .peerDependencies | with_entries(select(.value == "next")) | keys',
             pkg,
             {
                 output: 'json'
