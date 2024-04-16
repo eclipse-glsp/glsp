@@ -21,6 +21,7 @@ import * as os from 'os';
 import * as path from 'path';
 import sh from 'shelljs';
 import { baseCommand } from '../util/command-util.js';
+import { LOGGER, configureLogger } from '../util/logger.js';
 import { validateDirectory } from '../util/validation-util.js';
 
 export interface GenerateIndexCmdOptions {
@@ -52,7 +53,8 @@ export async function generateIndices(rootDirs: string[], options: GenerateIndex
 }
 
 export async function generateIndex(rootDir: string, options: GenerateIndexCmdOptions): Promise<void> {
-    verbose(options, 'Run generateIndex for', rootDir, 'with the following options:', options);
+    configureLogger(options.verbose);
+    LOGGER.debug('Run generateIndex for', rootDir, 'with the following options:', options);
     sh.cd(rootDir);
     const cwd = process.cwd();
 
@@ -66,9 +68,9 @@ export async function generateIndex(rootDir: string, options: GenerateIndexCmdOp
         markDirectories: true, // directories have '/' at the end
         ignoreFiles: '**/' + options.ignoreFile // users can add this file in their directories to ignore files for indexing
     };
-    verbose(options, 'Search for children using the following globby options', globbyOptions);
+    LOGGER.debug('Search for children using the following globby options', globbyOptions);
     const files = globbySync(pattern, globbyOptions);
-    verbose(options, 'All children considered in the input directory', files);
+    LOGGER.debug('All children considered in the input directory', files);
 
     const relativeRootDirectory = '';
     if (options.singleIndex) {
@@ -117,22 +119,22 @@ export function writeIndex(directory: string, exports: string[], options: Genera
     const indexFile = path.join(process.cwd(), directory, 'index.ts');
     if (exports.length === 0) {
         if (options.forceOverwrite && fs.existsSync(indexFile)) {
-            console.log('Remove index file', indexFile);
+            LOGGER.info('Remove index file', indexFile);
             fs.rmSync(indexFile);
         }
         return;
     }
     const exists = fs.existsSync(indexFile);
     if (exists && !options.forceOverwrite) {
-        console.log("Do not overwrite existing index file. Use '-f' to force an overwrite.", indexFile);
+        LOGGER.info("Do not overwrite existing index file. Use '-f' to force an overwrite.", indexFile);
         return;
     }
 
-    const headerContent = exists ? extractHeader(fs.readFileSync(indexFile, { encoding: 'utf-8' })) : defaultHeader();
+    const headerContent = exists ? extractReusableContent(fs.readFileSync(indexFile, { encoding: 'utf-8' })) : '';
     const exportContent = exports.map(exported => createExport(directory, exported, options)).sort();
-    const content = [...headerContent, ...exportContent].join(os.EOL) + os.EOL; // end with an empty line
-    console.log((exists ? 'Overwrite' : 'Write') + ' index file', indexFile);
-    verbose(options, () => '  ' + content.split(os.EOL).join(os.EOL + '  '));
+    const content = headerContent + exportContent.join(os.EOL) + os.EOL; // end with an empty line
+    LOGGER.info((exists ? 'Overwrite' : 'Write') + ' index file', indexFile);
+    LOGGER.debug('  ' + content.split(os.EOL).join(os.EOL + '  '));
     fs.writeFileSync(indexFile, content, { flag: 'w' });
 }
 
@@ -146,38 +148,7 @@ export function createExport(directory: string, relativePath: string, options: G
     return exportLine;
 }
 
-export function verbose(options: GenerateIndexCmdOptions, message?: any, ...optionalParams: any[]): void {
-    if (options.verbose) {
-        console.log(typeof message === 'function' ? message() : message, ...optionalParams);
-    }
-}
-
-export function defaultHeader(): string[] {
-    // we do not want to assume any particular header
-    return [];
-}
-
-export function extractHeader(fileContent: string): string[] {
-    // any and all comments before actual content are considered as part of the header
-    const comments: string[] = [];
-    const lines = fileContent.split('\n');
-    let inBlockComment = false;
-
-    for (const line of lines) {
-        if (line.startsWith('//')) {
-            comments.push(line);
-        } else if (line.startsWith('/*')) {
-            comments.push(line);
-            inBlockComment = true;
-        } else if (inBlockComment) {
-            comments.push(line);
-            console.log(line);
-            if (line.endsWith('*/')) {
-                inBlockComment = false;
-            }
-        } else if (!inBlockComment && line.length > 0) {
-            break; // Stop processing once non-comment code is reached
-        }
-    }
-    return comments;
+export function extractReusableContent(fileContent: string): string {
+    // all code before any actual export lines are considered re-usable
+    return fileContent.match(/^(.*?)(?=^export)/ms)?.[0] ?? '';
 }
