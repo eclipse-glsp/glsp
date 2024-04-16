@@ -21,6 +21,7 @@ import * as os from 'os';
 import * as path from 'path';
 import sh from 'shelljs';
 import { baseCommand } from '../util/command-util.js';
+import { validateDirectory } from '../util/validation-util.js';
 
 export interface GenerateIndexCmdOptions {
     singleIndex: boolean;
@@ -35,7 +36,7 @@ export interface GenerateIndexCmdOptions {
 export const GenerateIndex = baseCommand() //
     .name('generateIndex')
     .description('Generate index files in a given source directory.')
-    .argument('<rootDir>', 'The source directory for index generation.')
+    .argument('<rootDir...>', 'The source directory for index generation.')
     .option('-s, --singleIndex', 'Generate a single index file in the source directory instead of indices in each sub-directory', false)
     .option('-f, --forceOverwrite', 'Overwrite existing index files and remove them if there are no entries', false)
     .option('-m, --match [match patterns...]', 'File patterns to consider during indexing', ['**/*.ts', '**/*.tsx'])
@@ -43,10 +44,15 @@ export const GenerateIndex = baseCommand() //
     .addOption(createOption('-s, --style <importStyle>', 'Import Style').choices(['commonjs', 'esm']).default('commonjs'))
     .option('--ignoreFile <ignoreFile>', 'The file that is used to specify patterns that should be ignored during indexing', '.indexignore')
     .option('-v, --verbose', 'Generate verbose output during generation', false)
-    .action(generateIndex);
+    .action(generateIndices);
+
+export async function generateIndices(rootDirs: string[], options: GenerateIndexCmdOptions): Promise<void> {
+    const dirs = rootDirs.map(rootDir => validateDirectory(path.resolve(rootDir)));
+    dirs.forEach(dir => generateIndex(dir, options));
+}
 
 export async function generateIndex(rootDir: string, options: GenerateIndexCmdOptions): Promise<void> {
-    verbose(options, 'Run generateIndex with the following options:', options);
+    verbose(options, 'Run generateIndex for', rootDir, 'with the following options:', options);
     sh.cd(rootDir);
     const cwd = process.cwd();
 
@@ -116,21 +122,21 @@ export function writeIndex(directory: string, exports: string[], options: Genera
         }
         return;
     }
-    if (!fs.existsSync(indexFile) || options.forceOverwrite) {
-        const content = exports
-            .map(exported => createExport(directory, exported, options))
-            .sort()
-            .filter(exportLine => !!exportLine)
-            .join(os.EOL);
-        console.log('Write index file', indexFile);
-        verbose(options, () => '  ' + content.split(os.EOL).join(os.EOL + '  '));
-        fs.writeFileSync(indexFile, content, { flag: 'w' });
-    } else {
+    const exists = fs.existsSync(indexFile);
+    if (exists && !options.forceOverwrite) {
         console.log("Do not overwrite existing index file. Use '-f' to force an overwrite.", indexFile);
+        return;
     }
+
+    const headerContent = exists ? extractHeader(fs.readFileSync(indexFile, { encoding: 'utf-8' })) : defaultHeader();
+    const exportContent = exports.map(exported => createExport(directory, exported, options)).sort();
+    const content = [...headerContent, ...exportContent].join(os.EOL) + os.EOL; // end with an empty line
+    console.log((exists ? 'Overwrite' : 'Write') + ' index file', indexFile);
+    verbose(options, () => '  ' + content.split(os.EOL).join(os.EOL + '  '));
+    fs.writeFileSync(indexFile, content, { flag: 'w' });
 }
 
-export function createExport(directory: string, relativePath: string, options: GenerateIndexCmdOptions): string | undefined {
+export function createExport(directory: string, relativePath: string, options: GenerateIndexCmdOptions): string {
     // remove directory prefix, file extension and directory ending '/'
     const parentPrefix = directory.length;
     const suffix = isFile(relativePath) ? path.extname(relativePath).length : 1;
@@ -144,4 +150,34 @@ export function verbose(options: GenerateIndexCmdOptions, message?: any, ...opti
     if (options.verbose) {
         console.log(typeof message === 'function' ? message() : message, ...optionalParams);
     }
+}
+
+export function defaultHeader(): string[] {
+    // we do not want to assume any particular header
+    return [];
+}
+
+export function extractHeader(fileContent: string): string[] {
+    // any and all comments before actual content are considered as part of the header
+    const comments: string[] = [];
+    const lines = fileContent.split('\n');
+    let inBlockComment = false;
+
+    for (const line of lines) {
+        if (line.startsWith('//')) {
+            comments.push(line);
+        } else if (line.startsWith('/*')) {
+            comments.push(line);
+            inBlockComment = true;
+        } else if (inBlockComment) {
+            comments.push(line);
+            console.log(line);
+            if (line.endsWith('*/')) {
+                inBlockComment = false;
+            }
+        } else if (!inBlockComment && line.length > 0) {
+            break; // Stop processing once non-comment code is reached
+        }
+    }
+    return comments;
 }
