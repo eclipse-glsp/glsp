@@ -23,6 +23,7 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
+  "type": "module",
   "bin": {
     "glsp": "bin/glsp"
   },
@@ -43,6 +44,7 @@
   "dependencies": {
     "commander": "^10.0.1",
     "glob": "^10.3.10",
+    "globby": "13.2.2",
     "node-fetch": "^2.6.11",
     "node-jq": "^4.3.1",
     "readline-sync": "^1.4.10",
