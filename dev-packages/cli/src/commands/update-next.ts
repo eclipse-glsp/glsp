@@ -18,7 +18,7 @@ import * as fs from 'fs';
 import { glob } from 'glob';
 import * as jq from 'node-jq';
 import * as path from 'path';
-import * as sh from 'shelljs';
+import sh from 'shelljs';
 import { baseCommand, configureShell } from '../util/command-util.js';
 import { getUncommittedChanges } from '../util/git-util.js';
 import { LOGGER, configureLogger } from '../util/logger.js';
