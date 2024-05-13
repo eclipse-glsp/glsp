@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2023 EclipseSource and others.
+ * Copyright (c) 2023-2024 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,13 +16,12 @@
 
 import { createOption } from 'commander';
 import * as fs from 'fs';
-import { Options as GlobbyOptions, globbySync } from 'globby';
 import * as os from 'os';
 import * as path from 'path';
 import sh from 'shelljs';
-import { baseCommand } from '../util/command-util.js';
-import { LOGGER, configureLogger } from '../util/logger.js';
-import { validateDirectory } from '../util/validation-util.js';
+import { baseCommand } from '../util/command-util';
+import { LOGGER, configureLogger } from '../util/logger';
+import { validateDirectory } from '../util/validation-util';
 
 export interface GenerateIndexCmdOptions {
     singleIndex: boolean;
@@ -32,6 +31,15 @@ export interface GenerateIndexCmdOptions {
     ignoreFile: string;
     style: 'commonjs' | 'esm';
     verbose: boolean;
+}
+
+// Partial type of the globby imports since we can not use the esm type directly
+interface GlobbyOptions {
+    ignore: string[];
+    cwd: string;
+    onlyFiles: boolean;
+    markDirectories: true;
+    ignoreFiles: string;
 }
 
 export const GenerateIndex = baseCommand() //
@@ -49,10 +57,17 @@ export const GenerateIndex = baseCommand() //
 
 export async function generateIndices(rootDirs: string[], options: GenerateIndexCmdOptions): Promise<void> {
     const dirs = rootDirs.map(rootDir => validateDirectory(path.resolve(rootDir)));
-    dirs.forEach(dir => generateIndex(dir, options));
+    const globby = await import('globby');
+    const ignoreFilter: (pattern: string[], options: GlobbyOptions) => string[] = (pattern, globbyOptions) =>
+        globby.globbySync(pattern, globbyOptions);
+    dirs.forEach(dir => generateIndex(dir, ignoreFilter, options));
 }
 
-export async function generateIndex(rootDir: string, options: GenerateIndexCmdOptions): Promise<void> {
+export async function generateIndex(
+    rootDir: string,
+    ignoreFilter: (pattern: string[], options: GlobbyOptions) => string[],
+    options: GenerateIndexCmdOptions
+): Promise<void> {
     configureLogger(options.verbose);
     LOGGER.debug('Run generateIndex for', rootDir, 'with the following options:', options);
     sh.cd(rootDir);
@@ -69,7 +84,7 @@ export async function generateIndex(rootDir: string, options: GenerateIndexCmdOp
         ignoreFiles: '**/' + options.ignoreFile // users can add this file in their directories to ignore files for indexing
     };
     LOGGER.debug('Search for children using the following globby options', globbyOptions);
-    const files = globbySync(pattern, globbyOptions);
+    const files = ignoreFilter(pattern, globbyOptions);
     LOGGER.debug('All children considered in the input directory', files);
 
     const relativeRootDirectory = '';

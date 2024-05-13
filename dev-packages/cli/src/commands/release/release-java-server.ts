@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2024 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,9 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util.js';
-import { LOGGER } from '../../util/logger.js';
-import { ReleaseOptions, asMvnVersion, checkoutAndCd, commitAndTag, publish } from './common.js';
+import { fatalExec, getShellConfig } from '../../util/command-util';
+import { LOGGER } from '../../util/logger';
+import { ReleaseOptions, asMvnVersion, checkoutAndCd, commitAndTag, publish } from './common';
 
 let REPO_ROOT: string;
 

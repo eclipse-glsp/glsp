@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2024 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,9 +17,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sh from 'shelljs';
-import { baseCommand, fatalExec, getShellConfig } from '../util/command-util.js';
-import { LOGGER } from '../util/logger.js';
-import { validateDirectory } from '../util/validation-util.js';
+import { baseCommand, fatalExec, getShellConfig } from '../util/command-util';
+import { LOGGER } from '../util/logger';
+import { validateDirectory } from '../util/validation-util';
 
 export interface CoverageCmdOptions {
     coverageScript: string;

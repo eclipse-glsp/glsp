@@ -23,7 +23,6 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "type": "module",
   "bin": {
     "glsp": "bin/glsp"
   },

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2024 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,8 +17,8 @@ import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import * as semver from 'semver';
-import { getGitRoot, isGitRepository } from './git-util.js';
-import { LOGGER } from './logger.js';
+import { getGitRoot, isGitRepository } from './git-util';
+import { LOGGER } from './logger';
 
 export function validateDirectory(rootDir: string): string {
     const path = resolve(rootDir);

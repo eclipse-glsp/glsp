@@ -19,10 +19,10 @@ import { glob } from 'glob';
 import * as jq from 'node-jq';
 import * as path from 'path';
 import sh from 'shelljs';
-import { baseCommand, configureShell } from '../util/command-util.js';
-import { getUncommittedChanges } from '../util/git-util.js';
-import { LOGGER, configureLogger } from '../util/logger.js';
-import { validateGitDirectory } from '../util/validation-util.js';
+import { baseCommand, configureShell } from '../util/command-util';
+import { getUncommittedChanges } from '../util/git-util';
+import { LOGGER, configureLogger } from '../util/logger';
+import { validateGitDirectory } from '../util/validation-util';
 
 export const UpdateNextCommand = baseCommand()
     .name('updateNext')
