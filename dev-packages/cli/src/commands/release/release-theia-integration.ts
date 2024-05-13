@@ -15,7 +15,7 @@
  ********************************************************************************/
 
 import sh from 'shelljs';
-import { LOGGER } from '../../util/logger.js';
+import { LOGGER } from '../../util/logger';
 import {
     checkoutAndCd,
     commitAndTag,

@@ -20,10 +20,10 @@ import { resolve } from 'path';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util.js';
-import { getLatestGithubRelease, getLatestTag, hasGitChanges, isGitRepository } from '../../util/git-util.js';
-import { LOGGER } from '../../util/logger.js';
-import { validateVersion } from '../../util/validation-util.js';
+import { fatalExec, getShellConfig } from '../../util/command-util';
+import { getLatestGithubRelease, getLatestTag, hasGitChanges, isGitRepository } from '../../util/git-util';
+import { LOGGER } from '../../util/logger';
+import { validateVersion } from '../../util/validation-util';
 
 export const VERDACCIO_REGISTRY = 'http://localhost:4873/';
 

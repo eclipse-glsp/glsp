@@ -20,9 +20,9 @@ import { createInterface } from 'readline';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
 import sh from 'shelljs';
-import { baseCommand, configureShell, fatalExec, getShellConfig } from '../../util/command-util.js';
-import { LOGGER, configureLogger } from '../../util/logger.js';
-import { validateDirectory, validateVersion } from '../../util/validation-util.js';
+import { baseCommand, configureShell, fatalExec, getShellConfig } from '../../util/command-util';
+import { LOGGER, configureLogger } from '../../util/logger';
+import { validateDirectory, validateVersion } from '../../util/validation-util';
 import {
     Component,
     ReleaseOptions,
@@ -32,12 +32,12 @@ import {
     checkIfMavenVersionExists,
     checkIfNpmVersionIsNew
 } from './common.js';
-import { releaseClient } from './release-client.js';
-import { releaseEclipseIntegration } from './release-eclipse-integration.js';
-import { releaseJavaServer } from './release-java-server.js';
-import { releaseServerNode } from './release-server-node.js';
-import { releaseTheiaIntegration } from './release-theia-integration.js';
-import { releaseVscodeIntegration } from './release-vscode-integration.js';
+import { releaseClient } from './release-client';
+import { releaseEclipseIntegration } from './release-eclipse-integration';
+import { releaseJavaServer } from './release-java-server';
+import { releaseServerNode } from './release-server-node';
+import { releaseTheiaIntegration } from './release-theia-integration';
+import { releaseVscodeIntegration } from './release-vscode-integration';
 
 interface ReleaseCmdOptions {
     checkoutDir: string;

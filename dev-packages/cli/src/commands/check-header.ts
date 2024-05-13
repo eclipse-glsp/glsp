@@ -20,12 +20,12 @@ import { glob } from 'glob';
 import * as minimatch from 'minimatch';
 import * as readline from 'readline-sync';
 import sh from 'shelljs';
-import { baseCommand, configureShell, getShellConfig } from '../util/command-util.js';
-import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util.js';
+import { baseCommand, configureShell, getShellConfig } from '../util/command-util';
+import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util';
 
 import * as path from 'path';
-import { LOGGER } from '../util/logger.js';
-import { validateGitDirectory } from '../util/validation-util.js';
+import { LOGGER } from '../util/logger';
+import { validateGitDirectory } from '../util/validation-util';
 
 export interface HeaderCheckOptions {
     type: CheckType;

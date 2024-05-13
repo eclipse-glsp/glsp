@@ -14,12 +14,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { CheckHeaderCommand } from './commands/check-header.js';
-import { CoverageReportCommand } from './commands/coverage-report.js';
-import { GenerateIndex } from './commands/generate-index.js';
-import { ReleaseCommand } from './commands/release/release.js';
-import { UpdateNextCommand } from './commands/update-next.js';
-import { baseCommand } from './util/command-util.js';
+import { CheckHeaderCommand } from './commands/check-header';
+import { CoverageReportCommand } from './commands/coverage-report';
+import { GenerateIndex } from './commands/generate-index';
+import { ReleaseCommand } from './commands/release/release';
+import { UpdateNextCommand } from './commands/update-next';
+import { baseCommand } from './util/command-util';
 
 export const COMMAND_VERSION = '1.1.0-next';
 

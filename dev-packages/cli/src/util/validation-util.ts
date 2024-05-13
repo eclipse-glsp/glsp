@@ -17,8 +17,8 @@ import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import * as semver from 'semver';
-import { getGitRoot, isGitRepository } from './git-util.js';
-import { LOGGER } from './logger.js';
+import { getGitRoot, isGitRepository } from './git-util';
+import { LOGGER } from './logger';
 
 export function validateDirectory(rootDir: string): string {
     const path = resolve(rootDir);
