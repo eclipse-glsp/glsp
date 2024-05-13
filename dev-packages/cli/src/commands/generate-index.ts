@@ -58,7 +58,8 @@ export const GenerateIndex = baseCommand() //
 export async function generateIndices(rootDirs: string[], options: GenerateIndexCmdOptions): Promise<void> {
     const dirs = rootDirs.map(rootDir => validateDirectory(path.resolve(rootDir)));
     const globby = await import('globby');
-    const ignoreFilter = (pattern: string[], options: GlobbyOptions) => globby.globbySync(pattern, options);
+    const ignoreFilter: (pattern: string[], options: GlobbyOptions) => string[] = (pattern, globbyOptions) =>
+        globby.globbySync(pattern, globbyOptions);
     dirs.forEach(dir => generateIndex(dir, ignoreFilter, options));
 }
 
