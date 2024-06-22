@@ -36,7 +36,6 @@
     "clean": "rimraf lib tsconfig.tsbuildinfo",
     "lint": "eslint --ext .ts,.tsx ./src",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
-    "prepare": "yarn clean && yarn build ",
     "start": "node --enable-source-maps lib/app.js",
     "watch": "tsc -w"
   },
