@@ -105,7 +105,7 @@ pipeline {
         success {
             // Record & publish ESLint issues
             recordIssues enabledForFailure: true, publishAllIssues: true, aggregatingResults: true, 
-            tools: [esLint(pattern: 'node_modules/**/*/eslint.xml')], 
+            tools: [esLint(pattern: './eslint.xml')], 
             qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
         }
         failure {
