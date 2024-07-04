@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/mocha-config",
-  "version": "2.2.0-next",
+  "version": "2.2.0",
   "description": "Shared Mocha test configuration for GLSP projects",
   "keywords": [
     "eclipse",
