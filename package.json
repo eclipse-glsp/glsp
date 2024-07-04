@@ -1,6 +1,6 @@
 {
   "name": "parent",
-  "version": "2.2.0-next",
+  "version": "2.2.0",
   "private": true,
   "workspaces": [
     "dev-packages/*"
@@ -18,7 +18,7 @@
     "prepare": "yarn build",
     "publish:latest": "lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-reset --no-git-tag-version --no-push --ignore-scripts --yes",
-    "publish:prepare": "lerna version --ignore-scripts --yes --no-push",
+    "publish:prepare": "lerna version --ignore-scripts --yes --no-push --exact --no-git-tag-version",
     "start:cli": " yarn --cwd dev-packages/cli start",
     "watch": "tsc -b -w --preserveWatchOutput"
   },

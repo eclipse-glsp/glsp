@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/eslint-config",
-  "version": "2.2.0-next",
+  "version": "2.2.0",
   "description": "Shared ESLint configuration for GLSP projects",
   "keywords": [
     "eclipse",
