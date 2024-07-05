@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/config",
-  "version": "2.2.0",
+  "version": "2.2.0-next",
   "description": "Meta package that provides Typescript, eslint and prettier configurations and common dev dependencies for GLSP projects",
   "keywords": [
     "eclipse",
@@ -24,9 +24,9 @@
     }
   ],
   "dependencies": {
-    "@eclipse-glsp/eslint-config": "2.2.0",
-    "@eclipse-glsp/prettier-config": "2.2.0",
-    "@eclipse-glsp/ts-config": "2.2.0",
+    "@eclipse-glsp/eslint-config": "2.2.0-next",
+    "@eclipse-glsp/prettier-config": "2.2.0-next",
+    "@eclipse-glsp/ts-config": "2.2.0-next",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
     "@typescript-eslint/parser": "^6.7.5",
     "eslint": "^8.51.0",
