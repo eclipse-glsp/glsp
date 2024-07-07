@@ -31,7 +31,7 @@ import {
     asMvnVersion,
     checkIfMavenVersionExists,
     checkIfNpmVersionIsNew
-} from './common.js';
+} from './common';
 import { releaseClient } from './release-client';
 import { releaseEclipseIntegration } from './release-eclipse-integration';
 import { releaseJavaServer } from './release-java-server';

@@ -25,7 +25,7 @@ import {
     updateLernaForDryRun,
     updateVersion,
     yarnInstall
-} from './common.js';
+} from './common';
 
 let REPO_ROOT: string;
 

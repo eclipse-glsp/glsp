@@ -7,10 +7,11 @@
   ],
   "scripts": {
     "all": "yarn install && yarn lint",
-    "build": "yarn compile",
+    "build": "yarn compile && yarn cli bundle",
     "check:headers": "yarn start:cli checkHeaders . -t lastCommit",
     "check:pr": "yarn all && yarn check:headers",
     "clean": "lerna run clean",
+    "cli": " yarn --cwd dev-packages/cli",
     "compile": "tsc -b",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
@@ -19,8 +20,7 @@
     "publish:latest": "lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-reset --no-git-tag-version --no-push --ignore-scripts --yes",
     "publish:prepare": "lerna version --ignore-scripts --yes --no-push",
-    "start:cli": " yarn --cwd dev-packages/cli start",
-    "watch": "tsc -b -w --preserveWatchOutput"
+    "watch": "concurrently --kill-others -n tsc,bundle -c red,yellow \"tsc -b -w --preserveWatchOutput\" \"yarn -s cli watch\""
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -31,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
     "chai": "^4.3.7",
+    "concurrently": "^8.2.2",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-chai-friendly": "^0.7.2",

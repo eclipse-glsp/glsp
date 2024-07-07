@@ -21,9 +21,9 @@
     "resolveJsonModule": true,
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "target": "ES2017",
+    "target": "ES2019",
     "jsx": "react",
-    "lib": ["ES2017", "dom"],
+    "lib": ["ES2019", "Dom"],
     "sourceMap": true,
     "types": ["node", "reflect-metadata"]
   }
