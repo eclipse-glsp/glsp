@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/nyc-config",
-  "version": "2.2.1",
+  "version": "2.3.0-next",
   "description": "Shared nyc configuration for GLSP projects",
   "keywords": [
     "eclipse",

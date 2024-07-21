@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/cli",
-  "version": "2.2.1",
+  "version": "2.3.0-next",
   "description": "CLI Tooling & scripts for GLSP components",
   "keywords": [
     "eclipse",
@@ -50,7 +50,7 @@
     "shelljs": "^0.8.5"
   },
   "devDependencies": {
-    "@eclipse-glsp/config": "2.2.1",
+    "@eclipse-glsp/config": "2.3.0-next",
     "@types/glob": "^8.1.0",
     "@types/node-fetch": "^2.6.6",
     "@types/readline-sync": "^1.4.5",
