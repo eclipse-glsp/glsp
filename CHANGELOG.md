@@ -1,6 +1,24 @@
 # Eclipse GLSP Dev Packages Changelog
 
-## 2.0.0 - 13/10/2023
+## 2.3.0 - active
+
+### Changes
+
+### Potentially Breaking Changes
+
+## [2.2.1 - 22/07/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.2.1)
+
+### Changes
+
+-   [cli] Contribute the `generateIndex` command to the GLSP CLI. Allows autogeneration of index files in GLSP projects. [#1197](https://github.com/eclipse-glsp/glsp/pull/1197)
+-   [cli] Fix version updating of example servers in `release` CLI command. [#1226](https://github.com/eclipse-glsp/glsp/pull/1226)
+-   [cli] Refactor and simplify `checkHeader` CLI command. Focus on end year copyright header validation and remove the error-prone validation of the start year. [#1289](https://github.com/eclipse-glsp/glsp/pull/1289)
+-   [cli] Contribute the `updateNext` command to the GLSP CLI tool. Allows updating of all dependencies in GLSP projects that are tagged with `next´. [1229](https://github.com/eclipse-glsp/glsp/pull/1299)
+-   [ts-config] Update ts target to `ES2019` [#1372](https://github.com/eclipse-glsp/glsp/pull/1372)
+
+## [2.0.0 - 13/10/2023](https://github.com/eclipse-glsp/glsp/releases/tag/v2.0.0)
+
+### Changes
 
 -   [config] Update all dependencies & peerDependencies of the dev to the latest version [#1136](https://github.com/eclipse-glsp/glsp/pull/1136)
 -   [protocol] Removed `Protocol.MD` file. [#892](https://github.com/eclipse-glsp/glsp/pull/982)
