@@ -31,8 +31,8 @@
   ],
   "peerDependencies": {
     "ignore-styles": "^5.0.1",
-    "mocha": "^11.0.1",
-    "reflect-metadata": "^0.2.2"
+    "mocha": "^10.2.0",
+    "reflect-metadata": "^0.1.13"
   },
   "publishConfig": {
     "access": "public"
