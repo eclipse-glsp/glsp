@@ -27,7 +27,7 @@
   "main": "index.json",
   "peerDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "nyc": "15.1.0"
+    "nyc": "17.1.0"
   },
   "publishConfig": {
     "access": "public"
