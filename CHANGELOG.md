@@ -1,10 +1,10 @@
 # Eclipse GLSP Dev Packages Changelog
 
-## 2.3.0 - active
+## [2.3.0 - 19/12/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.3.0)
 
 ### Changes
 
-### Potentially Breaking Changes
+-   [node] Dropped support for node 16 & update minimum requirements for Node to >=18.x [#1457](https://github.com/eclipse-glsp/glsp/pull/1457)
 
 ## [2.2.1 - 22/07/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.2.1)
 
@@ -47,6 +47,6 @@ Inception of the GLSP dev packages.
 This project is part of the GLSP umbrella repository and provides common shared development packages for Eclipse GLSP components that are implemented with Typescript.
 
 -   [`@eclipse-glsp/config`](https://www.npmjs.com/package/@eclipse-glsp/config): Meta package for shared build configuration
-    -   [`@eclipse-glsp/ts-config`](https://www.npmjs.com/package/@eclipse-glsp/ts-config): Shared Typescript configuration for GLSP projects
-    -   [`@eclipse-glsp/eslint-config`](https://www.npmjs.com/package/@eclipse-glsp/esling-config): Shared ESLint configuration for GLSP projects
-    -   [`@eclipse-glsp/prettier-config`](https://www.npmjs.com/package/@eclipse-glsp/prettier-config): Shared Prettier configuration for GLSP projects
+-   [`@eclipse-glsp/ts-config`](https://www.npmjs.com/package/@eclipse-glsp/ts-config): Shared Typescript configuration for GLSP projects
+-   [`@eclipse-glsp/eslint-config`](https://www.npmjs.com/package/@eclipse-glsp/esling-config): Shared ESLint configuration for GLSP projects
+-   [`@eclipse-glsp/prettier-config`](https://www.npmjs.com/package/@eclipse-glsp/prettier-config): Shared Prettier configuration for GLSP projects
