@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/prettier-config",
-  "version": "2.4.0",
+  "version": "2.5.0-next",
   "description": "Shared Prettier configuration for GLSP projects",
   "keywords": [
     "eclipse",
