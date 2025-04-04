@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2024 EclipseSource and others.
+ * Copyright (c) 2024-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -18,12 +18,11 @@ import * as fs from 'fs';
 import { glob } from 'glob';
 import * as jq from 'node-jq';
 import * as path from 'path';
-import sh from 'shelljs';
-import { baseCommand, configureShell } from '../util/command-util';
+import { baseCommand } from '../util/command-util';
 import { getUncommittedChanges } from '../util/git-util';
 import { LOGGER, configureLogger } from '../util/logger';
+import * as sh from '../util/shell-util';
 import { validateGitDirectory } from '../util/validation-util';
-
 export const UpdateNextCommand = baseCommand()
     .name('updateNext')
     .alias('u')
@@ -34,7 +33,6 @@ export const UpdateNextCommand = baseCommand()
 
 export async function updateNext(rootDir: string, options: { verbose: boolean }): Promise<void> {
     configureLogger(options.verbose);
-    configureShell({ silent: true, fatal: true });
 
     const rootPackage = path.join(rootDir, 'package.json');
     if (getUncommittedChanges(rootDir).includes(rootPackage)) {
@@ -42,7 +40,7 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
         return;
     }
 
-    configureShell({ silent: false, fatal: true });
+    sh.setExecConfig({ silent: false, fatal: true });
 
     LOGGER.info('Updating next dependencies ...');
     rootDir = path.resolve(rootDir);
@@ -108,7 +106,7 @@ async function getResolutions(packages: string[]): Promise<Record<string, string
     const resolutions: Record<string, string> = {};
     [...new Set(dependencies)].forEach(dep => {
         LOGGER.info(`Retrieving next version for ${dep}`);
-        const version = sh.exec(`npm view ${dep}@next version`, { silent: true }).stdout.trim();
+        const version = sh.exec(`npm view ${dep}@next version`, { silent: true });
         resolutions[`**/${dep}`] = version;
     });
     return resolutions;

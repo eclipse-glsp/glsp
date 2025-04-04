@@ -14,18 +14,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import sh from 'shelljs';
 import { LOGGER } from '../../util/logger';
+import * as sh from '../../util/shell-util';
 import {
+    checkIfNpmVersionIsNew,
     checkoutAndCd,
     commitAndTag,
     lernaSetVersion,
     publish,
     ReleaseOptions,
-    updateLernaForDryRun,
     updateVersion,
     yarnInstall
-} from './common.js';
+} from './common';
 
 let REPO_ROOT: string;
 
@@ -37,11 +37,12 @@ export async function releaseServerNode(options: ReleaseOptions): Promise<void> 
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
-    if (options.npmDryRun) {
-        updateLernaForDryRun();
-    }
     commitAndTag(options.version, REPO_ROOT);
     publish(REPO_ROOT, options);
+}
+
+async function checkPreconditions(options: ReleaseOptions): Promise<void> {
+    await checkIfNpmVersionIsNew('@eclipse-glsp/server-node', options.version);
 }
 
 function updateExternalGLSPDependencies(version: string): void {

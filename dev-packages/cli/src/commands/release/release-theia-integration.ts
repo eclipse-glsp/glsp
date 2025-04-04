@@ -14,18 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import sh from 'shelljs';
 import { LOGGER } from '../../util/logger';
-import {
-    checkoutAndCd,
-    commitAndTag,
-    lernaSetVersion,
-    publish,
-    ReleaseOptions,
-    updateLernaForDryRun,
-    updateVersion,
-    yarnInstall
-} from './common.js';
+import * as sh from '../../util/shell-util';
+import { checkoutAndCd, commitAndTag, lernaSetVersion, publish, ReleaseOptions, updateVersion, yarnInstall } from './common.js';
 
 let REPO_ROOT: string;
 
@@ -37,9 +28,6 @@ export async function releaseTheiaIntegration(options: ReleaseOptions): Promise<
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
-    if (options.npmDryRun) {
-        updateLernaForDryRun();
-    }
     commitAndTag(options.version, REPO_ROOT);
     publish(REPO_ROOT, options);
 }

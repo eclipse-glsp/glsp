@@ -16,22 +16,13 @@
 import { ChildProcess } from 'child_process';
 import { Argument } from 'commander';
 import { exit } from 'process';
-import { createInterface } from 'readline';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
-import sh from 'shelljs';
-import { baseCommand, configureShell, fatalExec, getShellConfig } from '../../util/command-util';
+import { baseCommand } from '../../util/command-util';
 import { LOGGER, configureLogger } from '../../util/logger';
+import * as sh from '../../util/shell-util';
 import { validateDirectory, validateVersion } from '../../util/validation-util';
-import {
-    Component,
-    ReleaseOptions,
-    ReleaseType,
-    VERDACCIO_REGISTRY,
-    asMvnVersion,
-    checkIfMavenVersionExists,
-    checkIfNpmVersionIsNew
-} from './common.js';
+import { Component, ReleaseOptions, ReleaseType, checkIfNpmVersionIsNew } from './common.js';
 import { releaseClient } from './release-client';
 import { releaseEclipseIntegration } from './release-eclipse-integration';
 import { releaseJavaServer } from './release-java-server';
@@ -44,7 +35,6 @@ interface ReleaseCmdOptions {
     branch: string;
     force: boolean;
     publish: boolean;
-    npmDryRun: boolean;
     draft: boolean;
     verbose: boolean;
 }
@@ -68,7 +58,7 @@ export const ReleaseCommand = baseCommand()
     )
     .action(release);
 
-let verdaccioChildProcess: ChildProcess | undefined = undefined;
+const verdaccioChildProcess: ChildProcess | undefined = undefined;
 
 export async function release(
     component: Component,
@@ -79,16 +69,12 @@ export async function release(
     try {
         configureLogger(cliOptions.verbose);
         LOGGER.debug('Cli options:', cliOptions);
-        configureShell({ silent: !cliOptions.verbose });
+        sh.setExecConfig({ silent: !cliOptions.verbose });
         checkGHCli();
         const version = deriveVersion(releaseType, customVersion);
         const options: ReleaseOptions = { ...cliOptions, component, releaseType, version };
-        if (cliOptions.npmDryRun && options.component.releaseRepo === 'npm') {
-            await launchVerdaccio().catch(error => LOGGER.error('Error occurred during verdaccio launch', error));
-        }
         switch (component.type) {
             case 'server-java':
-                checkIfMavenVersionExists('org.eclipse.glsp', 'org.eclipse.glsp.server', asMvnVersion(version));
                 return releaseJavaServer(options);
             case 'server-node':
                 await checkIfNpmVersionIsNew('@eclipse-glsp/server-node', version);
@@ -118,47 +104,8 @@ export async function release(
 
 function checkGHCli(): void {
     LOGGER.debug('Verify that Github CLI is configured correctly');
-    if (!isGithubCLIAuthenticated()) {
-        throw new Error("Github CLI is not configured properly. No user is logged in for host 'github.com'");
-    }
-}
-
-function isGithubCLIAuthenticated(): boolean {
-    LOGGER.debug('Verify that Github CLI is installed');
-    fatalExec('which gh', 'Github CLI is not installed!');
-
-    const status = sh.exec('gh auth status', getShellConfig());
-    if (status.code !== 0) {
-        if (status.stderr.includes('You are not logged into any GitHub hosts')) {
-            return false;
-        }
-        throw new Error(status.stderr);
-    }
-    if (!status.stdout.trim().includes('Logged in to github.com')) {
-        LOGGER.debug("No user is logged in for host 'github.com'");
-        return false;
-    }
-    LOGGER.debug('Github CLI is authenticated and ready to use');
-    return true;
-}
-
-function launchVerdaccio(): Promise<void> {
-    LOGGER.debug('Verify that verdaccio is installed and start if necessary');
-    fatalExec('which verdaccio', 'Verdaccio is not installed!');
-    // Check if verdaccio is alreaddy running
-    const result = sh.exec(`curl -i ${VERDACCIO_REGISTRY}`, getShellConfig());
-    if (result.code !== 0) {
-        LOGGER.info('Starting local verdaccio registry');
-        verdaccioChildProcess = sh.exec('verdaccio', { async: true, silent: true });
-        return new Promise(resolve => {
-            createInterface(verdaccioChildProcess!.stdout!).on('line', line => {
-                if (line.includes(`http address - ${VERDACCIO_REGISTRY}`)) {
-                    resolve();
-                }
-            });
-        });
-    }
-    return Promise.resolve();
+    sh.exec('which gh', { silent: true, errorMsg: 'Github CLI (gh) is not installed!' });
+    sh.exec('gh auth status', { silent: true, errorMsg: 'You are not logged into any GitHub hosts.' });
 }
 
 function deriveVersion(releaseType: ReleaseType, customVersion?: string): string {
@@ -180,7 +127,7 @@ const REFERENCE_NPM_PACKAGE = '@eclipse-glsp/ide';
 function getRCVersion(): string {
     LOGGER.debug('Retrieve and new RC version');
     const newBaseVersion = semverInc('minor');
-    const currentRcVersion = sh.exec(`npm view ${REFERENCE_NPM_PACKAGE} dist-tags.rc`, getShellConfig()).stdout.trim();
+    const currentRcVersion = sh.exec(`npm view ${REFERENCE_NPM_PACKAGE} dist-tags.rc`).trim();
     const currentRcBaseVersion = currentRcVersion.split('-')[0];
     if (currentRcBaseVersion !== newBaseVersion) {
         return `${newBaseVersion}-RC01`;
@@ -200,7 +147,7 @@ function getCustomVersion(customVersion?: string): string {
 
 function getCurrentVersion(): string {
     LOGGER.debug('Retrieve base version by querying the latest tag of the reference npm package');
-    const version = sh.exec(`npm view ${REFERENCE_NPM_PACKAGE} dist-tags.latest`, getShellConfig()).stdout.trim();
+    const version = sh.exec(`npm view ${REFERENCE_NPM_PACKAGE} dist-tags.latest`).trim();
     return validateVersion(version);
 }
 

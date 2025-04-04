@@ -14,9 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util';
 import { LOGGER } from '../../util/logger';
+import * as sh from '../../util/shell-util';
 import {
     ReleaseOptions,
     ReleaseType,
@@ -26,7 +25,6 @@ import {
     commitAndTag,
     lernaSetVersion,
     publish,
-    updateLernaForDryRun,
     updateVersion,
     yarnInstall
 } from './common.js';
@@ -52,9 +50,6 @@ function prepareClient(options: ReleaseOptions): void {
     updateExternalGLSPDependencies(options.version);
     lernaSetVersion(`${REPO_ROOT}/client`, options.version);
     buildClient();
-    if (options.npmDryRun) {
-        updateLernaForDryRun();
-    }
 }
 
 function updateExternalGLSPDependencies(version: string): void {
@@ -84,14 +79,14 @@ function setServerVersion(version: string): void {
     LOGGER.info(`Set pom version to ${version}`);
     sh.cd(`${REPO_ROOT}/server`);
     // Execute tycho-versions plugin
-    fatalExec(`mvn tycho-versions:set-version -DnewVersion=${version}`, 'Mvn set-versions failed', getShellConfig({ silent: false }));
+    sh.exec(`mvn tycho-versions:set-version -DnewVersion=${version}`, { silent: false, errorMsg: 'Mvn set-versions failed' });
     LOGGER.debug('Version update complete!');
 }
 
 function buildServer(): void {
     sh.cd(`${REPO_ROOT}/server`);
     LOGGER.info('Build Server(P2)');
-    fatalExec('mvn clean install', 'P2 build failed', getShellConfig({ silent: false }));
+    sh.exec('mvn clean install', { silent: false, errorMsg: 'P2 build failed' });
 }
 function updateTarget(mvnVersion: string, releaseType: ReleaseType): void {
     const p2SubLocation = releaseType === 'rc' ? 'staging' : 'releases';
@@ -99,15 +94,11 @@ function updateTarget(mvnVersion: string, releaseType: ReleaseType): void {
     LOGGER.info(`Update glsp server p2 repository to ${p2Location}`);
     sh.cd(`${REPO_ROOT}/server/releng/org.eclipse.glsp.ide.releng.target`);
     LOGGER.debug('Update r2021-03.tpd file');
-    sh.exec(
-        `sed -i 's_location "https://download.eclipse.org/glsp/server/p2/.*"_location "${p2Location}"_' r2021-03.tpd`,
-        getShellConfig()
-    );
+    sh.exec(`sed -i 's_location "https://download.eclipse.org/glsp/server/p2/.*"_location "${p2Location}"_' r2021-03.tpd`);
     LOGGER.debug('Update r2021-03.target file');
     sh.exec(
         // eslint-disable-next-line max-len
-        `sed -i 's_      <repository location="https://download.eclipse.org/glsp/server/p2/.*"_      <repository location="${p2Location}"_g' r2021-03.target`,
-        getShellConfig()
+        `sed -i 's_      <repository location="https://download.eclipse.org/glsp/server/p2/.*"_      <repository location="${p2Location}"_g' r2021-03.target`
     );
     LOGGER.debug('Target update successful');
 }

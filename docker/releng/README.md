@@ -1,14 +1,14 @@
 # GLSP Releng Docker file
 
 The releng Docker file is based on [eclipseglsp/ci:uitest](../docker/ci/uitest/Dockerfile).
-It has the local version of the [@eclipse-glsp/cli](../dev-packages/cli/) package preinstalled and ships with all libraries and tools need for the CLI application.
+It has the local version of the [@eclipse-glsp/releng](../dev-packages/releng/) package preinstalled and ships with all libraries and tools need for the CLI application.
 
 # Build the docker file
 
 To build the docker file execute the following command from the repository root:
 
 ```bash
-docker build -f releng/Dockerfile -t eclipseglsp/releng ./
+docker build -f docker/releng/Dockerfile -t eclipseglsp/releng ./
 ```
 
 # Start the container
@@ -25,4 +25,4 @@ For consecutive starts you can simply start the previously created releng-contai
 docker container start releng-container -i
 ```
 
-The GLSP CLI is preinstalled and executed with the `glsp` command.
+The GLSP Releng CLI is preinstalled and executed with the `glsp-releng` command.

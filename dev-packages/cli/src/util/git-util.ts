@@ -15,22 +15,15 @@
  ********************************************************************************/
 
 import { resolve } from 'path';
-import sh from 'shelljs';
-import { getShellConfig } from './command-util';
+import * as sh from './shell-util';
 
 export function isGitRepository(path?: string): boolean {
-    cdIfPresent(path);
-    const isGitRepo =
-        sh
-            .exec('git rev-parse --is-inside-work-tree', getShellConfig({ silent: true }))
-            .stdout.trim()
-            .toLocaleLowerCase() === 'true';
+    const isGitRepo = sh.exec('git rev-parse --is-inside-work-tree', { silent: true, cwd: path }).toLocaleLowerCase() === 'true';
     return isGitRepo;
 }
 
 export function getGitRoot(path?: string): string {
-    cdIfPresent(path);
-    const fileString = sh.exec('git rev-parse --show-toplevel', getShellConfig()).stdout.trim();
+    const fileString = sh.exec('git rev-parse --show-toplevel', { cwd: path });
     return resolve(fileString);
 }
 
@@ -43,10 +36,8 @@ export function hasGitChanges(path?: string): boolean {
  * Filepaths are absolute.
  */
 export function getUncommittedChanges(path?: string): string[] {
-    cdIfPresent(path);
     return sh
-        .exec('git status --porcelain', getShellConfig())
-        .stdout.trim()
+        .exec('git status --porcelain', { cwd: path })
         .split('\n')
         .filter(value => value.trim().length !== 0)
         .map(fileInfo =>
@@ -60,10 +51,8 @@ export function getUncommittedChanges(path?: string): string[] {
  * Filepaths are absolute.
  */
 export function getChangesOfLastCommit(path?: string): string[] {
-    cdIfPresent(path);
     return sh
-        .exec('git diff --name-only HEAD^', getShellConfig())
-        .stdout.trim()
+        .exec('git diff --name-only HEAD^', { cwd: path })
         .split('\n')
         .map(file => resolve(path ?? process.cwd(), file));
 }
@@ -76,48 +65,37 @@ export function getChangesOfLastCommit(path?: string): string[] {
  * @returns The date or undefined if the file is outside of the git repo.
  */
 export function getLastModificationDate(filePath?: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
-    cdIfPresent(repoRoot);
     const additionalArgs = excludeMessage ? `--grep="${excludeMessage}" --invert-grep` : '';
-    const result = sh.exec(`git log -1 ${additionalArgs} --pretty="format:%ci" ${filePath ?? ''}`, getShellConfig());
-    if (result.code !== 0) {
+    try {
+        const result = sh.exec(`git log -1 ${additionalArgs} --pretty="format:%ci" ${filePath ?? ''}`, { cwd: repoRoot });
+        return new Date(result);
+    } catch {
         return undefined;
     }
-    return new Date(result.stdout.trim());
 }
 
 export function getFilesOfCommit(commitHash: string, repoRoot?: string): string[] {
-    cdIfPresent(repoRoot);
-    const result = sh.exec(`git show --pretty="" --name-only ${commitHash}`, getShellConfig());
-    if (result.code !== 0) {
+    try {
+        const result = sh.exec(`git show --pretty="" --name-only ${commitHash}`, { cwd: repoRoot });
+        return result.split('\n');
+    } catch {
         return [];
     }
-
-    return result.stdout.trim().split('\n');
 }
 
 export function getLatestGithubRelease(path?: string): string {
-    cdIfPresent(path);
-    const release = sh.exec('gh release list --exclude-drafts -L 1', getShellConfig()).stdout.trim().split('\t');
+    const release = sh.exec('gh release list --exclude-drafts -L 1', { cwd: path }).split('\t');
     return release[release.length - 2];
 }
 
 export function getLatestTag(path?: string): string {
-    cdIfPresent(path);
-    return sh.exec('git describe --abbrev=0 --tags', getShellConfig()).stdout.trim();
+    return sh.exec('git describe --abbrev=0 --tags', { cwd: path });
 }
 
 export function hasBranch(branch: string, path?: string): boolean {
-    cdIfPresent(path);
-    return sh.exec(`git branch --list ${branch}`, getShellConfig()).stdout.trim().length !== 0;
+    return sh.exec(`git branch --list ${branch}`, { cwd: path }).length !== 0;
 }
 
 export function getRemoteUrl(path?: string): string {
-    cdIfPresent(path);
-    return sh.exec('git config --get remote.origin.url', getShellConfig()).stdout.trim();
-}
-
-function cdIfPresent(path?: string): void {
-    if (path) {
-        sh.cd(path);
-    }
+    return sh.exec('git config --get remote.origin.url', { cwd: path });
 }

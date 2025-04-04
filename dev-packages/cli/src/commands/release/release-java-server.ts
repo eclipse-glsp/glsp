@@ -13,10 +13,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util';
 import { LOGGER } from '../../util/logger';
-import { ReleaseOptions, asMvnVersion, checkoutAndCd, commitAndTag, publish } from './common';
+import * as sh from '../../util/shell-util';
+import { ReleaseOptions, asMvnVersion, checkIfMavenVersionExists, checkoutAndCd, commitAndTag, publish } from './common';
 
 let REPO_ROOT: string;
 
@@ -24,6 +23,7 @@ export async function releaseJavaServer(options: ReleaseOptions): Promise<void> 
     LOGGER.info('Prepare glsp-server release');
     LOGGER.debug('Release options: ', options);
     const mvnVersion = asMvnVersion(options.version);
+    checkPreconditions(options, mvnVersion);
     REPO_ROOT = checkoutAndCd(options);
     sh.find();
     setVersion(mvnVersion);
@@ -34,6 +34,10 @@ export async function releaseJavaServer(options: ReleaseOptions): Promise<void> 
     LOGGER.info('glsp-server release successful!');
 }
 
+function checkPreconditions(options: ReleaseOptions, mvnVersion: string): void {
+    checkIfMavenVersionExists('org.eclipse.glsp', 'org.eclipse.glsp.server', mvnVersion);
+}
+
 function setVersion(version: string): void {
     LOGGER.info(`Set pom version to ${version}`);
     sh.cd(REPO_ROOT);
@@ -41,20 +45,19 @@ function setVersion(version: string): void {
     // Capture all poms with a `${package.type}` property
 
     const pluginPoms = sh
-        .exec('grep -ril --include pom.xml \\${package-type}', getShellConfig()) //
-        .stdout.trim()
+        .exec('grep -ril --include pom.xml \\${package-type}') //
         .split('\n')
         .map(file => `${REPO_ROOT}/${file}`);
 
     // Replace `${package.type}` property with `eclipse-plugin`
-    sh.sed('-i', /\${package-type}/, 'eclipse-plugin', pluginPoms);
+    sh.replace(/\${package-type}/, 'eclipse-plugin', pluginPoms);
     LOGGER.debug('Preprocessing complete');
 
     // Execute tycho-versions plugin
-    fatalExec(`mvn tycho-versions:set-version -DnewVersion=${version}`, 'Mvn set-versions failed', getShellConfig({ silent: false }));
+    sh.exec(`mvn tycho-versions:set-version -DnewVersion=${version}`, { silent: false, errorMsg: 'Mvn set-versions failed' });
 
     LOGGER.debug('Restore eclipse-plugin poms');
-    sh.sed('-i', /<packaging>eclipse-plugin/, '<packaging>${package-type}', pluginPoms);
+    sh.replace(/<packaging>eclipse-plugin/, '<packaging>${package-type}', pluginPoms);
 
     LOGGER.debug('Version update complete!');
 }
@@ -66,8 +69,8 @@ function generateChangeLog(): void {
 function build(): void {
     LOGGER.info('Build M2 & P2');
     LOGGER.debug('M2');
-    fatalExec('mvn clean install -Pm2', 'M2 build failed', getShellConfig({ silent: false }));
+    sh.exec('mvn clean install -Pm2', { silent: false, errorMsg: 'M2 build failed' });
     LOGGER.newLine();
     LOGGER.debug('P2');
-    fatalExec('mvn clean install -Pp2', 'P2 build failed', getShellConfig({ silent: false }));
+    sh.exec('mvn clean install -Pp2', { silent: false, errorMsg: 'P2 build failed' });
 }

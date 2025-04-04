@@ -19,8 +19,8 @@ import fetch from 'node-fetch';
 import { resolve } from 'path';
 import * as readline from 'readline-sync';
 import * as semver from 'semver';
-import sh from 'shelljs';
-import { fatalExec, getShellConfig } from '../../util/command-util';
+import * as sh from '../../util/shell-util';
+
 import { getLatestGithubRelease, getLatestTag, hasGitChanges, isGitRepository } from '../../util/git-util';
 import { LOGGER } from '../../util/logger';
 import { validateVersion } from '../../util/validation-util';
@@ -36,7 +36,6 @@ export interface ReleaseOptions {
     verbose: boolean;
     force: boolean;
     publish: boolean;
-    npmDryRun: boolean;
     draft: boolean;
 }
 
@@ -126,12 +125,12 @@ export function checkoutAndCd(options: ReleaseOptions): string {
         if (options.force) {
             LOGGER.debug('A directory with the checkout name already exists.');
             LOGGER.debug('Force mode is enabled. The directory will be removed');
-            fatalExec(`rm -rf ${repoPath}`, `Could not remove directory: ${repoPath}`);
+            sh.exec(`rm -rf ${repoPath}`, { silent: true, errorMsg: `Could not remove directory: ${repoPath}` });
         } else {
             throw new Error('Directory with the checkout name already exists.');
         }
     }
-    sh.exec(`gh repo clone ${ghUrl}`, getShellConfig());
+    sh.exec(`gh repo clone ${ghUrl}`);
     LOGGER.debug(`Successfully cloned to ${directory}`);
     sh.cd(directory);
     if (options.branch !== 'master' && options.branch !== 'main') {
@@ -142,31 +141,24 @@ export function checkoutAndCd(options: ReleaseOptions): string {
 
 export function commitAndTag(version: string, repositoryPath: string): string {
     LOGGER.info('Commit changes and create new tag');
-    sh.cd(repositoryPath);
+    const pwd = sh.cd(repositoryPath);
 
     LOGGER.debug('Check wether the given url is a git repository');
-    if (!isGitRepository(sh.pwd())) {
+    if (!isGitRepository(pwd)) {
         throw new Error(`The given path is not a git repository: ${repositoryPath}`);
     }
     const tag = `v${version}`;
     LOGGER.debug(`Create tag with label: ${tag}}`);
-    sh.exec(`git checkout -b ${tag}`, getShellConfig());
-    sh.exec('git add .', getShellConfig());
-    sh.exec(`git commit -m "${tag}"`, getShellConfig());
-    sh.exec(`git tag ${tag}`, getShellConfig());
+    sh.exec(`git checkout -b ${tag}`);
+    sh.exec('git add .');
+    sh.exec(`git commit -m "${tag}"`);
+    sh.exec(`git tag ${tag}`);
     return tag;
 }
 
 export function publish(repositoryPath: string, options: ReleaseOptions): void {
-    if (!options.publish || options.npmDryRun) {
+    if (!options.publish) {
         LOGGER.info('Skip publishing to Github');
-        if (options.npmDryRun && options.component.releaseRepo === 'npm') {
-            fatalExec(
-                'lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push --dist-tag rc --yes',
-                'Dry-run publish failed',
-                { silent: false }
-            );
-        }
         return;
     }
     LOGGER.info(`Publish new GH release ${options.draft ? '[DRAFT]' : ''}`);
@@ -183,16 +175,15 @@ export function publish(repositoryPath: string, options: ReleaseOptions): void {
 }
 
 function doPublish(tag: string, preRelease: boolean, latestRelease: string, draft: boolean): void {
-    fatalExec(`git push origin HEAD:${tag}`, 'Could not push release branch to Github', getShellConfig({ silent: false }));
-    fatalExec(`git push origin tag ${tag}`, 'Could not push tag to Github', getShellConfig({ silent: false }));
+    sh.exec(`git push origin HEAD:${tag}`, { silent: false, errorMsg: 'Could not push release branch to Github' });
+    sh.exec(`git push origin tag ${tag}`, { silent: false, errorMsg: 'Could not push tag to Github' });
     const version = tagToVersion(tag);
     const titleSuffix = preRelease ? ` Candidate ${version.substring(version.lastIndexOf('-RC') + 3)}` : '';
     const title = `${version.replace(/-.*/, '')} Release${titleSuffix} `;
     sh.exec(
         `gh release create ${tag} -t "${title}" --notes-start-tag ${latestRelease} --generate-notes ${draft ? '-d' : ''} ${
             preRelease ? '-p' : ''
-        }`,
-        getShellConfig()
+        }`
     );
 }
 
@@ -215,18 +206,19 @@ function tagToVersion(tag: string): string {
 export function lernaSetVersion(repositoryPath: string, version: string): void {
     LOGGER.info(`Bump version in ${repositoryPath} to: ${version}`);
     sh.cd(repositoryPath);
-    fatalExec(`lerna version --exact  ${version} --ignore-scripts --yes --no-push --no-git-tag-version`, 'Lerna version bump failed!', {
-        silent: false
+    sh.exec(`lerna version --exact  ${version} --ignore-scripts --yes --no-push --no-git-tag-version`, {
+        silent: false,
+        errorMsg: 'Lerna version bump failed!'
     });
     LOGGER.debug('Update root package.json version');
-    sh.exec(`jq '.version="${version}"' package.json > temp.json`, getShellConfig());
-    sh.exec('mv temp.json package.json ', getShellConfig());
+    sh.exec(`jq '.version="${version}"' package.json > temp.json`);
+    sh.exec('mv temp.json package.json ');
 }
 
 export function yarnInstall(repositoryPath: string): void {
     LOGGER.debug(`Build ${repositoryPath}`);
     sh.cd(repositoryPath);
-    fatalExec('yarn', 'Yarn build failed', getShellConfig({ silent: false }));
+    sh.exec('yarn', { silent: false, errorMsg: 'Yarn build failed' });
 }
 
 export function upgradeCommand(pckName: string, version: string): string {
@@ -236,7 +228,7 @@ export function upgradeCommand(pckName: string, version: string): string {
 
 export function updateVersion(...packages: { name: string; version: string }[]): void {
     packages.forEach(pckg => {
-        const result = sh.exec(upgradeCommand(pckg.name, pckg.version), getShellConfig({ silent: false })).stdout.trim();
+        const result = sh.exec(upgradeCommand(pckg.name, pckg.version), { silent: false }).trim();
         if (result.includes('An error occurred:')) {
             const errorMsg = result.substring(result.lastIndexOf('An error occurred:')).trim();
             throw new Error(errorMsg);
@@ -272,13 +264,10 @@ export function checkIfMavenVersionExists(groupId: string, artifactId: string, n
 }
 
 export function isExistingMavenVersion(groupId: string, artifactId: string, version: string): boolean {
+    sh.exec(`wget -q -O - https://repo1.maven.org/maven2/${groupId.replace(/\./g, '/')}/${artifactId}/maven-metadata.xml`);
     const versions = sh
-        .exec(
-            `wget -q -O - https://repo1.maven.org/maven2/${groupId.replace(/\./g, '/')}/${artifactId}/maven-metadata.xml`,
-            getShellConfig()
-        )
-        .exec("grep -P '<version>\\K[^<]*'", getShellConfig())
-        .stdout.replace(/<\/?version>/g, '')
+        .exec("grep -P '<version>\\K[^<]*'")
+        .replace(/<\/?version>/g, '')
         .split('\n')
         .map(versionString => versionString.trim());
     LOGGER.debug(`${versions.length} released versions found:`, versions);
@@ -300,7 +289,7 @@ export function checkJavaServerVersion(version: string, force = false): void {
 
 export function updateLernaForDryRun(): void {
     LOGGER.debug('Update lerna.json to use local publish registry');
-    sh.exec(`jq '.command.publish.registry="${VERDACCIO_REGISTRY}"' lerna.json > temp.json`, getShellConfig());
-    sh.exec('mv temp.json lerna.json', getShellConfig());
+    sh.exec(`jq '.command.publish.registry="${VERDACCIO_REGISTRY}"' lerna.json > temp.json`);
+    sh.exec('mv temp.json lerna.json');
     sh.exec(`npm set registry ${VERDACCIO_REGISTRY}`);
 }

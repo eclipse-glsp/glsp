@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y gh jq zsh &&\
 RUN chsh -s $(which zsh)
 COPY . /glsp-build/
 RUN cd  /glsp-build && \
-	yarn && cd dev-packages/cli && \
+	yarn && cd dev-packages/releng && \
 	yarn link && export PATH=$(yarn global bin):$PATH
 RUN mkdir -p /home/releng/workspace
 RUN chown -R releng:releng /home/releng/workspace/

@@ -1,9 +1,10 @@
 {
   "name": "parent",
-  "version": "2.4.0",
+  "version": "2.5.0-next",
   "private": true,
   "workspaces": [
-    "dev-packages/*"
+    "dev-packages/*",
+    "!(dev-packages/releng)"
   ],
   "scripts": {
     "all": "yarn install && yarn lint",

@@ -13,10 +13,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import sh from 'shelljs';
-import { getShellConfig } from '../../util/command-util';
 import { LOGGER } from '../../util/logger';
-import { checkoutAndCd, commitAndTag, lernaSetVersion, publish, ReleaseOptions, updateLernaForDryRun, yarnInstall } from './common';
+import * as sh from '../../util/shell-util';
+import { checkoutAndCd, commitAndTag, lernaSetVersion, publish, ReleaseOptions, yarnInstall } from './common';
 
 let REPO_ROOT: string;
 
@@ -28,20 +27,17 @@ export async function releaseClient(options: ReleaseOptions): Promise<void> {
     generateChangeLog();
     lernaSetVersion(REPO_ROOT, options.version);
     build();
-    if (options.npmDryRun) {
-        updateLernaForDryRun();
-    }
     commitAndTag(options.version, REPO_ROOT);
     publish(REPO_ROOT, options);
 }
 
 async function updateDownloadServerScript(version: string): Promise<void> {
     LOGGER.info('Update example server download config');
-    sh.cd(`${REPO_ROOT}/examples/workflow-standalone/scripts`);
+    const cwd = `${REPO_ROOT}/examples/workflow-standalone/scripts`;
     const configFile = 'config.json';
     LOGGER.info('Update example server download config');
-    sh.exec(`jq '.version="${version}"' ${configFile} > temp.json`, getShellConfig());
-    sh.exec(`mv temp.json ${configFile}`, getShellConfig());
+    sh.exec(`jq '.version="${version}"' ${configFile} > temp.json`, { cwd });
+    sh.exec(`mv temp.json ${configFile}`);
 }
 
 function generateChangeLog(): void {
