@@ -1,6 +1,13 @@
 # Eclipse GLSP Dev Packages Changelog
+    
+## 2.6.0 - active
 
-## 2.5.0 - active
+### Changes
+
+### Potentially breaking changes
+
+
+## [2.5.0 - 29/08/2025](https://github.com/eclipse-glsp/glsp/releases/tag/v2.5.0)
 
 ### Changes
 

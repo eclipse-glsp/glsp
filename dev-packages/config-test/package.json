@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/config-test",
-  "version": "2.5.0-next",
+  "version": "2.5.0",
   "description": "Meta package that provides Mocha and nyc configurations for GLSP projects",
   "keywords": [
     "eclipse",
@@ -25,8 +25,8 @@
     }
   ],
   "dependencies": {
-    "@eclipse-glsp/mocha-config": "2.5.0-next",
-    "@eclipse-glsp/nyc-config": "2.5.0-next",
+    "@eclipse-glsp/mocha-config": "2.5.0",
+    "@eclipse-glsp/nyc-config": "2.5.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.7",
     "@types/mocha": "^10.0.2",
