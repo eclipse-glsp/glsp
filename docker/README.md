@@ -15,7 +15,7 @@ They are mainly used for CI jobs that require the possibility to build client an
 Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
--   Node 18, yarn 1.22.4 and lerna
+-   Node 20, yarn 1.22.4 and lerna
 -   OpenJDK 17 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
