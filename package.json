@@ -1,24 +1,20 @@
 {
   "name": "parent",
-  "version": "2.5.0-next",
   "private": true,
   "workspaces": [
     "dev-packages/*"
   ],
   "scripts": {
-    "all": "yarn install && yarn lint",
     "build": "yarn compile",
     "check:headers": "yarn start:cli checkHeaders . -t lastCommit",
-    "check:pr": "yarn all && yarn check:headers",
+    "check:pr": "yarn install && yarn lint && yarn check:headers",
     "clean": "lerna run clean",
     "compile": "tsc -b",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
     "lint:fix": "yarn lint --fix",
     "prepare": "yarn build",
-    "publish:latest": "lerna publish from-git --no-verify-access --no-push",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
-    "publish:prepare": "lerna version --ignore-scripts --yes --no-push --exact",
     "start:cli": " yarn --cwd dev-packages/cli start",
     "watch": "tsc -b -w --preserveWatchOutput"
   },
@@ -26,7 +22,7 @@
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
-    "@types/node": "18.x",
+    "@types/node": "20.x",
     "@types/sinon": "^10.0.13",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
@@ -48,10 +44,10 @@
     "rimraf": "^5.0.1",
     "sinon": "^15.1.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.9.2"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=20",
     "yarn": ">=1.7.0 <2"
   }
 }

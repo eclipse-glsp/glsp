@@ -1,5 +1,5 @@
 # eclipseglsp/ci:uitest
-# 5.0
+# 6.0
 FROM ubuntu:22.04
 # Install node & other Theia related dependencies
 RUN apt-get update && \
@@ -10,7 +10,7 @@ RUN apt-get update && \
     libsecret-1-dev \
     build-essential libssl-dev rsync -y && \
     #Install node
-    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install nodejs -y && \
     npm install -g yarn lerna &&\
     apt-get install lsof xvfb -y

@@ -13,10 +13,10 @@
 
 ## Supported tags and respective `Dockerfile` links
 
--   [`latest`, `ubuntu`, `ubuntu-v5.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
--   [`uitest`,`uitest-v5.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
+-   [`latest`, `ubuntu`, `ubuntu-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
+-   [`uitest`,`uitest-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
 
--   [`alpine`, `alpine-v5.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   [`alpine`, `alpine-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
 Note that these tags are fluent and not bound to a fixed image version.
 If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`.
@@ -34,7 +34,7 @@ They are mainly used for CI jobs that require the possibility to build client an
 Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
--   Node 18, yarn 1.22.19 and lerna
+-   Node 20, yarn 1.22.19 and lerna
 -   OpenJDK 17 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
@@ -82,6 +82,7 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v3.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.1): Pre-install latest lerna version
 -   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
 -   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
+-   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
 
 ## License
 
