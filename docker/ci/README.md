@@ -82,7 +82,7 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v3.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.1): Pre-install latest lerna version
 -   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
 -   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
--   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
+-   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
 
 ## License
 
