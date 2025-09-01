@@ -30,7 +30,7 @@
     "mocha.json"
   ],
   "peerDependencies": {
-    "typescript": ">=4.9.x"
+    "typescript": ">=5.x"
   },
   "publishConfig": {
     "access": "public"

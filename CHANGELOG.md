@@ -4,6 +4,9 @@
 
 ### Changes
 
+-   [node] Dropped support for node 18 & update minimum requirements for Node to >=20.x [#1564](https://github.com/eclipse-glsp/glsp/pull/1564)
+    -   Minimum required TS version is now 5.x
+
 ## [2.4.0 - 04/04/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.4.0)
 
 ## [2.3.0 - 23/12/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.3.0)
