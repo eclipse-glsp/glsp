@@ -3,25 +3,20 @@
   "version": "2.5.0-next",
   "private": true,
   "workspaces": [
-    "dev-packages/*",
-    "!(dev-packages/releng)"
+    "dev-packages/*"
   ],
   "scripts": {
-    "all": "yarn install && yarn lint",
-    "build": "yarn compile",
+    "build": "lerna run build",
     "check:headers": "yarn start:cli checkHeaders . -t lastCommit",
-    "check:pr": "yarn all && yarn check:headers",
+    "check:pr": "yarn build && yarn lint && yarn check:headers",
     "clean": "lerna run clean",
-    "compile": "tsc -b",
+    "cli": "yarn --cwd dev-packages/cli",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
     "lint:fix": "yarn lint --fix",
-    "prepare": "yarn build",
-    "publish:latest": "lerna publish from-git --no-verify-access --no-push",
+    "prepare": "yarn run build",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
-    "publish:prepare": "lerna version --ignore-scripts --yes --no-push --exact",
-    "start:cli": " yarn --cwd dev-packages/cli start",
-    "watch": "tsc -b -w --preserveWatchOutput"
+    "watch": "yarn cli watch"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",

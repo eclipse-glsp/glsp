@@ -1,5 +1,6 @@
 node_modules/
 *.log
 lib
+dist
 tsconfig.tsbuildinfo
 eslint.xml

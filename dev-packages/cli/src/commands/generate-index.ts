@@ -18,10 +18,7 @@ import { createOption } from 'commander';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { baseCommand } from '../util/command-util';
-import { LOGGER, configureLogger } from '../util/logger';
-import * as sh from '../util/shell-util';
-import { validateDirectory } from '../util/validation-util';
+import { LOGGER, baseCommand, cd, configureLogger, validateDirectory } from '../util';
 export interface GenerateIndexCmdOptions {
     singleIndex: boolean;
     forceOverwrite: boolean;
@@ -49,7 +46,7 @@ export const GenerateIndex = baseCommand() //
     .option('-f, --forceOverwrite', 'Overwrite existing index files and remove them if there are no entries', false)
     .option('-m, --match [match patterns...]', 'File patterns to consider during indexing', ['**/*.ts', '**/*.tsx'])
     .option('-i, --ignore [ignore patterns...]', 'File patterns to ignore during indexing', ['**/*.spec.ts', '**/*.spec.tsx', '**/*.d.ts'])
-    .addOption(createOption('-s, --style <importStyle>', 'Import Style').choices(['commonjs', 'esm']).default('commonjs'))
+    .addOption(createOption('--style <importStyle>', 'Import Style').choices(['commonjs', 'esm']).default('commonjs'))
     .option('--ignoreFile <ignoreFile>', 'The file that is used to specify patterns that should be ignored during indexing', '.indexignore')
     .option('-v, --verbose', 'Generate verbose output during generation', false)
     .action(generateIndices);
@@ -69,7 +66,7 @@ export async function generateIndex(
     options: GenerateIndexCmdOptions
 ): Promise<void> {
     LOGGER.debug('Run generateIndex for', rootDir, 'with the following options:', options);
-    const cwd = sh.cd(rootDir);
+    const cwd = cd(rootDir);
     // we want to match all given patterns and subdirectories and ignore all given patterns and (generated) index files
     const pattern = typeof options.match === 'boolean' ? ['**/'] : [...options.match, '**/'];
     const ignore = typeof options.ignore === 'boolean' ? ['**/index.ts'] : [...options.ignore, '**/index.ts'];

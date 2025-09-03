@@ -2,7 +2,6 @@
   "extends": "@eclipse-glsp/ts-config",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "lib",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "module": "Node16",

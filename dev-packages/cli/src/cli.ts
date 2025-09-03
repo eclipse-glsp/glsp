@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,11 +13,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+import { CheckHeaderCommand } from './commands/check-header';
+import { CoverageReportCommand } from './commands/coverage-report';
+import { GenerateIndex } from './commands/generate-index';
+import { RelengCommand } from './commands/releng/releng';
+import { UpdateNextCommand } from './commands/update-next';
+import { COMMAND_VERSION, baseCommand } from './util/base-command';
 
-export * from './base-command';
-export * from './file-util';
-export * from './git-util';
-export * from './logger';
-export * from './package-util';
-export * from './process-util';
-export * from './validation-util';
+const app = baseCommand() //
+    .version(COMMAND_VERSION)
+    .name('glsp')
+    .addCommand(CoverageReportCommand)
+    .addCommand(CheckHeaderCommand)
+    .addCommand(UpdateNextCommand)
+    .addCommand(GenerateIndex)
+    .addCommand(RelengCommand);
+
+app.parse(process.argv);

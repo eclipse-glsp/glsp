@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2024 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,6 +17,7 @@ import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import * as semver from 'semver';
+import { asNpmVersion } from '../commands/releng/common';
 import { getGitRoot, isGitRepository } from './git-util';
 import { LOGGER } from './logger';
 
@@ -44,14 +45,6 @@ export function validateFile(filePath: string, hasToExist = false): string {
     return path;
 }
 
-export function validateVersion(version: string): string {
-    LOGGER.debug(`Validate version format of: ${version}`);
-    if (!semver.valid(version)) {
-        throw new InvalidArgumentError(`Not a valid version: ${version}`);
-    }
-    return version;
-}
-
 export function validateGitDirectory(repository: string): string {
     const repoPath = validateDirectory(repository);
     if (!isGitRepository(repoPath)) {
@@ -59,4 +52,13 @@ export function validateGitDirectory(repository: string): string {
     }
 
     return getGitRoot(repository);
+}
+
+export function validateVersion(version: string): string {
+    const npmVersion = asNpmVersion(version);
+    LOGGER.debug(`Validate version format of: ${npmVersion}`);
+    if (!semver.valid(npmVersion)) {
+        throw new InvalidArgumentError(`Not a valid version: ${npmVersion}`);
+    }
+    return version;
 }

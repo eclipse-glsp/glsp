@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,22 +13,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { CheckHeaderCommand } from './commands/check-header';
-import { CoverageReportCommand } from './commands/coverage-report';
-import { GenerateIndex } from './commands/generate-index';
-import { ReleaseCommand } from './commands/release/release';
-import { UpdateNextCommand } from './commands/update-next';
-import { baseCommand } from './util/command-util';
+import { Command } from 'commander';
+import * as pkg from '../../package.json';
 
-export const COMMAND_VERSION = '1.1.0-next';
+export const COMMAND_VERSION = pkg.version;
 
-const app = baseCommand() //
-    .version(COMMAND_VERSION)
-    .name('glsp')
-    .addCommand(CoverageReportCommand)
-    .addCommand(ReleaseCommand)
-    .addCommand(CheckHeaderCommand)
-    .addCommand(UpdateNextCommand)
-    .addCommand(GenerateIndex);
-
-app.parse(process.argv);
+export function baseCommand(cmd = new Command()): Command {
+    return cmd //
+        .showSuggestionAfterError(true)
+        .allowUnknownOption(false);
+}
