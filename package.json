@@ -1,5 +1,6 @@
 {
   "name": "parent",
+  "version": "2.5.0",
   "private": true,
   "workspaces": [
     "dev-packages/*"
