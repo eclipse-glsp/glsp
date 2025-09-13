@@ -25,5 +25,5 @@ to learn how to report vulnerabilities.
 
 <!-- Please check, when if it applies to your change. -->
 
-- [ ] This PR should be mentioned in the changelog
-- [ ] This PR introduces a breaking change (if yes, provide more details below for the changelog and the migration guide)
+-   [ ] This PR should be mentioned in the changelog
+-   [ ] This PR introduces a breaking change (if yes, provide more details below for the changelog and the migration guide)

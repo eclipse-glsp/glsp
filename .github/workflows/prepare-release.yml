@@ -1,0 +1,92 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (major, minor, patch, next, or custom)'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - next
+          - custom
+      custom_version:
+        description: 'Custom version (required if release_type is custom)'
+        required: false
+        type: string
+      release_repo:
+        description: 'GLSP repository to release'
+        required: true
+        type: choice
+        options:
+          - glsp
+          - glsp-client
+          - glsp-theia-integration
+          - glsp-server
+          - glsp-server-node
+          - glsp-eclipse-integration
+          - glsp-vscode-integration
+          - glsp-playwright
+      branch:
+        description: 'Branch to use for the release repo (default: default branch)'
+        required: false
+        type: string
+      draft:
+        description: 'Create PR as draft'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release helper repo (@eclipse-glsp/glsp)
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          repository: eclipse-glsp/glsp
+          path: glsp-release-helper
+
+      - name: Checkout release repo (${{ github.event.inputs.release_repo }})
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          repository: eclipse-glsp/${{ github.event.inputs.release_repo }}
+          path: release-repo
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies in glsp-release-helper
+        working-directory: ./glsp-release-helper
+        run: yarn install
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "eclipse-glsp-bot"
+          git config --global user.email "57175764+eclipse-glsp-bot@users.noreply.github.com"
+
+      - name: Prepare release
+        id: prepare_release
+        working-directory: ./glsp-release-helper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DRAFT_FLAG=""
+          if [[ "${{ github.event.inputs.draft }}" == "true" ]]; then
+            DRAFT_FLAG="-d"
+          fi
+
+          if [[ "${{ github.event.inputs.release_type }}" == "custom" ]]; then
+            yarn glsp releng prepare custom "${{ github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+          else
+            yarn glsp releng prepare "${{ github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+          fi

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2024 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -19,13 +19,23 @@ import * as fs from 'fs';
 import { glob } from 'glob';
 import * as minimatch from 'minimatch';
 import * as readline from 'readline-sync';
-import sh from 'shelljs';
-import { baseCommand, configureShell, getShellConfig } from '../util/command-util';
-import { getChangesOfLastCommit, getLastModificationDate, getUncommittedChanges } from '../util/git-util';
 
 import * as path from 'path';
-import { LOGGER } from '../util/logger';
-import { validateGitDirectory } from '../util/validation-util';
+import {
+    LOGGER,
+    baseCommand,
+    cd,
+    configureExec,
+    exec,
+    filterFiles,
+    getChangesOfLastCommit,
+    getLastModificationDate,
+    getUncommittedChanges,
+    readFile,
+    replaceInFile,
+    resolveFiles,
+    validateGitDirectory
+} from '../util';
 
 export interface HeaderCheckOptions {
     type: CheckType;
@@ -73,13 +83,12 @@ export const CheckHeaderCommand = baseCommand() //
     .action(checkHeaders);
 
 export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void {
-    configureShell({ silent: true, fatal: true });
-
+    configureExec({ silent: true, fatal: true });
+    cd(rootDir);
     if (options.excludeDefaults) {
         options.exclude.push(...DEFAULT_EXCLUDES);
     }
 
-    sh.cd(rootDir);
     const files = getFiles(rootDir, options);
     LOGGER.info(`Check copy right headers of ${files.length} files`);
     if (files.length === 0) {
@@ -95,10 +104,11 @@ function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
     const excludePattern = options.exclude;
 
     if (options.type === 'full') {
-        return glob.sync(includePattern, {
+        const result = glob.sync(includePattern, {
             cwd: rootDir,
             ignore: excludePattern
         });
+        return resolveFiles(result);
     }
 
     let changedFiles = options.type === 'changes' ? getUncommittedChanges(rootDir) : getChangesOfLastCommit(rootDir);
@@ -107,12 +117,12 @@ function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
     excludePattern.forEach(pattern => {
         changedFiles = changedFiles.filter(minimatch.filter(`!${pattern}`));
     });
-    return changedFiles.filter(file => fs.existsSync(file));
+    const result = changedFiles.filter(file => fs.existsSync(file));
+    return resolveFiles(result);
 }
 
 function validate(rootDir: string, files: string[], options: HeaderCheckOptions): ValidationResult[] {
-    // Derives all files with valid headers and all files with no or invalid headers
-    const filesWithHeader = sh.grep('-l', HEADER_PATTERN, files).stdout.trim().split('\n');
+    const filesWithHeader = filterFiles(files, HEADER_PATTERN);
     const noHeaders = files.filter(file => !filesWithHeader.includes(file));
 
     const results: ValidationResult[] = [];
@@ -128,10 +138,11 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
         results.push({ file: path.resolve(rootDir, file), violation: 'noOrMissingHeader' });
     });
 
+    const currentYear = new Date().getFullYear();
     // Performance optimization: avoid retrieving the dates for each individual file by precalculating the endYear if possible.
     let defaultEndYear: number | undefined;
     if (options.type === 'changes') {
-        defaultEndYear = new Date().getFullYear();
+        defaultEndYear = currentYear;
     } else if (options.type === 'lastCommit') {
         defaultEndYear = getLastModificationDate(undefined, rootDir)?.getFullYear();
     }
@@ -139,7 +150,8 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
     // Create validation results for all files with valid headers
     filesWithHeader.forEach((file, i) => {
         printFileProgress(i + 1 + noHeadersLength, allFilesLength, `Validating ${file}`);
-        const copyrightLine = sh.head({ '-n': 2 }, file).stdout.trim().split('\n')[1];
+        const headLines = readFile(file, { endLine: 2 }).split('\n');
+        const copyrightLine = headLines[1] || '';
         const copyRightYears = copyrightLine.match(YEAR_RANGE_REGEX)!;
         if (!copyRightYears) {
             const result: ValidationResult = { file, violation: 'noYear', line: copyrightLine };
@@ -150,7 +162,7 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
             const result: DateValidationResult = {
                 currentStartYear,
                 currentEndYear,
-                expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)!.getFullYear(),
+                expectedEndYear: defaultEndYear ?? getLastModificationDate(file, rootDir, AUTO_FIX_MESSAGE)?.getFullYear() ?? currentYear,
                 file,
                 violation: 'none'
             };
@@ -248,14 +260,14 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
                 ? `${violation.currentStartYear}-${violation.expectedEndYear}`
                 : `${violation.expectedEndYear}`;
 
-        sh.sed('-i', RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`, violation.file);
+        replaceInFile(violation.file, RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`);
     });
     LOGGER.newLine();
     if (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?')) {
         LOGGER.newLine();
         const files = violations.map(violation => violation.file).join(' ');
-        sh.exec(`git add ${files}`, getShellConfig());
-        sh.exec(`git commit -m "${AUTO_FIX_MESSAGE}"`);
+        exec(`git add ${files}`);
+        exec(`git commit -m "${AUTO_FIX_MESSAGE}"`);
         LOGGER.newLine();
     }
 }

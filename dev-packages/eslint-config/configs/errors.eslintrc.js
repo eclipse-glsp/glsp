@@ -71,12 +71,12 @@ module.exports = {
         'no-null/no-null': 'error',
         // chai friendly
         'no-unused-expressions': 'off',
-        'chai-friendly/no-unused-expressions':  [
+        'chai-friendly/no-unused-expressions': [
             'error',
             {
                 allowShortCircuit: true,
                 allowTernary: true
             }
-        ],
+        ]
     }
 };

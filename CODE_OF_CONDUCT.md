@@ -5,6 +5,7 @@ Version 1.2
 August 19, 2020
 
 ## Our Pledge
+
 <img align="right" src="https://www.eclipse.org/org/images/eclipse_code_of_conduct.png" width="246" style="padding: 0px 5px 0px 5px;">
 In the interest of fostering an open and welcoming environment, we as community members, contributors, committers, and project leaders pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 

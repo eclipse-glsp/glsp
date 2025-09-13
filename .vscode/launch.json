@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug GLSP CLI",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dev-packages/cli/dist/cli.js",
+      "args": "${input:cliArgs}",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dev-packages/cli/dist/*.js"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "cliArgs",
+      "description": "CLI arguments (space-separated, e.g., 'checkHeaders ./')",
+      "default": "",
+      "type": "promptString"
+    }
+  ]
+}
