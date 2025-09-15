@@ -1,21 +1,27 @@
 # Eclipse GLSP Dev Packages Changelog
 
-## [2.5.0 - 07/09/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.5.0)
+## v2.6.0 - active
+
+### Changes
+
+### Potentially Breaking Changes
+
+## [v2.5.0 - 07/09/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.5.0)
 
 ### Changes
 
 -   [node] Dropped support for node 18 & update minimum requirements for Node to >=20.x [#1564](https://github.com/eclipse-glsp/glsp/pull/1564)
     -   Minimum required TS version is now 5.x
 
-## [2.4.0 - 04/04/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.4.0)
+## [v2.4.0 - 04/04/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.4.0)
 
-## [2.3.0 - 23/12/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.3.0)
+## [v2.3.0 - 23/12/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.3.0)
 
 ### Changes
 
 -   [node] Dropped support for node 16 & update minimum requirements for Node to >=18.x [#1457](https://github.com/eclipse-glsp/glsp/pull/1457)
 
-## [2.2.1 - 22/07/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.2.1)
+## [v2.2.1 - 22/07/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.2.1)
 
 ### Changes
 
@@ -25,7 +31,7 @@
 -   [cli] Contribute the `updateNext` command to the GLSP CLI tool. Allows updating of all dependencies in GLSP projects that are tagged with `next´. [1229](https://github.com/eclipse-glsp/glsp/pull/1299)
 -   [ts-config] Update ts target to `ES2019` [#1372](https://github.com/eclipse-glsp/glsp/pull/1372)
 
-## [2.0.0 - 13/10/2023](https://github.com/eclipse-glsp/glsp/releases/tag/v2.0.0)
+## [v2.0.0 - 13/10/2023](https://github.com/eclipse-glsp/glsp/releases/tag/v2.0.0)
 
 ### Changes
 
