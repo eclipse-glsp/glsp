@@ -4,11 +4,11 @@
 [![ServerJava Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/badge/icon?subject=server-java)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/)
 [![ServerNode Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/badge/icon?subject=server-node)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/)
 [![Dev Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/badge/icon?subject=dev-packages)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/)
-
-[![Theia Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-theia-integration/job/master/badge/icon?subject=theia-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-theia-integration/job/master/)
+[![Theia Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-theia-integration/ci.yml?branch=master&label=theia%20integration)](https://github.com/eclipse-glsp/glsp-theia-integration/actions/workflows/ci.yml)
 [![Vscode Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-vscode-integration/job/master/badge/icon?subject=vscode-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-vscode-integration/job/master/)
 [![Eclipse Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/badge/icon?subject=eclipse-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/)
-[![Examples Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-examples/job/master/badge/icon?subject=examples)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-examples/job/master/)
+[![Playwright Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-playwright/ci.yml?branch=main&label=playwright)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml)
+[![Examples Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-examples/ci.yml?branch=master&label=examples)](https://github.com/eclipse-glsp/glsp-examples/actions/workflows/ci.yml)
 
 The **G**raphical **L**anguage **S**erver **P**latform provides extensible components for the development of _diagram editors including edit functionality_ in (distributed) web-applications via a client-server protocol.
 
