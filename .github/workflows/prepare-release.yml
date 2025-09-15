@@ -39,6 +39,29 @@ on:
         required: false
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      release_type:
+        description: 'Release type (major, minor, patch, next, or custom)'
+        required: true
+        type: string
+      custom_version:
+        description: 'Custom version (required if release_type is custom)'
+        required: false
+        type: string
+      release_repo:
+        description: 'GLSP repository to release'
+        required: true
+        type: string
+      branch:
+        description: 'Branch to use for the release repo (default: default branch)'
+        required: false
+        type: string
+      draft:
+        description: 'Create PR as draft'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -49,13 +72,14 @@ jobs:
         with:
           repository: eclipse-glsp/glsp
           path: glsp-release-helper
+          ref: releng
 
-      - name: Checkout release repo (${{ github.event.inputs.release_repo }})
+      - name: Checkout release repo (${{ inputs.release_repo || github.event.inputs.release_repo }})
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          repository: eclipse-glsp/${{ github.event.inputs.release_repo }}
+          repository: eclipse-glsp/${{ inputs.release_repo || github.event.inputs.release_repo }}
           path: release-repo
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ inputs.branch || github.event.inputs.branch }}
 
       - name: Set up Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
@@ -81,12 +105,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           DRAFT_FLAG=""
-          if [[ "${{ github.event.inputs.draft }}" == "true" ]]; then
+          if [[ "${{ inputs.draft || github.event.inputs.draft }}" == "true" ]]; then
             DRAFT_FLAG="-d"
           fi
 
-          if [[ "${{ github.event.inputs.release_type }}" == "custom" ]]; then
-            yarn glsp releng prepare custom "${{ github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+          if [[ "${{ inputs.release_type || github.event.inputs.release_type }}" == "custom" ]]; then
+            yarn glsp releng prepare custom "${{ inputs.custom_version || github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           else
-            yarn glsp releng prepare "${{ github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+            yarn glsp releng prepare "${{ inputs.release_type || github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           fi
