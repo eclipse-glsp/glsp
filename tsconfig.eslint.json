@@ -3,6 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "exclude": ["**/node_modules", "**/.eslintrc.js"],
-  "include": ["dev-packages/*/src"]
+  "include": ["dev-packages/*/src", "releng/src"]
 }

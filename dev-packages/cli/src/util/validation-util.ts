@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2024 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,18 +16,16 @@
 import { InvalidArgumentError } from 'commander';
 import * as fs from 'fs';
 import { resolve } from 'path';
-import * as semver from 'semver';
 import { getGitRoot, isGitRepository } from './git-util';
-import { LOGGER } from './logger';
 
 export function validateDirectory(rootDir: string): string {
     const path = resolve(rootDir);
     if (!fs.existsSync(path)) {
-        throw new InvalidArgumentError('Not a valid file path!');
+        throw new InvalidArgumentError(`Not a valid file path!: ${path}`);
     }
 
     if (!fs.statSync(path).isDirectory()) {
-        throw new InvalidArgumentError('Not a directory!');
+        throw new InvalidArgumentError(`Not a directory!: ${path}`);
     }
     return path;
 }
@@ -36,26 +34,18 @@ export function validateFile(filePath: string, hasToExist = false): string {
     const path = resolve(filePath);
 
     if (hasToExist && !fs.existsSync(path)) {
-        throw new InvalidArgumentError('Not a valid file path!');
+        throw new InvalidArgumentError(`Not a valid file path!: ${path}`);
     }
     if (!fs.statSync(path).isFile()) {
-        throw new InvalidArgumentError('Not a file!');
+        throw new InvalidArgumentError(`Not a file!: ${path}`);
     }
     return path;
-}
-
-export function validateVersion(version: string): string {
-    LOGGER.debug(`Validate version format of: ${version}`);
-    if (!semver.valid(version)) {
-        throw new InvalidArgumentError(`Not a valid version: ${version}`);
-    }
-    return version;
 }
 
 export function validateGitDirectory(repository: string): string {
     const repoPath = validateDirectory(repository);
     if (!isGitRepository(repoPath)) {
-        throw new InvalidArgumentError('Not a valid git repository');
+        throw new InvalidArgumentError(`Not a valid git repository: ${repoPath}`);
     }
 
     return getGitRoot(repository);

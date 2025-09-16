@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2024 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -15,38 +15,36 @@
  ********************************************************************************/
 
 import { resolve } from 'path';
-import sh from 'shelljs';
-import { getShellConfig } from './command-util';
+import { exec } from './process-util';
 
+/**
+ * Escapes double quotes and backslashes for safe inclusion in shell-quoted strings ("...").
+ * Order matters: escape backslashes first, then quotes.
+ */
+function escapeDoubleQuotesAndBackslashes(str: string): string {
+    // Escape \ first, then ", to avoid double-escaping.
+    return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
 export function isGitRepository(path?: string): boolean {
-    cdIfPresent(path);
-    const isGitRepo =
-        sh
-            .exec('git rev-parse --is-inside-work-tree', getShellConfig({ silent: true }))
-            .stdout.trim()
-            .toLocaleLowerCase() === 'true';
+    const isGitRepo = exec('git rev-parse --is-inside-work-tree', { silent: true, cwd: path }).toLocaleLowerCase() === 'true';
     return isGitRepo;
 }
 
 export function getGitRoot(path?: string): string {
-    cdIfPresent(path);
-    const fileString = sh.exec('git rev-parse --show-toplevel', getShellConfig()).stdout.trim();
+    const fileString = exec('git rev-parse --show-toplevel', { cwd: path });
     return resolve(fileString);
 }
 
-export function hasGitChanges(path?: string): boolean {
+export function hasChanges(path?: string): boolean {
     return getUncommittedChanges(path).length > 0;
 }
 
 /**
  * Returns the files that have uncommitted changes (staged, not staged and untracked) of a git repository.
- * Filepaths are absolute.
+ *
  */
 export function getUncommittedChanges(path?: string): string[] {
-    cdIfPresent(path);
-    return sh
-        .exec('git status --porcelain', getShellConfig())
-        .stdout.trim()
+    return exec('git status --porcelain', { cwd: path })
         .split('\n')
         .filter(value => value.trim().length !== 0)
         .map(fileInfo =>
@@ -55,19 +53,27 @@ export function getUncommittedChanges(path?: string): string[] {
         );
 }
 
+export function commitChanges(message: string, path?: string): void {
+    exec('git add .', { cwd: path });
+    exec(`git commit  -m "${escapeDoubleQuotesAndBackslashes(message)}"`, { cwd: path });
+}
 /**
  * Returns the files tha have been changed with the last commit (also includes currently staged but uncommitted changes)
- * Filepaths are absolute.
+ *
  */
 export function getChangesOfLastCommit(path?: string): string[] {
-    cdIfPresent(path);
-    return sh
-        .exec('git diff --name-only HEAD^', getShellConfig())
-        .stdout.trim()
+    return exec('git diff --name-only HEAD^', { cwd: path })
         .split('\n')
         .map(file => resolve(path ?? process.cwd(), file));
 }
 
+/**
+ * Returns the commit message of the last commit
+ *
+ */
+export function getLastCommitMessage(path?: string): string {
+    return exec('git log -1 --pretty=%B', { cwd: path }).trim();
+}
 /**
  * Returns the last modification date of a file (or the last commit) in a git repo.
  * @param filePath The file. If undefined the modification date of the last commit will be returned
@@ -76,48 +82,46 @@ export function getChangesOfLastCommit(path?: string): string[] {
  * @returns The date or undefined if the file is outside of the git repo.
  */
 export function getLastModificationDate(filePath?: string, repoRoot?: string, excludeMessage?: string): Date | undefined {
-    cdIfPresent(repoRoot);
     const additionalArgs = excludeMessage ? `--grep="${excludeMessage}" --invert-grep` : '';
-    const result = sh.exec(`git log -1 ${additionalArgs} --pretty="format:%ci" ${filePath ?? ''}`, getShellConfig());
-    if (result.code !== 0) {
+    try {
+        const result = exec(`git log -1 ${additionalArgs} --pretty="format:%ci" ${filePath ?? ''}`, { cwd: repoRoot });
+        return result ? new Date(result) : undefined;
+    } catch {
         return undefined;
     }
-    return new Date(result.stdout.trim());
 }
 
 export function getFilesOfCommit(commitHash: string, repoRoot?: string): string[] {
-    cdIfPresent(repoRoot);
-    const result = sh.exec(`git show --pretty="" --name-only ${commitHash}`, getShellConfig());
-    if (result.code !== 0) {
+    try {
+        const result = exec(`git show --pretty="" --name-only ${commitHash}`, { cwd: repoRoot });
+        return result.split('\n');
+    } catch {
         return [];
     }
-
-    return result.stdout.trim().split('\n');
-}
-
-export function getLatestGithubRelease(path?: string): string {
-    cdIfPresent(path);
-    const release = sh.exec('gh release list --exclude-drafts -L 1', getShellConfig()).stdout.trim().split('\t');
-    return release[release.length - 2];
 }
 
 export function getLatestTag(path?: string): string {
-    cdIfPresent(path);
-    return sh.exec('git describe --abbrev=0 --tags', getShellConfig()).stdout.trim();
+    return exec('git describe --abbrev=0 --tags', { cwd: path });
 }
 
 export function hasBranch(branch: string, path?: string): boolean {
-    cdIfPresent(path);
-    return sh.exec(`git branch --list ${branch}`, getShellConfig()).stdout.trim().length !== 0;
+    return exec(`git branch --list ${branch}`, { cwd: path }).length !== 0;
 }
 
 export function getRemoteUrl(path?: string): string {
-    cdIfPresent(path);
-    return sh.exec('git config --get remote.origin.url', getShellConfig()).stdout.trim();
+    return exec('git config --get remote.origin.url', { cwd: path });
 }
 
-function cdIfPresent(path?: string): void {
-    if (path) {
-        sh.cd(path);
-    }
+export function getCurrentBranch(path?: string): string {
+    return exec('git rev-parse --abbrev-ref HEAD', { cwd: path });
+}
+
+export function createBranch(branch: string, path?: string): void {
+    exec(`git checkout -B ${branch}`, { cwd: path });
+}
+
+export function getDefaultBranch(path?: string): string {
+    const output = exec('git remote show origin', { cwd: path });
+    const match = output.match(/HEAD branch: (.+)/);
+    return match ? match[1].trim() : 'master'; // fallback if not set
 }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2024 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,10 +16,18 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import sh from 'shelljs';
-import { baseCommand, fatalExec, getShellConfig } from '../util/command-util';
-import { LOGGER } from '../util/logger';
-import { validateDirectory } from '../util/validation-util';
+import {
+    LOGGER,
+    PackageHelper,
+    baseCommand,
+    cd,
+    exec,
+    execAsync,
+    findFiles,
+    getYarnWorkspacePackages,
+    moveFile,
+    validateDirectory
+} from '../util';
 
 export interface CoverageCmdOptions {
     coverageScript: string;
@@ -38,51 +46,39 @@ export const CoverageReportCommand = baseCommand() //
  * First, individual reports for each package are generated. Then, they are aggregated into one combined HTML report.
  * @param options configuration options
  */
-export function generateCoverageReport(options: CoverageCmdOptions): void {
-    sh.cd(options.projectRoot);
+export async function generateCoverageReport(options: CoverageCmdOptions): Promise<void> {
+    cd(options.projectRoot);
     const packages = validateAndRetrievePackages(options);
-    LOGGER.info('Create individual package coverage reports');
-    const jsonReports = collectPackageReportFiles(packages, options);
+    const jsonReports = await collectPackageReportFiles(packages, options);
     combineReports(jsonReports, options);
     LOGGER.info('Coverage reported generation successful');
+    LOGGER.info(`HTML report available at: ${options.projectRoot}/coverage/index.html`);
 }
 
-export function validateAndRetrievePackages(options: CoverageCmdOptions): string[] {
-    const packagePath = path.join(options.projectRoot, 'package.json');
-    if (!fs.existsSync(packagePath)) {
-        CoverageReportCommand.error(`Invalid root directory. '${options.projectRoot}' does not contain a package.json.`);
-    }
+export function validateAndRetrievePackages(options: CoverageCmdOptions): PackageHelper[] {
+    exec('yarn nyc -h', { silent: true, errorMsg: 'Nyc is not installed!' });
 
-    fatalExec('yarn nyc -h', 'Nyc is not installed!', getShellConfig({ silent: true }));
+    const workspacePackages = getYarnWorkspacePackages(options.projectRoot, true);
 
-    const packageJson = JSON.parse(fs.readFileSync(packagePath).toString());
-
-    if (!packageJson?.scripts?.[options.coverageScript]) {
+    const rootPackage = workspacePackages.pop()!;
+    if (!rootPackage.hasScript(options.coverageScript)) {
         CoverageReportCommand.error(
-            `Invalid coverage script! The package.json does not have a script with name '${options.coverageScript}'!`
+            `Invalid coverage script! The root package.json does not have a script with name '${options.coverageScript}'!`
         );
     }
-
-    if (!Array.isArray(packageJson.workspaces)) {
-        CoverageReportCommand.error('Invalid package.json! No yarn workspaces are configured!');
-    }
-    return (packageJson.workspaces as string[]).map(pkg => pkg.replace('/*', ''));
+    return workspacePackages;
 }
 
-export function collectPackageReportFiles(packages: string[], options: CoverageCmdOptions): string[] {
-    LOGGER.info('Create combined report');
-    sh.exec(`yarn ${options.coverageScript}`);
-    // collect reports
-    const reports: string[] = [];
-    packages.forEach(pkg => {
-        sh.find(pkg)
-            .filter(file => file.endsWith('coverage-final.json'))
-            .forEach(json => reports.push(path.resolve(options.projectRoot, json)));
-    });
+export async function collectPackageReportFiles(packages: PackageHelper[], options: CoverageCmdOptions): Promise<string[]> {
+    LOGGER.info('Create individual package coverage reports');
+    await execAsync(`yarn ${options.coverageScript}`, { silent: false });
+    const reports: string[] = packages.flatMap(pkg => findFiles(pkg.location, '**/coverage-final.json'));
+    LOGGER.info(`Collected ${reports.length} coverage reports from ${packages.length} packages`);
     return reports;
 }
 
-function combineReports(reportFiles: string[], options: CoverageCmdOptions): void {
+async function combineReports(reportFiles: string[], options: CoverageCmdOptions): Promise<void> {
+    LOGGER.info('Create combined coverage report');
     //  Copy coverage into root/.nyc_output
     const reportsDir = path.join(options.projectRoot, '.nyc_output');
     if (fs.existsSync(reportsDir)) {
@@ -95,19 +91,19 @@ function combineReports(reportFiles: string[], options: CoverageCmdOptions): voi
     }
 
     // Temporarily remove root nyc configs otherwise the report command might fail.
-    sh.cd(options.projectRoot);
+    cd(options.projectRoot);
     const configFiles = ['.nycrc', '.nycrc.json', '.nyc-config.js'];
     const tempFiles: string[] = [];
     configFiles.forEach(config => {
         if (fs.existsSync(path.join(options.projectRoot, config))) {
-            sh.mv(config, '_' + config);
+            moveFile(config, '_' + config);
             tempFiles.push('_' + config);
         }
     });
 
     // Generate report
-    sh.exec('yarn nyc report --reporter html', getShellConfig());
+    await execAsync('yarn nyc report --reporter html', { silent: false });
 
     // Restore nyc configs (if any)
-    tempFiles.forEach(config => sh.mv(config, config.substring(1)));
+    tempFiles.forEach(config => moveFile(config, config.substring(1)));
 }

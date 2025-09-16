@@ -1,6 +1,5 @@
-#!/usr/bin/env node
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
+ * Copyright (c) 2022-2025 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,19 +16,20 @@
 import { CheckHeaderCommand } from './commands/check-header';
 import { CoverageReportCommand } from './commands/coverage-report';
 import { GenerateIndex } from './commands/generate-index';
-import { ReleaseCommand } from './commands/release/release';
+import { RelengCommand } from './commands/releng/releng';
 import { UpdateNextCommand } from './commands/update-next';
-import { baseCommand } from './util/command-util';
-
-export const COMMAND_VERSION = '1.1.0-next';
+import { COMMAND_VERSION, LOGGER, baseCommand } from './util';
 
 const app = baseCommand() //
     .version(COMMAND_VERSION)
     .name('glsp')
     .addCommand(CoverageReportCommand)
-    .addCommand(ReleaseCommand)
     .addCommand(CheckHeaderCommand)
     .addCommand(UpdateNextCommand)
-    .addCommand(GenerateIndex);
+    .addCommand(GenerateIndex)
+    .addCommand(RelengCommand);
 
-app.parse(process.argv);
+app.parseAsync(process.argv).catch(err => {
+    LOGGER.error(err);
+    process.exit(1);
+});

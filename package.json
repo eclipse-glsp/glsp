@@ -6,18 +6,20 @@
     "dev-packages/*"
   ],
   "scripts": {
-    "build": "yarn compile",
-    "check:headers": "yarn start:cli checkHeaders . -t lastCommit",
-    "check:pr": "yarn install && yarn lint && yarn check:headers",
+    "build": "lerna run build",
+    "check:headers": "yarn glsp checkHeaders . -t lastCommit",
+    "check:pr": "yarn install && yarn lint &&  yarn prettier:check && yarn check:headers",
     "clean": "lerna run clean",
-    "compile": "tsc -b",
+    "cli": "yarn --cwd dev-packages/cli",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "glsp": "node dev-packages/cli/dist/cli.js",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
     "lint:fix": "yarn lint --fix",
-    "prepare": "yarn build",
+    "prepare": "yarn run build",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
-    "start:cli": " yarn --cwd dev-packages/cli start",
-    "watch": "tsc -b -w --preserveWatchOutput"
+    "watch": "yarn cli watch"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
