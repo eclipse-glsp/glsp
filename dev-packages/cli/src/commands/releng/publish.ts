@@ -26,7 +26,7 @@ export const PublishCommand = baseCommand()
     .name('publish')
     .description('Publish a new release for a GLSP component (npm, maven, github ...)')
     .option('-v, --verbose', 'Enable verbose (debug) log output', false)
-    .option('-r, --repoDir <repoDir>', 'Path to the  component repository', validateGitDirectory, process.cwd())
+    .option('-r, --repoDir <repoDir>', 'Path to the component repository', validateGitDirectory, process.cwd())
     .option('--no-npm', 'Skip npm publishing', true)
     .option('-d, --draft', 'Create a draft GitHub release', false)
     .action((options: PublishCmdOptions) => {

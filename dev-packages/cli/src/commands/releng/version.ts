@@ -41,7 +41,7 @@ export const VersionCommand = baseCommand()
     .addArgument(new Argument('<versionType>', 'The version type').choices(VersionType.choices))
     .argument('[customVersion]', 'Custom version number. Will be ignored if the release type is not "custom"')
     .option('-v, --verbose', 'Enable verbose (debug) log output', false)
-    .option('-r, --repoDir <repoDir>', 'Path to the  component repository', validateGitDirectory, process.cwd())
+    .option('-r, --repoDir <repoDir>', 'Path to the component repository', validateGitDirectory, process.cwd())
     .action((versionType: VersionType, customVersion: string | undefined, cmdOptions: SetVersionsCmdOptions) => {
         configureEnv(cmdOptions);
         const repo = GLSPRepo.deriveFromDirectory(cmdOptions.repoDir);
@@ -122,7 +122,7 @@ function updateGLSPDependencies(pkg: PackageHelper, version: string, workspacePa
     ['dependencies', 'devDependencies'].forEach(depType => {
         if (pkg.content[depType]) {
             Object.keys(pkg.content[depType] || {})
-                .filter(dep => dep.startsWith('@eclipse-glsp'))
+                .filter(dep => workspacePackageNames.has(dep) || dep.startsWith('@eclipse-glsp'))
                 .forEach(dep => {
                     if (workspacePackageNames.has(dep) || !isNextVersion(version)) {
                         LOGGER.debug(` - Bump ${depType} ${dep} to version ${version}`);

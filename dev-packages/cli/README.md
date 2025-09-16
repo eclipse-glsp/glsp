@@ -165,7 +165,7 @@ Arguments:
 
 Options:
   -v, --verbose            Enable verbose (debug) log output (default: false)
-  -r, --repoDir <repoDir>  Path to the  component repository (default:
+  -r, --repoDir <repoDir>  Path to the component repository (default:
                            "<cwd>")
   -h, --help               display help for command
 ```
@@ -191,7 +191,7 @@ Arguments:
 
 Options:
   -v, --verbose            Enable verbose (debug) log output (default: false)
-  -r, --repoDir <repoDir>  Path to the  component repository (default:
+  -r, --repoDir <repoDir>  Path to the component repository (default:
                            "<cwd>")
   --no-push                Do not push changes to remote git repository
   -d, --draft              Create a draft pull request (only if push is enabled) (default: false)
@@ -217,7 +217,7 @@ Publish a new release for a GLSP component (npm, maven, github ...)
 
 Options:
   -v, --verbose            Enable verbose (debug) log output (default: false)
-  -r, --repoDir <repoDir>  Path to the  component repository (default:
+  -r, --repoDir <repoDir>  Path to the component repository (default:
                            "<cwd>")
   --no-npm                 Skip npm publishing
   -d, --draft              Create a draft GitHub release (default: false)
