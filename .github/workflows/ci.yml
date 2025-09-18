@@ -1,0 +1,50 @@
+name: CI
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    name: Build
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20.x
+      - name: Build
+        run: yarn install
+      - name: Check for uncommitted changes in yarn.lock
+        run: |
+          if git diff --name-only | grep -q "^yarn.lock"; then
+            echo "::error::The yarn.lock file has uncommitted changes!"
+            exit 1
+          fi
+  lint:
+    name: Lint
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20.x
+      - name: Install
+        run: |
+          yarn install
+      - name: Create eslint json report
+        run: |
+          yarn lint:ci
+      - name: Create summary
+        if: always()
+        run: |
+          npm_config_yes=true npx github:10up/eslint-json-to-md#82ff16b --path ./eslint_report.json --output ./eslint_report.md
+          cat eslint_report.md >> $GITHUB_STEP_SUMMARY

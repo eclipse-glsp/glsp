@@ -34,7 +34,6 @@
     "chai": "^4.3.10",
     "ignore-styles": "^5.0.1",
     "mocha": "^10.2.0",
-    "mocha-jenkins-reporter": "^0.4.8",
     "nyc": "^15.1.0",
     "reflect-metadata": "^0.1.13",
     "sinon": "^15.1.0",
