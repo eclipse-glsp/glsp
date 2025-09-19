@@ -1,11 +1,11 @@
 # Eclipse GLSP
 
-[![Client Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/badge/icon?subject=client)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-client/job/master/)
+[![Client Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-client/ci.yml?branch=master&label=Client)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/ci.yml)
 [![ServerJava Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/badge/icon?subject=server-java)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/)
-[![ServerNode Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/badge/icon?subject=server-node)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server-node/job/main/)
-[![Dev Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/badge/icon?subject=dev-packages)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp/job/master/)
+[![ServerNode Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-server-node/ci.yml?branch=main&label=server-node)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml)
+[![Dev Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp/ci.yml?branch=master&label=dev-packages)](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml)
 [![Theia Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-theia-integration/ci.yml?branch=master&label=theia%20integration)](https://github.com/eclipse-glsp/glsp-theia-integration/actions/workflows/ci.yml)
-[![Vscode Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-vscode-integration/job/master/badge/icon?subject=vscode-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-vscode-integration/job/master/)
+[![Vscode Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-vscode-integration/ci.yml?branch=master&label=vscode%20integration)](https://github.com/eclipse-glsp/glsp-vscode-integration/actions/workflows/ci.yml)
 [![Eclipse Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/badge/icon?subject=eclipse-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/)
 [![Playwright Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-playwright/ci.yml?branch=main&label=playwright)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml)
 [![Examples Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-examples/ci.yml?branch=master&label=examples)](https://github.com/eclipse-glsp/glsp-examples/actions/workflows/ci.yml)

@@ -1,0 +1,48 @@
+name: 'Publish next'
+on:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+jobs:
+  build:
+    name: Build & Release
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success')
+    env:
+      changes: true
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          # To fetch all history for all branches and tags.
+          # Required for lerna to determine the version of the next package.
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_commit.id || github.sha }}
+      - name: Check for changes in "dev-packages" directory
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -qE '^dev-packages'; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+        if: github.event_name == 'workflow_run'
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20.x
+          registry-url: 'https://registry.npmjs.org'
+        if: env.changes == 'true'
+      - name: Build
+        run: yarn
+        if: env.changes == 'true'
+      - name: Publish NPM
+        run: yarn publish:next
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
+        if: env.changes == 'true'
