@@ -26,8 +26,12 @@ function escapeDoubleQuotesAndBackslashes(str: string): string {
     return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 export function isGitRepository(path?: string): boolean {
-    const isGitRepo = exec('git rev-parse --is-inside-work-tree', { silent: true, cwd: path }).toLocaleLowerCase() === 'true';
-    return isGitRepo;
+    try {
+        const isGitRepo = exec('git rev-parse --is-inside-work-tree', { silent: true, cwd: path }).toLocaleLowerCase() === 'true';
+        return isGitRepo;
+    } catch {
+        return false;
+    }
 }
 
 export function getGitRoot(path?: string): string {

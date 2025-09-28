@@ -16,42 +16,8 @@
 
 import path from 'path';
 import semver from 'semver';
-import { LOGGER, PackageHelper, configureExec, configureLogger, exec, getRemoteUrl, readFile, readPackage } from '../../util';
-
-export type GLSPRepo = (typeof GLSPRepo.choices)[number];
-export namespace GLSPRepo {
-    export const choices = [
-        'glsp',
-        'glsp-server-node',
-        'glsp-client',
-        'glsp-theia-integration',
-        'glsp-vscode-integration',
-        'glsp-eclipse-integration',
-        'glsp-server',
-        'glsp-playwright'
-    ] as const;
-
-    export function is(object: unknown): object is GLSPRepo {
-        return typeof object === 'string' && choices.includes(object as GLSPRepo);
-    }
-
-    export function isNpmRepo(repo: string): boolean {
-        return repo !== 'glsp-server' && repo !== 'glsp-eclipse-integration';
-    }
-
-    export function deriveFromDirectory(repoDir: string): GLSPRepo | undefined {
-        const remoteUrl = getRemoteUrl(repoDir);
-        const repo = remoteUrl.substring(remoteUrl.lastIndexOf('/') + 1).replace('.git', '');
-        if (!repo) {
-            LOGGER.warn(`No git repository found in ${repoDir}`);
-            return undefined;
-        }
-        if (!is(repo)) {
-            return undefined;
-        }
-        return repo;
-    }
-}
+import { LOGGER, PackageHelper, configureExec, configureLogger, exec, readFile, readPackage } from '../../util';
+import { GLSPRepo } from '../common';
 
 export interface RelengOptions {
     verbose: boolean;

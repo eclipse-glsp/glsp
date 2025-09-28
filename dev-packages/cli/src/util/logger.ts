@@ -16,6 +16,7 @@
 
 export interface Logger extends Pick<Console, LogLevel> {
     newLine(): void;
+    separator(repeat?: number): void;
 }
 
 export type LogLevel = 'info' | 'debug' | 'error' | 'warn';
@@ -34,7 +35,8 @@ export const LOGGER: Logger = {
     error: (...args) => log('error', ...args),
     warn: (...args) => log('warn', ...args),
     debug: (...args) => log('debug', ...args),
-    newLine: () => console.log('')
+    newLine: () => console.log(''),
+    separator: (repeat = 80) => console.log('-'.repeat(repeat))
 } as const;
 
 function log(level: LogLevel, ...args: any[]): void {

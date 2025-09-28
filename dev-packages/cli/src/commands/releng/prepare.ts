@@ -32,8 +32,8 @@ import {
     validateGitDirectory,
     writeFile
 } from '../../util';
+import { GLSPRepo } from '../common';
 import {
-    GLSPRepo,
     RelengCmdOptions,
     RelengOptions,
     VersionType,

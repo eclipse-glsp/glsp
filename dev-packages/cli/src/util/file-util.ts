@@ -157,6 +157,34 @@ export function findFiles(paths: string[] | string, pattern = '**/*'): string[] 
 }
 
 /**
+ * Lists the direct child directories from the given paths.
+ * @param paths The file or directory paths to check
+ * @returns An array of directory paths
+ */
+export function listDirectories(paths: string[] | string): string[] {
+    const directories: string[] = [];
+    const resolvedPaths = resolveFiles(paths);
+
+    for (const inputPath of resolvedPaths) {
+        if (!fs.existsSync(inputPath)) {
+            throw new Error(`no such file or directory: ${inputPath}`);
+        }
+
+        if (fs.statSync(inputPath).isDirectory()) {
+            const entries = fs.readdirSync(inputPath);
+            for (const entry of entries) {
+                const fullPath = path.join(inputPath, entry);
+                if (fs.statSync(fullPath).isDirectory()) {
+                    directories.push(fullPath);
+                }
+            }
+        }
+    }
+
+    return directories;
+}
+
+/**
  * Filters the given files, returning only those whose contents match the specified pattern.
  * @param files A single file path or an array of file paths to filter
  * @param pattern A string or RegExp pattern to match against file contents

@@ -15,7 +15,8 @@
  ********************************************************************************/
 
 import { LOGGER, baseCommand, cd, exec, execAsync, getLastCommitMessage, readFile, validateGitDirectory } from '../../util';
-import { GLSPRepo, RelengCmdOptions, checkGHCli, configureEnv, getChangeLogChanges, getLocalVersion } from './common';
+import { GLSPRepo } from '../common';
+import { RelengCmdOptions, checkGHCli, configureEnv, getChangeLogChanges, getLocalVersion } from './common';
 
 interface PublishCmdOptions extends RelengCmdOptions {
     npm: boolean;

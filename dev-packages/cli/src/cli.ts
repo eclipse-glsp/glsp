@@ -15,6 +15,7 @@
  ********************************************************************************/
 import { CheckHeaderCommand } from './commands/check-header';
 import { CoverageReportCommand } from './commands/coverage-report';
+import { LocalLinkCommand } from './commands/dev/local-link';
 import { GenerateIndex } from './commands/generate-index';
 import { RelengCommand } from './commands/releng/releng';
 import { UpdateNextCommand } from './commands/update-next';
@@ -27,6 +28,7 @@ const app = baseCommand() //
     .addCommand(CheckHeaderCommand)
     .addCommand(UpdateNextCommand)
     .addCommand(GenerateIndex)
+    .addCommand(LocalLinkCommand)
     .addCommand(RelengCommand);
 
 app.parseAsync(process.argv).catch(err => {

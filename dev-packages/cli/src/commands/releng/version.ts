@@ -32,7 +32,8 @@ import {
     validateGitDirectory,
     writeJson
 } from '../../util';
-import { GLSPRepo, RelengCmdOptions, RelengOptions, VersionType, asMvnVersion, configureEnv, isNextVersion } from './common';
+import { GLSPRepo } from '../common';
+import { RelengCmdOptions, RelengOptions, VersionType, asMvnVersion, configureEnv, isNextVersion } from './common';
 interface SetVersionsCmdOptions extends RelengCmdOptions {}
 
 export const VersionCommand = baseCommand()
