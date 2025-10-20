@@ -18,6 +18,7 @@
     "lint:ci": "yarn lint --output-file eslint_report.json --format json",
     "lint:fix": "yarn lint --fix",
     "prepare": "yarn run build",
+    "publish:latest": "lerna publish from-package --no-git-reset -y",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
     "watch": "yarn cli watch"
   },
