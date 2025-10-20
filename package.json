@@ -39,7 +39,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-no-null": "^1.0.2",
     "ignore-styles": "^5.0.1",
-    "lerna": "^6.6.2",
+    "lerna": "^9.0.0",
     "mocha": "^10.2.0",
     "mocha-ctrf-json-reporter": "^0.0.9",
     "nyc": "^15.1.0",

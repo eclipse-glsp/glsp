@@ -40,7 +40,7 @@ jobs:
   publish:
     name: Build & Publish
     runs-on: ubuntu-22.04
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || (github.event.workflow_run.conclusion == 'success')
+    if: github.repository == 'eclipse-glsp/glsp' && (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || (github.event.workflow_run.conclusion == 'success'))
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
