@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/cli",
-  "version": "2.6.0-next",
+  "version": "2.6.0",
   "description": "CLI Tooling & scripts for GLSP components",
   "homepage": "https://www.eclipse.org/glsp/",
   "bugs": "https://github.com/eclipse-glsp/glsp/issues",
@@ -39,7 +39,7 @@
     "watch:tsc": "tsc --watch"
   },
   "devDependencies": {
-    "@eclipse-glsp/config": "2.6.0-next",
+    "@eclipse-glsp/config": "2.6.0",
     "@types/glob": "^8.1.0",
     "@types/readline-sync": "^1.4.8",
     "@types/semver": "^7.7.1",
