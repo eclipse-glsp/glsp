@@ -16,7 +16,7 @@ Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
 -   Node 20, yarn 1.22.4 and lerna
--   OpenJDK 17 and Maven >=3.6.0
+-   OpenJDK 21 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
 ## License
