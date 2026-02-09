@@ -141,7 +141,6 @@ Commands:
   version [options] <versionType> [customVersion]  Set the version of all packages in a GLSP repository
   prepare [options] <versionType> [customVersion]     Prepare a new release for a GLSP component (version bump, changelog, PR
                                                       creation ...)
-  publish [options]                                   Publish a new release for a GLSP component (npm, maven, github ...)
   help [command]                                      display help for command
 ```
 
@@ -196,31 +195,6 @@ Options:
   --no-push                Do not push changes to remote git repository
   -d, --draft              Create a draft pull request (only if push is enabled) (default: false)
   --no-check               Skip initial checks for existing dependency versions
-  -h, --help               display help for command
-```
-
-### publish
-
-Helper command for publishing a new GLSP release.
-This command should be used on the main branch of GLSP repo after a (previously prepared) Release PR has been merged.
-Creates & publishes an new tag and Github release.
-In addition, for all non-Java repositories the release version will be published to npm.
-
-The glsp repository type ("glsp-client", "glsp-server-node" etc.) is auto detected from the given repository path.
-If the command is invoked in a non-GLSP repository it will fail.
-
-```console
-$ glsp releng publish -h\
-Usage: glsp releng publish [options]
-
-Publish a new release for a GLSP component (npm, maven, github ...)
-
-Options:
-  -v, --verbose            Enable verbose (debug) log output (default: false)
-  -r, --repoDir <repoDir>  Path to the component repository (default:
-                           "<cwd>")
-  --no-npm                 Skip npm publishing
-  -d, --draft              Create a draft GitHub release (default: false)
   -h, --help               display help for command
 ```
 

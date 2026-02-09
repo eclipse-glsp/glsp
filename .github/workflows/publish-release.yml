@@ -1,0 +1,173 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_repo:
+        description: 'GLSP repository to publish'
+        required: true
+        type: choice
+        options:
+          - glsp
+          - glsp-client
+          - glsp-theia-integration
+          - glsp-server
+          - glsp-server-node
+          - glsp-eclipse-integration
+          - glsp-vscode-integration
+          - glsp-playwright
+      branch:
+        description: 'Branch to use for the release repo (default: default branch)'
+        required: false
+        type: string
+      draft:
+        description: 'Create draft GitHub release'
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      release_repo:
+        description: 'GLSP repository to publish'
+        required: true
+        type: string
+      branch:
+        description: 'Branch to use for the release repo (default: default branch)'
+        required: false
+        type: string
+      draft:
+        description: 'Create draft GitHub release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release repo (${{ inputs.release_repo || github.event.inputs.release_repo }})
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          repository: eclipse-glsp/${{ inputs.release_repo || github.event.inputs.release_repo }}
+          path: release-repo
+          ref: ${{ inputs.branch || github.event.inputs.branch }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract and validate version
+        id: version
+        working-directory: ./release-repo
+        run: |
+          # Extract version from package.json or pom.xml
+          if [ -f package.json ]; then
+            VERSION=$(jq -r '.version' package.json)
+          elif [ -f pom.xml ]; then
+            VERSION=$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          else
+            echo "::error::No package.json or pom.xml found"
+            exit 1
+          fi
+
+          echo "Detected version: $VERSION"
+
+          # Validate: no pre-release versions (no '-' in version)
+          if [[ "$VERSION" == *-* ]]; then
+            echo "::error::Cannot publish pre-release version: $VERSION"
+            exit 1
+          fi
+
+          # Validate: last commit message must contain the version tag
+          LAST_COMMIT=$(git log -1 --pretty=%s)
+          if [[ "$LAST_COMMIT" != *"v$VERSION"* ]]; then
+            echo "::error::Last commit message does not contain v$VERSION: $LAST_COMMIT"
+            exit 1
+          fi
+
+          # Validate: CHANGELOG.md must have an entry for this version
+          if ! grep -q "^## \[v$VERSION" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for v$VERSION"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog section
+        id: changelog
+        working-directory: ./release-repo
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          REPO="${{ inputs.release_repo || github.event.inputs.release_repo }}"
+
+          # Extract section: skip the header line, grab until next ## [v heading
+          CONTENT=$(awk -v ver="$VERSION" '
+            /^## \[v/ {
+              if (found) exit
+              if (index($0, "## [v" ver) == 1) { found=1; next }
+            }
+            found { print }
+          ' CHANGELOG.md)
+
+          # Remove leading blank lines
+          CONTENT=$(echo "$CONTENT" | sed '/./,$!d')
+
+          # Demote ### headings to ##
+          CONTENT=$(echo "$CONTENT" | sed 's/^### /## /g')
+
+          # Append Full Changelog link if a previous release tag exists
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^v${VERSION}$" | head -1)
+          if [ -n "$PREV_TAG" ]; then
+            CONTENT="$CONTENT
+
+          **Full Changelog**: https://github.com/eclipse-glsp/$REPO/compare/$PREV_TAG...v$VERSION"
+          fi
+
+          # Write to file for gh release --notes-file
+          echo "$CONTENT" > "$RUNNER_TEMP/changelog_section.md"
+
+      - name: Create and push git tag
+        working-directory: ./release-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin tag "v$VERSION"
+
+      - name: Create GitHub release
+        working-directory: ./release-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          REPO="${{ inputs.release_repo || github.event.inputs.release_repo }}"
+          DRAFT_FLAG=""
+          if [[ "${{ inputs.draft || github.event.inputs.draft }}" == "true" ]]; then
+            DRAFT_FLAG="--draft"
+          fi
+
+          gh release create "v$VERSION" \
+            --title "Release v$VERSION" \
+            --notes-file "$RUNNER_TEMP/changelog_section.md" \
+            --repo "eclipse-glsp/$REPO" \
+            $DRAFT_FLAG
+
+      - name: Trigger npm trusted publishing
+        if: >-
+          inputs.release_repo != 'glsp-server' &&
+          inputs.release_repo != 'glsp-eclipse-integration' &&
+          github.event.inputs.release_repo != 'glsp-server' &&
+          github.event.inputs.release_repo != 'glsp-eclipse-integration'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          REPO="${{ inputs.release_repo || github.event.inputs.release_repo }}"
+
+          gh workflow run publish.yml \
+            --repo "eclipse-glsp/$REPO" \
+            -f "ref=v$VERSION" \
+            -f "dist-tag=latest"
