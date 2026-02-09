@@ -16,7 +16,7 @@
 -   [`latest`, `ubuntu`, `ubuntu-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
 -   [`uitest`,`uitest-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
 
--   [`alpine`, `alpine-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   [`alpine`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
 Note that these tags are fluent and not bound to a fixed image version.
 If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`.
@@ -35,7 +35,7 @@ Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
 -   Node 20, yarn 1.22.19 and lerna
--   OpenJDK 17 and Maven >=3.6.0
+-   OpenJDK 21 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
 ## How to use this image
@@ -83,6 +83,8 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
 -   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
 -   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
+-   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21 (alpine only)
+-   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11 (alpine only)
 
 ## License
 

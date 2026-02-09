@@ -2,10 +2,6 @@
 
 ## v2.6.0 - active
 
-### Changes
-
-### Potentially Breaking Changes
-
 ## [v2.5.0 - 07/09/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.5.0)
 
 ### Changes
