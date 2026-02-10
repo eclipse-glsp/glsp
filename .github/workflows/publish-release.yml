@@ -150,7 +150,7 @@ jobs:
           fi
 
           gh release create "v$VERSION" \
-            --title "Release v$VERSION" \
+            --title "v$VERSION Release" \
             --notes-file "$RUNNER_TEMP/changelog_section.md" \
             --repo "eclipse-glsp/$REPO" \
             $DRAFT_FLAG
