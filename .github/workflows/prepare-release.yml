@@ -86,8 +86,17 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set up Java 21
+        if: >-
+          (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-server' ||
+          (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-eclipse-integration'
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
       - name: Set up Python
-        if: inputs.release_repo == 'glsp-theia-integration'
+        if: (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-theia-integration'
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
