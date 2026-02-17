@@ -50,7 +50,7 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
 
     LOGGER.info('Updating next dependencies ...');
     rootDir = path.resolve(rootDir);
-    const packages = getYarnWorkspacePackages(rootDir);
+    const packages = getYarnWorkspacePackages(rootDir, true);
     LOGGER.debug(`Scanning ${packages.length} packages to derive resolutions`, packages);
     const resolutions = await getResolutions(packages);
     if (Object.keys(resolutions).length === 0) {
