@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/dev",
-  "version": "2.6.0",
+  "version": "2.7.0-next",
   "description": "All-in-one meta package that provides the GLSP development and test configuration packages, as well as  the GLSP CLI package",
   "keywords": [
     "eclipse",
@@ -24,9 +24,9 @@
     }
   ],
   "dependencies": {
-    "@eclipse-glsp/cli": "2.6.0",
-    "@eclipse-glsp/config": "2.6.0",
-    "@eclipse-glsp/config-test": "2.6.0"
+    "@eclipse-glsp/cli": "2.7.0-next",
+    "@eclipse-glsp/config": "2.7.0-next",
+    "@eclipse-glsp/config-test": "2.7.0-next"
   },
   "publishConfig": {
     "access": "public"
