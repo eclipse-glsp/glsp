@@ -1,9 +1,19 @@
-module.exports = require('./configs/base.eslintrc');
-module.exports = require('./configs/errors.eslintrc');
-module.exports = require('./configs/warnings.eslintrc');
-/** @type {import('eslint').Linter.Config} */
-module.exports = {
-    extends: ['prettier', './configs/base.eslintrc', './configs/warnings.eslintrc', './configs/errors.eslintrc'],
-    ignorePatterns: ['**/{css,node_modules,lib}'],
-    root: true
-};
+const baseConfig = require('./configs/base');
+const warningsConfig = require('./configs/warnings');
+const errorsConfig = require('./configs/errors');
+const eslintConfigPrettier = require('eslint-config-prettier');
+
+module.exports = [
+    // Global ignores (replaces ignorePatterns + .eslintignore)
+    {
+        ignores: ['**/{css,node_modules,lib,dist}', '**/*.d.ts', '**/*.map']
+    },
+    // Base config (parser, plugins, recommended presets)
+    ...baseConfig,
+    // Warning-level rules
+    ...warningsConfig,
+    // Error-level rules
+    ...errorsConfig,
+    // Prettier (must be last — disables conflicting formatting rules)
+    eslintConfigPrettier
+];

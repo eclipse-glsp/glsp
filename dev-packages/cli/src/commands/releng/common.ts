@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 EclipseSource and others.
+ * Copyright (c) 2025-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,8 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import path from 'path';
-import semver from 'semver';
+import * as path from 'path';
+import * as semver from 'semver';
 import { LOGGER, PackageHelper, configureExec, configureLogger, exec, getRemoteUrl, readFile, readPackage } from '../../util';
 
 export type GLSPRepo = (typeof GLSPRepo.choices)[number];

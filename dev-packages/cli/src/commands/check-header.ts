@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2025 EclipseSource and others.
+ * Copyright (c) 2022-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-/* eslint-disable max-len */
 import { Option } from 'commander';
 import * as fs from 'fs';
 import { glob } from 'glob';
@@ -44,6 +43,7 @@ export interface HeaderCheckOptions {
     json: boolean;
     excludeDefaults: boolean;
     autoFix: boolean;
+    commit: boolean;
 }
 
 const checkTypes = ['full', 'changes', 'lastCommit'] as const;
@@ -79,7 +79,8 @@ export const CheckHeaderCommand = baseCommand() //
         'Disables the default excludes patterns. Only explicitly passed exclude patterns (-e, --exclude) are considered'
     )
     .option('-j, --json', 'Also persist validation results as json file', false)
-    .option('-a, --autoFix', 'Auto apply & commit fixes without prompting the user', false)
+    .option('-a, --autoFix', 'Auto apply fixes without prompting the user', false)
+    .option('--commit', 'When used with --autoFix, also create a git commit for the fixed files', false)
     .action(checkHeaders);
 
 export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void {
@@ -263,7 +264,7 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
         replaceInFile(violation.file, RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`);
     });
     LOGGER.newLine();
-    if (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?')) {
+    if (options.commit && (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?'))) {
         LOGGER.newLine();
         const files = violations.map(violation => violation.file).join(' ');
         exec(`git add ${files}`);
