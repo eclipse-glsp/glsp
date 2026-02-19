@@ -10,17 +10,30 @@ yarn add --dev @eclipse-glsp/eslint-config
 
 ## Usage
 
-**Create a `.eslintrc.js`**:
+**Create an `eslint.config.mjs`**:
 
 ```javascript
-/** @type {import('eslint').Linter.Config} */
-module.exports = {
-    extends: '@eclipse-glsp',
-    parserOptions: {
-        tsconfigRootDir: __dirname,
-        project: 'tsconfig.json'
+import glspConfig from '@eclipse-glsp/eslint-config';
+
+export default [
+    ...glspConfig,
+    {
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: import.meta.dirname,
+                project: 'tsconfig.json'
+            }
+        }
     }
-};
+];
+```
+
+Individual config layers can also be imported separately:
+
+```javascript
+import baseConfig from '@eclipse-glsp/eslint-config/base';
+import warningsConfig from '@eclipse-glsp/eslint-config/warnings';
+import errorsConfig from '@eclipse-glsp/eslint-config/errors';
 ```
 
 ## More information

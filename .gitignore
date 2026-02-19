@@ -4,3 +4,9 @@ lib
 dist
 tsconfig.tsbuildinfo
 eslint.xml
+
+# Agent specific files
+.claude/plans
+.claude/settings.local.json
+CLAUDE.local.md
+.reviews
