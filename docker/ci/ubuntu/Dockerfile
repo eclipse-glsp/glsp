@@ -1,5 +1,7 @@
 # eclipseglsp/ci:ubuntu
 # 6.0
+# DEPRECATED: This image is deprecated and no longer maintained.
+# Please use the alpine variant instead: eclipseglsp/ci:alpine
 FROM ubuntu:22.04 
 # Install node & other Theia related dependencies
 RUN apt-get update && \

@@ -13,10 +13,10 @@
 
 ## Supported tags and respective `Dockerfile` links
 
--   [`latest`, `ubuntu`, `ubuntu-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)
--   [`uitest`,`uitest-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)
+-   [`alpine`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
--   [`alpine`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   ~~[`latest`, `ubuntu`, `ubuntu-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)~~ (deprecated)
+-   ~~[`uitest`,`uitest-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)~~ (deprecated)
 
 Note that these tags are fluent and not bound to a fixed image version.
 If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`.
@@ -34,7 +34,7 @@ They are mainly used for CI jobs that require the possibility to build client an
 Currently each image variant has at least the following components installed:
 
 -   Git >=2.17.1
--   Node 20, yarn 1.22.19 and lerna
+-   Node 22, yarn 1.22.19 and lerna
 -   OpenJDK 21 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
@@ -52,13 +52,12 @@ Alternatively, you can run the image in interactive mode and gain full access to
 
 The `ci` images come in different flavors, each designed for a specific use case.
 
-### `ci:ubuntu<-suffix>`
+### `ci:ubuntu<-suffix>` (deprecated)
 
-This is the defacto base image. If you are unsure about what your needs are, you probably want to use this one.
-It is designed to be used both as a throw-away container (mount your source code and start the container to start your app) and as the base to build other images from.
+> **Deprecated:** This image variant is deprecated and no longer maintained. Please use the `alpine` variant instead.
 
-As the name indicates this image is based on [Ubuntu](https://ubuntu.com/).
-This makes it very easy to use and customize but also results in a larger image size compared to the `alpine` variant.
+This image is based on [Ubuntu](https://ubuntu.com/).
+It was previously the default image but has been superseded by the `alpine` variant.
 
 ### `ci:alpine<-suffix>`
 
@@ -68,9 +67,11 @@ Alpine Linux is much smaller than most distribution base images (~5MB), and thus
 It only provides the essential libraries needed for building client and server components and is the recommended image for classical CI jobs like building branches or PRs on change, or deploying build artifacts.
 Due to its slim size, it cannot be used for more sophisticated jobs like end-to-end testing without further extension, because essential components, such as a display server or a browser are not included.
 
-### `ci:uitest<-suffix>`
+### `ci:uitest<-suffix>` (deprecated)
 
-This is the recommend image for CI jobs that execute any sort of UI tests.
+> **Deprecated:** This image variant is deprecated and no longer maintained. Please use the `alpine` variant instead.
+
+This image was the recommended image for CI jobs that execute UI tests.
 It uses the same base as the `ubuntu` image but has additional libraries installed (including Xvfb which enables headless UI testing).
 In addition, Google Chrome is installed which enables browser-based UI testing of client components.
 
@@ -85,6 +86,7 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
 -   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21 (alpine only)
 -   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11 (alpine only)
+-   [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22 (alpine only). Ubuntu and uitest variants are deprecated and no longer maintained.
 
 ## License
 

@@ -17,8 +17,6 @@ import { Option } from 'commander';
 import * as fs from 'fs';
 import { glob } from 'glob';
 import * as minimatch from 'minimatch';
-import * as readline from 'readline-sync';
-
 import * as path from 'path';
 import {
     LOGGER,
@@ -174,7 +172,9 @@ function validate(rootDir: string, files: string[], options: HeaderCheckOptions)
 
     results.sort((a, b) => a.file.localeCompare(b.file));
 
-    process.stdout.clearLine(0);
+    if (process.stdout.isTTY) {
+        process.stdout.clearLine(0);
+    }
     return results;
 }
 
@@ -191,13 +191,12 @@ function validateEndYear(result: DateValidationResult): void {
 }
 
 function printFileProgress(currentFileCount: number, maxFileCount: number, message: string, clear = true): void {
-    if (clear) {
+    if (clear && process.stdout.isTTY) {
         process.stdout.clearLine(0);
         process.stdout.cursorTo(0);
-    }
-    process.stdout.write(`[${currentFileCount} of ${maxFileCount}] ${message}`);
-    if (!clear) {
-        process.stdout.write('\n');
+        process.stdout.write(`[${currentFileCount} of ${maxFileCount}] ${message}`);
+    } else {
+        process.stdout.write(`[${currentFileCount} of ${maxFileCount}] ${message}\n`);
     }
 }
 
@@ -219,15 +218,16 @@ export function handleValidationResults(rootDir: string, results: ValidationResu
         fs.writeFileSync(path.join(rootDir, 'headerCheck.json'), JSON.stringify(results, undefined, 2));
     }
 
-    if (
-        violations.length > 0 &&
-        (options.autoFix || readline.keyInYN('Do you want to automatically fix copyright year range violations?'))
-    ) {
+    if (violations.length > 0 && options.autoFix) {
         const toFix = violations.filter(violation => isDateValidationResult(violation)) as DateValidationResult[];
         fixViolations(rootDir, toFix, options);
     }
 
     LOGGER.info('Check completed');
+
+    if (violations.length > 0 && !options.autoFix) {
+        process.exit(1);
+    }
 }
 
 function toPrintMessage(result: ValidationResult): string {
@@ -264,7 +264,7 @@ function fixViolations(rootDir: string, violations: DateValidationResult[], opti
         replaceInFile(violation.file, RegExp('Copyright \\([cC]\\) ' + currentRange), `Copyright (c) ${fixedRange}`);
     });
     LOGGER.newLine();
-    if (options.commit && (options.autoFix || readline.keyInYN('Do you want to create a commit for the fixed files?'))) {
+    if (options.commit && options.autoFix) {
         LOGGER.newLine();
         const files = violations.map(violation => violation.file).join(' ');
         exec(`git add ${files}`);

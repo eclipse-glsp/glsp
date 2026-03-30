@@ -1,6 +1,6 @@
 # eclipseglsp/ci:alpine
-# 7.1
-FROM node:20-alpine3.22
+# 8.0
+FROM node:22-alpine3.21
 
 # Install Java, Maven, Git and dependecies for Theia
 ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
