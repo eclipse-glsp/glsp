@@ -15,7 +15,6 @@
  ********************************************************************************/
 import { Option } from 'commander';
 import * as fs from 'fs';
-import { glob } from 'glob';
 import * as minimatch from 'minimatch';
 import * as readline from 'readline-sync';
 
@@ -83,14 +82,14 @@ export const CheckHeaderCommand = baseCommand() //
     .option('--commit', 'When used with --autoFix, also create a git commit for the fixed files', false)
     .action(checkHeaders);
 
-export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void {
+export async function checkHeaders(rootDir: string, options: HeaderCheckOptions): Promise<void> {
     configureExec({ silent: true, fatal: true });
     cd(rootDir);
     if (options.excludeDefaults) {
         options.exclude.push(...DEFAULT_EXCLUDES);
     }
 
-    const files = getFiles(rootDir, options);
+    const files = await getFiles(rootDir, options);
     LOGGER.info(`Check copy right headers of ${files.length} files`);
     if (files.length === 0) {
         LOGGER.info('Check completed');
@@ -100,14 +99,16 @@ export function checkHeaders(rootDir: string, options: HeaderCheckOptions): void
     handleValidationResults(rootDir, results, options);
 }
 
-function getFiles(rootDir: string, options: HeaderCheckOptions): string[] {
+async function getFiles(rootDir: string, options: HeaderCheckOptions): Promise<string[]> {
     const includePattern = `**/*.@(${options.fileExtensions.join('|')})`;
     const excludePattern = options.exclude;
 
     if (options.type === 'full') {
-        const result = glob.sync(includePattern, {
+        const { globbySync } = await import('globby');
+        const result = globbySync(includePattern, {
             cwd: rootDir,
-            ignore: excludePattern
+            ignore: excludePattern,
+            gitignore: true
         });
         return resolveFiles(result);
     }
