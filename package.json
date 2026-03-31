@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "check:all": "yarn install && yarn lint &&  yarn prettier:check && yarn headers:check",
+    "check:all": "yarn install && yarn lint &&  yarn format:check && yarn headers:check",
     "clean": "lerna run clean",
     "cli": "yarn --cwd dev-packages/cli",
     "fix:all": "yarn lint:fix && yarn format && yarn headers:fix",
@@ -31,7 +31,7 @@
     "@tony.ganchev/eslint-plugin-header": "^3.1.1",
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
-    "@types/node": "20.x",
+    "@types/node": "22.x",
     "@types/sinon": "^10.0.13",
     "chai": "^4.3.7",
     "eslint": "^9.0.0",
@@ -55,7 +55,7 @@
     "typescript-eslint": "^8.0.0"
   },
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "yarn": ">=1.7.0 <2"
   }
 }

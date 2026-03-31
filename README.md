@@ -116,11 +116,11 @@ All changes on the master branch are deployed automatically to the corresponding
 
 ### Client packages
 
-We recommend node in version 20 or higher:
+We recommend node in version 22 or higher:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-nvm install 18
+nvm install 22
 ```
 
 and Yarn

@@ -41,13 +41,11 @@
   "devDependencies": {
     "@eclipse-glsp/config": "2.7.0-next",
     "@types/glob": "^8.1.0",
-    "@types/readline-sync": "^1.4.8",
     "@types/semver": "^7.7.1",
     "commander": "^14.0.0",
     "esbuild": "~0.25.9",
     "glob": "^10.4.5",
     "globby": "^14.1.0",
-    "readline-sync": "^1.4.10",
     "semver": "^7.7.2"
   },
   "publishConfig": {
