@@ -1,5 +1,17 @@
 # Eclipse GLSP Dev Packages Changelog
 
+## v2.7.0 - active
+
+### Changes
+
+-   [eslint-config] Update ESLint configuration and dependencies to ESLint 9.x [#1638](https://github.com/eclipse-glsp/glsp/pull/1638)
+-   [cli] Fix a bug in `checkHeaders` where gitignored files were incorrectly included in the full header check [#1643](https://github.com/eclipse-glsp/glsp/pull/1643)
+-   [cli] Fix a bug in `checkHeaders` that caused errors in non-tty shell environments [#1644](https://github.com/eclipse-glsp/glsp/pull/1644)
+
+### Potentially Breaking Changes
+
+-   [node] Update minimum requirements for Node to >=22.x [#1644](https://github.com/eclipse-glsp/glsp/pull/1644)
+
 ## [v2.6.0 - 09/02/2026](https://github.com/eclipse-glsp/glsp/releases/tag/v2.6.0)
 
 ## [v2.5.0 - 07/09/2024](https://github.com/eclipse-glsp/glsp/releases/tag/v2.5.0)
