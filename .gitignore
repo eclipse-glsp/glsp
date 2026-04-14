@@ -4,6 +4,7 @@ lib
 dist
 tsconfig.tsbuildinfo
 eslint.xml
+ctrf/
 
 # Agent specific files
 .claude/plans

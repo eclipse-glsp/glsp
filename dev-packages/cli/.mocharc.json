@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/mocharc",
+  "extends": "@eclipse-glsp/mocha-config",
+  "spec": ["./src/**/*.spec.ts"],
+  "timeout": 30000
+}

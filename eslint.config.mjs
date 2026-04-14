@@ -22,5 +22,13 @@ export default [
         rules: {
             'import-x/no-unresolved': 'off'
         }
+    },
+    // Disable @typescript-eslint/no-unused-expressions for test files (chai-friendly rule handles this)
+    {
+        files: ['**/*.spec.{ts,tsx}'],
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
+            'import-x/namespace': 'off'
+        }
     }
 ];

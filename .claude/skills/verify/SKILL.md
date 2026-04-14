@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Run full project validation (lint, format, copyright headers) to catch issues before committing. IMPORTANT - Proactively invoke this skill after completing any code changes (new features, bug fixes, refactors) before reporting completion to the user.
+description: Run full project validation (lint, format, copyright headers, unit tests) to catch issues before committing. IMPORTANT - Proactively invoke this skill after completing any code changes (new features, bug fixes, refactors) before reporting completion to the user.
 ---
 
 Run the full validation suite for the GLSP dev-packages monorepo from the repository root:
@@ -9,7 +9,7 @@ Run the full validation suite for the GLSP dev-packages monorepo from the reposi
 yarn check:all
 ```
 
-This runs `yarn install && yarn lint && yarn format:check && yarn headers:check` in sequence.
+This runs `yarn install && yarn lint && yarn format:check && yarn headers:check && yarn test` in sequence.
 
 
 On failure:

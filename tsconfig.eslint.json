@@ -3,5 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["dev-packages/*/src", "releng/src"]
+  "include": ["dev-packages/*/src", "dev-packages/*/tests", "releng/src"]
 }
