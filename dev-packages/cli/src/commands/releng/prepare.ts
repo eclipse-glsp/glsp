@@ -161,10 +161,18 @@ async function buildNpm(options: PrepareReleaseOptions): Promise<void> {
 async function buildJavaServer(options: PrepareReleaseOptions): Promise<void> {
     LOGGER.info('Build M2 & P2');
     LOGGER.debug('M2');
-    await execAsync('mvn clean install -Pm2', { silent: false, cwd: options.repoDir, errorMsg: 'M2 build failed' });
+    await execAsync('mvn clean install -Pm2 -B', {
+        silent: false,
+        cwd: options.repoDir,
+        errorMsg: 'M2 build failed'
+    });
     LOGGER.newLine();
     LOGGER.debug('P2');
-    await execAsync('mvn clean install -Pp2', { silent: false, cwd: options.repoDir, errorMsg: 'P2 build failed' });
+    await execAsync('mvn clean install -Pp2 -B', {
+        silent: false,
+        cwd: options.repoDir,
+        errorMsg: 'P2 build failed'
+    });
     LOGGER.debug('Build succeeded');
 }
 
@@ -173,7 +181,11 @@ async function buildEclipseIntegration(options: PrepareReleaseOptions): Promise<
     // await execAsync('yarn', { silent: false, cwd: path.resolve(options.repoDir, 'client'), errorMsg: 'Client build failed' });
     LOGGER.newLine();
     LOGGER.info('Build Server(P2)');
-    await execAsync('mvn clean install', { silent: false, cwd: path.resolve(options.repoDir, 'server'), errorMsg: 'Server build failed' });
+    await execAsync('mvn clean install -B', {
+        silent: false,
+        cwd: path.resolve(options.repoDir, 'server'),
+        errorMsg: 'Server build failed'
+    });
     LOGGER.debug('Build successful');
 }
 
