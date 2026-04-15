@@ -35,6 +35,11 @@
     "lint": "eslint --ext .ts,.tsx ./src",
     "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
     "start": "node dist/cli.js",
+    "test": "mocha --config .mocharc.json",
+    "test:all": "yarn test && yarn test:e2e",
+    "test:ci": "yarn test --reporter mocha-ctrf-json-reporter",
+    "test:coverage": "nyc yarn test",
+    "test:e2e": "yarn build && mocha --config .mocharc.e2e.json",
     "watch": "node esbuild.js --watch",
     "watch:tsc": "tsc --watch"
   },

@@ -1,12 +1,12 @@
 {
-  "extends": "@eclipse-glsp/ts-config",
+  "extends": "@eclipse-glsp/ts-config/mocha",
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "module": "Node16",
     "noEmit": true,
     "moduleResolution": "Node16"
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }

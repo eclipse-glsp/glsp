@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "check:all": "yarn install && yarn lint &&  yarn format:check && yarn headers:check",
+    "check:all": "yarn install && yarn lint &&  yarn format:check && yarn headers:check && yarn test",
     "clean": "lerna run clean",
     "cli": "yarn --cwd dev-packages/cli",
     "fix:all": "yarn lint:fix && yarn format && yarn headers:fix",
@@ -22,6 +22,9 @@
     "prepare": "yarn run build",
     "publish:latest": "lerna publish from-package --no-git-reset -y",
     "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
+    "test": "yarn --cwd dev-packages/cli test",
+    "test:ci": "yarn --cwd dev-packages/cli test:ci",
+    "test:e2e": "yarn --cwd dev-packages/cli test:e2e",
     "watch": "yarn cli watch"
   },
   "devDependencies": {
