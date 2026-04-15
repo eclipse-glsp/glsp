@@ -216,7 +216,7 @@ async function setVersionJavaServer(options: JavaSetVersionOptions): Promise<voi
     LOGGER.debug('Preprocessing complete');
 
     // Execute tycho-versions plugin
-    await execAsync(`mvn tycho-versions:set-version -DnewVersion=${options.mvnVersion}`, {
+    await execAsync(`mvn tycho-versions:set-version -DnewVersion=${options.mvnVersion} -B`, {
         errorMsg: 'Mvn set-versions failed',
         cwd: options.repoDir,
         silent: false
@@ -252,7 +252,7 @@ function setVersionEclipseClient(options: JavaSetVersionOptions): void {
 async function setVersionEclipseServer(options: JavaSetVersionOptions): Promise<void> {
     LOGGER.debug('Set server pom.xml versions ...');
     cd(path.join(options.repoDir, 'server'));
-    await execAsync(`mvn tycho-versions:set-version -DnewVersion=${options.mvnVersion}`, {
+    await execAsync(`mvn tycho-versions:set-version -DnewVersion=${options.mvnVersion} -B`, {
         silent: false,
         errorMsg: 'Tycho set-versions failed'
     });
