@@ -27,6 +27,7 @@ import {
     getChangesOfLastCommit,
     getLastModificationDate,
     getUncommittedChanges,
+    globby,
     readFile,
     replaceInFile,
     resolveFiles,
@@ -102,8 +103,7 @@ async function getFiles(rootDir: string, options: HeaderCheckOptions): Promise<s
     const excludePattern = options.exclude;
 
     if (options.type === 'full') {
-        const { globbySync } = await import('globby');
-        const result = globbySync(includePattern, {
+        const result = globby(includePattern, {
             cwd: rootDir,
             ignore: excludePattern,
             gitignore: true

@@ -2,5 +2,6 @@
   "$schema": "https://json.schemastore.org/mocharc",
   "extends": "@eclipse-glsp/mocha-config",
   "spec": ["./src/**/*.spec.ts"],
-  "timeout": 30000
+  "timeout": 30000,
+  "node-option": ["no-experimental-strip-types"]
 }

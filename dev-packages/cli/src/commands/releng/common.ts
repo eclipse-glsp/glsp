@@ -16,42 +16,17 @@
 
 import * as path from 'path';
 import * as semver from 'semver';
-import { LOGGER, PackageHelper, configureExec, configureLogger, exec, getRemoteUrl, readFile, readPackage } from '../../util';
-
-export type GLSPRepo = (typeof GLSPRepo.choices)[number];
-export namespace GLSPRepo {
-    export const choices = [
-        'glsp',
-        'glsp-server-node',
-        'glsp-client',
-        'glsp-theia-integration',
-        'glsp-vscode-integration',
-        'glsp-eclipse-integration',
-        'glsp-server',
-        'glsp-playwright'
-    ] as const;
-
-    export function is(object: unknown): object is GLSPRepo {
-        return typeof object === 'string' && choices.includes(object as GLSPRepo);
-    }
-
-    export function isNpmRepo(repo: string): boolean {
-        return repo !== 'glsp-server' && repo !== 'glsp-eclipse-integration';
-    }
-
-    export function deriveFromDirectory(repoDir: string): GLSPRepo | undefined {
-        const remoteUrl = getRemoteUrl(repoDir);
-        const repo = remoteUrl.substring(remoteUrl.lastIndexOf('/') + 1).replace('.git', '');
-        if (!repo) {
-            LOGGER.warn(`No git repository found in ${repoDir}`);
-            return undefined;
-        }
-        if (!is(repo)) {
-            return undefined;
-        }
-        return repo;
-    }
-}
+import {
+    GLSPRepo,
+    LOGGER,
+    checkGHCli,
+    configureEnv,
+    exec,
+    getGLSPDependencies,
+    isGithubCLIAuthenticated,
+    readFile,
+    readPackage
+} from '../../util';
 
 export interface RelengOptions {
     verbose: boolean;
@@ -62,32 +37,6 @@ export interface RelengOptions {
 }
 
 export type RelengCmdOptions = Omit<RelengOptions, 'version' | 'repo' | 'versionType'>;
-
-export function checkGHCli(): void {
-    LOGGER.debug('Verify that Github CLI is configured correctly');
-    if (!isGithubCLIAuthenticated()) {
-        throw new Error("Github CLI is not configured properly. No user is logged in for host 'github.com'");
-    }
-}
-
-export function isGithubCLIAuthenticated(): boolean {
-    LOGGER.debug('Verify that Github CLI is installed');
-    exec('which gh', { silent: true, errorMsg: 'Github CLI is not installed!' });
-
-    try {
-        exec('gh auth status');
-    } catch (error) {
-        LOGGER.warn('Github CLI authentication status could not be determined.');
-        return false;
-    }
-    LOGGER.debug('Github CLI is authenticated and ready to use');
-    return true;
-}
-
-export function configureEnv(options: RelengCmdOptions): void {
-    configureLogger(options.verbose);
-    configureExec({ silent: !options.verbose, verbose: options.verbose });
-}
 
 // Versioning
 
@@ -209,12 +158,6 @@ export async function checkIfNpmVersionIsNew(pckgName: string, newVersion: strin
     throw new Error(`Version '${newVersion} is already present on NPM!}`);
 }
 
-export function getGLSPDependencies(pkg: PackageHelper): string[] {
-    const deps = pkg.content.dependencies ? Object.keys(pkg.content.dependencies) : [];
-    const devDeps = pkg.content.devDependencies ? Object.keys(pkg.content.devDependencies) : [];
-    return [...deps, ...devDeps].filter(dep => dep.startsWith('@eclipse-glsp'));
-}
-
 /**
  * Returns the most recent release tag (excluding pre-releases and custom qualifier tags).
  * Only tags that start with 'v' followed by a semantic version (e.g. v1.0.0) are considered.
@@ -256,3 +199,5 @@ export function getChangeLogChanges(options: Pick<RelengOptions, 'repoDir' | 've
     }
     return content;
 }
+
+export { GLSPRepo, checkGHCli, configureEnv, getGLSPDependencies, isGithubCLIAuthenticated };

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022-2023 EclipseSource and others.
+ * Copyright (c) 2022-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -15,6 +15,7 @@
  ********************************************************************************/
 
 export interface Logger extends Pick<Console, LogLevel> {
+    label(...args: any[]): void;
     newLine(): void;
 }
 
@@ -34,6 +35,7 @@ export const LOGGER: Logger = {
     error: (...args) => log('error', ...args),
     warn: (...args) => log('warn', ...args),
     debug: (...args) => log('debug', ...args),
+    label: (...args) => console.log('\x1b[34m', '▸', ...args, '\x1b[0m'),
     newLine: () => console.log('')
 } as const;
 
