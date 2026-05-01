@@ -62,7 +62,7 @@ repos=$(gh api --paginate "orgs/$ORG/repos" --jq '.[].name' | sort)
             pos=$((i + 1))
             if [ "$pos" -lt "$total_badges" ]; then
                 if [ $((pos % BADGES_PER_LINE)) -eq 0 ]; then
-                    printf "\n"
+                    printf "\n\n"
                 else
                     printf " "
                 fi
