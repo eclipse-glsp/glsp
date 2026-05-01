@@ -4,7 +4,7 @@ export default [
     ...glspConfig,
     // Ignore JS config/build files that are not part of the TS project
     {
-        ignores: ['**/*.js', '**/*.mjs', '**/*.cjs']
+        ignores: ['**/*.js', '**/*.mjs', '**/*.cjs', '.worktrees/**']
     },
     // Apply parserOptions.project only to TypeScript files
     {
