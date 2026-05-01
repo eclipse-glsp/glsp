@@ -15,7 +15,7 @@
  ********************************************************************************/
 
 import { expect } from 'chai';
-import { configureExec, exec } from './process-util';
+import { configureExec, exec, execForeground } from './process-util';
 
 describe('process-util', () => {
     beforeEach(() => {
@@ -44,6 +44,25 @@ describe('process-util', () => {
         it('should return empty string for command with no output', () => {
             const result = exec('true');
             expect(result).to.equal('');
+        });
+    });
+
+    describe('execForeground', () => {
+        it('should resolve on successful command', async () => {
+            await execForeground('true');
+        });
+
+        it('should reject on non-zero exit code', async () => {
+            try {
+                await execForeground('sh -c "exit 1"');
+                expect.fail('should have thrown');
+            } catch (error) {
+                expect((error as Error).message).to.contain('exited with code 1');
+            }
+        });
+
+        it('should pass cwd option', async () => {
+            await execForeground('true', { cwd: '/tmp' });
         });
     });
 });

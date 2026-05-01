@@ -38,7 +38,7 @@ export function runCli(args: string[], options: CliOptions = {}): CliResult {
         cwd: options.cwd ?? process.cwd(),
         encoding: 'utf-8',
         env: { ...process.env, ...options.env },
-        timeout: options.timeout ?? 60000,
+        timeout: options.timeout,
         stdio: ['pipe', 'pipe', 'pipe']
     });
     return {
@@ -46,4 +46,13 @@ export function runCli(args: string[], options: CliOptions = {}): CliResult {
         stdout: result.stdout ?? '',
         stderr: result.stderr ?? ''
     };
+}
+
+/** Returns a concise diagnostic string for assertion messages (last 40 lines of stdout + stderr). */
+export function cliDiag(result: CliResult): string {
+    const tail = (s: string, n: number): string => {
+        const lines = s.trimEnd().split('\n');
+        return lines.length > n ? `…(${lines.length - n} lines omitted)\n${lines.slice(-n).join('\n')}` : s.trimEnd();
+    };
+    return `stdout:\n${tail(result.stdout, 30)}\nstderr:\n${tail(result.stderr, 10)}`;
 }

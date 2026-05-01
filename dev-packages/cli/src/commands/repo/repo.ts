@@ -1,0 +1,41 @@
+/********************************************************************************
+ * Copyright (c) 2026 EclipseSource and others.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ ********************************************************************************/
+
+import { GLSPRepo, baseCommand } from '../../util';
+import { BuildCommand } from './build';
+import { CloneCommand } from './clone';
+import { ForkCommand } from './fork';
+import { LinkCommand, UnlinkCommand } from './link';
+import { LogCommand } from './log';
+import { PwdCommand } from './pwd';
+import { createSubrepoCommand } from './subrepos';
+import { WorkspaceCommand } from './workspace';
+
+export const RepoCommand = baseCommand()
+    .name('repo')
+    .description('Multi-repository management for GLSP projects')
+    .addCommand(CloneCommand)
+    .addCommand(ForkCommand)
+    .addCommand(BuildCommand)
+    .addCommand(LinkCommand)
+    .addCommand(UnlinkCommand)
+    .addCommand(PwdCommand)
+    .addCommand(LogCommand)
+    .addCommand(WorkspaceCommand);
+
+for (const repo of GLSPRepo.choices) {
+    RepoCommand.addCommand(createSubrepoCommand(repo));
+}
