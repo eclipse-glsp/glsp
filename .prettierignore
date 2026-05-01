@@ -8,6 +8,7 @@ dist/
 # Generated files
 *.min.js
 *.min.css
+WORKFLOW_STATUS.md
 
 # Lock files
 package-lock.json
@@ -19,3 +20,4 @@ yarn.lock
 # Claude Code
 .claude/
 .reviews/
+.worktrees/
