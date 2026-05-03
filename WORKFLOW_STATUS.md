@@ -1,6 +1,6 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-05-01.
+> Badges are live — workflow list auto-generated on 2026-05-03.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
