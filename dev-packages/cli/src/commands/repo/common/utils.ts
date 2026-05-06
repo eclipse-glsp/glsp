@@ -16,6 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as readline from 'readline';
 import { GLSPRepo, configureEnv, globby, resolveRepoFilter } from '../../../util';
 
 export const GLSP_GITHUB_ORG = 'eclipse-glsp';
@@ -122,31 +123,6 @@ export function getBuildOrder(repos: GLSPRepo[]): GLSPRepo[] {
     return result;
 }
 
-export function getBuildLevels(repos: GLSPRepo[]): GLSPRepo[][] {
-    const repoSet = new Set(repos);
-    const levels: GLSPRepo[][] = [];
-    const placed = new Set<GLSPRepo>();
-
-    while (placed.size < repoSet.size) {
-        const level: GLSPRepo[] = [];
-        for (const repo of repoSet) {
-            if (placed.has(repo)) {
-                continue;
-            }
-            const deps = (DEPENDENCY_MAP[repo] ?? []).filter(d => repoSet.has(d));
-            if (deps.every(d => placed.has(d))) {
-                level.push(repo);
-            }
-        }
-        for (const repo of level) {
-            placed.add(repo);
-        }
-        levels.push(level);
-    }
-
-    return levels;
-}
-
 export function isLeafRepo(repo: GLSPRepo): boolean {
     for (const deps of Object.values(DEPENDENCY_MAP)) {
         if (deps.includes(repo)) {
@@ -154,6 +130,18 @@ export function isLeafRepo(repo: GLSPRepo): boolean {
         }
     }
     return true;
+}
+
+// ── Prompting ──────────────────────────────────────────────────────────────
+
+export function prompt(question: string): Promise<string> {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    return new Promise<string>(resolve =>
+        rl.question(question, answer => {
+            rl.close();
+            resolve(answer);
+        })
+    );
 }
 
 export function discoverNewestFile(pattern: string, dir: string, errorMsg: string): string {

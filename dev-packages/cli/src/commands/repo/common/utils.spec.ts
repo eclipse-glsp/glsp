@@ -19,7 +19,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { GLSPRepo } from '../../../util';
 import { createTempDir, cleanupTempDir } from '../../../../tests/helpers/test-helper';
-import { discoverRepos, getBuildLevels, getBuildOrder, isLeafRepo, resolveWorkspaceDir } from './utils';
+import { discoverRepos, getBuildOrder, isLeafRepo, resolveWorkspaceDir } from './utils';
 
 // ── workspace-resolution ──────────────────────────────────────────────────
 
@@ -168,36 +168,6 @@ describe('repo-graph', () => {
             const serverIdx = order.indexOf('glsp-server');
             const eclipseIdx = order.indexOf('glsp-eclipse-integration');
             expect(serverIdx).to.be.lessThan(eclipseIdx);
-        });
-    });
-
-    describe('getBuildLevels', () => {
-        it('should group independent repos into the same level', () => {
-            const repos: GLSPRepo[] = ['glsp-server', 'glsp-playwright'];
-            const levels = getBuildLevels(repos);
-            expect(levels).to.have.lengthOf(1);
-            expect(levels[0]).to.include.members(['glsp-server', 'glsp-playwright']);
-        });
-
-        it('should separate dependent repos into sequential levels', () => {
-            const repos: GLSPRepo[] = ['glsp', 'glsp-client', 'glsp-server-node'];
-            const levels = getBuildLevels(repos);
-            expect(levels.length).to.be.greaterThanOrEqual(3);
-            expect(levels[0]).to.deep.equal(['glsp']);
-            expect(levels[1]).to.deep.equal(['glsp-client']);
-            expect(levels[2]).to.deep.equal(['glsp-server-node']);
-        });
-
-        it('should parallelize theia and vscode after server-node', () => {
-            const repos: GLSPRepo[] = ['glsp', 'glsp-client', 'glsp-server-node', 'glsp-theia-integration', 'glsp-vscode-integration'];
-            const levels = getBuildLevels(repos);
-            const lastLevel = levels[levels.length - 1];
-            expect(lastLevel).to.include.members(['glsp-theia-integration', 'glsp-vscode-integration']);
-        });
-
-        it('should handle single repo', () => {
-            const levels = getBuildLevels(['glsp-client']);
-            expect(levels).to.deep.equal([['glsp-client']]);
         });
     });
 

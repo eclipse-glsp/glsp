@@ -21,6 +21,14 @@ import { GLSPRepo, LOGGER, PRESET_NAMES, baseCommand, exec, resolveDefaultProtoc
 import { analyzeForkRemotes, ensureFork, getRemoteUrl, getRemotes } from './common/fork-utils';
 import { configureRepoEnv, formatError, resolveTargetRepos } from './common/utils';
 
+interface ForkCliOptions {
+    dir?: string;
+    protocol?: 'ssh' | 'https' | 'gh';
+    verbose: boolean;
+    repo?: string[];
+    preset?: string;
+}
+
 export async function configureForkRemote(repo: GLSPRepo, repoDir: string, user: string, protocol: 'ssh' | 'https' | 'gh'): Promise<void> {
     const remotes = getRemotes(repoDir);
     const action = analyzeForkRemotes(remotes, user, repo);
@@ -65,12 +73,12 @@ export const ForkCommand = baseCommand()
     .addOption(new Option('-r, --repo <name...>', 'Fork only these repos'))
     .addOption(new Option('--preset <name>', 'Fork repos from a preset').choices(PRESET_NAMES))
     .option('-v, --verbose', 'Verbose output', false)
-    .action(async (user: string, _cmdOptions: any, thisCmd: Command) => {
-        const cli = thisCmd.opts<{ dir?: string; protocol?: string; verbose: boolean; repo?: string[]; preset?: string }>();
+    .action(async (user: string, _cmdOptions: unknown, thisCmd: Command) => {
+        const cli = thisCmd.opts<ForkCliOptions>();
         configureRepoEnv(cli);
 
         const { dir, repos } = resolveTargetRepos(cli);
-        const protocol = (cli.protocol as 'ssh' | 'https' | 'gh') ?? resolveDefaultProtocol();
+        const protocol = cli.protocol ?? resolveDefaultProtocol();
 
         let failures = 0;
         for (const repo of repos) {

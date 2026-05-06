@@ -14,9 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import * as readline from 'readline';
 import { GLSPRepo, LOGGER, exec, isGithubCLIAuthenticated } from '../../../util';
-import { GLSP_GITHUB_ORG } from './utils';
+import { GLSP_GITHUB_ORG, prompt } from './utils';
 
 // ── Fork existence ─────────────────────────────────────────────────────────
 
@@ -24,7 +23,11 @@ export function forkExists(user: string, repo: GLSPRepo): boolean {
     try {
         exec(`git ls-remote https://github.com/${user}/${repo}.git HEAD`, { silent: true });
         return true;
-    } catch {
+    } catch (error) {
+        const msg = error instanceof Error ? error.message : '';
+        if (msg.includes('Could not resolve host') || msg.includes('unable to access')) {
+            throw new Error(`Network error while checking fork '${user}/${repo}': ${msg}`);
+        }
         return false;
     }
 }
@@ -56,7 +59,7 @@ export function getRemoteUrl(protocol: 'ssh' | 'https' | 'gh', org: string, repo
 export function addUpstreamRemote(repoDir: string, repo: GLSPRepo, protocol: 'ssh' | 'https' | 'gh'): void {
     const url = getRemoteUrl(protocol, GLSP_GITHUB_ORG, repo);
     LOGGER.info(`Adding upstream remote: ${url}`);
-    exec(`git remote add upstream ${url}`, { cwd: repoDir });
+    exec(`git remote add upstream "${url}"`, { cwd: repoDir });
 }
 
 export interface RemoteInfo {
@@ -109,11 +112,6 @@ export function analyzeForkRemotes(remotes: RemoteInfo, forkUser: string, repo: 
 // ── Prompting ──────────────────────────────────────────────────────────────
 
 export async function confirm(message: string): Promise<boolean> {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    try {
-        const answer = await new Promise<string>(resolve => rl.question(`${message} [y/N] `, resolve));
-        return answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes';
-    } finally {
-        rl.close();
-    }
+    const answer = await prompt(`${message} [y/N] `);
+    return answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes';
 }

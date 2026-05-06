@@ -116,7 +116,7 @@ export interface RepoFilterOptions {
     preset?: string;
 }
 
-export function resolveRepoFilter(configuredRepos: GLSPRepo[], filter: RepoFilterOptions): GLSPRepo[] {
+export function resolveRepoFilter(configuredRepos: readonly GLSPRepo[], filter: RepoFilterOptions): GLSPRepo[] {
     const extraRepos: GLSPRepo[] = [];
     if (filter.repo && filter.repo.length > 0) {
         for (const r of filter.repo) {
@@ -145,5 +145,5 @@ export function resolveRepoFilter(configuredRepos: GLSPRepo[], filter: RepoFilte
         return extraRepos;
     }
 
-    return configuredRepos;
+    return [...configuredRepos];
 }

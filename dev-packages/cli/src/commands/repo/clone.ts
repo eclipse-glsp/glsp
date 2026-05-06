@@ -16,7 +16,6 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as readline from 'readline';
 import { Command, Option } from 'commander';
 import {
     GLSPRepo,
@@ -30,7 +29,7 @@ import {
     resolveRepoFilter
 } from '../../util';
 import { addUpstreamRemote, ensureFork, getRemoteUrl, getRemotes } from './common/fork-utils';
-import { GLSP_GITHUB_ORG, configureRepoEnv, formatError, resolveWorkspaceDir } from './common/utils';
+import { GLSP_GITHUB_ORG, configureRepoEnv, formatError, prompt, resolveWorkspaceDir } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────
 
@@ -73,11 +72,11 @@ export async function cloneSingleRepo(repo: GLSPRepo, options: CloneActionOption
 
     if (options.protocol === 'gh') {
         const branchArgs = options.branch ? ` -- -b ${options.branch}` : '';
-        exec(`gh repo clone ${org}/${repo} ${targetDir}${branchArgs}`);
+        exec(`gh repo clone ${org}/${repo} "${targetDir}"${branchArgs}`);
     } else {
         const branchArg = options.branch ? ` -b ${options.branch}` : '';
         const url = getRemoteUrl(options.protocol, org, repo);
-        exec(`git clone${branchArg} ${url} ${targetDir}`);
+        exec(`git clone${branchArg} ${url} "${targetDir}"`);
     }
 
     if (options.fork) {
@@ -169,7 +168,7 @@ export const CloneCommand = baseCommand()
 
         if (cli.interactive) {
             const answers = await runInteractiveClone();
-            resolvedRepos = resolveRepoFilter(GLSPRepo.choices as unknown as GLSPRepo[], {
+            resolvedRepos = resolveRepoFilter(GLSPRepo.choices, {
                 repo: repos.length > 0 ? repos : undefined,
                 preset: answers.preset
             });
@@ -182,7 +181,7 @@ export const CloneCommand = baseCommand()
                         `Available presets: ${PRESET_NAMES.join(', ')}`
                 );
             }
-            resolvedRepos = resolveRepoFilter(GLSPRepo.choices as unknown as GLSPRepo[], {
+            resolvedRepos = resolveRepoFilter(GLSPRepo.choices, {
                 repo: repos.length > 0 ? repos : undefined,
                 preset: cli.preset
             });
@@ -206,9 +205,13 @@ export const CloneCommand = baseCommand()
         };
 
         let failures = 0;
+        let skipped = 0;
         for (const repo of resolvedRepos) {
             try {
-                await cloneSingleRepo(repo, options);
+                const cloned = await cloneSingleRepo(repo, options);
+                if (!cloned) {
+                    skipped++;
+                }
             } catch (error) {
                 failures++;
                 LOGGER.error(`Cloning ${repo} failed: ${formatError(error)}`);
@@ -218,6 +221,9 @@ export const CloneCommand = baseCommand()
             }
         }
 
+        if (skipped > 0) {
+            LOGGER.info(`${skipped} repo(s) skipped (already exist).`);
+        }
         if (failures > 0) {
             process.exitCode = 1;
         }
@@ -232,32 +238,25 @@ interface InteractiveAnswers {
 }
 
 async function runInteractiveClone(): Promise<InteractiveAnswers> {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    const ask = (question: string): Promise<string> => new Promise(resolve => rl.question(question, resolve));
-
-    try {
-        console.log('Available presets:');
-        for (const [name, repos] of Object.entries(PRESETS)) {
-            console.log(`  ${name}: ${repos.join(', ')}`);
-        }
-
-        const preset = await ask(`\nPreset (${PRESET_NAMES.join('/')}): `);
-        if (!PRESET_NAMES.includes(preset)) {
-            throw new Error(`Unknown preset: ${preset}. Must be one of: ${PRESET_NAMES.join(', ')}`);
-        }
-
-        const defaultProtocol = resolveDefaultProtocol();
-        const protocolInput = await ask(`Clone protocol (ssh/https/gh) [${defaultProtocol}]: `);
-        const protocol = protocolInput ? (protocolInput as 'ssh' | 'https' | 'gh') : undefined;
-
-        const fork = await ask('Fork user (leave empty for eclipse-glsp): ');
-
-        return {
-            preset,
-            protocol,
-            fork: fork || undefined
-        };
-    } finally {
-        rl.close();
+    console.log('Available presets:');
+    for (const [name, repos] of Object.entries(PRESETS)) {
+        console.log(`  ${name}: ${repos.join(', ')}`);
     }
+
+    const preset = await prompt(`\nPreset (${PRESET_NAMES.join('/')}): `);
+    if (!PRESET_NAMES.includes(preset)) {
+        throw new Error(`Unknown preset: ${preset}. Must be one of: ${PRESET_NAMES.join(', ')}`);
+    }
+
+    const defaultProtocol = resolveDefaultProtocol();
+    const protocolInput = await prompt(`Clone protocol (ssh/https/gh) [${defaultProtocol}]: `);
+    const protocol = protocolInput ? (protocolInput as 'ssh' | 'https' | 'gh') : undefined;
+
+    const fork = await prompt('Fork user (leave empty for eclipse-glsp): ');
+
+    return {
+        preset,
+        protocol,
+        fork: fork || undefined
+    };
 }
