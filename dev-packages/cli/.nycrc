@@ -1,0 +1,3 @@
+{
+    "extends": "@eclipse-glsp/nyc-config"
+}

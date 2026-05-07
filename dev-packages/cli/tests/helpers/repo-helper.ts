@@ -14,18 +14,31 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
 
-/** Creates a unique temporary directory for test isolation. */
-export function createTempDir(): string {
-    return fs.mkdtempSync(path.join(os.tmpdir(), 'glsp-test-'));
+export function git(args: string, cwd: string): string {
+    return execSync(`git ${args}`, { cwd, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
 }
 
-/** Removes a temporary directory and all its contents. */
-export function cleanupTempDir(dir: string): void {
-    if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+export function readJson(filePath: string): Record<string, unknown> {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+}
+
+export function resetRepo(repoDir: string): void {
+    git('checkout .', repoDir);
+    git('clean -fd', repoDir);
+}
+
+export function currentBranch(repoDir: string): string {
+    return git('rev-parse --abbrev-ref HEAD', repoDir);
+}
+
+export function isMavenAvailable(): boolean {
+    try {
+        execSync('mvn --version', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+        return true;
+    } catch {
+        return false;
     }
 }

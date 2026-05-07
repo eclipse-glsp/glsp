@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 EclipseSource and others.
+ * Copyright (c) 2025-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,6 +16,7 @@
 
 export * from './file-util';
 export * from './git-util';
+export * from './glsp-repo-util';
 export * from './logger';
 export * from './package-util';
 export * from './process-util';

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 EclipseSource and others.
+ * Copyright (c) 2025-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -18,6 +18,7 @@ import * as child from 'child_process';
 import { Command } from 'commander';
 import * as path from 'path';
 import * as pkg from '../../package.json';
+import { configureLogger } from './logger';
 
 export const COMMAND_VERSION = pkg.version;
 
@@ -91,6 +92,8 @@ export interface ExecOptions {
     cwd?: string;
     /** Custom error message that should be thrown if the command fails */
     errorMsg?: string;
+    /** Additional environment variables merged with process.env */
+    env?: Record<string, string>;
 }
 
 /**
@@ -122,7 +125,8 @@ export function exec(cmd: string, options: ExecOptions = {}): string {
         encoding: 'utf8',
         shell: true,
         cwd,
-        stdio: ['ignore', 'pipe', 'pipe']
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: options.env ? { ...process.env, ...options.env } : undefined
     });
 
     if (result.error || result.status !== 0) {
@@ -170,7 +174,8 @@ export function execAsync(cmd: string, options: ExecOptions = {}): Promise<strin
         const childProcess = child.spawn(command, args, {
             shell: true,
             cwd,
-            stdio: ['ignore', 'pipe', 'pipe']
+            stdio: ['ignore', 'pipe', 'pipe'],
+            env: options.env ? { ...process.env, ...options.env } : undefined
         });
 
         let stdout = '';
@@ -214,6 +219,46 @@ export function execAsync(cmd: string, options: ExecOptions = {}): Promise<strin
             } else {
                 reject(new Error(options.errorMsg ?? errorMsg));
             }
+        });
+    });
+}
+
+export interface ExecForegroundOptions {
+    cwd?: string;
+    verbose?: boolean;
+}
+
+export function configureEnv(options: { verbose: boolean }): void {
+    configureLogger(options.verbose);
+    configureExec({ silent: !options.verbose, verbose: options.verbose });
+}
+
+export function execForeground(cmd: string, options: ExecForegroundOptions = {}): Promise<void> {
+    const verbose = options.verbose !== undefined ? options.verbose : globalExecConfig.verbose;
+
+    if (verbose) {
+        console.log(`+ ${cmd}`);
+    }
+
+    return new Promise((resolve, reject) => {
+        const [command, ...args] = cmd.split(' ');
+
+        const childProcess = child.spawn(command, args, {
+            shell: true,
+            cwd: options.cwd,
+            stdio: 'inherit'
+        });
+
+        childProcess.on('close', code => {
+            if (code !== 0) {
+                reject(new Error(`Command "${cmd}" exited with code ${code ?? 1}`));
+                return;
+            }
+            resolve();
+        });
+
+        childProcess.on('error', error => {
+            reject(new Error(`Command "${cmd}" failed: ${error.message}`));
         });
     });
 }

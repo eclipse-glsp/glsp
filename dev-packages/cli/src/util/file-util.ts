@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 EclipseSource and others.
+ * Copyright (c) 2025-2026 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,7 +14,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import * as fs from 'fs';
-import { globSync } from 'glob';
 import * as os from 'os';
 import * as path from 'path';
 /**
@@ -124,6 +123,34 @@ export function resolveFiles(files: string[] | string): string[] {
     return filesArray.map(f => path.resolve(f));
 }
 
+export interface GlobOptions {
+    cwd?: string;
+    absolute?: boolean;
+    ignore?: string[];
+    gitignore?: boolean;
+    onlyFiles?: boolean;
+    markDirectories?: boolean;
+    ignoreFiles?: string;
+}
+
+type GlobbySync = (patterns: string | string[], options?: GlobOptions) => string[];
+
+let _globbySync: GlobbySync | undefined;
+const _globbyReady: Promise<void> = import('globby').then(m => {
+    _globbySync = m.globbySync as GlobbySync;
+});
+
+export async function initGlobby(): Promise<void> {
+    await _globbyReady;
+}
+
+export function globby(patterns: string | string[], options?: GlobOptions): string[] {
+    if (!_globbySync) {
+        throw new Error('globby not initialized. Call initGlobby() before using glob functions.');
+    }
+    return _globbySync(patterns, options);
+}
+
 /**
  * Finds all files and directories matching the given pattern.
  * @param paths The file or directory paths to search. If a path is a directory, all
@@ -140,13 +167,10 @@ export function findFiles(paths: string[] | string, pattern = '**/*'): string[] 
             throw new Error(`no such file or directory: ${inputPath}`);
         }
 
-        // If it's a directory, find all files and directories recursively
         if (fs.statSync(inputPath).isDirectory()) {
-            const matches = globSync(pattern, {
+            const matches = globby(pattern, {
                 cwd: inputPath,
-                absolute: true,
-                dot: false
-                // Note: no nodir option, so it includes both files and directories
+                absolute: true
             });
 
             results.push(...matches);
