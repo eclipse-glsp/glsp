@@ -48,11 +48,11 @@ export function runCli(args: string[], options: CliOptions = {}): CliResult {
     };
 }
 
-/** Returns a concise diagnostic string for assertion messages (last 40 lines of stdout + stderr). */
+/** Returns a concise diagnostic string for assertion messages (last N lines of stdout + stderr). */
 export function cliDiag(result: CliResult): string {
     const tail = (s: string, n: number): string => {
         const lines = s.trimEnd().split('\n');
         return lines.length > n ? `…(${lines.length - n} lines omitted)\n${lines.slice(-n).join('\n')}` : s.trimEnd();
     };
-    return `stdout:\n${tail(result.stdout, 30)}\nstderr:\n${tail(result.stderr, 10)}`;
+    return `stdout:\n${tail(result.stdout, 80)}\nstderr:\n${tail(result.stderr, 30)}`;
 }

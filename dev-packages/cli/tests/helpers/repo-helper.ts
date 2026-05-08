@@ -42,3 +42,17 @@ export function isMavenAvailable(): boolean {
         return false;
     }
 }
+
+export function isSshAvailable(): boolean {
+    try {
+        // ssh -T git@github.com exits 1 on success ("Hi <user>!") and 255 on auth failure
+        const result = execSync('ssh -o BatchMode=yes -o StrictHostKeyChecking=no -T git@github.com 2>&1', {
+            encoding: 'utf-8',
+            timeout: 10000,
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
+        return result.includes('successfully authenticated');
+    } catch (err: any) {
+        return typeof err.stdout === 'string' && err.stdout.includes('successfully authenticated');
+    }
+}

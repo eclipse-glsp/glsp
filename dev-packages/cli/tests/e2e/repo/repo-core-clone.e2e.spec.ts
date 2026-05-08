@@ -18,7 +18,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 import { cliDiag, runCli } from '../../helpers/cli-helper';
-import { currentBranch, git, resetRepo } from '../../helpers/repo-helper';
+import { currentBranch, git, isSshAvailable, resetRepo } from '../../helpers/repo-helper';
 import { cleanupTempDir, createTempDir } from '../../helpers/test-helper';
 
 describe('repo commands — core (clone)', function () {
@@ -59,6 +59,9 @@ describe('repo commands — core (clone)', function () {
         });
 
         it('should clone with --protocol ssh via scoped command', function () {
+            if (!isSshAvailable()) {
+                this.skip();
+            }
             const singleDir = createTempDir();
             try {
                 const result = runCli(['repo', 'glsp-client', 'clone', '-d', singleDir, '-p', 'ssh']);
