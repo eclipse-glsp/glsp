@@ -15,23 +15,19 @@
 
 -   [`alpine`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
--   ~~[`latest`, `ubuntu`, `ubuntu-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/ubuntu/Dockerfile)~~ (deprecated)
--   ~~[`uitest`,`uitest-v6.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/uitest/Dockerfile)~~ (deprecated)
-
 Note that these tags are fluent and not bound to a fixed image version.
-If you want to use a fixed version you can use the base tag with a version suffix e.g. `ubuntu-v1.0`.
-An increment of the major version number (e.g. v1.0-> v2.0) indicates an update of a major component e.g a new OS, Node or Java version.
+If you want to use a fixed version you can use the base tag with a version suffix e.g. `alpine-v8.0`.
+An increment of the major version number (e.g. v7.0-> v8.0) indicates an update of a major component e.g a new OS, Node or Java version.
 Minor version increments indicate bug fixes or changes in the minor dev dependencies.
-(See also: [Image Version History](#image-version-history)
+(See also: [Image Version History](#image-version-history))
 
 ## What is Eclipse GLSP CI
 
-Collection of images that are used in Continuos Integration jobs of Eclipse GLSP and related projects (e.g. [EMF.cloud](https://www.eclipse.org/emfcloud/)).
-The `ci` images come in different flavors, each designed for a specific use case.
-The images ship with the necessary libraries to enable both node-based client builds and Java/Maven-based server builds.
-They are mainly used for CI jobs that require the possibility to build client and server components in one shared container.
+An Alpine-based image that is used in Continuous Integration jobs of Eclipse GLSP and related projects (e.g. [EMF.cloud](https://www.eclipse.org/emfcloud/)).
+The image ships with the necessary libraries to enable both node-based client builds and Java/Maven-based server builds.
+It is mainly used for CI jobs that require the possibility to build client and server components in one shared container.
 
-Currently each image variant has at least the following components installed:
+The image has the following components installed:
 
 -   Git >=2.17.1
 -   Node 22, yarn 1.22.19 and lerna
@@ -42,22 +38,13 @@ Currently each image variant has at least the following components installed:
 
 You can run any shell command by using the docker image directly, passing a shell command to `docker run`:
 
-    docker run eclipseglsp/ci:latest echo "Hello World"
+    docker run eclipseglsp/ci:alpine echo "Hello World"
 
 Alternatively, you can run the image in interactive mode and gain full access to the shell:
 
-    docker run -it eclipseglsp/ci:latest
+    docker run -it eclipseglsp/ci:alpine
 
-## Image Variants
-
-The `ci` images come in different flavors, each designed for a specific use case.
-
-### `ci:ubuntu<-suffix>` (deprecated)
-
-> **Deprecated:** This image variant is deprecated and no longer maintained. Please use the `alpine` variant instead.
-
-This image is based on [Ubuntu](https://ubuntu.com/).
-It was previously the default image but has been superseded by the `alpine` variant.
+## Image Details
 
 ### `ci:alpine<-suffix>`
 
@@ -65,15 +52,6 @@ This image is based on the popular [Alpine Linux project](https://alpinelinux.or
 Alpine Linux is much smaller than most distribution base images (~5MB), and thus leads to much slimmer images in general.
 
 It only provides the essential libraries needed for building client and server components and is the recommended image for classical CI jobs like building branches or PRs on change, or deploying build artifacts.
-Due to its slim size, it cannot be used for more sophisticated jobs like end-to-end testing without further extension, because essential components, such as a display server or a browser are not included.
-
-### `ci:uitest<-suffix>` (deprecated)
-
-> **Deprecated:** This image variant is deprecated and no longer maintained. Please use the `alpine` variant instead.
-
-This image was the recommended image for CI jobs that execute UI tests.
-It uses the same base as the `ubuntu` image but has additional libraries installed (including Xvfb which enables headless UI testing).
-In addition, Google Chrome is installed which enables browser-based UI testing of client components.
 
 ## Image Version History
 
@@ -84,9 +62,9 @@ In addition, Google Chrome is installed which enables browser-based UI testing o
 -   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
 -   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
 -   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
--   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21 (alpine only)
--   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11 (alpine only)
--   [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22 (alpine only). Ubuntu and uitest variants are deprecated and no longer maintained.
+-   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21
+-   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11
+-   [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22. Ubuntu and uitest variants have been removed.
 
 ## License
 
