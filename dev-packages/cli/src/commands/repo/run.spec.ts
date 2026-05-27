@@ -40,5 +40,10 @@ describe('run-command', () => {
             const cmd = createScopedRunCommand('glsp-client');
             expect((cmd as any)._allowUnknownOption).to.be.true;
         });
+
+        it('should allow excess arguments for passthrough', () => {
+            const cmd = createScopedRunCommand('glsp-client');
+            expect((cmd as any)._allowExcessArguments).to.be.true;
+        });
     });
 });

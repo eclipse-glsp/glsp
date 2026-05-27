@@ -23,6 +23,7 @@ export function createScopedRunCommand(repo: GLSPRepo): Command {
     return baseCommand()
         .name('run')
         .allowUnknownOption(true)
+        .allowExcessArguments(true)
         .description(`Run an arbitrary yarn script in ${repo}`)
         .argument('<script>', 'The yarn script to run')
         .option('-d, --dir <path>', 'Target directory where repos are cloned')

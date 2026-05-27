@@ -18,7 +18,14 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 import { cleanupTempDir, createTempDir } from '../../../tests/helpers/test-helper';
-import { JAR_TARGET_DIR, discoverJar } from './start';
+import {
+    JAR_TARGET_DIR,
+    ClientStartCommand,
+    ServerNodeStartCommand,
+    ServerStartCommand,
+    TheiaStartCommand,
+    discoverJar
+} from './start';
 
 describe('start-action', () => {
     let tempDir: string;
@@ -72,5 +79,24 @@ describe('start-action', () => {
         it('should throw with helpful message when target directory does not exist', () => {
             expect(() => discoverJar(tempDir)).to.throw(/glsp repo server build/);
         });
+    });
+
+    describe('start commands allow passthrough args', () => {
+        const commands = [
+            { name: 'ClientStartCommand', cmd: ClientStartCommand },
+            { name: 'TheiaStartCommand', cmd: TheiaStartCommand },
+            { name: 'ServerStartCommand', cmd: ServerStartCommand },
+            { name: 'ServerNodeStartCommand', cmd: ServerNodeStartCommand }
+        ];
+
+        for (const { name, cmd } of commands) {
+            it(`${name} should allow unknown options`, () => {
+                expect((cmd as any)._allowUnknownOption).to.be.true;
+            });
+
+            it(`${name} should allow excess arguments`, () => {
+                expect((cmd as any)._allowExcessArguments).to.be.true;
+            });
+        }
     });
 });

@@ -29,6 +29,13 @@ export function discoverJar(repoDir: string): string {
     return discoverNewestFile(JAR_PATTERN, targetDir, `No *-glsp.jar found in ${targetDir}. Run \`glsp repo server build\` first.`);
 }
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function collectPassthroughArgs(cmd: Command): string {
+    const raw = cmd.args;
+    return raw.length > 0 ? ` ${raw.join(' ')}` : '';
+}
+
 // ── Commands ────────────────────────────────────────────────────────────────
 
 interface TheiaStartCliOptions {
@@ -40,6 +47,8 @@ interface TheiaStartCliOptions {
 
 export const TheiaStartCommand = baseCommand()
     .name('start')
+    .allowUnknownOption(true)
+    .allowExcessArguments(true)
     .description('Start the Theia application for glsp-theia-integration')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('--electron', 'Start electron variant instead of browser', false)
@@ -53,7 +62,8 @@ export const TheiaStartCommand = baseCommand()
         const repoDir = path.resolve(dir, 'glsp-theia-integration');
         const target = cli.electron ? 'electron' : 'browser';
         const script = cli.debug ? 'start:debug' : 'start';
-        await execForeground(`yarn ${target} ${script}`, { cwd: repoDir, verbose: cli.verbose });
+        const passthrough = collectPassthroughArgs(thisCmd);
+        await execForeground(`yarn ${target} ${script}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
     });
 
 interface ClientStartCliOptions {
@@ -64,6 +74,8 @@ interface ClientStartCliOptions {
 
 export const ClientStartCommand = baseCommand()
     .name('start')
+    .allowUnknownOption(true)
+    .allowExcessArguments(true)
     .description('Start the standalone example for glsp-client')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('--browser', 'Run in browser-only mode with WebWorker server', false)
@@ -75,11 +87,14 @@ export const ClientStartCommand = baseCommand()
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-client');
         const script = cli.browser ? 'start:browser' : 'start';
-        await execForeground(`yarn ${script}`, { cwd: repoDir, verbose: cli.verbose });
+        const passthrough = collectPassthroughArgs(thisCmd);
+        await execForeground(`yarn ${script}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
     });
 
 export const ServerStartCommand = baseCommand()
     .name('start')
+    .allowUnknownOption(true)
+    .allowExcessArguments(true)
     .description('Start the glsp-server Java GLSP server')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('-p, --port <port>', 'Port to start the server on')
@@ -97,8 +112,8 @@ export const ServerStartCommand = baseCommand()
         const socketPort = cli.port ?? 5007;
         const wsPort = cli.port ?? 8081;
         const javaCmd = cli.socket ? `java -jar ${jarPath} --port=${socketPort}` : `java -jar ${jarPath} --websocket --port=${wsPort}`;
-
-        await execForeground(javaCmd, { cwd: repoDir, verbose: cli.verbose });
+        const passthrough = collectPassthroughArgs(thisCmd);
+        await execForeground(`${javaCmd}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
     });
 
 interface ServerNodeStartCliOptions {
@@ -110,6 +125,8 @@ interface ServerNodeStartCliOptions {
 
 export const ServerNodeStartCommand = baseCommand()
     .name('start')
+    .allowUnknownOption(true)
+    .allowExcessArguments(true)
     .description('Start the glsp-server-node GLSP server')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('-p, --port <port>', 'Port to start the server on')
@@ -123,5 +140,6 @@ export const ServerNodeStartCommand = baseCommand()
         const repoDir = path.resolve(dir, 'glsp-server-node');
         const yarnCmd = cli.socket ? 'yarn start' : 'yarn start:websocket';
         const portArg = cli.port ? ` --port ${cli.port}` : '';
-        await execForeground(`${yarnCmd}${portArg}`, { cwd: repoDir, verbose: cli.verbose });
+        const passthrough = collectPassthroughArgs(thisCmd);
+        await execForeground(`${yarnCmd}${portArg}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
     });
