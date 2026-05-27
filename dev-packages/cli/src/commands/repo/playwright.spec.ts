@@ -56,7 +56,7 @@ describe('playwright-env', () => {
             const repos: GLSPRepo[] = ['glsp-client', 'glsp-server-node'];
             const content = generatePlaywrightEnvContent({ dir: tempDir, discoveredRepos: repos });
             expect(content).to.contain('GLSP_SERVER_START_CMD=glsp repo server-node start');
-            expect(content).to.contain('STANDALONE_START_CMD=glsp repo client run start');
+            expect(content).to.contain('STANDALONE_START_CMD=glsp repo client start');
             expect(content).not.to.match(/^# GLSP_SERVER_START_CMD/m);
         });
 

@@ -50,11 +50,11 @@ export function generatePlaywrightEnvContent(options: PlaywrightEnvOptions): str
     if (hasServerNode && hasClient) {
         lines.push('# Standalone Node (WebSocket)');
         lines.push('GLSP_SERVER_START_CMD=glsp repo server-node start');
-        lines.push('STANDALONE_START_CMD=glsp repo client run start -- --external-server --no-open');
+        lines.push('STANDALONE_START_CMD=glsp repo client start --external-server --no-open');
     } else {
         lines.push('# Standalone Node (WebSocket) — missing repos, uncomment when available');
         lines.push('# GLSP_SERVER_START_CMD=glsp repo server-node start');
-        lines.push('# STANDALONE_START_CMD=glsp repo client run start -- --external-server --no-open');
+        lines.push('# STANDALONE_START_CMD=glsp repo client start --external-server --no-open');
     }
     lines.push('');
 
@@ -63,14 +63,14 @@ export function generatePlaywrightEnvContent(options: PlaywrightEnvOptions): str
         const bundleExists = fs.existsSync(bundlePath);
         lines.push('# Standalone Browser (Web Worker)');
         if (bundleExists) {
-            lines.push(`STANDALONE_BROWSER_START_CMD=glsp repo client run start:browser -- --external-server ${bundlePath} --no-open`);
+            lines.push(`STANDALONE_BROWSER_START_CMD=glsp repo client start --browser --external-server ${bundlePath} --no-open`);
         } else {
             LOGGER.warn(`Browser bundle not found at ${bundlePath}. Build glsp-server-node first.`);
-            lines.push(`# STANDALONE_BROWSER_START_CMD=glsp repo client run start:browser -- --external-server ${bundlePath} --no-open`);
+            lines.push(`# STANDALONE_BROWSER_START_CMD=glsp repo client start --browser --external-server ${bundlePath} --no-open`);
         }
     } else {
         lines.push('# Standalone Browser (Web Worker) — missing repos, uncomment when available');
-        lines.push('# STANDALONE_BROWSER_START_CMD=glsp repo client run start:browser -- --external-server <bundle-path> --no-open');
+        lines.push('# STANDALONE_BROWSER_START_CMD=glsp repo client start --browser --external-server <bundle-path> --no-open');
     }
     lines.push('');
 
