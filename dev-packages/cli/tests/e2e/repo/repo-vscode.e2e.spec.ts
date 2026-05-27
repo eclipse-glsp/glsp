@@ -42,6 +42,8 @@ describe('repo commands — vscode', function () {
         expect(result.exitCode, cliDiag(result)).to.equal(0);
     });
 
+    // ── Package ───────────────────────────────────────────────────────────
+
     it('should package the VS Code extension as VSIX', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'package', '-d', workDir]);
         expect(result.exitCode, cliDiag(result)).to.equal(0);
@@ -49,5 +51,42 @@ describe('repo commands — vscode', function () {
         const vsixDir = path.join(workDir, 'glsp-vscode-integration', 'example', 'workflow', 'extension');
         const vsixFiles = fs.readdirSync(vsixDir).filter(f => f.endsWith('.vsix'));
         expect(vsixFiles).to.have.lengthOf.at.least(1);
+    });
+
+    it('should package the VS Code web extension as VSIX', function () {
+        const result = runCli(['repo', 'glsp-vscode-integration', 'web-package', '-d', workDir]);
+        expect(result.exitCode, cliDiag(result)).to.equal(0);
+
+        const vsixDir = path.join(workDir, 'glsp-vscode-integration', 'example', 'workflow', 'web-extension');
+        const vsixFiles = fs.readdirSync(vsixDir).filter(f => f.endsWith('.vsix'));
+        expect(vsixFiles).to.have.lengthOf.at.least(1);
+    });
+
+    // ── VSIX path ─────────────────────────────────────────────────────────
+
+    it('should print the VSIX path after packaging', function () {
+        const result = runCli(['repo', 'glsp-vscode-integration', 'vsix-path', '-d', workDir]);
+        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.stdout).to.match(/\.vsix$/);
+    });
+
+    it('should print the web extension VSIX path after packaging', function () {
+        const result = runCli(['repo', 'glsp-vscode-integration', 'web-vsix-path', '-d', workDir]);
+        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.stdout).to.match(/\.vsix$/);
+    });
+
+    // ── VSIX ID ───────────────────────────────────────────────────────────
+
+    it('should print the VSIX ID', function () {
+        const result = runCli(['repo', 'glsp-vscode-integration', 'vsix-id']);
+        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.stdout).to.equal('eclipse-glsp.workflow-vscode-example');
+    });
+
+    it('should print the web extension VSIX ID', function () {
+        const result = runCli(['repo', 'glsp-vscode-integration', 'web-vsix-id']);
+        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.stdout).to.equal('eclipse-glsp.workflow-vscode-example-web');
     });
 });

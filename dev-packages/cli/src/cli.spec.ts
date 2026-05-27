@@ -320,7 +320,7 @@ describe('cli', () => {
                     const cmd = createSubrepoCommand(repoName);
 
                     it('should have common subcommands', () => {
-                        expect(subcommandNames(cmd)).to.include.members(['clone', 'switch', 'build', 'pwd', 'log']);
+                        expect(subcommandNames(cmd)).to.include.members(['clone', 'switch', 'build', 'pwd', 'log', 'run']);
                     });
 
                     if (SHORT_ALIASES[repoName]) {
@@ -389,6 +389,20 @@ describe('cli', () => {
                             expect(optionLongs(log)).to.include.members(['--dir', '--verbose']);
                         });
                     });
+
+                    describe('scoped run', () => {
+                        const run = findSub(cmd, 'run');
+
+                        it('should accept a required <script> argument', () => {
+                            expect(run.registeredArguments).to.have.lengthOf(1);
+                            expect(run.registeredArguments[0].name()).to.equal('script');
+                            expect(run.registeredArguments[0].required).to.be.true;
+                        });
+
+                        it('should have expected options', () => {
+                            expect(optionLongs(run)).to.include.members(['--dir', '--verbose']);
+                        });
+                    });
                 });
             }
 
@@ -417,6 +431,24 @@ describe('cli', () => {
 
                 it('should have expected start options', () => {
                     expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--verbose']);
+                });
+
+                it('should have browser-bundle command', () => {
+                    expect(subcommandNames(cmd)).to.include('browser-bundle');
+                });
+
+                it('should have expected browser-bundle options', () => {
+                    const browserBundle = findSub(cmd, 'browser-bundle');
+                    expect(optionLongs(browserBundle)).to.include.members(['--dir', '--verbose']);
+                });
+
+                it('should have node-bundle command', () => {
+                    expect(subcommandNames(cmd)).to.include('node-bundle');
+                });
+
+                it('should have expected node-bundle options', () => {
+                    const nodeBundle = findSub(cmd, 'node-bundle');
+                    expect(optionLongs(nodeBundle)).to.include.members(['--dir', '--verbose']);
                 });
             });
 
@@ -455,8 +487,25 @@ describe('cli', () => {
                 });
             });
 
+            describe('glsp-playwright extras', () => {
+                const cmd = createSubrepoCommand('glsp-playwright');
+
+                it('should have env command', () => {
+                    expect(subcommandNames(cmd)).to.include('env');
+                });
+
+                it('should have expected env options', () => {
+                    const env = findSub(cmd, 'env');
+                    expect(optionLongs(env)).to.include.members(['--dir', '--target-dir', '--verbose']);
+                });
+            });
+
             describe('glsp-vscode-integration extras', () => {
                 const cmd = createSubrepoCommand('glsp-vscode-integration');
+
+                it('should have vsix-id command', () => {
+                    expect(subcommandNames(cmd)).to.include('vsix-id');
+                });
 
                 it('should have vsix-path command', () => {
                     expect(subcommandNames(cmd)).to.include('vsix-path');
@@ -474,6 +523,28 @@ describe('cli', () => {
                 it('should have expected package options', () => {
                     const pkg = findSub(cmd, 'package');
                     expect(optionLongs(pkg)).to.include.members(['--dir', '--verbose']);
+                });
+
+                it('should have web-vsix-id command', () => {
+                    expect(subcommandNames(cmd)).to.include('web-vsix-id');
+                });
+
+                it('should have web-vsix-path command', () => {
+                    expect(subcommandNames(cmd)).to.include('web-vsix-path');
+                });
+
+                it('should have expected web-vsix-path options', () => {
+                    const webVsixPath = findSub(cmd, 'web-vsix-path');
+                    expect(optionLongs(webVsixPath)).to.include.members(['--dir', '--verbose']);
+                });
+
+                it('should have web-package command', () => {
+                    expect(subcommandNames(cmd)).to.include('web-package');
+                });
+
+                it('should have expected web-package options', () => {
+                    const webPkg = findSub(cmd, 'web-package');
+                    expect(optionLongs(webPkg)).to.include.members(['--dir', '--verbose']);
                 });
             });
         });
