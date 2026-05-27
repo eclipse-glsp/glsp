@@ -74,7 +74,7 @@ export const ClientStartCommand = baseCommand()
 
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-client');
-        const script = cli.browser ? 'dev:browser' : 'dev';
+        const script = cli.browser ? 'start:browser' : 'start';
         await execForeground(`yarn ${script}`, { cwd: repoDir, verbose: cli.verbose });
     });
 

@@ -20,10 +20,20 @@ import { createScopedBuildCommand } from './build';
 import { createScopedCloneCommand } from './clone';
 import { createScopedLogCommand } from './log';
 import { TheiaOpenCommand } from './open';
+import { PlaywrightEnvCommand } from './playwright';
 import { createScopedPwdCommand } from './pwd';
+import { createScopedRunCommand } from './run';
+import { BrowserBundleCommand, NodeBundleCommand } from './server-node';
 import { ClientStartCommand, ServerNodeStartCommand, ServerStartCommand, TheiaStartCommand } from './start';
 import { createScopedSwitchCommand } from './switch';
-import { VscodePackageCommand, VsixPathCommand } from './vscode';
+import {
+    VscodePackageCommand,
+    VscodeWebPackageCommand,
+    VsixIdCommand,
+    VsixPathCommand,
+    WebVsixIdCommand,
+    WebVsixPathCommand
+} from './vscode';
 
 const SHORT_ALIASES: Partial<Record<GLSPRepo, string>> = {
     'glsp-client': 'client',
@@ -47,7 +57,16 @@ const OPEN_COMMANDS: Partial<Record<GLSPRepo, Command>> = {
 };
 
 const EXTRA_COMMANDS: Partial<Record<GLSPRepo, Command[]>> = {
-    'glsp-vscode-integration': [VsixPathCommand, VscodePackageCommand]
+    'glsp-server-node': [BrowserBundleCommand, NodeBundleCommand],
+    'glsp-vscode-integration': [
+        VsixIdCommand,
+        VsixPathCommand,
+        VscodePackageCommand,
+        WebVsixIdCommand,
+        WebVsixPathCommand,
+        VscodeWebPackageCommand
+    ],
+    'glsp-playwright': [PlaywrightEnvCommand]
 };
 
 export function createSubrepoCommand(repo: GLSPRepo): Command {
@@ -58,7 +77,8 @@ export function createSubrepoCommand(repo: GLSPRepo): Command {
         .addCommand(createScopedSwitchCommand(repo))
         .addCommand(createScopedBuildCommand(repo))
         .addCommand(createScopedPwdCommand(repo))
-        .addCommand(createScopedLogCommand(repo));
+        .addCommand(createScopedLogCommand(repo))
+        .addCommand(createScopedRunCommand(repo));
 
     const startCmd = START_COMMANDS[repo];
     if (startCmd) {

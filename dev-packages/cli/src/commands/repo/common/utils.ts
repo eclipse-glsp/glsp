@@ -22,6 +22,7 @@ import { GLSPRepo, configureEnv, globby, resolveRepoFilter } from '../../../util
 export const GLSP_GITHUB_ORG = 'eclipse-glsp';
 export const THEIA_URL = 'http://localhost:3000';
 export const VSIX_TARGET_DIR = 'example/workflow/extension';
+export const WEB_VSIX_TARGET_DIR = 'example/workflow/web-extension';
 
 export function configureRepoEnv(options: { verbose: boolean }): void {
     configureEnv(options);

@@ -72,6 +72,74 @@ describe('repo commands — core (build)', function () {
         });
     });
 
+    // ── Run ───────────────────────────────────────────────────────────────
+
+    describe('run', function () {
+        it('should run a yarn script in a repo via scoped command', function () {
+            const result = runCli(['repo', 'glsp-client', 'run', '--version', '-d', workDir]);
+            expect(result.exitCode, cliDiag(result)).to.equal(0);
+        });
+
+        it('should fail when script does not exist', function () {
+            const result = runCli(['repo', 'glsp-client', 'run', 'nonexistent-script-xyz', '-d', workDir]);
+            expect(result.exitCode).to.not.equal(0);
+        });
+    });
+
+    // ── Browser / Node bundle ─────────────────────────────────────────────
+
+    describe('server-node bundles', function () {
+        it('should print the browser bundle path when bundle exists', function () {
+            const bundleDir = path.join(workDir, 'glsp-server-node', 'examples', 'workflow-server-bundled-web');
+            const bundleFile = path.join(bundleDir, 'wf-glsp-server-webworker.js');
+            if (!fs.existsSync(bundleFile)) {
+                fs.mkdirSync(bundleDir, { recursive: true });
+                fs.writeFileSync(bundleFile, 'fake-bundle');
+            }
+
+            const result = runCli(['repo', 'glsp-server-node', 'browser-bundle', '-d', workDir]);
+            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.stdout).to.contain('wf-glsp-server-webworker.js');
+        });
+
+        it('should print the node bundle path when bundle exists', function () {
+            const bundleDir = path.join(workDir, 'glsp-server-node', 'examples', 'workflow-server-bundled');
+            const bundleFile = path.join(bundleDir, 'wf-glsp-server-node.js');
+            fs.mkdirSync(bundleDir, { recursive: true });
+            fs.writeFileSync(bundleFile, 'fake-bundle');
+
+            const result = runCli(['repo', 'glsp-server-node', 'node-bundle', '-d', workDir]);
+            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.stdout).to.contain('wf-glsp-server-node.js');
+        });
+
+        it('should fail with helpful message when browser bundle is missing', function () {
+            const missingDir = createTempDir();
+            try {
+                fs.mkdirSync(path.join(missingDir, 'glsp-server-node'), { recursive: true });
+                const result = runCli(['repo', 'glsp-server-node', 'browser-bundle', '-d', missingDir]);
+                expect(result.exitCode).to.not.equal(0);
+                const output = result.stdout + result.stderr;
+                expect(output).to.contain('not found');
+            } finally {
+                cleanupTempDir(missingDir);
+            }
+        });
+
+        it('should fail with helpful message when node bundle is missing', function () {
+            const missingDir = createTempDir();
+            try {
+                fs.mkdirSync(path.join(missingDir, 'glsp-server-node'), { recursive: true });
+                const result = runCli(['repo', 'glsp-server-node', 'node-bundle', '-d', missingDir]);
+                expect(result.exitCode).to.not.equal(0);
+                const output = result.stdout + result.stderr;
+                expect(output).to.contain('not found');
+            } finally {
+                cleanupTempDir(missingDir);
+            }
+        });
+    });
+
     // ── Link / Unlink ──────────────────────────────────────────────────────
 
     describe('link', function () {
