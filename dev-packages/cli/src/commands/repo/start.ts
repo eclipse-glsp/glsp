@@ -82,6 +82,7 @@ export const ServerStartCommand = baseCommand()
     .name('start')
     .description('Start the glsp-server Java GLSP server')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
+    .option('-p, --port <port>', 'Port to start the server on')
     .option('--socket', 'Use socket connection instead of websocket', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: ServerNodeStartCliOptions, thisCmd: Command) => {
@@ -93,13 +94,16 @@ export const ServerStartCommand = baseCommand()
         const jarPath = discoverJar(repoDir);
         LOGGER.info(`Found JAR: ${jarPath}`);
 
-        const javaCmd = cli.socket ? `java -jar ${jarPath} --port=5007` : `java -jar ${jarPath} --websocket --port=8081`;
+        const socketPort = cli.port ?? 5007;
+        const wsPort = cli.port ?? 8081;
+        const javaCmd = cli.socket ? `java -jar ${jarPath} --port=${socketPort}` : `java -jar ${jarPath} --websocket --port=${wsPort}`;
 
         await execForeground(javaCmd, { cwd: repoDir, verbose: cli.verbose });
     });
 
 interface ServerNodeStartCliOptions {
     dir?: string;
+    port?: number;
     socket: boolean;
     verbose: boolean;
 }
@@ -108,6 +112,7 @@ export const ServerNodeStartCommand = baseCommand()
     .name('start')
     .description('Start the glsp-server-node GLSP server')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
+    .option('-p, --port <port>', 'Port to start the server on')
     .option('--socket', 'Use socket connection instead of websocket', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: ServerNodeStartCliOptions, thisCmd: Command) => {
@@ -117,5 +122,6 @@ export const ServerNodeStartCommand = baseCommand()
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-server-node');
         const yarnCmd = cli.socket ? 'yarn start' : 'yarn start:websocket';
-        await execForeground(yarnCmd, { cwd: repoDir, verbose: cli.verbose });
+        const portArg = cli.port ? ` --port ${cli.port}` : '';
+        await execForeground(`${yarnCmd}${portArg}`, { cwd: repoDir, verbose: cli.verbose });
     });
