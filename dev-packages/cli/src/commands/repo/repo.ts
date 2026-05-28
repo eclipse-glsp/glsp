@@ -27,6 +27,7 @@ import { WorkspaceCommand } from './workspace';
 export const RepoCommand = baseCommand()
     .name('repo')
     .description('Multi-repository management for GLSP projects')
+    .option('-d, --dir <path>', 'Target directory where repos are cloned (inherited by subcommands)')
     .addCommand(CloneCommand)
     .addCommand(ForkCommand)
     .addCommand(BuildCommand)
@@ -35,6 +36,13 @@ export const RepoCommand = baseCommand()
     .addCommand(PwdCommand)
     .addCommand(LogCommand)
     .addCommand(WorkspaceCommand);
+
+RepoCommand.hook('preSubcommand', (_, subcommand) => {
+    const parentDir = RepoCommand.opts().dir;
+    if (parentDir && !subcommand.getOptionValue('dir')) {
+        subcommand.setOptionValue('dir', parentDir);
+    }
+});
 
 for (const repo of GLSPRepo.choices) {
     RepoCommand.addCommand(createSubrepoCommand(repo));

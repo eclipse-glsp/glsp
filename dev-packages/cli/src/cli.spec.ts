@@ -178,6 +178,10 @@ describe('cli', () => {
             }
         });
 
+        it('should have a global --dir option', () => {
+            expect(optionLongs(RepoCommand)).to.include('--dir');
+        });
+
         describe('clone', () => {
             const cmd = findSub(RepoCommand, 'clone');
 
