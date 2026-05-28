@@ -218,3 +218,10 @@ export const WorkspaceCommand = baseCommand()
     .description('Manage VS Code workspace files for GLSP projects')
     .addCommand(WorkspaceInitCommand)
     .addCommand(WorkspaceOpenCommand);
+
+WorkspaceCommand.hook('preSubcommand', (_, subcommand) => {
+    const parentDir = WorkspaceCommand.getOptionValue('dir');
+    if (parentDir && !subcommand.getOptionValue('dir')) {
+        subcommand.setOptionValue('dir', parentDir);
+    }
+});
