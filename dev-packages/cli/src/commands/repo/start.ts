@@ -36,12 +36,22 @@ function collectPassthroughArgs(cmd: Command): string {
     return raw.length > 0 ? ` ${raw.join(' ')}` : '';
 }
 
+export function resolveCommand(cmd: string, cwd: string, dryRun: boolean): string | undefined {
+    const resolved = `${cmd.startsWith('yarn') ? `yarn --cwd ${cwd} ${cmd.slice('yarn '.length)}` : cmd}`;
+    if (dryRun) {
+        process.stdout.write(resolved + '\n');
+        return undefined;
+    }
+    return resolved;
+}
+
 // ── Commands ────────────────────────────────────────────────────────────────
 
 interface TheiaStartCliOptions {
     dir?: string;
     electron: boolean;
     debug: boolean;
+    dryRun: boolean;
     verbose: boolean;
 }
 
@@ -53,6 +63,7 @@ export const TheiaStartCommand = baseCommand()
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('--electron', 'Start electron variant instead of browser', false)
     .option('--debug', 'Connect to external GLSP server for debugging', false)
+    .option('--dry-run', 'Print the resolved command instead of executing it', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: TheiaStartCliOptions, thisCmd: Command) => {
         const cli = thisCmd.opts<TheiaStartCliOptions>();
@@ -63,12 +74,16 @@ export const TheiaStartCommand = baseCommand()
         const target = cli.electron ? 'electron' : 'browser';
         const script = cli.debug ? 'start:debug' : 'start';
         const passthrough = collectPassthroughArgs(thisCmd);
-        await execForeground(`yarn ${target} ${script}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
+        const resolved = resolveCommand(`yarn ${target} ${script}${passthrough}`, repoDir, cli.dryRun);
+        if (resolved) {
+            await execForeground(resolved, { verbose: cli.verbose });
+        }
     });
 
 interface ClientStartCliOptions {
     dir?: string;
     browser: boolean;
+    dryRun: boolean;
     verbose: boolean;
 }
 
@@ -79,6 +94,7 @@ export const ClientStartCommand = baseCommand()
     .description('Start the standalone example for glsp-client')
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('--browser', 'Run in browser-only mode with WebWorker server', false)
+    .option('--dry-run', 'Print the resolved command instead of executing it', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: ClientStartCliOptions, thisCmd: Command) => {
         const cli = thisCmd.opts<ClientStartCliOptions>();
@@ -88,7 +104,10 @@ export const ClientStartCommand = baseCommand()
         const repoDir = path.resolve(dir, 'glsp-client');
         const script = cli.browser ? 'start:browser' : 'start';
         const passthrough = collectPassthroughArgs(thisCmd);
-        await execForeground(`yarn ${script}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
+        const resolved = resolveCommand(`yarn ${script}${passthrough}`, repoDir, cli.dryRun);
+        if (resolved) {
+            await execForeground(resolved, { verbose: cli.verbose });
+        }
     });
 
 export const ServerStartCommand = baseCommand()
@@ -99,6 +118,7 @@ export const ServerStartCommand = baseCommand()
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('-p, --port <port>', 'Port to start the server on')
     .option('--socket', 'Use socket connection instead of websocket', false)
+    .option('--dry-run', 'Print the resolved command instead of executing it', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: ServerNodeStartCliOptions, thisCmd: Command) => {
         const cli = thisCmd.opts<ServerNodeStartCliOptions>();
@@ -107,19 +127,26 @@ export const ServerStartCommand = baseCommand()
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-server');
         const jarPath = discoverJar(repoDir);
-        LOGGER.info(`Found JAR: ${jarPath}`);
+        if (!cli.dryRun) {
+            LOGGER.info(`Found JAR: ${jarPath}`);
+        }
 
         const socketPort = cli.port ?? 5007;
         const wsPort = cli.port ?? 8081;
         const javaCmd = cli.socket ? `java -jar ${jarPath} --port=${socketPort}` : `java -jar ${jarPath} --websocket --port=${wsPort}`;
         const passthrough = collectPassthroughArgs(thisCmd);
-        await execForeground(`${javaCmd}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
+        if (cli.dryRun) {
+            process.stdout.write(`${javaCmd}${passthrough}\n`);
+        } else {
+            await execForeground(`${javaCmd}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
+        }
     });
 
 interface ServerNodeStartCliOptions {
     dir?: string;
     port?: number;
     socket: boolean;
+    dryRun: boolean;
     verbose: boolean;
 }
 
@@ -131,6 +158,7 @@ export const ServerNodeStartCommand = baseCommand()
     .option('-d, --dir <path>', 'Target directory where repos are cloned')
     .option('-p, --port <port>', 'Port to start the server on')
     .option('--socket', 'Use socket connection instead of websocket', false)
+    .option('--dry-run', 'Print the resolved command instead of executing it', false)
     .option('-v, --verbose', 'Verbose output', false)
     .action(async (_cmdOptions: ServerNodeStartCliOptions, thisCmd: Command) => {
         const cli = thisCmd.opts<ServerNodeStartCliOptions>();
@@ -141,5 +169,8 @@ export const ServerNodeStartCommand = baseCommand()
         const yarnCmd = cli.socket ? 'yarn start' : 'yarn start:websocket';
         const portArg = cli.port ? ` --port ${cli.port}` : '';
         const passthrough = collectPassthroughArgs(thisCmd);
-        await execForeground(`${yarnCmd}${portArg}${passthrough}`, { cwd: repoDir, verbose: cli.verbose });
+        const resolved = resolveCommand(`${yarnCmd}${portArg}${passthrough}`, repoDir, cli.dryRun);
+        if (resolved) {
+            await execForeground(resolved, { verbose: cli.verbose });
+        }
     });

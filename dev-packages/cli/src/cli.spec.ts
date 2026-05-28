@@ -421,7 +421,7 @@ describe('cli', () => {
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--browser', '--verbose']);
+                    expect(optionLongs(start)).to.include.members(['--dir', '--browser', '--dry-run', '--verbose']);
                 });
             });
 
@@ -434,7 +434,7 @@ describe('cli', () => {
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--verbose']);
+                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--dry-run', '--verbose']);
                 });
 
                 it('should have browser-bundle command', () => {
@@ -465,7 +465,7 @@ describe('cli', () => {
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--verbose']);
+                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--dry-run', '--verbose']);
                 });
             });
 
@@ -478,7 +478,7 @@ describe('cli', () => {
 
                 it('should have expected start options', () => {
                     const start = findSub(cmd, 'start');
-                    expect(optionLongs(start)).to.include.members(['--dir', '--electron', '--debug', '--verbose']);
+                    expect(optionLongs(start)).to.include.members(['--dir', '--electron', '--debug', '--dry-run', '--verbose']);
                 });
 
                 it('should have open command', () => {
@@ -488,19 +488,6 @@ describe('cli', () => {
                 it('should have expected open options', () => {
                     const open = findSub(cmd, 'open');
                     expect(optionLongs(open)).to.include.members(['--verbose']);
-                });
-            });
-
-            describe('glsp-playwright extras', () => {
-                const cmd = createSubrepoCommand('glsp-playwright');
-
-                it('should have env command', () => {
-                    expect(subcommandNames(cmd)).to.include('env');
-                });
-
-                it('should have expected env options', () => {
-                    const env = findSub(cmd, 'env');
-                    expect(optionLongs(env)).to.include.members(['--dir', '--target-dir', '--verbose']);
                 });
             });
 

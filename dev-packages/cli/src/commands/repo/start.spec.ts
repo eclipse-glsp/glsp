@@ -24,7 +24,8 @@ import {
     ServerNodeStartCommand,
     ServerStartCommand,
     TheiaStartCommand,
-    discoverJar
+    discoverJar,
+    resolveCommand
 } from './start';
 
 describe('start-action', () => {
@@ -78,6 +79,28 @@ describe('start-action', () => {
 
         it('should throw with helpful message when target directory does not exist', () => {
             expect(() => discoverJar(tempDir)).to.throw(/glsp repo server build/);
+        });
+    });
+
+    describe('resolveCommand', () => {
+        it('should rewrite yarn command with --cwd when not dry-run', () => {
+            const result = resolveCommand('yarn start:websocket', '/abs/path/to/repo', false);
+            expect(result).to.equal('yarn --cwd /abs/path/to/repo start:websocket');
+        });
+
+        it('should return undefined on dry-run', () => {
+            const result = resolveCommand('yarn start:websocket', '/abs/path/to/repo', true);
+            expect(result).to.be.undefined;
+        });
+
+        it('should handle yarn commands with arguments', () => {
+            const result = resolveCommand('yarn start:websocket --port 8081', '/abs/path', false);
+            expect(result).to.equal('yarn --cwd /abs/path start:websocket --port 8081');
+        });
+
+        it('should not rewrite non-yarn commands', () => {
+            const result = resolveCommand('java -jar server.jar --websocket', '/abs/path', false);
+            expect(result).to.equal('java -jar server.jar --websocket');
         });
     });
 

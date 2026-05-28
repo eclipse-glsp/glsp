@@ -20,7 +20,6 @@ import { createScopedBuildCommand } from './build';
 import { createScopedCloneCommand } from './clone';
 import { createScopedLogCommand } from './log';
 import { TheiaOpenCommand } from './open';
-import { PlaywrightEnvCommand } from './playwright';
 import { createScopedPwdCommand } from './pwd';
 import { createScopedRunCommand } from './run';
 import { BrowserBundleCommand, NodeBundleCommand } from './server-node';
@@ -65,8 +64,7 @@ const EXTRA_COMMANDS: Partial<Record<GLSPRepo, Command[]>> = {
         WebVsixIdCommand,
         WebVsixPathCommand,
         VscodeWebPackageCommand
-    ],
-    'glsp-playwright': [PlaywrightEnvCommand]
+    ]
 };
 
 export function createSubrepoCommand(repo: GLSPRepo): Command {
