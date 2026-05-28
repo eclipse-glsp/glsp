@@ -97,6 +97,13 @@ export function createSubrepoCommand(repo: GLSPRepo): Command {
         }
     }
 
+    cmd.hook('preSubcommand', (_, subcommand) => {
+        const parentDir = cmd.getOptionValue('dir');
+        if (parentDir && !subcommand.getOptionValue('dir')) {
+            subcommand.setOptionValue('dir', parentDir);
+        }
+    });
+
     const alias = SHORT_ALIASES[repo];
     if (alias) {
         cmd.alias(alias);
