@@ -7,6 +7,11 @@
 -   [eslint-config] Update ESLint configuration and dependencies to ESLint 9.x [#1638](https://github.com/eclipse-glsp/glsp/pull/1638)
 -   [cli] Fix a bug in `checkHeaders` where gitignored files were incorrectly included in the full header check [#1643](https://github.com/eclipse-glsp/glsp/pull/1643)
 -   [cli] Fix a bug in `checkHeaders` that caused errors in non-tty shell environments [#1644](https://github.com/eclipse-glsp/glsp/pull/1644)
+-   [cli] Introduce the `glsp repo` command group for managing multi-repo GLSP development workspaces [#1655](https://github.com/eclipse-glsp/glsp/pull/1655)
+-   [cli] Fix port override in start commands [#1679](https://github.com/eclipse-glsp/glsp/pull/1679)
+-   [cli] Enable passthrough arguments for start commands [#1680](https://github.com/eclipse-glsp/glsp/pull/1680)
+-   [cli] Add `--dry-run` option to start commands [#1683](https://github.com/eclipse-glsp/glsp/pull/1683)
+-   [cli] Use batch mode for CLI Maven commands to reduce console noise [#1684](https://github.com/eclipse-glsp/glsp/pull/1684)
 
 ### Potentially Breaking Changes
 
