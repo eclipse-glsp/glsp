@@ -19,9 +19,7 @@ import { Command } from 'commander';
 import { baseCommand } from '../../util';
 
 function createParentWithHook(): Command {
-    const parent = baseCommand()
-        .name('repo')
-        .option('-d, --dir <path>', 'Target directory');
+    const parent = baseCommand().name('repo').option('-d, --dir <path>', 'Target directory');
 
     parent.hook('preSubcommand', (_, subcommand) => {
         const parentDir = parent.opts().dir;
@@ -44,9 +42,7 @@ function createLeaf(captured: { dir?: string }): Command {
 }
 
 function createMiddleWithHook(): Command {
-    const mid = baseCommand()
-        .name('middle')
-        .description('Middle layer');
+    const mid = baseCommand().name('middle').description('Middle layer');
 
     mid.hook('preSubcommand', (_, subcommand) => {
         const parentDir = mid.getOptionValue('dir');

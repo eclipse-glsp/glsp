@@ -45,14 +45,14 @@ export async function buildSingleRepo(repo: GLSPRepo, options: BuildActionOption
             break;
         }
         case 'glsp-server': {
-            await execAsync('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always', mvnOpts);
+            await execAsync('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B', mvnOpts);
             break;
         }
         case 'glsp-eclipse-integration': {
             LOGGER.debug('Yarn build for client');
             await execAsync('yarn', { ...yarnOpts, cwd: path.join(repoDir, 'client') });
             LOGGER.debug('Maven build for server');
-            await execAsync('mvn clean verify -Dstyle.color=always', { ...mvnOpts, cwd: path.join(repoDir, 'server') });
+            await execAsync('mvn clean verify -Dstyle.color=always -B', { ...mvnOpts, cwd: path.join(repoDir, 'server') });
             break;
         }
         default: {
