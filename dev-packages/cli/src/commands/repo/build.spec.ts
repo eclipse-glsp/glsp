@@ -80,7 +80,7 @@ describe('build-action', () => {
             createRepoDirs('glsp-server');
             await buildSingleRepo('glsp-server', makeOptions());
             expect(execAsyncStub.calledOnce).to.be.true;
-            expect(execAsyncStub.firstCall.args[0]).to.equal('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always');
+            expect(execAsyncStub.firstCall.args[0]).to.equal('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B');
         });
 
         it('should build client and server for eclipse-integration', async () => {
@@ -89,7 +89,7 @@ describe('build-action', () => {
             expect(execAsyncStub.callCount).to.equal(2);
             expect(execAsyncStub.firstCall.args[0]).to.equal('yarn');
             expect(execAsyncStub.firstCall.args[1].cwd).to.contain(path.join('glsp-eclipse-integration', 'client'));
-            expect(execAsyncStub.secondCall.args[0]).to.equal('mvn clean verify -Dstyle.color=always');
+            expect(execAsyncStub.secondCall.args[0]).to.equal('mvn clean verify -Dstyle.color=always -B');
             expect(execAsyncStub.secondCall.args[1].cwd).to.contain(path.join('glsp-eclipse-integration', 'server'));
         });
     });
