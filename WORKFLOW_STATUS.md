@@ -1,13 +1,13 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-05-31.
+> Badges are live — workflow list auto-generated on 2026-06-07.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
 
-[![CI](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml) [![Publish to NPM](https://github.com/eclipse-glsp/glsp/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/publish.yml)
+[![CI](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml) [![Publish Release](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml)
 
-[![Test](https://github.com/eclipse-glsp/glsp/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/test.yml) [![Workflow Badges](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml) [![Workflow Summary Report](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml)
+[![Publish to NPM](https://github.com/eclipse-glsp/glsp/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/publish.yml) [![Test](https://github.com/eclipse-glsp/glsp/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/test.yml) [![Workflow Badges](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml) [![Workflow Summary Report](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml)
 
 ## [glsp-client](https://github.com/eclipse-glsp/glsp-client)
 
@@ -17,7 +17,7 @@
 
 ## [glsp-eclipse-integration](https://github.com/eclipse-glsp/glsp-eclipse-integration)
 
-[![CI (Client)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/codeql-analysis.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/prepare-release.yml)
+[![CI (Client)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/codeql-analysis.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/prepare-release.yml) [![Publish to NPM](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/publish.yml)
 
 ## [glsp-examples](https://github.com/eclipse-glsp/glsp-examples)
 
@@ -25,7 +25,7 @@
 
 ## [glsp-playwright](https://github.com/eclipse-glsp/glsp-playwright)
 
-[![CI](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/prepare-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/prepare-release.yml)
+[![CI](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/prepare-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/prepare-release.yml) [![Publish Release](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/publish-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/publish-release.yml) [![Publish to NPM](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/publish.yml)
 
 ## [glsp-server](https://github.com/eclipse-glsp/glsp-server)
 
@@ -33,7 +33,9 @@
 
 ## [glsp-server-node](https://github.com/eclipse-glsp/glsp-server-node)
 
-[![CI](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/prepare-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/prepare-release.yml) [![Publish to NPM](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish.yml)
+[![CI](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml) [![CodeQL](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/prepare-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/prepare-release.yml) [![Publish Release](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish-release.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish-release.yml)
+
+[![Publish to NPM](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/publish.yml)
 
 ## [glsp-theia-integration](https://github.com/eclipse-glsp/glsp-theia-integration)
 
@@ -49,5 +51,5 @@
 
 ## [glsp-website-source](https://github.com/eclipse-glsp/glsp-website-source)
 
-[![Deploy Website](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml)
+[![PR Preview Deploy](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml) [![Deploy Website](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml)
 
