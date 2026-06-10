@@ -68,21 +68,21 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout release helper repo (@eclipse-glsp/glsp)
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: eclipse-glsp/glsp
           path: glsp-release-helper
           ref: master
 
       - name: Checkout release repo (${{ inputs.release_repo || github.event.inputs.release_repo }})
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: eclipse-glsp/${{ inputs.release_repo || github.event.inputs.release_repo }}
           path: release-repo
           ref: ${{ inputs.branch || github.event.inputs.branch }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 22
 
@@ -90,14 +90,14 @@ jobs:
         if: >-
           (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-server' ||
           (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-eclipse-integration'
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: '21'
 
       - name: Set up Python
         if: (inputs.release_repo || github.event.inputs.release_repo) == 'glsp-theia-integration'
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.11'
 
