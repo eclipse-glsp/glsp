@@ -90,6 +90,17 @@ describe('checkHeaders e2e', () => {
         expect(result.stdout).to.contain('1 copyright header violations');
     });
 
+    it('should check files changed against the default branch with --type changes', () => {
+        commitFile(repoDir, 'src/base.ts', VALID_HEADER + '\nconst x = 1;\n', 'add base file');
+        // Branch off and add a file without a header - only this file should be checked.
+        execSync('git checkout -b feature', { cwd: repoDir });
+        commitFile(repoDir, 'src/feature.ts', 'const y = 2;\n', 'add feature file');
+        const result = runCli(['checkHeaders', repoDir, '--type', 'changes']);
+        expect(result.stdout).to.contain('Check copy right headers of 1 files');
+        expect(result.stdout).to.contain('feature.ts');
+        expect(result.stdout).to.not.contain('base.ts');
+    });
+
     it('should only check last commit files with --type lastCommit', () => {
         commitFile(repoDir, 'src/old.ts', VALID_HEADER + '\nconst x = 1;\n', 'add old file');
         commitFile(repoDir, 'src/new.ts', 'const y = 2;\n', 'add new file');

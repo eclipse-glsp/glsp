@@ -68,6 +68,54 @@ export function getChangesOfLastCommit(path?: string): string[] {
 }
 
 /**
+ * Returns the files that have been changed compared to the default branch (e.g. master/main), i.e. the
+ * files that would show up as changed in a pull request. Includes both the committed changes of the
+ * current branch (relative to the merge-base with the default branch) and any uncommitted
+ * (staged, not staged or untracked) changes.
+ *
+ */
+export function getChangesComparedToDefaultBranch(path?: string): string[] {
+    const baseRef = getDefaultBranchRef(path);
+    const committedChanges = baseRef
+        ? exec(`git diff --name-only ${baseRef}...HEAD`, { cwd: path, silent: true })
+              .split('\n')
+              .filter(value => value.trim().length !== 0)
+              .map(file => resolve(path ?? process.cwd(), file.trim()))
+        : [];
+
+    return [...new Set([...committedChanges, ...getUncommittedChanges(path)])];
+}
+
+/**
+ * Resolves a git ref pointing to the tip of the default branch (e.g. master/main) that can be used for diffing.
+ * The lookup is performed offline and prefers the remote-tracking branch (origin/<default>) over the local branch.
+ * @returns The resolved ref or `undefined` if no default branch could be determined.
+ */
+export function getDefaultBranchRef(path?: string): string | undefined {
+    // `origin/HEAD` is set up by `git clone` and points to the remote default branch
+    try {
+        const ref = exec('git symbolic-ref --short refs/remotes/origin/HEAD', { cwd: path, silent: true, fatal: false });
+        if (ref) {
+            return ref;
+        }
+    } catch {
+        // not configured, fall through to the candidate lookup below
+    }
+
+    const candidates = ['origin/main', 'origin/master', 'main', 'master'];
+    return candidates.find(ref => refExists(ref, path));
+}
+
+function refExists(ref: string, path?: string): boolean {
+    try {
+        exec(`git rev-parse --verify --quiet ${ref}`, { cwd: path, silent: true, fatal: false });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Returns the commit message of the last commit
  *
  */
