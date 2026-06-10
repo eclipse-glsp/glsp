@@ -24,9 +24,9 @@ import {
     configureExec,
     exec,
     filterFiles,
+    getChangesComparedToDefaultBranch,
     getChangesOfLastCommit,
     getLastModificationDate,
-    getUncommittedChanges,
     globby,
     readFile,
     replaceInFile,
@@ -59,8 +59,9 @@ export const CheckHeaderCommand = baseCommand() //
     .addOption(
         new Option(
             '-t, --type <type>',
-            'The scope of the check. In addition to a full recursive check, is also possible to only' +
-                ' consider pending changes or the last commit'
+            'The scope of the check. In addition to a full recursive check, it is also possible to only consider' +
+                ' the files changed compared to the default branch (`changes`, incl. uncommitted changes - i.e. the' +
+                ' files that would show up in a pull request) or the files changed with the last commit (`lastCommit`)'
         )
             .choices(checkTypes)
             .default('full')
@@ -111,7 +112,7 @@ async function getFiles(rootDir: string, options: HeaderCheckOptions): Promise<s
         return resolveFiles(result);
     }
 
-    let changedFiles = options.type === 'changes' ? getUncommittedChanges(rootDir) : getChangesOfLastCommit(rootDir);
+    let changedFiles = options.type === 'changes' ? getChangesComparedToDefaultBranch(rootDir) : getChangesOfLastCommit(rootDir);
     changedFiles = changedFiles.filter(minimatch.filter(includePattern));
 
     excludePattern.forEach(pattern => {

@@ -62,6 +62,23 @@ export function resolveWorkspaceDir(cliDir?: string): string {
     return process.cwd();
 }
 
+/**
+ * Resolves the absolute path to a specific repository within the workspace.
+ *
+ * Accepts a `--dir` that points at the workspace (the common case) as well as one that already
+ * points at the repository itself, so that callers passing `--dir <repo>` don't end up with the
+ * repository segment duplicated (e.g. `.../glsp-server-node/glsp-server-node`).
+ */
+export function resolveRepoDir(repo: GLSPRepo, cliDir?: string): string {
+    const workspaceDir = resolveWorkspaceDir(cliDir);
+    const repoDir = path.resolve(workspaceDir, repo);
+    // `--dir` already points at the repo itself: don't append the repo name a second time.
+    if (!fs.existsSync(repoDir) && path.basename(workspaceDir) === repo) {
+        return workspaceDir;
+    }
+    return repoDir;
+}
+
 // ── Repo discovery ────────────────────────────────────────────────────────
 
 export function discoverRepos(dir: string): GLSPRepo[] {

@@ -18,7 +18,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from 'commander';
 import { baseCommand } from '../../util';
-import { configureRepoEnv, resolveWorkspaceDir } from './common/utils';
+import { configureRepoEnv, resolveRepoDir } from './common/utils';
 
 export const BROWSER_BUNDLE_PATH = 'examples/workflow-server-bundled-web/wf-glsp-server-webworker.js';
 export const NODE_BUNDLE_PATH = 'examples/workflow-server-bundled/wf-glsp-server-node.js';
@@ -39,8 +39,7 @@ export const BrowserBundleCommand: Command = baseCommand()
     .action(async (_cmdOptions: unknown, thisCmd: Command) => {
         const cli = thisCmd.opts<{ dir?: string; verbose: boolean }>();
         configureRepoEnv(cli);
-        const dir = resolveWorkspaceDir(cli.dir);
-        const repoDir = path.resolve(dir, 'glsp-server-node');
+        const repoDir = resolveRepoDir('glsp-server-node', cli.dir);
         const bundlePath = resolveBundlePath(repoDir, BROWSER_BUNDLE_PATH, 'Browser bundle');
         process.stdout.write(bundlePath);
     });
@@ -53,8 +52,7 @@ export const NodeBundleCommand: Command = baseCommand()
     .action(async (_cmdOptions: unknown, thisCmd: Command) => {
         const cli = thisCmd.opts<{ dir?: string; verbose: boolean }>();
         configureRepoEnv(cli);
-        const dir = resolveWorkspaceDir(cli.dir);
-        const repoDir = path.resolve(dir, 'glsp-server-node');
+        const repoDir = resolveRepoDir('glsp-server-node', cli.dir);
         const bundlePath = resolveBundlePath(repoDir, NODE_BUNDLE_PATH, 'Node server bundle');
         process.stdout.write(bundlePath);
     });

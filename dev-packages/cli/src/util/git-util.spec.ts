@@ -15,9 +15,17 @@
  ********************************************************************************/
 
 import { expect } from 'chai';
-import { createSandbox } from 'sinon';
+import { createSandbox, match } from 'sinon';
 import * as processUtil from './process-util';
-import { commitChanges, getDefaultBranch, getLastModificationDate, getUncommittedChanges, hasChanges } from './git-util';
+import {
+    commitChanges,
+    getChangesComparedToDefaultBranch,
+    getDefaultBranch,
+    getDefaultBranchRef,
+    getLastModificationDate,
+    getUncommittedChanges,
+    hasChanges
+} from './git-util';
 
 const sandbox = createSandbox();
 
@@ -81,6 +89,44 @@ describe('git-util', () => {
         it('should fallback to master when HEAD branch is not found', () => {
             execStub.returns('* remote origin\n  Remote branches:');
             expect(getDefaultBranch('/repo')).to.equal('master');
+        });
+    });
+
+    describe('getDefaultBranchRef', () => {
+        it('should resolve the ref from origin/HEAD when available', () => {
+            execStub.withArgs(match(/symbolic-ref/)).returns('origin/develop');
+            expect(getDefaultBranchRef('/repo')).to.equal('origin/develop');
+        });
+
+        it('should fall back to the first existing candidate ref', () => {
+            execStub.withArgs(match(/symbolic-ref/)).returns('');
+            execStub.withArgs(match('origin/main')).throws(new Error('unknown revision'));
+            execStub.withArgs(match('origin/master')).throws(new Error('unknown revision'));
+            execStub.withArgs(match(/--verify --quiet main/)).returns('');
+            expect(getDefaultBranchRef('/repo')).to.equal('main');
+        });
+
+        it('should return undefined when no default branch can be determined', () => {
+            execStub.throws(new Error('not a git repository'));
+            expect(getDefaultBranchRef('/repo')).to.be.undefined;
+        });
+    });
+
+    describe('getChangesComparedToDefaultBranch', () => {
+        it('should merge committed and uncommitted changes and deduplicate', () => {
+            execStub.withArgs(match(/symbolic-ref/)).returns('origin/main');
+            execStub.withArgs(match(/diff --name-only/)).returns('src/a.ts\nsrc/b.ts');
+            execStub.withArgs(match(/status --porcelain/)).returns(' M src/b.ts\n?? src/c.ts');
+            const result = getChangesComparedToDefaultBranch('/repo');
+            expect(result).to.have.members(['/repo/src/a.ts', '/repo/src/b.ts', '/repo/src/c.ts']);
+            expect(result).to.have.length(3);
+        });
+
+        it('should only consider uncommitted changes when no default branch is found', () => {
+            execStub.throws(new Error('not a git repository'));
+            execStub.withArgs(match(/status --porcelain/)).returns(' M src/only.ts');
+            const result = getChangesComparedToDefaultBranch('/repo');
+            expect(result).to.deep.equal(['/repo/src/only.ts']);
         });
     });
 
