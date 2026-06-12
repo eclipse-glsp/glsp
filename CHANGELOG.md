@@ -4,7 +4,14 @@
 
 ### Changes
 
+-   [repo] Migrate the repository from Yarn 1.x + Lerna to pnpm workspaces [#1636](https://github.com/eclipse-glsp/glsp/issues/1636)
+-   [cli] Make all CLI commands package-manager aware: pnpm- and yarn-based GLSP repositories are auto-detected [#1636](https://github.com/eclipse-glsp/glsp/issues/1636)
+-   [cli] Add `glsp releng publish <next|latest>` to publish workspace packages of pnpm-based repositories (replaces `lerna publish`, including canary `next` versions) [#1636](https://github.com/eclipse-glsp/glsp/issues/1636)
+
 ### Potentially Breaking Changes
+
+-   [cli] `glsp repo link`/`unlink` now use `link:` overrides in `pnpm-workspace.yaml` instead of `yarn link` and require all linked repositories to be pnpm-based [#1636](https://github.com/eclipse-glsp/glsp/issues/1636)
+-   [cli] `glsp releng version` no longer requires a `lerna.json`; the root `package.json` version is the source of truth and `workspace:` dependency ranges are preserved [#1636](https://github.com/eclipse-glsp/glsp/issues/1636)
 
 ## [v2.7.0 - 01/06/2026](https://github.com/eclipse-glsp/glsp/releases/tag/v2.7.0)
 

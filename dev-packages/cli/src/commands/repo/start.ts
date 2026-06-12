@@ -16,7 +16,7 @@
 
 import * as path from 'path';
 import { Command } from 'commander';
-import { LOGGER, baseCommand, execForeground } from '../../util';
+import { LOGGER, PackageManager, baseCommand, detectPackageManager, execForeground, runScriptInDirCommand } from '../../util';
 import { configureRepoEnv, discoverNewestFile, resolveWorkspaceDir } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────
@@ -36,8 +36,15 @@ function collectPassthroughArgs(cmd: Command): string {
     return raw.length > 0 ? ` ${raw.join(' ')}` : '';
 }
 
-export function resolveCommand(cmd: string, cwd: string, dryRun: boolean): string | undefined {
-    const resolved = `${cmd.startsWith('yarn') ? `yarn --cwd ${cwd} ${cmd.slice('yarn '.length)}` : cmd}`;
+export function resolveCommand(script: string, repoDir: string, dryRun: boolean): string | undefined {
+    let pm: PackageManager;
+    try {
+        pm = detectPackageManager(repoDir);
+    } catch (error) {
+        // e.g. dry runs may target repos that are not cloned yet — assume pnpm (the target state)
+        pm = 'pnpm';
+    }
+    const resolved = runScriptInDirCommand(pm, repoDir, script);
     if (dryRun) {
         process.stdout.write(resolved + '\n');
         return undefined;
@@ -74,7 +81,7 @@ export const TheiaStartCommand = baseCommand()
         const target = cli.electron ? 'electron' : 'browser';
         const script = cli.debug ? 'start:debug' : 'start';
         const passthrough = collectPassthroughArgs(thisCmd);
-        const resolved = resolveCommand(`yarn ${target} ${script}${passthrough}`, repoDir, cli.dryRun);
+        const resolved = resolveCommand(`${target} ${script}${passthrough}`, repoDir, cli.dryRun);
         if (resolved) {
             await execForeground(resolved, { verbose: cli.verbose });
         }
@@ -104,7 +111,7 @@ export const ClientStartCommand = baseCommand()
         const repoDir = path.resolve(dir, 'glsp-client');
         const script = cli.browser ? 'start:browser' : 'start';
         const passthrough = collectPassthroughArgs(thisCmd);
-        const resolved = resolveCommand(`yarn ${script}${passthrough}`, repoDir, cli.dryRun);
+        const resolved = resolveCommand(`${script}${passthrough}`, repoDir, cli.dryRun);
         if (resolved) {
             await execForeground(resolved, { verbose: cli.verbose });
         }
@@ -166,10 +173,10 @@ export const ServerNodeStartCommand = baseCommand()
 
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-server-node');
-        const yarnCmd = cli.socket ? 'yarn start' : 'yarn start:websocket';
+        const script = cli.socket ? 'start' : 'start:websocket';
         const portArg = cli.port ? ` --port ${cli.port}` : '';
         const passthrough = collectPassthroughArgs(thisCmd);
-        const resolved = resolveCommand(`${yarnCmd}${portArg}${passthrough}`, repoDir, cli.dryRun);
+        const resolved = resolveCommand(`${script}${portArg}${passthrough}`, repoDir, cli.dryRun);
         if (resolved) {
             await execForeground(resolved, { verbose: cli.verbose });
         }

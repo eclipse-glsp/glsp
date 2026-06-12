@@ -19,5 +19,6 @@ export * from './git-util';
 export * from './glsp-repo-util';
 export * from './logger';
 export * from './package-util';
+export * from './pnpm-workspace-util';
 export * from './process-util';
 export * from './validation-util';

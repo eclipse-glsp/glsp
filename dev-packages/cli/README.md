@@ -8,7 +8,7 @@ The contributed `glsp`, is a command line tool that offers all contributed comma
 Install `@eclipse-glsp/cli` as a dev dependency in your application.
 
 ```bash
-yarn add @eclipse-glsp/cli --dev
+pnpm add -D @eclipse-glsp/cli
 ```
 
 ## Usage
@@ -63,7 +63,8 @@ Options:
 
 ## coverageReport
 
-The `coverageReport` command can be used to create a full nyc test coverage report for a lerna/yarn mono repository.
+The `coverageReport` command can be used to create a full nyc test coverage report for a pnpm/yarn mono repository.
+The package manager is auto-detected from the repository (pnpm-workspace.yaml/pnpm-lock.yaml vs. yarn.lock).
 Individual coverage reports for each package are created and then combined to a full report.
 
 ```console
@@ -142,14 +143,15 @@ Commands:
   version [options] <versionType> [customVersion]  Set the version of all packages in a GLSP repository
   prepare [options] <versionType> [customVersion]     Prepare a new release for a GLSP component (version bump, changelog, PR
                                                       creation ...)
+  publish [options] <distTag>                         Publish all workspace packages of a pnpm-based GLSP repository
   help [command]                                      display help for command
 ```
 
 ### version
 
 Command to bump the version of all packages in a GLSP repository.
-Similar to "lerna version" this bumps the version of all workspace packages.
-In addition, external GLSP dependencies are considered and bumped as well.
+This bumps the version of all workspace packages (the root `package.json` version is the source of truth).
+In addition, external GLSP dependencies are considered and bumped as well; `workspace:` ranges are preserved.
 The glsp repository type ("glsp-client", "glsp-server-node" etc.) is auto detected from the given repository path.
 If the command is invoked in a non-GLSP repository it will fail.
 
@@ -199,6 +201,36 @@ Options:
   -h, --help               display help for command
 ```
 
+### publish
+
+Publishes all (public) workspace packages of a pnpm-based GLSP repository (replaces `lerna publish`).
+
+-   `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`, e.g. `2.8.0-next.42`) to all
+    workspace packages and publishes them under the `next` dist-tag. Requires the full git history
+    (`fetch-depth: 0` in CI) to derive the commit count.
+-   `latest`: publishes the current package versions under the `latest` dist-tag. Packages whose version
+    already exists on the registry are skipped.
+
+Publishing is delegated to `pnpm publish -r`, so `workspace:` dependency ranges are rewritten to exact
+versions and npm provenance/trusted publishing (`NPM_CONFIG_PROVENANCE`) is preserved.
+
+```console
+$ glsp releng publish -h
+Usage: glsp releng publish [options] <distTag>
+
+Publish all workspace packages of a pnpm-based GLSP repository (replaces `lerna publish`)
+
+Arguments:
+  distTag                  The npm dist-tag to publish under (choices: "next", "latest")
+
+Options:
+  -v, --verbose            Enable verbose (debug) log output (default: false)
+  -r, --repoDir <repoDir>  Path to the component repository (default: "<cwd>")
+  --dry-run                Derive versions and run `pnpm publish` in dry-run mode without applying changes (default: false)
+  --registry <url>         Publish to a custom npm registry (e.g. a local verdaccio for testing)
+  -h, --help               display help for command
+```
+
 ## repo
 
 Multi-repository workspace management for GLSP development.
@@ -221,8 +253,8 @@ Commands:
   clone [options] [repos...]        Clone GLSP repositories
   fork [options] <user>             Add fork remotes to already-cloned repositories
   build [options]                   Build repositories (dependency-ordered)
-  link [options]                    Interlink repositories via yarn link
-  unlink [options]                  Remove yarn links between repositories
+  link [options]                    Interlink pnpm-based repositories via link: overrides in pnpm-workspace.yaml
+  unlink [options]                  Remove the link: overrides between repositories
   pwd [options]                     Print resolved paths for all discovered repositories
   log [options]                     Print the last commit for all discovered repositories
   workspace                         Manage VS Code workspace files for GLSP projects
@@ -314,15 +346,17 @@ Options:
 
 ### link / unlink
 
-Links (or unlinks) repositories via `yarn link` for cross-repo development.
+Links (or unlinks) repositories for cross-repo development by writing `link:` overrides into each
+consumer's `pnpm-workspace.yaml` and re-running `pnpm install` (all selected repositories must be pnpm-based).
 Repositories are processed in dependency order, and singleton dependencies (sprotty, inversify, etc.)
-are shared from `glsp-client` to avoid duplicate instances.
+are overridden to the copies installed in `glsp-client` to guarantee a single physical instance.
+`unlink` removes the managed overrides again; unrelated overrides and workspace configuration are preserved.
 
 ```console
 $ glsp repo link -h
 Usage: glsp repo link [options]
 
-Interlink repositories via yarn link
+Interlink pnpm-based repositories via link: overrides in pnpm-workspace.yaml
 
 Options:
   -d, --dir <path>      Target directory where repos are cloned
@@ -330,6 +364,7 @@ Options:
   --preset <name>       Link repos from a preset (choices: "core", "theia", "vscode",
                         "eclipse", "playwright", "all")
   --no-fail-fast        Continue after a failure
+  --no-install          Only write the overrides, skip running pnpm install
   -v, --verbose         Verbose output (default: false)
   -h, --help            display help for command
 ```

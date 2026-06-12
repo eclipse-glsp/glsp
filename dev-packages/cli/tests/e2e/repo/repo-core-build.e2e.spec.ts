@@ -143,22 +143,37 @@ describe('repo commands — core (build)', function () {
     // ── Link / Unlink ──────────────────────────────────────────────────────
 
     describe('link', function () {
-        it('should link core repos', function () {
+        function reposArePnpmBased(): boolean {
+            return CORE_REPOS.every(repo => fs.existsSync(path.join(workDir, repo, 'pnpm-workspace.yaml')));
+        }
+
+        it('should link core repos via pnpm overrides', function () {
             const result = runCli(['repo', 'link', '-d', workDir]);
+
+            if (!reposArePnpmBased()) {
+                // linking requires pnpm-based repos; not all core repos are migrated yet
+                expect(result.exitCode).to.not.equal(0);
+                expect(result.stdout + result.stderr).to.contain('does not use pnpm');
+                return;
+            }
+
             expect(result.exitCode, cliDiag(result)).to.equal(0);
-
-            const linkDir = path.join(workDir, '.yarn-link');
-            expect(fs.existsSync(linkDir), '.yarn-link directory should exist').to.be.true;
-
-            const linkedPkgs = fs.readdirSync(path.join(linkDir, '@eclipse-glsp'));
-            expect(linkedPkgs.length).to.be.greaterThan(0);
+            const serverWorkspace = fs.readFileSync(path.join(workDir, 'glsp-server-node', 'pnpm-workspace.yaml'), 'utf8');
+            expect(serverWorkspace).to.contain('overrides:');
+            expect(serverWorkspace).to.contain('@eclipse-glsp/client: link:');
         });
-    });
 
-    describe('unlink', function () {
         it('should unlink core repos', function () {
             const result = runCli(['repo', 'unlink', '-d', workDir]);
+
+            if (!reposArePnpmBased()) {
+                expect(result.exitCode).to.not.equal(0);
+                return;
+            }
+
             expect(result.exitCode, cliDiag(result)).to.equal(0);
+            const serverWorkspace = fs.readFileSync(path.join(workDir, 'glsp-server-node', 'pnpm-workspace.yaml'), 'utf8');
+            expect(serverWorkspace).to.not.contain('link:');
         });
     });
 

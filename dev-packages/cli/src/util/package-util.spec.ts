@@ -20,7 +20,15 @@ import * as path from 'path';
 import * as sinon from 'sinon';
 import { cleanupTempDir, createTempDir } from '../../tests/helpers/test-helper';
 import * as processUtil from './process-util';
-import { PackageHelper, getYarnWorkspaceInfo } from './package-util';
+import {
+    PackageHelper,
+    detectPackageManager,
+    execBinCommand,
+    getPnpmWorkspacePackages,
+    getYarnWorkspaceInfo,
+    installCommand,
+    runScriptCommand
+} from './package-util';
 
 describe('package-util', () => {
     const sandbox = sinon.createSandbox();
@@ -54,6 +62,106 @@ describe('package-util', () => {
             const helper = new PackageHelper(packageJsonPath, 'test-pkg');
             expect(helper.filePath).to.equal(packageJsonPath);
             expect(helper.name).to.equal('test-pkg');
+        });
+    });
+
+    describe('detectPackageManager', () => {
+        let tempDir: string;
+
+        beforeEach(() => {
+            tempDir = createTempDir();
+        });
+
+        afterEach(() => {
+            cleanupTempDir(tempDir);
+        });
+
+        it('should detect pnpm if a pnpm-workspace.yaml is present', () => {
+            fs.writeFileSync(path.join(tempDir, 'pnpm-workspace.yaml'), 'packages:\n  - "packages/*"\n');
+            expect(detectPackageManager(tempDir)).to.equal('pnpm');
+        });
+
+        it('should detect pnpm if a pnpm-lock.yaml is present', () => {
+            fs.writeFileSync(path.join(tempDir, 'pnpm-lock.yaml'), '');
+            expect(detectPackageManager(tempDir)).to.equal('pnpm');
+        });
+
+        it('should detect yarn if a yarn.lock is present', () => {
+            fs.writeFileSync(path.join(tempDir, 'yarn.lock'), '');
+            expect(detectPackageManager(tempDir)).to.equal('yarn');
+        });
+
+        it('should prefer pnpm if both pnpm and yarn files are present', () => {
+            fs.writeFileSync(path.join(tempDir, 'pnpm-workspace.yaml'), '');
+            fs.writeFileSync(path.join(tempDir, 'yarn.lock'), '');
+            expect(detectPackageManager(tempDir)).to.equal('pnpm');
+        });
+
+        it('should throw if no package manager could be detected', () => {
+            expect(() => detectPackageManager(tempDir)).to.throw(/Could not detect the package manager/);
+        });
+    });
+
+    describe('package manager command helpers', () => {
+        it('should return the pnpm command variants', () => {
+            expect(installCommand('pnpm')).to.equal('pnpm install');
+            expect(runScriptCommand('pnpm', 'build')).to.equal('pnpm run build');
+            expect(execBinCommand('pnpm', 'nyc -h')).to.equal('pnpm exec nyc -h');
+        });
+
+        it('should return the yarn command variants', () => {
+            expect(installCommand('yarn')).to.equal('yarn install');
+            expect(runScriptCommand('yarn', 'build')).to.equal('yarn build');
+            expect(execBinCommand('yarn', 'nyc -h')).to.equal('yarn nyc -h');
+        });
+    });
+
+    describe('getPnpmWorkspacePackages', () => {
+        let tempDir: string;
+
+        beforeEach(() => {
+            tempDir = createTempDir();
+        });
+
+        afterEach(() => {
+            cleanupTempDir(tempDir);
+        });
+
+        function createPackage(relativePath: string, name: string): string {
+            const pkgDir = path.join(tempDir, relativePath);
+            fs.mkdirSync(pkgDir, { recursive: true });
+            fs.writeFileSync(path.join(pkgDir, 'package.json'), JSON.stringify({ name, version: '1.0.0' }));
+            return pkgDir;
+        }
+
+        it('should map the pnpm list output to package helpers, excluding the root', () => {
+            createPackage('.', 'root-pkg');
+            const pkgADir = createPackage('packages/a', '@scope/pkg-a');
+            const pkgBDir = createPackage('packages/b', '@scope/pkg-b');
+            const listOutput = JSON.stringify([
+                { name: 'root-pkg', version: '1.0.0', path: tempDir, private: true },
+                { name: '@scope/pkg-a', version: '1.0.0', path: pkgADir },
+                { name: '@scope/pkg-b', version: '1.0.0', path: pkgBDir }
+            ]);
+            sandbox.stub(processUtil, 'exec').returns(listOutput);
+
+            const packages = getPnpmWorkspacePackages(tempDir);
+            expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', '@scope/pkg-b']);
+            expect(packages.map(pkg => pkg.location)).to.deep.equal([pkgADir, pkgBDir]);
+        });
+
+        it('should append the root package if includeRoot is set', () => {
+            createPackage('.', 'root-pkg');
+            const pkgADir = createPackage('packages/a', '@scope/pkg-a');
+            const listOutput = JSON.stringify([
+                { name: 'root-pkg', version: '1.0.0', path: tempDir, private: true },
+                { name: '@scope/pkg-a', version: '1.0.0', path: pkgADir }
+            ]);
+            sandbox.stub(processUtil, 'exec').returns(listOutput);
+
+            const packages = getPnpmWorkspacePackages(tempDir, true);
+            expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', 'root']);
+            expect(packages[packages.length - 1].location).to.equal(tempDir);
         });
     });
 
