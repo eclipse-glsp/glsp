@@ -5,7 +5,7 @@ Common shared configuration for Eclipse GLSP components that are using mocha as 
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/mocha-config
+pnpm add -D @eclipse-glsp/mocha-config
 ```
 
 ## Usage

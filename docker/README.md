@@ -14,7 +14,7 @@ It is mainly used for CI jobs that require the possibility to build client and s
 The image has the following components installed:
 
 -   Git >=2.17.1
--   Node 22, yarn 1.22.19 and lerna
+-   Node 22, pnpm 10 and yarn 1.22.19 (transitional, until all GLSP repos are migrated to pnpm)
 -   OpenJDK 21 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 

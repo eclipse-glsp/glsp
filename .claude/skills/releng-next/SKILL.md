@@ -28,7 +28,7 @@ All inputs are taken from the user's prompt. Use the defaults below for anything
 
 ## Conventions
 
-- Always use the **local** CLI built from this tooling repo: `yarn glsp …` (never `npx @eclipse-glsp/cli`). The maintainer wants the behavior of the code as it currently stands.
+- Always use the **local** CLI built from this tooling repo: `pnpm glsp …` (never `npx @eclipse-glsp/cli`). The maintainer wants the behavior of the code as it currently stands.
 - `releng prepare next` and `releng version` accept `-r/--repoDir <dir>` and `cd` into it internally, so stay in the tooling repo and point `-r` at each temp clone — do not run from inside each repo.
 - **Continue-on-error.** Never abort the whole run because one repo failed. Collect outcomes and report them at the end in the four buckets.
 - The 8 GLSP repos are: `glsp`, `glsp-client`, `glsp-server-node`, `glsp-theia-integration`, `glsp-vscode-integration`, `glsp-eclipse-integration`, `glsp-server`, `glsp-playwright`.
@@ -49,9 +49,9 @@ Run from the tooling repo root (`glsp/glsp`).
 
 2. Build the local CLI so `dist/cli.js` is current:
    ```bash
-   yarn
+   pnpm install
    ```
-   Confirm `yarn glsp --help` works before continuing.
+   Confirm `pnpm glsp --help` works before continuing.
 
 ---
 
@@ -68,10 +68,10 @@ Run from the tooling repo root (`glsp/glsp`).
 4. Clone the target repos fresh into `WORKDIR`, from the real upstream (no fork, so `origin = eclipse-glsp` and pushes/PRs target upstream):
    ```bash
    # full run (default): all 8 repos
-   yarn glsp repo clone --preset all -d "$WORKDIR"
+   pnpm glsp repo clone --preset all -d "$WORKDIR"
 
    # partial run: only the repos the user named (repo clone takes positional names)
-   yarn glsp repo clone <repo> [<repo> …] -d "$WORKDIR"
+   pnpm glsp repo clone <repo> [<repo> …] -d "$WORKDIR"
    ```
    Each repo lands at `$WORKDIR/<repo>` on its default branch. If any clone fails, record it as a failure for that repo but continue.
 
@@ -100,7 +100,7 @@ If the version ends with `-next` or `.SNAPSHOT`, the repo is **already on next**
 Build the command from the resolved inputs:
 
 ```bash
-yarn glsp releng prepare next -r "$WORKDIR/<repo>" [--no-push] [--draft]
+pnpm glsp releng prepare next -r "$WORKDIR/<repo>" [--no-push] [--draft]
 ```
 
 Add `--no-push` if no-push was requested, and `--draft` if draft was requested (draft is ignored by `prepare` when `--no-push` is also set).
@@ -184,7 +184,7 @@ Steps (share the same overall timeout as Phase 4):
    The nightly deploy is not instant — it may take many minutes after merge. If the overall timeout elapses first, leave eclipse-integration **deferred** and report it.
 2. **Retry prepare next** for eclipse-integration (same flags as the original run, push enabled):
    ```bash
-   yarn glsp releng prepare next -r "$WORKDIR/glsp-eclipse-integration"
+   pnpm glsp releng prepare next -r "$WORKDIR/glsp-eclipse-integration"
    ```
    - Throws again with the same P2 error → P2 not actually ready; keep polling (step 1) until timeout.
    - Other throw → record **❌ failed**.

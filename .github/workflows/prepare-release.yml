@@ -81,6 +81,13 @@ jobs:
           path: release-repo
           ref: ${{ inputs.branch || github.event.inputs.branch }}
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        with:
+          # pin explicitly: two repos are checked out into subdirectories, so there is
+          # no packageManager field at the workflow root to resolve the version from
+          version: 10.33.0
+
       - name: Set up Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
@@ -101,12 +108,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Yarn
+      - name: Install Yarn (release repos still on yarn 1.x)
         run: npm install -g yarn
 
       - name: Install dependencies in glsp-release-helper
         working-directory: ./glsp-release-helper
-        run: yarn install
+        run: pnpm install
 
       - name: Configure Git
         run: |
@@ -125,7 +132,7 @@ jobs:
           fi
 
           if [[ "${{ inputs.release_type || github.event.inputs.release_type }}" == "custom" ]]; then
-            yarn glsp releng prepare custom "${{ inputs.custom_version || github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+            pnpm glsp releng prepare custom "${{ inputs.custom_version || github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           else
-            yarn glsp releng prepare "${{ inputs.release_type || github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+            pnpm glsp releng prepare "${{ inputs.release_type || github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           fi

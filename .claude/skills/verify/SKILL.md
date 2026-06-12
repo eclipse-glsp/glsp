@@ -6,13 +6,13 @@ description: Run full project validation (lint, format, copyright headers, unit 
 Run the full validation suite for the GLSP dev-packages monorepo from the repository root:
 
 ```bash
-yarn check:all
+pnpm check:all
 ```
 
-This runs `yarn install && yarn lint && yarn format:check && yarn headers:check && yarn test` in sequence.
+This runs `pnpm install && pnpm lint && pnpm format:check && pnpm headers:check && pnpm test` in sequence.
 
 
 On failure:
 1. Report which check failed and the specific errors
 2. Auto-fix by invoking the `/fix` skill
-3. Re-run `yarn check:all` to confirm everything passes
+3. Re-run `pnpm check:all` to confirm everything passes

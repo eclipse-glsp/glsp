@@ -24,9 +24,9 @@
     }
   ],
   "dependencies": {
-    "@eclipse-glsp/cli": "2.8.0-next",
-    "@eclipse-glsp/config": "2.8.0-next",
-    "@eclipse-glsp/config-test": "2.8.0-next"
+    "@eclipse-glsp/cli": "workspace:*",
+    "@eclipse-glsp/config": "workspace:*",
+    "@eclipse-glsp/config-test": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

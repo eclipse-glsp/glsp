@@ -13,10 +13,10 @@
 
 ## Supported tags and respective `Dockerfile` links
 
--   [`alpine`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+-   [`alpine`, `alpine-v9.0`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
 Note that these tags are fluent and not bound to a fixed image version.
-If you want to use a fixed version you can use the base tag with a version suffix e.g. `alpine-v8.0`.
+If you want to use a fixed version you can use the base tag with a version suffix e.g. `alpine-v9.0`.
 An increment of the major version number (e.g. v7.0-> v8.0) indicates an update of a major component e.g a new OS, Node or Java version.
 Minor version increments indicate bug fixes or changes in the minor dev dependencies.
 (See also: [Image Version History](#image-version-history))
@@ -30,7 +30,7 @@ It is mainly used for CI jobs that require the possibility to build client and s
 The image has the following components installed:
 
 -   Git >=2.17.1
--   Node 22, yarn 1.22.19 and lerna
+-   Node 22, pnpm 10 and yarn 1.22.19 (transitional, until all GLSP repos are migrated to pnpm)
 -   OpenJDK 21 and Maven >=3.6.0
 -   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
@@ -65,6 +65,7 @@ It only provides the essential libraries needed for building client and server c
 -   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21
 -   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11
 -   [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22. Ubuntu and uitest variants have been removed.
+-   [v9.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v9.0): Pre-install pnpm 10, remove lerna
 
 ## License
 

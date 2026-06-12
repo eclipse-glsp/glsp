@@ -5,7 +5,7 @@ Common shared configuration for Eclipse GLSP components that are using ESLint fo
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/eslint-config
+pnpm add -D @eclipse-glsp/eslint-config
 ```
 
 ## Usage

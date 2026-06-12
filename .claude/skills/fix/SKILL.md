@@ -6,9 +6,9 @@ description: Auto-fix all lint, formatting, and copyright header issues across t
 Run the full auto-fix suite for the GLSP dev-packages monorepo from the repository root:
 
 ```bash
-yarn fix:all
+pnpm fix:all
 ```
 
-This runs `yarn lint:fix && yarn format && yarn headers:fix` in sequence.
+This runs `pnpm lint:fix && pnpm format && pnpm headers:fix` in sequence.
 
 After fixing, report what changed. If any issues remain that couldn't be auto-fixed, list them and suggest manual fixes.

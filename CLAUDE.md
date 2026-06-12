@@ -8,9 +8,9 @@ Eclipse GLSP shared development tooling monorepo. Contains reusable dev packages
 
 ## Build & Development
 
--   **Package manager**: Yarn 1.x (classic) — do not use Yarn 2+/Berry or npm
--   **Build**: Run `yarn` from the repository root to build the entire project
--   **CLI**: Run `yarn glsp` to start the CLI
+-   **Package manager**: pnpm 10 — do not use yarn or npm
+-   **Build**: Run `pnpm install` from the repository root to install and build the entire project
+-   **CLI**: Run `pnpm glsp` to start the CLI
 -   Refer to the scripts in the root `package.json` for available build, lint, and format commands
 
 ## Validation

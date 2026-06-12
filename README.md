@@ -125,17 +125,14 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 nvm install 22
 ```
 
-and Yarn
+and pnpm
 
 ```bash
-npm install -g yarn
+npm install -g pnpm@10
 ```
 
-and Lerna
-
-```bash
-npm install -g lerna
-```
+> **_NOTE:_** Some GLSP repositories are not yet migrated to pnpm and still require Yarn 1.x (`npm install -g yarn`).
+> Check the engines field of the respective repository's `package.json`.
 
 ### Server/Ide packages
 
@@ -150,15 +147,15 @@ You'll need Java 21 and maven.
 To build the client packages, just invoke
 
 ```bash
-yarn install
+pnpm install
 ```
 
-in `glsp-client` and `glsp-theia-integration`.  
+in `glsp-client` and `yarn install` in `glsp-theia-integration` (not yet migrated to pnpm).  
 To start an example server, you can either
 
 -   run
     ```bash
-    yarn start:exampleServer
+    pnpm start:exampleServer
     ```
     in `glsp-client` and open the `glsp-client/examples/workflow-standalone/app/diagram.html` file in your browser of choice
 -   run
@@ -258,7 +255,12 @@ We recommend an IDE that supports maven, though, to import the maven modules fro
 
 ### Linking and watching
 
-When you are planning to change more than one client package at a time, or if you want to test your changes with the workflow example, we recommend to `yarn link` your local sources.
-Therefore, we provide the [yarn-link script](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/configs/local-linking.sh) that automatically links all the relevant packages.
-Currently, this script is only available for Linux and Mac (shell script).
-The [GLSP VS Code workspace](glsp.theia.code-workspace) also includes a dedicated VS Code task called `Yarn link all packages` and `Yarn unlink all packages`.
+When you are planning to change more than one client package at a time, or if you want to test your changes with the workflow example, we recommend linking your local sources with the GLSP CLI:
+
+```bash
+pnpm glsp repo link
+```
+
+This writes `link:` overrides into the `pnpm-workspace.yaml` of each consuming repository (in dependency order) and reinstalls, so all repositories resolve the local sources — including shared singleton dependencies such as `sprotty` and `inversify`.
+`pnpm glsp repo unlink` removes the overrides again.
+Note that linking requires the involved repositories to be migrated to pnpm.

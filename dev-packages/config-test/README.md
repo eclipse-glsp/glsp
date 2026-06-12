@@ -17,7 +17,7 @@ Mocha and nyc are included as direct dependencies.
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/config-test
+pnpm add -D @eclipse-glsp/config-test
 ```
 
 ## Usage

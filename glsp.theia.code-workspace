@@ -96,7 +96,7 @@
                 "options": {
                     "cwd": "${workspaceFolder}/../glsp-client"
                 },
-                "command": "yarn",
+                "command": "pnpm install",
                 "problemMatcher": ["$tsc", "$eslint-stylish"]
             },
             {
@@ -146,7 +146,7 @@
                     "showReuseMessage": false,
                     "clear": true
                 },
-                "command": "yarn watch",
+                "command": "pnpm watch",
                 "problemMatcher": ["$tsc-watch"]
             },
             {

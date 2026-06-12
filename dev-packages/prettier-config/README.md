@@ -5,7 +5,7 @@ Common shared configuration for Eclipse GLSP components that use Prettier for co
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/prettier-config
+pnpm add -D @eclipse-glsp/prettier-config
 ```
 
 ## Usage

@@ -2,30 +2,28 @@
   "name": "parent",
   "version": "2.8.0-next",
   "private": true,
-  "workspaces": [
-    "dev-packages/*"
-  ],
   "scripts": {
-    "build": "lerna run build",
-    "check:all": "yarn install && yarn lint &&  yarn format:check && yarn headers:check && yarn test",
-    "clean": "lerna run clean",
-    "cli": "yarn --cwd dev-packages/cli",
-    "fix:all": "yarn lint:fix && yarn format && yarn headers:fix",
+    "build": "pnpm -r build",
+    "check:all": "pnpm install && pnpm lint && pnpm format:check && pnpm headers:check && pnpm test",
+    "clean": "pnpm -r clean",
+    "cli": "pnpm -C dev-packages/cli",
+    "fix:all": "pnpm lint:fix && pnpm format && pnpm headers:fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "glsp": "node dev-packages/cli/dist/cli.js",
-    "headers:check": "yarn glsp checkHeaders .",
-    "headers:fix": "yarn glsp checkHeaders . --autoFix",
+    "headers:check": "pnpm glsp checkHeaders .",
+    "headers:fix": "pnpm glsp checkHeaders . --autoFix",
+    "preinstall": "npx only-allow pnpm",
     "lint": "eslint .",
-    "lint:ci": "yarn lint --output-file eslint_report.json --format json",
-    "lint:fix": "yarn lint --fix",
-    "prepare": "yarn run build",
-    "publish:latest": "lerna publish from-package --no-git-reset -y",
-    "publish:next": "lerna publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes",
-    "test": "yarn --cwd dev-packages/cli test",
-    "test:ci": "yarn --cwd dev-packages/cli test:ci",
-    "test:e2e": "yarn --cwd dev-packages/cli test:e2e",
-    "watch": "yarn cli watch"
+    "lint:ci": "pnpm lint --output-file eslint_report.json --format json",
+    "lint:fix": "pnpm lint --fix",
+    "prepare": "pnpm build",
+    "publish:latest": "pnpm glsp releng publish latest",
+    "publish:next": "pnpm glsp releng publish next",
+    "test": "pnpm -C dev-packages/cli test",
+    "test:ci": "pnpm -C dev-packages/cli test:ci",
+    "test:e2e": "pnpm -C dev-packages/cli test:e2e",
+    "watch": "pnpm cli watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
@@ -45,7 +43,6 @@
     "eslint-plugin-no-null": "^1.0.2",
     "globals": "^15.0.0",
     "ignore-styles": "^5.0.1",
-    "lerna": "^9.0.0",
     "mocha": "^10.2.0",
     "mocha-ctrf-json-reporter": "^0.0.9",
     "nyc": "^15.1.0",
@@ -57,8 +54,10 @@
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.0.0"
   },
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22",
-    "yarn": ">=1.7.0 <2"
+    "pnpm": ">=10"
   }
 }
+
