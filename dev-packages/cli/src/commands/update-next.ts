@@ -15,6 +15,7 @@
  ********************************************************************************/
 
 import * as path from 'path';
+import * as YAML from 'yaml';
 import {
     LOGGER,
     PackageHelper,
@@ -26,8 +27,10 @@ import {
     execAsync,
     getUncommittedChanges,
     getWorkspacePackages,
+    readFile,
     readPackage,
-    validateGitDirectory
+    validateGitDirectory,
+    writeFile
 } from '../util';
 
 export const UpdateNextCommand = baseCommand()
@@ -56,14 +59,28 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
 
     if (pm === 'pnpm') {
         LOGGER.debug(`Scanning ${packages.length} packages for 'next' dependencies`, packages);
-        const nextDeps = getNextDependencies(packages);
-        if (nextDeps.length === 0) {
+        const versions = resolveNextVersions(getNextDependencies(packages));
+        if (Object.keys(versions).length === 0) {
             LOGGER.info('No next dependencies found');
             return;
         }
         LOGGER.info('Upgrade and rebuild packages ...');
-        // pnpm update re-resolves dist-tag specifiers (like 'next') and rewrites the lockfile
-        await execAsync(`pnpm update -r ${nextDeps.join(' ')}`, { silent: false, cwd: rootDir });
+        LOGGER.debug('Pinning next dependencies via pnpm-workspace.yaml overrides', versions);
+
+        const workspaceYamlPath = path.join(rootDir, 'pnpm-workspace.yaml');
+        const originalYaml = readFile(workspaceYamlPath);
+        // Merge our pins into any existing `overrides` (ours win); the file is restored verbatim afterwards.
+        const workspace = (YAML.parse(originalYaml) as { overrides?: Record<string, string> }) ?? {};
+        workspace.overrides = { ...workspace.overrides, ...versions };
+        writeFile(workspaceYamlPath, YAML.stringify(workspace));
+        try {
+            await execAsync('pnpm install', { silent: false, cwd: rootDir });
+        } finally {
+            LOGGER.debug('Restoring pnpm-workspace.yaml');
+            writeFile(workspaceYamlPath, originalYaml);
+        }
+        // Reconcile the lockfile with the restored pnpm-workspace.yaml (drops the temporary overrides)
+        await execAsync('pnpm install', { silent: false, cwd: rootDir });
         LOGGER.info('Upgrade successfully completed');
         return;
     }
@@ -103,13 +120,24 @@ function getNextDependencies(packages: PackageHelper[]): string[] {
     return nextDeps;
 }
 
-async function getResolutions(packages: PackageHelper[]): Promise<Record<string, string>> {
-    const dependencies = getNextDependencies(packages);
-    LOGGER.info('Retrieve next versions ... ');
-    const resolutions: Record<string, string> = {};
+/**
+ * Resolves the current concrete version of the `next` dist-tag for each given dependency
+ * (e.g. `@eclipse-glsp/protocol` -> `2.8.0-next.6`).
+ */
+function resolveNextVersions(dependencies: string[]): Record<string, string> {
+    const versions: Record<string, string> = {};
     dependencies.forEach(dep => {
         LOGGER.info(`Retrieving next version for ${dep}`);
-        const version = exec(`npm view ${dep}@next version`, { silent: true });
+        versions[dep] = exec(`npm view ${dep}@next version`, { silent: true }).trim();
+    });
+    return versions;
+}
+
+async function getResolutions(packages: PackageHelper[]): Promise<Record<string, string>> {
+    LOGGER.info('Retrieve next versions ... ');
+    const versions = resolveNextVersions(getNextDependencies(packages));
+    const resolutions: Record<string, string> = {};
+    Object.entries(versions).forEach(([dep, version]) => {
         resolutions[`**/${dep}`] = version;
     });
     return resolutions;
