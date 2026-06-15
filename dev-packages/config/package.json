@@ -24,9 +24,9 @@
     }
   ],
   "dependencies": {
-    "@eclipse-glsp/eslint-config": "2.8.0-next",
-    "@eclipse-glsp/prettier-config": "2.8.0-next",
-    "@eclipse-glsp/ts-config": "2.8.0-next",
+    "@eclipse-glsp/eslint-config": "workspace:*",
+    "@eclipse-glsp/prettier-config": "workspace:*",
+    "@eclipse-glsp/ts-config": "workspace:*",
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@tony.ganchev/eslint-plugin-header": "^3.1.1",

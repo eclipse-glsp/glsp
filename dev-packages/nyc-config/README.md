@@ -5,7 +5,7 @@ Common shared configuration for Eclipse GLSP components that use test coverage r
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/nyc-config
+pnpm add --save-dev @eclipse-glsp/nyc-config
 ```
 
 ## Usage

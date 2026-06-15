@@ -81,10 +81,15 @@ jobs:
           path: release-repo
           ref: ${{ inputs.branch || github.event.inputs.branch }}
 
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        with:
+          package_json_file: glsp-release-helper/package.json
       - name: Set up Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 22
+          cache: pnpm
+          cache-dependency-path: glsp-release-helper/pnpm-lock.yaml
 
       - name: Set up Java 21
         if: >-
@@ -101,12 +106,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
-      - name: Install dependencies in glsp-release-helper
+      - name: Build glsp-release-helper
         working-directory: ./glsp-release-helper
-        run: yarn install
+        run: pnpm build
 
       - name: Configure Git
         run: |
@@ -125,7 +127,7 @@ jobs:
           fi
 
           if [[ "${{ inputs.release_type || github.event.inputs.release_type }}" == "custom" ]]; then
-            yarn glsp releng prepare custom "${{ inputs.custom_version || github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+            pnpm glsp releng prepare custom "${{ inputs.custom_version || github.event.inputs.custom_version }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           else
-            yarn glsp releng prepare "${{ inputs.release_type || github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
+            pnpm glsp releng prepare "${{ inputs.release_type || github.event.inputs.release_type }}" -r ${{ github.workspace }}/release-repo $DRAFT_FLAG
           fi

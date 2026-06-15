@@ -19,7 +19,7 @@ The package is available via npm and can be used by all GLSP components implemen
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/dev
+pnpm add --save-dev @eclipse-glsp/dev
 ```
 
 ## Usage

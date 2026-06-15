@@ -96,7 +96,7 @@
                 "options": {
                     "cwd": "${workspaceFolder}/../glsp-client"
                 },
-                "command": "yarn",
+                "command": "pnpm install && pnpm build",
                 "problemMatcher": ["$tsc", "$eslint-stylish"]
             },
             {
@@ -113,7 +113,7 @@
                 "options": {
                     "cwd": "${workspaceFolder}/../glsp-theia-integration"
                 },
-                "command": "yarn",
+                "command": "pnpm install && pnpm build",
                 "problemMatcher": ["$tsc", "$eslint-stylish"]
             },
             {
@@ -146,7 +146,7 @@
                     "showReuseMessage": false,
                     "clear": true
                 },
-                "command": "yarn watch",
+                "command": "pnpm watch",
                 "problemMatcher": ["$tsc-watch"]
             },
             {
@@ -162,7 +162,7 @@
                     "showReuseMessage": false,
                     "clear": true
                 },
-                "command": "yarn watch",
+                "command": "pnpm watch",
                 "problemMatcher": ["$tsc-watch"]
             }
         ]

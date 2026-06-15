@@ -20,31 +20,33 @@
     }
   ],
   "bin": {
-    "glsp": "dist/cli.js"
+    "glsp": "bin/glsp.js"
   },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
-    "build": "yarn check-types && yarn bundle",
-    "build:prod": "yarn check-types && yarn bundle --production",
-    "bundle": "yarn clean:dist && node esbuild.js",
-    "check-types": "tsc",
-    "clean": "rimraf  dist tsconfig.tsbuildinfo",
+    "build": "pnpm compile && pnpm bundle",
+    "build:prod": "pnpm compile && pnpm bundle --production",
+    "bundle": "pnpm clean:dist && node esbuild.js",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "clean:dist": "rimraf dist",
+    "compile": "tsc",
     "lint": "eslint --ext .ts,.tsx ./src",
-    "lint:ci": "yarn lint -o eslint.xml -f checkstyle",
+    "lint:ci": "pnpm lint -o eslint.xml -f checkstyle",
+    "prepublishOnly": "pnpm build",
     "start": "node dist/cli.js",
     "test": "mocha --config .mocharc.json",
-    "test:all": "yarn test && yarn test:e2e",
-    "test:ci": "yarn test --reporter mocha-ctrf-json-reporter",
-    "test:coverage": "nyc yarn test",
-    "test:e2e": "yarn build && mocha --config .mocharc.e2e.json",
+    "test:all": "pnpm test && pnpm test:e2e",
+    "test:ci": "pnpm test --reporter mocha-ctrf-json-reporter",
+    "test:coverage": "nyc pnpm test",
+    "test:e2e": "pnpm build && mocha --config .mocharc.e2e.json",
     "watch": "node esbuild.js --watch",
     "watch:tsc": "tsc --watch"
   },
   "devDependencies": {
-    "@eclipse-glsp/config": "2.8.0-next",
+    "@eclipse-glsp/config": "workspace:*",
     "@types/semver": "^7.7.1",
     "commander": "^14.0.0",
     "esbuild": "~0.28.1",

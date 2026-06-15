@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           ref: ${{ inputs.ref || github.event.inputs.ref || github.event.workflow_run.head_commit.id || github.sha }}
-          # Fetch all history for lerna to determine versions
+          # Fetch all history to determine the canary version
           fetch-depth: 0
 
       - name: Check for changes in "dev-packages" directory
@@ -64,24 +64,27 @@ jobs:
             echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
 
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        if: steps.check_changes.outputs.should_publish == 'true'
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         if: steps.check_changes.outputs.should_publish == 'true'
         with:
           node-version: 22.x
+          cache: pnpm
           registry-url: 'https://registry.npmjs.org'
 
       - name: Build
         if: steps.check_changes.outputs.should_publish == 'true'
-        run: yarn
+        run: pnpm build
 
       - name: Publish to NPM
         if: steps.check_changes.outputs.should_publish == 'true'
         run: |
           DIST_TAG="${{ inputs.dist-tag || github.event.inputs.dist-tag || 'next' }}"
           if [[ "$DIST_TAG" == "next" ]]; then
-             yarn publish:next
+             pnpm publish:next
           elif [[ "$DIST_TAG" == "latest" ]]; then
-             yarn publish:latest
+             pnpm publish:latest
           else
             echo "Unknown dist-tag: $DIST_TAG"
             exit 1
