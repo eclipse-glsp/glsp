@@ -50,7 +50,8 @@
     "esbuild": "~0.25.9",
     "globby": "^14.1.0",
     "open": "^10.0.0",
-    "semver": "^7.7.2"
+    "semver": "^7.7.2",
+    "yaml": "^2.8.0"
   },
   "publishConfig": {
     "access": "public"
