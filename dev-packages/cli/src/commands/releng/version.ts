@@ -15,6 +15,7 @@
  ********************************************************************************/
 
 import { Argument } from 'commander';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import {
@@ -25,7 +26,7 @@ import {
     exec,
     execAsync,
     findFiles,
-    getYarnWorkspacePackages,
+    getWorkspacePackages,
     readFile,
     readJson,
     replaceInFile,
@@ -52,7 +53,7 @@ export const VersionCommand = baseCommand()
         const options = { ...cmdOptions, repo, version, versionType };
         let workspacePackages: PackageHelper[] | undefined;
         if (GLSPRepo.isNpmRepo(repo)) {
-            workspacePackages = GLSPRepo.isNpmRepo(repo) ? getYarnWorkspacePackages(path.join(cmdOptions.repoDir, ''), true) : undefined;
+            workspacePackages = getWorkspacePackages(cmdOptions.repoDir, true);
         }
         return setVersion({ ...options, workspacePackages });
     });
@@ -102,10 +103,15 @@ function setVersionNpm(options: NpmSetVersionOptions): void {
         pkg.write();
     });
 
-    // Update lerna file
-    const lernaJson = readJson<{ version: string }>('lerna.json');
-    lernaJson.version = options.version;
-    writeJson('lerna.json', lernaJson);
+    // Update lerna file if present (repos migrated to pnpm no longer have one — the root package.json is the source of truth)
+    const lernaJsonPath = path.resolve(options.repoDir, 'lerna.json');
+    if (fs.existsSync(lernaJsonPath)) {
+        const lernaJson = readJson<{ version: string }>(lernaJsonPath);
+        lernaJson.version = options.version;
+        writeJson(lernaJsonPath, lernaJson);
+    } else {
+        LOGGER.debug('No lerna.json found, skipping update');
+    }
 
     // Repo specific changes
     if (options.repo === 'glsp-theia-integration') {
@@ -124,7 +130,10 @@ function updateGLSPDependencies(pkg: PackageHelper, version: string, workspacePa
             Object.keys(pkg.content[depType] || {})
                 .filter(dep => workspacePackageNames.has(dep) || dep.startsWith('@eclipse-glsp'))
                 .forEach(dep => {
-                    if (workspacePackageNames.has(dep) || !isNextVersion(version)) {
+                    if (pkg.content[depType]![dep].startsWith('workspace:')) {
+                        // workspace: ranges are resolved by pnpm on publish and must not be rewritten
+                        LOGGER.debug(` - Keep ${depType} ${dep} at '${pkg.content[depType]![dep]}'`);
+                    } else if (workspacePackageNames.has(dep) || !isNextVersion(version)) {
                         LOGGER.debug(` - Bump ${depType} ${dep} to version ${version}`);
                         pkg.content[depType]![dep] = `${version}`;
                     } else {
@@ -244,7 +253,7 @@ function setVersionEclipseClient(options: JavaSetVersionOptions): void {
         ...options,
         repoDir: clientPath,
         version: options.version,
-        workspacePackages: getYarnWorkspacePackages(path.join(options.repoDir, 'client'), true)
+        workspacePackages: getWorkspacePackages(path.join(options.repoDir, 'client'), true)
     });
     cd(options.repoDir);
 }

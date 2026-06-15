@@ -16,7 +16,7 @@
 
 import { Command } from 'commander';
 import * as path from 'path';
-import { baseCommand, execAsync } from '../../util';
+import { baseCommand, detectPackageManager, execAsync, runScriptCommand } from '../../util';
 import { VSIX_TARGET_DIR, WEB_VSIX_TARGET_DIR, configureRepoEnv, discoverNewestFile, resolveWorkspaceDir } from './common/utils';
 
 export const VSIX_ID = 'eclipse-glsp.workflow-vscode-example';
@@ -34,7 +34,11 @@ export const VscodePackageCommand: Command = baseCommand()
         configureRepoEnv(cli);
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-vscode-integration');
-        await execAsync('yarn workflow package', { cwd: repoDir, silent: false, env: { FORCE_COLOR: '1' } });
+        await execAsync(runScriptCommand(detectPackageManager(repoDir), 'workflow package'), {
+            cwd: repoDir,
+            silent: false,
+            env: { FORCE_COLOR: '1' }
+        });
     });
 
 export const VscodeWebPackageCommand: Command = baseCommand()
@@ -47,7 +51,11 @@ export const VscodeWebPackageCommand: Command = baseCommand()
         configureRepoEnv(cli);
         const dir = resolveWorkspaceDir(cli.dir);
         const repoDir = path.resolve(dir, 'glsp-vscode-integration');
-        await execAsync('yarn workflow:web package', { cwd: repoDir, silent: false, env: { FORCE_COLOR: '1' } });
+        await execAsync(runScriptCommand(detectPackageManager(repoDir), 'workflow:web package'), {
+            cwd: repoDir,
+            silent: false,
+            env: { FORCE_COLOR: '1' }
+        });
     });
 
 // ── VSIX path commands ────────────────────────────────────────────────────

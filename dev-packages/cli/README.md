@@ -63,7 +63,8 @@ Options:
 
 ## coverageReport
 
-The `coverageReport` command can be used to create a full nyc test coverage report for a lerna/yarn mono repository.
+The `coverageReport` command can be used to create a full nyc test coverage report for a pnpm/yarn mono repository.
+The package manager is auto-detected from the repository (pnpm-workspace.yaml/pnpm-lock.yaml vs. yarn.lock).
 Individual coverage reports for each package are created and then combined to a full report.
 
 ```console
@@ -142,14 +143,15 @@ Commands:
   version [options] <versionType> [customVersion]  Set the version of all packages in a GLSP repository
   prepare [options] <versionType> [customVersion]     Prepare a new release for a GLSP component (version bump, changelog, PR
                                                       creation ...)
+  publish [options] <distTag>                         Publish all workspace packages of a GLSP repository
   help [command]                                      display help for command
 ```
 
 ### version
 
 Command to bump the version of all packages in a GLSP repository.
-Similar to "lerna version" this bumps the version of all workspace packages.
-In addition, external GLSP dependencies are considered and bumped as well.
+This bumps the version of all workspace packages (the root `package.json` version is the source of truth).
+In addition, external GLSP dependencies are considered and bumped as well; `workspace:` ranges are preserved.
 The glsp repository type ("glsp-client", "glsp-server-node" etc.) is auto detected from the given repository path.
 If the command is invoked in a non-GLSP repository it will fail.
 
@@ -196,6 +198,39 @@ Options:
   --no-push                Do not push changes to remote git repository
   -d, --draft              Create a draft pull request (only if push is enabled) (default: false)
   --no-check               Skip initial checks for existing dependency versions
+  -h, --help               display help for command
+```
+
+### publish
+
+Publishes all (public) workspace packages of a GLSP repository (replaces `lerna publish`).
+The package manager is auto-detected: pnpm-based repositories publish via `pnpm publish -r`, while
+not-yet-migrated yarn/lerna-based repositories fall back to the legacy `lerna publish`.
+
+-   `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`, e.g. `2.8.0-next.42`) to all
+    workspace packages and publishes them under the `next` dist-tag. Requires the full git history
+    (`fetch-depth: 0` in CI) to derive the commit count.
+-   `latest`: publishes the current package versions under the `latest` dist-tag. Packages whose version
+    already exists on the registry are skipped.
+
+For pnpm repositories publishing is delegated to `pnpm publish -r`, so `workspace:` dependency ranges are
+rewritten to exact versions; in both cases npm provenance/trusted publishing (`NPM_CONFIG_PROVENANCE`) is
+preserved. `--dry-run` is only supported for pnpm-based repositories.
+
+```console
+$ glsp releng publish -h
+Usage: glsp releng publish [options] <distTag>
+
+Publish all workspace packages of a GLSP repository (pnpm: `pnpm publish`, yarn/lerna: `lerna publish`)
+
+Arguments:
+  distTag                  The npm dist-tag to publish under (choices: "next", "latest")
+
+Options:
+  -v, --verbose            Enable verbose (debug) log output (default: false)
+  -r, --repoDir <repoDir>  Path to the component repository (default: "<cwd>")
+  --dry-run                Derive versions and run `pnpm publish` in dry-run mode without applying changes (default: false)
+  --registry <url>         Publish to a custom npm registry (e.g. a local verdaccio for testing)
   -h, --help               display help for command
 ```
 

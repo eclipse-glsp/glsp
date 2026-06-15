@@ -16,7 +16,7 @@
 
 import * as path from 'path';
 import { Command } from 'commander';
-import { GLSPRepo, baseCommand, execForeground } from '../../util';
+import { GLSPRepo, baseCommand, detectPackageManager, execForeground, runScriptCommand } from '../../util';
 import { configureRepoEnv, resolveWorkspaceDir } from './common/utils';
 
 export function createScopedRunCommand(repo: GLSPRepo): Command {
@@ -24,8 +24,8 @@ export function createScopedRunCommand(repo: GLSPRepo): Command {
         .name('run')
         .allowUnknownOption(true)
         .allowExcessArguments(true)
-        .description(`Run an arbitrary yarn script in ${repo}`)
-        .argument('<script>', 'The yarn script to run')
+        .description(`Run an arbitrary package.json script in ${repo}`)
+        .argument('<script>', 'The script to run')
         .option('-d, --dir <path>', 'Target directory where repos are cloned')
         .option('-v, --verbose', 'Verbose output', false)
         .action(async (script: string, _cmdOptions: unknown, thisCmd: Command) => {
@@ -34,7 +34,8 @@ export function createScopedRunCommand(repo: GLSPRepo): Command {
             const dir = resolveWorkspaceDir(cli.dir);
             const repoDir = path.resolve(dir, repo);
             const passthrough = thisCmd.args.slice(1).join(' ');
-            const cmd = passthrough ? `yarn ${script} ${passthrough}` : `yarn ${script}`;
+            const pm = detectPackageManager(repoDir);
+            const cmd = runScriptCommand(pm, passthrough ? `${script} ${passthrough}` : script);
             await execForeground(cmd, { cwd: repoDir, verbose: cli.verbose });
         });
 }

@@ -51,6 +51,8 @@ describe('updateNext e2e', () => {
     it('should show debug output with --verbose', () => {
         const pkgPath = path.join(repoDir, 'package.json');
         fs.writeFileSync(pkgPath, JSON.stringify({ name: 'test', version: '1.0.0', private: true, workspaces: [] }, undefined, 2));
+        // updateNext detects the package manager from the repo; mark it as a yarn workspace
+        fs.writeFileSync(path.join(repoDir, 'yarn.lock'), '');
         execSync('git add . && git commit -m "add package.json"', { cwd: repoDir });
         const result = runCli(['updateNext', repoDir, '--verbose']);
         const output = result.stdout + result.stderr;

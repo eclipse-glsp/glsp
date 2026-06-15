@@ -43,6 +43,14 @@ describe('build-action', () => {
         }
     }
 
+    function markAsYarnRepo(name: string): void {
+        fs.writeFileSync(path.join(tempDir, name, 'yarn.lock'), '');
+    }
+
+    function markAsPnpmRepo(name: string): void {
+        fs.writeFileSync(path.join(tempDir, name, 'pnpm-workspace.yaml'), '');
+    }
+
     beforeEach(() => {
         tempDir = createTempDir();
         execAsyncStub = sandbox.stub(processUtil, 'execAsync').resolves('');
@@ -54,23 +62,45 @@ describe('build-action', () => {
     });
 
     describe('buildSingleRepo', () => {
-        it('should run yarn for standard npm repos', async () => {
+        it('should run yarn install for standard yarn repos', async () => {
             createRepoDirs('glsp-client');
+            markAsYarnRepo('glsp-client');
             await buildSingleRepo('glsp-client', makeOptions());
             expect(execAsyncStub.calledOnce).to.be.true;
-            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn');
+            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn install');
         });
 
-        it('should run yarn then yarn browser build for theia-integration', async () => {
+        it('should run pnpm install and explicit build for standard pnpm repos', async () => {
+            createRepoDirs('glsp-client');
+            markAsPnpmRepo('glsp-client');
+            await buildSingleRepo('glsp-client', makeOptions());
+            expect(execAsyncStub.callCount).to.equal(2);
+            expect(execAsyncStub.firstCall.args[0]).to.equal('pnpm install');
+            expect(execAsyncStub.secondCall.args[0]).to.equal('pnpm run --if-present build');
+        });
+
+        it('should run yarn install then yarn browser build for theia-integration (yarn)', async () => {
             createRepoDirs('glsp-theia-integration');
+            markAsYarnRepo('glsp-theia-integration');
             await buildSingleRepo('glsp-theia-integration', makeOptions());
             expect(execAsyncStub.callCount).to.equal(2);
-            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn');
+            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn install');
             expect(execAsyncStub.secondCall.args[0]).to.equal('yarn browser build');
         });
 
-        it('should run yarn then yarn electron build with --electron', async () => {
+        it('should run pnpm install, build and browser build for theia-integration (pnpm)', async () => {
             createRepoDirs('glsp-theia-integration');
+            markAsPnpmRepo('glsp-theia-integration');
+            await buildSingleRepo('glsp-theia-integration', makeOptions());
+            expect(execAsyncStub.callCount).to.equal(3);
+            expect(execAsyncStub.firstCall.args[0]).to.equal('pnpm install');
+            expect(execAsyncStub.secondCall.args[0]).to.equal('pnpm run --if-present build');
+            expect(execAsyncStub.thirdCall.args[0]).to.equal('pnpm run browser build');
+        });
+
+        it('should run yarn electron build with --electron', async () => {
+            createRepoDirs('glsp-theia-integration');
+            markAsYarnRepo('glsp-theia-integration');
             await buildSingleRepo('glsp-theia-integration', makeOptions({ electron: true }));
             expect(execAsyncStub.callCount).to.equal(2);
             expect(execAsyncStub.secondCall.args[0]).to.equal('yarn electron build');
@@ -84,10 +114,11 @@ describe('build-action', () => {
         });
 
         it('should build client and server for eclipse-integration', async () => {
-            createRepoDirs('glsp-eclipse-integration');
+            createRepoDirs(path.join('glsp-eclipse-integration', 'client'));
+            markAsYarnRepo(path.join('glsp-eclipse-integration', 'client'));
             await buildSingleRepo('glsp-eclipse-integration', makeOptions());
             expect(execAsyncStub.callCount).to.equal(2);
-            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn');
+            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn install');
             expect(execAsyncStub.firstCall.args[1].cwd).to.contain(path.join('glsp-eclipse-integration', 'client'));
             expect(execAsyncStub.secondCall.args[0]).to.equal('mvn clean verify -Dstyle.color=always -B');
             expect(execAsyncStub.secondCall.args[1].cwd).to.contain(path.join('glsp-eclipse-integration', 'server'));
@@ -97,6 +128,7 @@ describe('build-action', () => {
     describe('runBuildOrdered', () => {
         it('should build repos sequentially in dependency order', async () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
+            ['glsp', 'glsp-client', 'glsp-server-node'].forEach(markAsYarnRepo);
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions());
             expect(failures).to.equal(0);
             expect(execAsyncStub.callCount).to.equal(3);
@@ -114,6 +146,7 @@ describe('build-action', () => {
 
         it('should stop on first failure when failFast is true', async () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
+            ['glsp', 'glsp-client', 'glsp-server-node'].forEach(markAsYarnRepo);
             execAsyncStub.onFirstCall().rejects(new Error('build failed'));
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions({ failFast: true }));
             expect(failures).to.equal(1);
@@ -122,6 +155,7 @@ describe('build-action', () => {
 
         it('should continue on failure when failFast is false', async () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
+            ['glsp', 'glsp-client', 'glsp-server-node'].forEach(markAsYarnRepo);
             execAsyncStub.onFirstCall().rejects(new Error('build failed'));
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions({ failFast: false }));
             expect(failures).to.equal(1);

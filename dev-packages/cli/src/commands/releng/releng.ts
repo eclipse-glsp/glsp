@@ -16,10 +16,12 @@
 
 import { baseCommand } from '../../util';
 import { PrepareReleaseCommand } from './prepare';
+import { PublishCommand } from './publish';
 import { VersionCommand } from './version';
 
 export const RelengCommand = baseCommand()
     .name('releng')
     .description('Commands for GLSP release engineering (Linux only, intended for CI/Maintainer use).')
     .addCommand(VersionCommand)
-    .addCommand(PrepareReleaseCommand);
+    .addCommand(PrepareReleaseCommand)
+    .addCommand(PublishCommand);
