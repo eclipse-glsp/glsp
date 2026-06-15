@@ -146,6 +146,41 @@ export function isNextVersion(version: string): boolean {
     return version.endsWith('-next') || version.endsWith('.SNAPSHOT');
 }
 
+export interface CanaryVersion {
+    /** The base version from the root package.json, e.g. `2.8.0-next` */
+    base: string;
+    /** The most recent git tag */
+    lastTag: string;
+    /** The number of commits since {@link lastTag} */
+    commitCount: number;
+    /** The derived canary version, e.g. `2.8.0-next.42` */
+    version: string;
+}
+
+/**
+ * Derives a canary version for `next` publishing (replacement for `lerna publish --canary`).
+ * The version is the root package version suffixed with the number of commits since the last
+ * git tag, e.g. `2.8.0-next.42`. Requires the full git history (fetch-depth: 0 in CI).
+ * @param repoDir The root path of the repository
+ */
+export function deriveCanaryVersion(repoDir: string): CanaryVersion {
+    const base = getVersionFromPackage(repoDir);
+    let lastTag: string;
+    try {
+        lastTag = exec('git describe --tags --abbrev=0', { cwd: repoDir, silent: true }).trim();
+    } catch (error) {
+        throw new Error(
+            `Could not determine the last git tag in '${repoDir}'.` +
+                ' Deriving a canary version requires at least one tag and the full git history (fetch-depth: 0 in CI).'
+        );
+    }
+    const commitCount = Number.parseInt(exec(`git rev-list --count ${lastTag}..HEAD`, { cwd: repoDir, silent: true }).trim(), 10);
+    if (Number.isNaN(commitCount)) {
+        throw new Error(`Could not determine the number of commits since tag '${lastTag}' in '${repoDir}'.`);
+    }
+    return { base, lastTag, commitCount, version: `${base}.${commitCount}` };
+}
+
 export async function checkIfNpmVersionIsNew(pckgName: string, newVersion: string): Promise<void> {
     LOGGER.debug(`Check that the release version is new i.e. does not exist on npm: ${newVersion}`);
 

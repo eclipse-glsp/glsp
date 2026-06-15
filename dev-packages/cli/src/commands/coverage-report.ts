@@ -21,11 +21,14 @@ import {
     PackageHelper,
     baseCommand,
     cd,
+    detectPackageManager,
     exec,
     execAsync,
+    execBinCommand,
     findFiles,
-    getYarnWorkspacePackages,
+    getWorkspacePackages,
     moveFile,
+    runScriptCommand,
     validateDirectory
 } from '../util';
 
@@ -42,7 +45,7 @@ export const CoverageReportCommand = baseCommand() //
     .action(generateCoverageReport);
 
 /**
- * Generates and aggregates an 'nyc' coverage report for lerna/yarn mono repositories.
+ * Generates and aggregates an 'nyc' coverage report for pnpm/yarn mono repositories.
  * First, individual reports for each package are generated. Then, they are aggregated into one combined HTML report.
  * @param options configuration options
  */
@@ -56,9 +59,10 @@ export async function generateCoverageReport(options: CoverageCmdOptions): Promi
 }
 
 export function validateAndRetrievePackages(options: CoverageCmdOptions): PackageHelper[] {
-    exec('yarn nyc -h', { silent: true, errorMsg: 'Nyc is not installed!' });
+    const pm = detectPackageManager(options.projectRoot);
+    exec(execBinCommand(pm, 'nyc -h'), { silent: true, errorMsg: 'Nyc is not installed!' });
 
-    const workspacePackages = getYarnWorkspacePackages(options.projectRoot, true);
+    const workspacePackages = getWorkspacePackages(options.projectRoot, true);
 
     const rootPackage = workspacePackages.pop()!;
     if (!rootPackage.hasScript(options.coverageScript)) {
@@ -71,7 +75,7 @@ export function validateAndRetrievePackages(options: CoverageCmdOptions): Packag
 
 export async function collectPackageReportFiles(packages: PackageHelper[], options: CoverageCmdOptions): Promise<string[]> {
     LOGGER.info('Create individual package coverage reports');
-    await execAsync(`yarn ${options.coverageScript}`, { silent: false });
+    await execAsync(runScriptCommand(detectPackageManager(options.projectRoot), options.coverageScript), { silent: false });
     const reports: string[] = packages.flatMap(pkg => findFiles(pkg.location, '**/coverage-final.json'));
     LOGGER.info(`Collected ${reports.length} coverage reports from ${packages.length} packages`);
     return reports;
@@ -102,7 +106,7 @@ async function combineReports(reportFiles: string[], options: CoverageCmdOptions
     });
 
     // Generate report
-    await execAsync('yarn nyc report --reporter html', { silent: false });
+    await execAsync(execBinCommand(detectPackageManager(options.projectRoot), 'nyc report --reporter html'), { silent: false });
 
     // Restore nyc configs (if any)
     tempFiles.forEach(config => moveFile(config, config.substring(1)));

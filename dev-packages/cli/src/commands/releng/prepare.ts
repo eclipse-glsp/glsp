@@ -24,11 +24,14 @@ import {
     commitChanges,
     createBranch,
     deleteFile,
+    detectPackageManager,
     exec,
     execAsync,
     getDefaultBranch,
-    getYarnWorkspacePackages,
+    getWorkspacePackages,
+    installCommand,
     replaceInFile,
+    runScriptCommand,
     validateGitDirectory,
     writeFile
 } from '../../util';
@@ -92,7 +95,7 @@ export async function prepareRelease(options: PrepareReleaseOptions): Promise<vo
     }
     cd(options.repoDir);
     if (GLSPRepo.isNpmRepo(options.repo)) {
-        options.workspacePackages = getYarnWorkspacePackages(options.repoDir, true);
+        options.workspacePackages = getWorkspacePackages(options.repoDir, true);
     }
     if (options.check) {
         checkPreconditions(options);
@@ -153,9 +156,14 @@ async function build(options: PrepareReleaseOptions): Promise<void> {
 }
 
 async function buildNpm(options: PrepareReleaseOptions): Promise<void> {
-    LOGGER.info('Install & Build with yarn');
-    await execAsync('yarn', { silent: false, cwd: options.repoDir, errorMsg: 'Yarn build failed' });
-    LOGGER.debug('Yarn build succeeded');
+    const pm = detectPackageManager(options.repoDir);
+    LOGGER.info(`Install & Build with ${pm}`);
+    await execAsync(installCommand(pm), { silent: false, cwd: options.repoDir, errorMsg: `${pm} install failed` });
+    if (pm === 'pnpm') {
+        // bare `yarn` triggers the root prepare/build script implicitly; with pnpm we build explicitly
+        await execAsync(runScriptCommand(pm, '--if-present build'), { silent: false, cwd: options.repoDir, errorMsg: 'Build failed' });
+    }
+    LOGGER.debug('Build succeeded');
 }
 
 async function buildJavaServer(options: PrepareReleaseOptions): Promise<void> {

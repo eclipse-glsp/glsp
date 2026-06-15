@@ -16,7 +16,16 @@
 
 import { Command, Option } from 'commander';
 import * as path from 'path';
-import { GLSPRepo, LOGGER, PRESET_NAMES, baseCommand, execAsync } from '../../util';
+import {
+    GLSPRepo,
+    LOGGER,
+    PRESET_NAMES,
+    baseCommand,
+    detectPackageManager,
+    execAsync,
+    installCommand,
+    runScriptCommand
+} from '../../util';
 import { configureRepoEnv, formatError, getBuildOrder, resolveTargetRepos, resolveWorkspaceDir, validateReposExist } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────
@@ -28,20 +37,30 @@ export interface BuildActionOptions {
     failFast: boolean;
 }
 
+async function installAndBuildNpm(repoDir: string, execOpts: { cwd?: string; verbose: boolean; silent: boolean }): Promise<void> {
+    const pm = detectPackageManager(repoDir);
+    LOGGER.debug(`${pm} install`);
+    await execAsync(installCommand(pm), { ...execOpts, cwd: repoDir });
+    if (pm === 'pnpm') {
+        // bare `yarn` triggers the root prepare/build script implicitly; with pnpm we build explicitly
+        LOGGER.debug('pnpm build');
+        await execAsync(runScriptCommand(pm, '--if-present build'), { ...execOpts, cwd: repoDir });
+    }
+}
+
 export async function buildSingleRepo(repo: GLSPRepo, options: BuildActionOptions): Promise<void> {
     const repoDir = path.resolve(options.dir, repo);
-    const yarnOpts = { cwd: repoDir, verbose: options.verbose, silent: false, env: { FORCE_COLOR: '1' } };
+    const npmOpts = { cwd: repoDir, verbose: options.verbose, silent: false, env: { FORCE_COLOR: '1' } };
     const mvnOpts = { cwd: repoDir, verbose: options.verbose, silent: false };
 
     LOGGER.label(`Building ${repo}...`);
 
     switch (repo) {
         case 'glsp-theia-integration': {
-            LOGGER.debug('Yarn install');
-            await execAsync('yarn', yarnOpts);
+            await installAndBuildNpm(repoDir, npmOpts);
             const target = options.electron ? 'electron' : 'browser';
-            LOGGER.debug('Yarn build for target: ' + target);
-            await execAsync(`yarn ${target} build`, yarnOpts);
+            LOGGER.debug('Build for target: ' + target);
+            await execAsync(runScriptCommand(detectPackageManager(repoDir), `${target} build`), npmOpts);
             break;
         }
         case 'glsp-server': {
@@ -49,15 +68,14 @@ export async function buildSingleRepo(repo: GLSPRepo, options: BuildActionOption
             break;
         }
         case 'glsp-eclipse-integration': {
-            LOGGER.debug('Yarn build for client');
-            await execAsync('yarn', { ...yarnOpts, cwd: path.join(repoDir, 'client') });
+            LOGGER.debug('Build client');
+            await installAndBuildNpm(path.join(repoDir, 'client'), npmOpts);
             LOGGER.debug('Maven build for server');
             await execAsync('mvn clean verify -Dstyle.color=always -B', { ...mvnOpts, cwd: path.join(repoDir, 'server') });
             break;
         }
         default: {
-            LOGGER.debug('Yarn build');
-            await execAsync('yarn', yarnOpts);
+            await installAndBuildNpm(repoDir, npmOpts);
             break;
         }
     }

@@ -21,10 +21,11 @@ import {
     baseCommand,
     configureExec,
     configureLogger,
+    detectPackageManager,
     exec,
     execAsync,
     getUncommittedChanges,
-    getYarnWorkspacePackages,
+    getWorkspacePackages,
     readPackage,
     validateGitDirectory
 } from '../util';
@@ -50,7 +51,23 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
 
     LOGGER.info('Updating next dependencies ...');
     rootDir = path.resolve(rootDir);
-    const packages = getYarnWorkspacePackages(rootDir, true);
+    const pm = detectPackageManager(rootDir);
+    const packages = getWorkspacePackages(rootDir, true);
+
+    if (pm === 'pnpm') {
+        LOGGER.debug(`Scanning ${packages.length} packages for 'next' dependencies`, packages);
+        const nextDeps = getNextDependencies(packages);
+        if (nextDeps.length === 0) {
+            LOGGER.info('No next dependencies found');
+            return;
+        }
+        LOGGER.info('Upgrade and rebuild packages ...');
+        // pnpm update re-resolves dist-tag specifiers (like 'next') and rewrites the lockfile
+        await execAsync(`pnpm update -r ${nextDeps.join(' ')}`, { silent: false, cwd: rootDir });
+        LOGGER.info('Upgrade successfully completed');
+        return;
+    }
+
     LOGGER.debug(`Scanning ${packages.length} packages to derive resolutions`, packages);
     const resolutions = await getResolutions(packages);
     if (Object.keys(resolutions).length === 0) {
@@ -71,21 +88,23 @@ export async function updateNext(rootDir: string, options: { verbose: boolean })
     LOGGER.info('Upgrade successfully completed');
 }
 
-async function getResolutions(packages: PackageHelper[]): Promise<Record<string, string>> {
-    let dependencies: string[] = [];
+function getNextDependencies(packages: PackageHelper[]): string[] {
+    const dependencies: string[] = [];
     for (const pkg of packages) {
         const allDeps = {
             ...(pkg.content.dependencies || {}),
             ...(pkg.content.devDependencies || {}),
             ...(pkg.content.peerDependencies || {})
         };
-
-        // Find dependencies with "next" value
-        const nextDeps = Object.keys(allDeps).filter(dep => allDeps[dep] === 'next');
-        dependencies.push(...nextDeps);
+        dependencies.push(...Object.keys(allDeps).filter(dep => allDeps[dep] === 'next'));
     }
-    dependencies = [...new Set(dependencies)];
-    LOGGER.debug(`Found ${dependencies.length} 'next' dependencies`, dependencies);
+    const nextDeps = [...new Set(dependencies)];
+    LOGGER.debug(`Found ${nextDeps.length} 'next' dependencies`, nextDeps);
+    return nextDeps;
+}
+
+async function getResolutions(packages: PackageHelper[]): Promise<Record<string, string>> {
+    const dependencies = getNextDependencies(packages);
     LOGGER.info('Retrieve next versions ... ');
     const resolutions: Record<string, string> = {};
     dependencies.forEach(dep => {
