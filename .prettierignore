@@ -4,6 +4,8 @@ node_modules/
 # Build outputs
 lib/
 dist/
+coverage/
+.nyc_output/
 
 # Generated files
 *.min.js

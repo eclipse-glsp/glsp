@@ -94,7 +94,7 @@ function findWorkspacePackageJsons(repoDir: string): string[] {
     const rootPkg = readJson(path.join(repoDir, 'package.json'));
     const workspaces: string[] = Array.isArray(rootPkg.workspaces)
         ? rootPkg.workspaces
-        : (rootPkg.workspaces as { packages?: string[] })?.packages ?? [];
+        : ((rootPkg.workspaces as { packages?: string[] })?.packages ?? []);
 
     const results: string[] = [];
     for (const pattern of workspaces) {

@@ -7,14 +7,14 @@ The package is available via npm and can be used by all GLSP components implemen
 
 ## Components
 
--   [`@eclipse-glsp/config`](https://www.npmjs.com/package/@eclipse-glsp/config): Meta package for shared build configuration
-    -   [`@eclipse-glsp/ts-config`](https://www.npmjs.com/package/@eclipse-glsp/ts-config): Shared Typescript configuration for GLSP projects
-    -   [`@eclipse-glsp/eslint-config`](https://www.npmjs.com/package/@eclipse-glsp/esling-config): Shared ESLint configuration for GLSP projects
-    -   [`@eclipse-glsp/prettier-config`](https://www.npmjs.com/package/@eclipse-glsp/prettier-config): Shared Prettier configuration for GLSP projects
--   [`@eclipse-glsp/config-test`](https://www.npmjs.com/package/@eclipse-glsp/config-test): Meta package for shared test configuration
-    -   [`@eclipse-glsp/mocha-config`](https://www.npmjs.com/package/@eclipse-glsp/mocha-config): Shared Mocha configuration for GLSP projects
-    -   [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): Shared nyc configuration for GLSP projects
--   [`@eclipse-glsp/cli`](https://www.npmjs.com/package/@eclipse-glsp/cli): CLI Tooling & scripts for GLSP projects
+- [`@eclipse-glsp/config`](https://www.npmjs.com/package/@eclipse-glsp/config): Meta package for shared build configuration
+    - [`@eclipse-glsp/ts-config`](https://www.npmjs.com/package/@eclipse-glsp/ts-config): Shared Typescript configuration for GLSP projects
+    - [`@eclipse-glsp/eslint-config`](https://www.npmjs.com/package/@eclipse-glsp/esling-config): Shared ESLint configuration for GLSP projects
+    - [`@eclipse-glsp/prettier-config`](https://www.npmjs.com/package/@eclipse-glsp/prettier-config): Shared Prettier configuration for GLSP projects
+- [`@eclipse-glsp/config-test`](https://www.npmjs.com/package/@eclipse-glsp/config-test): Meta package for shared test configuration
+    - [`@eclipse-glsp/mocha-config`](https://www.npmjs.com/package/@eclipse-glsp/mocha-config): Shared Mocha configuration for GLSP projects
+    - [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): Shared nyc configuration for GLSP projects
+- [`@eclipse-glsp/cli`](https://www.npmjs.com/package/@eclipse-glsp/cli): CLI Tooling & scripts for GLSP projects
 
 ## Install
 
@@ -40,7 +40,7 @@ yarn add --dev @eclipse-glsp/dev
 
 In addition, a custom configuration for projects that use `mocha` is available:
 
--   `@eclipse-glsp/ts-config/mocha`
+- `@eclipse-glsp/ts-config/mocha`
 
 ### ESLint
 

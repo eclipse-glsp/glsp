@@ -46,8 +46,8 @@
       "indent": 4
     },
     "MD030": {
-      "ul_single": 3,
-      "ul_multi": 3
+      "ul_single": 1,
+      "ul_multi": 1
     },
     "no-inline-html": {
       "allowed_elements": ["br", "details", "summary"]

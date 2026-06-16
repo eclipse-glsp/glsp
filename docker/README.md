@@ -13,10 +13,10 @@ It is mainly used for CI jobs that require the possibility to build client and s
 
 The image has the following components installed:
 
--   Git >=2.17.1
--   Node 22, yarn 1.22.19 and lerna
--   OpenJDK 21 and Maven >=3.6.0
--   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
+- Git >=2.17.1
+- Node 22, yarn 1.22.19 and lerna
+- OpenJDK 21 and Maven >=3.6.0
+- Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
 ## License
 

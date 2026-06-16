@@ -16,16 +16,7 @@
 
 import { Command, Option } from 'commander';
 import * as path from 'path';
-import {
-    GLSPRepo,
-    LOGGER,
-    PRESET_NAMES,
-    baseCommand,
-    detectPackageManager,
-    execAsync,
-    installCommand,
-    runScriptCommand
-} from '../../util';
+import { GLSPRepo, LOGGER, PRESET_NAMES, baseCommand, detectPackageManager, execAsync, installCommand, runScriptCommand } from '../../util';
 import { configureRepoEnv, formatError, getBuildOrder, resolveTargetRepos, resolveWorkspaceDir, validateReposExist } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────

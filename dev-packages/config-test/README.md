@@ -3,16 +3,16 @@
 Common shared configuration for testing Eclipse GLSP components that are implemented with Typescript.
 Provides a meta package that export common configuration objects for:
 
--   [Mocha](https://www.typescriptlang.org/) (`.mocharc`)
--   [nyc](https://github.com/istanbuljs/nyc) (`.nycrc`)
+- [Mocha](https://www.typescriptlang.org/) (`.mocharc`)
+- [nyc](https://github.com/istanbuljs/nyc) (`.nycrc`)
 
 The package is available via npm and can be used by all GLSP components implemented with Typescript.
 Mocha and nyc are included as direct dependencies.
 
 ## Components
 
--   [`@eclipse-glsp/mocha-config`](https://www.npmjs.com/package/@eclipse-glsp/mocha-config): Shared Mocha configuration for GLSP projects
--   [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): Shared nyc configuration for GLSP projects
+- [`@eclipse-glsp/mocha-config`](https://www.npmjs.com/package/@eclipse-glsp/mocha-config): Shared Mocha configuration for GLSP projects
+- [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): Shared nyc configuration for GLSP projects
 
 ## Install
 

@@ -47,9 +47,10 @@
     "@eclipse-glsp/config": "2.8.0-next",
     "@types/semver": "^7.7.1",
     "commander": "^14.0.0",
-    "esbuild": "~0.25.9",
-    "globby": "^14.1.0",
-    "open": "^10.0.0",
+    "esbuild": "~0.28.1",
+    "globby": "^16.2.0",
+    "minimatch": "^10.2.5",
+    "open": "^11.0.0",
     "semver": "^7.7.2",
     "yaml": "^2.8.0"
   },

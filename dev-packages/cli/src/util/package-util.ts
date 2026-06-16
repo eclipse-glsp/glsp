@@ -36,7 +36,10 @@ export class PackageHelper {
     private _content?: PackageData;
     private _stringContent?: string;
 
-    constructor(readonly filePath: string, readonly name: string) {
+    constructor(
+        readonly filePath: string,
+        readonly name: string
+    ) {
         if (!filePath.endsWith('package.json')) {
             throw new Error(`The package path must point to a package.json file: ${filePath}`);
         }

@@ -24,7 +24,7 @@ yarn add --dev @eclipse-glsp/ts-config
 
 In addition, a custom configuration for projects that use `mocha` is available:
 
--   `@eclipse-glsp/ts-config/mocha`
+- `@eclipse-glsp/ts-config/mocha`
 
 ## More information
 

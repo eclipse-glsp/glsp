@@ -207,11 +207,11 @@ Publishes all (public) workspace packages of a GLSP repository (replaces `lerna 
 The package manager is auto-detected: pnpm-based repositories publish via `pnpm publish -r`, while
 not-yet-migrated yarn/lerna-based repositories fall back to the legacy `lerna publish`.
 
--   `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`, e.g. `2.8.0-next.42`) to all
-    workspace packages and publishes them under the `next` dist-tag. Requires the full git history
-    (`fetch-depth: 0` in CI) to derive the commit count.
--   `latest`: publishes the current package versions under the `latest` dist-tag. Packages whose version
-    already exists on the registry are skipped.
+- `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`, e.g. `2.8.0-next.42`) to all
+  workspace packages and publishes them under the `next` dist-tag. Requires the full git history
+  (`fetch-depth: 0` in CI) to derive the commit count.
+- `latest`: publishes the current package versions under the `latest` dist-tag. Packages whose version
+  already exists on the registry are skipped.
 
 For pnpm repositories publishing is delegated to `pnpm publish -r`, so `workspace:` dependency ranges are
 rewritten to exact versions; in both cases npm provenance/trusted publishing (`NPM_CONFIG_PROVENANCE`) is

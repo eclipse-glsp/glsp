@@ -5,6 +5,8 @@ dist
 tsconfig.tsbuildinfo
 eslint.xml
 ctrf/
+coverage/
+.nyc_output/
 
 # Agent specific files
 .claude/plans

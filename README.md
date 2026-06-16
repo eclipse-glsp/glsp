@@ -68,14 +68,14 @@ Below is a list of features that are supported by the different base technologie
 
 The GLSP source code consists of the following repositories:
 
--   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
--   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
--   [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a typescript-based framework to create GLSP server components running in node or pure browser applications.
--   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
--   [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
--   [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
--   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
--   [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright): Playwright-based framework for testing GLSP diagram editors.
+- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
+- [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
+- [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a typescript-based framework to create GLSP server components running in node or pure browser applications.
+- [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
+- [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
+- [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
+- [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
+- [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright): Playwright-based framework for testing GLSP diagram editors.
 
 ## Release plan
 
@@ -87,8 +87,8 @@ For a detailed history of past releases, visit our [releases page on GitHub](htt
 
 This repository provides the following packages and artifacts that are shared across all GLSP repositories and/or projects:
 
--   [Eclipse GLSP docker images](docker/ci/README.md)
--   [Eclipse GLSP Dev Packages](dev-packages/README.md)
+- [Eclipse GLSP docker images](docker/ci/README.md)
+- [Eclipse GLSP Dev Packages](dev-packages/README.md)
 
 ## Build artifacts
 
@@ -99,18 +99,18 @@ The Java server packages are available as maven as well as p2 dependency from th
 
 ### Maven Repositories
 
--   _Snapshots_: <https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/>
--   _Releases/Release Candidates_: <https://central.sonatype.com/search?q=org.eclipse.glsp&namespace=org.eclipse.glsp>
+- _Snapshots_: <https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/>
+- _Releases/Release Candidates_: <https://central.sonatype.com/search?q=org.eclipse.glsp&namespace=org.eclipse.glsp>
 
 ### P2 Update Sites
 
--   _Server Snapshots_: <https://download.eclipse.org/glsp/server/p2/nightly/>
--   _Server Release Candidates_: <https://download.eclipse.org/glsp/server/p2/staging/>
--   _Server Releases_: <https://download.eclipse.org/glsp/server/p2/releases/>
-    <br><br>
--   _Eclipse Integration Snapshots_: </i> <https://download.eclipse.org/glsp/ide/p2/nightly/>
--   _Eclipse Integration Release Candidates_: </i> <https://download.eclipse.org/glsp/ide/p2/staging/>
--   _Eclipse Integration Releases_: </i> <https://download.eclipse.org/glsp/ide/p2/releases/>
+- _Server Snapshots_: <https://download.eclipse.org/glsp/server/p2/nightly/>
+- _Server Release Candidates_: <https://download.eclipse.org/glsp/server/p2/staging/>
+- _Server Releases_: <https://download.eclipse.org/glsp/server/p2/releases/>
+  <br><br>
+- _Eclipse Integration Snapshots_: </i> <https://download.eclipse.org/glsp/ide/p2/nightly/>
+- _Eclipse Integration Release Candidates_: </i> <https://download.eclipse.org/glsp/ide/p2/staging/>
+- _Eclipse Integration Releases_: </i> <https://download.eclipse.org/glsp/ide/p2/releases/>
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
@@ -156,12 +156,12 @@ yarn install
 in `glsp-client` and `glsp-theia-integration`.  
 To start an example server, you can either
 
--   run
+- run
     ```bash
     yarn start:exampleServer
     ```
     in `glsp-client` and open the `glsp-client/examples/workflow-standalone/app/diagram.html` file in your browser of choice
--   run
+- run
     ```bash
     yarn start
     ```
@@ -232,21 +232,21 @@ This will already include an up to date workflow file `example1.wf` that you can
 
 In order to start the workflow diagram editor example with VS Code, Eclipse, or standalone, please see the documentation of the respective integration modules:
 
--   [VS Code Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
--   [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
--   [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
--   [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
+- [VS Code Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
+- [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
+- [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
+- [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
 
 ## Setting up your development environment
 
 If you want to explore or extend the GLSP source code in any of the available components, we recommend cloning the repositories alongside this repository, so that you have the following folder layout:
 
--   `eclipse-glsp` (or any name for your parent folder)
--   [`glsp`](https://github.com/eclipse-glsp/glsp)
--   [`glsp-client`](https://github.com/eclipse-glsp/glsp-client)
--   [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration)
--   [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
--   [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
+- `eclipse-glsp` (or any name for your parent folder)
+- [`glsp`](https://github.com/eclipse-glsp/glsp)
+- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client)
+- [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration)
+- [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
+- [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
 
 For the client-side code (Typescript), we recommend using VS Code.
 Therefore, this repository provides a VS Code [workspace file](glsp.code-workspace), which you can open in VS Code and it will import all client-side folders for you -- given that you kept the repository structure specified above.
