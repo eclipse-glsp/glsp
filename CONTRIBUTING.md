@@ -12,9 +12,9 @@ By participating, you are expected to uphold this code.
 
 The following communication channels are available:
 
--   [GitHub issues](https://github.com/eclipse-glsp/glsp/issues) - for bug reports, feature requests, etc.
--   [GitHub Discussions](https://github.com/eclipse-glsp/glsp/discussions) - for questions
--   [Developer mailing list](https://accounts.eclipse.org/mailing-list/glsp-dev) - for organizational issues (e.g. elections of new committers)
+- [GitHub issues](https://github.com/eclipse-glsp/glsp/issues) - for bug reports, feature requests, etc.
+- [GitHub Discussions](https://github.com/eclipse-glsp/glsp/discussions) - for questions
+- [Developer mailing list](https://accounts.eclipse.org/mailing-list/glsp-dev) - for organizational issues (e.g. elections of new committers)
 
 In case you have a question, please look into the [GitHub Discussions](https://github.com/eclipse-glsp/glsp/discussions) first.
 If you don't find any answer there, feel free to start a new discussion or create a new [issue](https://github.com/eclipse-glsp/glsp/issues) to get help.

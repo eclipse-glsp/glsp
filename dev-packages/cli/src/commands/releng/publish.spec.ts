@@ -258,7 +258,10 @@ describe('releng publish', () => {
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([]);
             const summaryPath = path.join(tempDir, 'pnpm-publish-summary.json');
             execAsyncStub.callsFake(() => {
-                fs.writeFileSync(summaryPath, JSON.stringify({ publishedPackages: [{ name: '@eclipse-glsp/a', version: '2.8.0-next.7' }] }));
+                fs.writeFileSync(
+                    summaryPath,
+                    JSON.stringify({ publishedPackages: [{ name: '@eclipse-glsp/a', version: '2.8.0-next.7' }] })
+                );
                 return Promise.resolve('');
             });
 

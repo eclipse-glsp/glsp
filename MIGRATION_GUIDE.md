@@ -24,34 +24,34 @@ This is a living artifact that will be continuously updated when new versions ar
 Please see the latest version (master) for the most up-to-date information.
 Please contribute any issues you experienced when upgrading to a newer version of Theia to this document, even for previous releases.
 
--   [General](#general)
-    -   [Build dependencies](#build-dependencies)
-    -   [Inversify 6](#inversify-6)
--   [Client](#client)
-    -   [GModel API Alignment](#gmodel-api-alignment)
-    -   [Diagram container configuration](#diagram-container-configuration)
-    -   [Application specific configuration](#application-specific-configuration)
-    -   [Generic ModelSource](#generic-modelsource)
-    -   [Introduction of FeatureModules](#introduction-of-featuremodules)
-    -   [Tools Module Rework](#tools-module-rework)
-    -   [Diagram Startup Hooks](#diagram-startup-hooks)
-    -   [Event Listener](#event-listener)
-    -   [Message API](#message-api)
-    -   [Other breaking changes](#other-breaking-changes)
--   [Theia Integration](#theia-integration)
-    -   [Theia Version](#theia-version)
-    -   [Removal of sprotty-theia](#removal-of-sprotty-theia)
-    -   [Removal of GlspTheiaDiagramServer](#removal-of-glsptheiadiagramserver)
-    -   [Improved `DiagramConfiguration`](#improved-diagramconfiguration)
-    -   [Custom diagram widget](#custom-diagram-widget)
+- [General](#general)
+    - [Build dependencies](#build-dependencies)
+    - [Inversify 6](#inversify-6)
+- [Client](#client)
+    - [GModel API Alignment](#gmodel-api-alignment)
+    - [Diagram container configuration](#diagram-container-configuration)
+    - [Application specific configuration](#application-specific-configuration)
+    - [Generic ModelSource](#generic-modelsource)
+    - [Introduction of FeatureModules](#introduction-of-featuremodules)
+    - [Tools Module Rework](#tools-module-rework)
+    - [Diagram Startup Hooks](#diagram-startup-hooks)
+    - [Event Listener](#event-listener)
+    - [Message API](#message-api)
+    - [Other breaking changes](#other-breaking-changes)
+- [Theia Integration](#theia-integration)
+    - [Theia Version](#theia-version)
+    - [Removal of sprotty-theia](#removal-of-sprotty-theia)
+    - [Removal of GlspTheiaDiagramServer](#removal-of-glsptheiadiagramserver)
+    - [Improved `DiagramConfiguration`](#improved-diagramconfiguration)
+    - [Custom diagram widget](#custom-diagram-widget)
 
 ## General
 
 ### Build dependencies
 
--   Node.js: **>=16.11.0** (Recommended: **18.x** or **20.x**)
--   Typescript: **>=5.x**
--   Java: **>=17.x**
+- Node.js: **>=16.11.0** (Recommended: **18.x** or **20.x**)
+- Typescript: **>=5.x**
+- Java: **>=17.x**
 
 The minimum required Node version for GLSP 2.x is Node 16.11.0.
 However, this version has already reached its end-of-life phase so we recommend to use one of the current LTS versions (18/20).
@@ -344,11 +344,11 @@ GLSP 2.x no longer depends on the `vscode-ws-websocket` package and instead prov
 Use the `GLSPWebSocketProvider` and its `listen` function to initialize the connection.
 The `initialize` function needs to be reworked by:
 
--   Defining the `IDiagramOptions` for your application.
-    The diagram options provide diagram specific configuration information like the `clientId`, `diagramType` and `glspClient` instance that should be used.
--   Creating your diagram container with the defined options
--   Retrieving the `DiagramLoader` from the container and triggering the diagram loading with `diagramLoader.load()`.
-    If you want to use custom `requestModelOptions` you can pass them when calling the load method.
+- Defining the `IDiagramOptions` for your application.
+  The diagram options provide diagram specific configuration information like the `clientId`, `diagramType` and `glspClient` instance that should be used.
+- Creating your diagram container with the defined options
+- Retrieving the `DiagramLoader` from the container and triggering the diagram loading with `diagramLoader.load()`.
+  If you want to use custom `requestModelOptions` you can pass them when calling the load method.
 
 Previously the initialize function was also used to configure initial actions that should be dispatched.
 This behavior is now discouraged.
@@ -411,20 +411,20 @@ We recommend to use `Search & Replace` to migrate affected module references.
 <details open>
   <summary>List of changes</summary>
 
--   `defaultGlspModule`-> `baseModule`
--   `glspExportModule` -> `exportModule`
--   `glspBoundsModule` -> `boundsModule`
--   `glspCommandPaletteModule` -> `commandPaletteModule`
--   `glspContextMenuModule` -> `contextMenuModule`
--   `glspDecorationModule` -> `decorationModule`
--   `glspEditLabelModule` -> `labelEditModule`
--   `glspHoverModule` -> `hoverModule`
--   `glspSelectModule` -> `selectModule`
--   `glspServerCopyPasteModule` -> `serverCopyPasteModule`
--   `glspViewportModule` -> `viewportModule`
--   `modelHintsModule` -> `typeHintsModule`
--   `glspRoutingModule` -> `routingModule`
--   `enableDefaultToolsOnFocusLossModule` -> `toolFocusLossModule`
+- `defaultGlspModule`-> `baseModule`
+- `glspExportModule` -> `exportModule`
+- `glspBoundsModule` -> `boundsModule`
+- `glspCommandPaletteModule` -> `commandPaletteModule`
+- `glspContextMenuModule` -> `contextMenuModule`
+- `glspDecorationModule` -> `decorationModule`
+- `glspEditLabelModule` -> `labelEditModule`
+- `glspHoverModule` -> `hoverModule`
+- `glspSelectModule` -> `selectModule`
+- `glspServerCopyPasteModule` -> `serverCopyPasteModule`
+- `glspViewportModule` -> `viewportModule`
+- `modelHintsModule` -> `typeHintsModule`
+- `glspRoutingModule` -> `routingModule`
+- `enableDefaultToolsOnFocusLossModule` -> `toolFocusLossModule`
 
 </details>
 
@@ -436,23 +436,23 @@ This made it quite hard to customize tools individually.
 In addition, the separation into a dedicated `feedbackModule` was not ideal as it split the tool configuration across two interdependent modules.
 With 2.x this has been reworked. The generic `toolsModule` & `toolFeedbackModule` have been removed in favor of individual tool modules:
 
--   `changeBoundsToolModule`
--   `deletionToolModule`
--   `edgeCreationToolModule`
--   `edgeEditToolModule`
--   `marqueeSelectionToolModule` (previously: `configureMarqueeTool`)
--   `nodeCreationToolModule`
+- `changeBoundsToolModule`
+- `deletionToolModule`
+- `edgeCreationToolModule`
+- `edgeEditToolModule`
+- `marqueeSelectionToolModule` (previously: `configureMarqueeTool`)
+- `nodeCreationToolModule`
 
 So if you are using customized default tools in your project some migration effort is required to adapt to new imports and the new module structure.
 
 <details open>
   <summary>List of changes</summary>
 
--   `GLSPTool` -> `Tool`
--   `dispatchFeedback` -> `registerFeedback`
--   BaseEditTool: Reusable generic base class for edit tools
--   BaseCreationTool: Reusable base class for edit tools based on a trigger action
--   configureMarqueeTool: This function has been removed. Use the `marqueeSelectionToolModule` instead
+- `GLSPTool` -> `Tool`
+- `dispatchFeedback` -> `registerFeedback`
+- BaseEditTool: Reusable generic base class for edit tools
+- BaseCreationTool: Reusable base class for edit tools based on a trigger action
+- configureMarqueeTool: This function has been removed. Use the `marqueeSelectionToolModule` instead
 
 </details>
 
@@ -545,8 +545,8 @@ export class MyService implements Disposable {
 <details open>
   <summary>List of changes</summary>
 
--   `SelectionListener` -> `ISelectionListener`
--   `EditModeListener` -> `IEditModeListener`
+- `SelectionListener` -> `ISelectionListener`
+- `EditModeListener` -> `IEditModeListener`
 
 </details>
 
@@ -555,17 +555,17 @@ export class MyService implements Disposable {
 With 2.x the actions for sending information messages and/or status updates have been reworked.
 First of all they have been renamed
 
--   `ServerStatusAction` -> `StatusAction`
--   `ServerMessageAction` -> `MessageAction`
+- `ServerStatusAction` -> `StatusAction`
+- `ServerMessageAction` -> `MessageAction`
 
 Second, the `timeout` support for `MessageAction`'s has been removed.
 By default, this feature was only well supported in the Theia integration and its main purpose was to dispatch progress information for long-running operations.
 A new dedicated API for progress reporting has been introduced which can be used for this purpose.
 If you have a long running information and want to report the progress you can use the following new actions:
 
--   `StartProgressAction`
--   `UpdateProgressAction`
--   `EndProgressAction`
+- `StartProgressAction`
+- `UpdateProgressAction`
+- `EndProgressAction`
 
 </details>
 
@@ -581,9 +581,9 @@ Please use the `configureButtonHandler` method in your diagram DI module instead
 `Undo` and `Redo` operations were incorrectly declared as actions in 1.0. With 2.x the have been migrated to operations.
 Also the `UndoRedoKeyListener` has been renamed to `GLSPUndoRedoKeyListener`.
 
--   `UndoAction` -> `UndoOperation`
--   `RedoAction` -> `RedoOperation`
--   `UndoRedoKeyListener` -> `GLSPUndoRedoKeyListener`
+- `UndoAction` -> `UndoOperation`
+- `RedoAction` -> `RedoOperation`
+- `UndoRedoKeyListener` -> `GLSPUndoRedoKeyListener`
 
 **SelectionService**
 

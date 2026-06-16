@@ -2,18 +2,18 @@
 
 ## Quick reference
 
--   **Maintained by**:  
-    [Eclipse GLSP](https://github.com/eclipse-glsp/glsp)
+- **Maintained by**:  
+  [Eclipse GLSP](https://github.com/eclipse-glsp/glsp)
 
--   **Where to get help**:  
-    [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Discussions](https://github.com/eclipse-glsp/glsp/discussions), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
+- **Where to get help**:  
+  [the Eclipse Community Forum](https://www.eclipse.org/forums/index.php/f/465/), [the GLSP Discussions](https://github.com/eclipse-glsp/glsp/discussions), [the Docker Community Forums](https://forums.docker.com/), [the Docker Community Slack](https://dockr.ly/slack)
 
--   **Where to file issues**:  
-    <https://github.com/eclipse-glsp/glsp/issues>
+- **Where to file issues**:  
+  <https://github.com/eclipse-glsp/glsp/issues>
 
 ## Supported tags and respective `Dockerfile` links
 
--   [`alpine`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
+- [`alpine`, `alpine-v8.0`, `alpine-v7.1`, `alpine-v7.0`](https://github.com/eclipse-glsp/glsp/blob/master/docker/ci/alpine/Dockerfile)
 
 Note that these tags are fluent and not bound to a fixed image version.
 If you want to use a fixed version you can use the base tag with a version suffix e.g. `alpine-v8.0`.
@@ -29,10 +29,10 @@ It is mainly used for CI jobs that require the possibility to build client and s
 
 The image has the following components installed:
 
--   Git >=2.17.1
--   Node 22, yarn 1.22.19 and lerna
--   OpenJDK 21 and Maven >=3.6.0
--   Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
+- Git >=2.17.1
+- Node 22, yarn 1.22.19 and lerna
+- OpenJDK 21 and Maven >=3.6.0
+- Python and GCC libraries to enable [Theia](https://theia-ide.org/) builds
 
 ## How to use this image
 
@@ -55,16 +55,16 @@ It only provides the essential libraries needed for building client and server c
 
 ## Image Version History
 
--   [v1.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v1.0): Node version: 12. Only supports Theia >1.15.0
--   [v2.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v2.0): Update preinstalled dependencies to support Theia >=1.15.0
--   [v3.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.0): Update to node 14
--   [v3.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.1): Pre-install latest lerna version
--   [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
--   [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
--   [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
--   [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21
--   [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11
--   [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22. Ubuntu and uitest variants have been removed.
+- [v1.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v1.0): Node version: 12. Only supports Theia >1.15.0
+- [v2.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v2.0): Update preinstalled dependencies to support Theia >=1.15.0
+- [v3.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.0): Update to node 14
+- [v3.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v3.1): Pre-install latest lerna version
+- [v4.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v4.0): Update to node 16
+- [v5.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v5.0): Update to node 18, Java 17 and Alpine 3.17/Ubuntu 22.04
+- [v6.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v6.0): Update to node 20
+- [v7.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.0): Update to Java 21
+- [v7.1](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v7.1): Additionally install Java 11
+- [v8.0](https://hub.docker.com/r/eclipseglsp/ci/tags?page=1&name=v8.0): Update to Node 22. Ubuntu and uitest variants have been removed.
 
 ## License
 

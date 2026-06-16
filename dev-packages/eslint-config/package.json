@@ -32,16 +32,16 @@
   },
   "main": "index.js",
   "peerDependencies": {
-    "@eslint/js": "^9.0.0",
-    "@stylistic/eslint-plugin": "^2.0.0",
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@tony.ganchev/eslint-plugin-header": "^3.1.1",
-    "eslint": "^9.0.0",
+    "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-import-resolver-typescript": "^4.0.0",
     "eslint-plugin-chai-friendly": "^1.0.0",
-    "eslint-plugin-import-x": "^4.0.0",
+    "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-no-null": "^1.0.2",
-    "globals": "^15.0.0",
+    "globals": "^17.6.0",
     "typescript-eslint": "^8.0.0"
   },
   "publishConfig": {

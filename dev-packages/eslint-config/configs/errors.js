@@ -7,6 +7,8 @@ module.exports = [
             // https://eslint.org/docs/rules/
             // Possible Errors
             'no-inner-declarations': 'off',
+            // New in ESLint 10; don't require attaching the caught error as `cause` on rethrow
+            'preserve-caught-error': 'off',
             // Best Practices
             eqeqeq: ['error', 'smart'],
             'guard-for-in': 'error',
