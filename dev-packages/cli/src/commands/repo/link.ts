@@ -171,7 +171,7 @@ export async function runUnlink(repos: GLSPRepo[], options: LinkActionOptions): 
     validateReposExist(linkable, options.dir);
     const linkDir = path.resolve(options.dir, '.yarn-link');
     const ordered = getBuildOrder(linkable);
-    const reversed = [...ordered].reverse();
+    const reversed = ordered.toReversed();
     let failures = 0;
 
     LOGGER.label('Unlinking repositories');
