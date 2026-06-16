@@ -110,9 +110,9 @@ export interface ExecOptions {
  */
 export function exec(cmd: string, options: ExecOptions = {}): string {
     // Merge global config with local options (local options take precedence)
-    const silent = options.silent !== undefined ? options.silent : globalExecConfig.silent;
-    const fatal = options.fatal !== undefined ? options.fatal : globalExecConfig.fatal;
-    const verbose = options.verbose !== undefined ? options.verbose : globalExecConfig.verbose;
+    const silent = options.silent ?? globalExecConfig.silent;
+    const fatal = options.fatal ?? globalExecConfig.fatal;
+    const verbose = options.verbose ?? globalExecConfig.verbose;
     const { cwd } = options;
 
     if (verbose) {
@@ -159,9 +159,9 @@ export function exec(cmd: string, options: ExecOptions = {}): string {
  */
 export function execAsync(cmd: string, options: ExecOptions = {}): Promise<string> {
     // Merge global config with local options (local options take precedence)
-    const silent = options.silent !== undefined ? options.silent : globalExecConfig.silent;
-    const fatal = options.fatal !== undefined ? options.fatal : globalExecConfig.fatal;
-    const verbose = options.verbose !== undefined ? options.verbose : globalExecConfig.verbose;
+    const silent = options.silent ?? globalExecConfig.silent;
+    const fatal = options.fatal ?? globalExecConfig.fatal;
+    const verbose = options.verbose ?? globalExecConfig.verbose;
     const { cwd } = options;
 
     if (verbose) {
@@ -234,7 +234,7 @@ export function configureEnv(options: { verbose: boolean }): void {
 }
 
 export function execForeground(cmd: string, options: ExecForegroundOptions = {}): Promise<void> {
-    const verbose = options.verbose !== undefined ? options.verbose : globalExecConfig.verbose;
+    const verbose = options.verbose ?? globalExecConfig.verbose;
 
     if (verbose) {
         console.log(`+ ${cmd}`);

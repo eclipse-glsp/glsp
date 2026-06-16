@@ -15,14 +15,16 @@
     "incremental": true,
     // Needs to be disabled to support property injection
     "strictPropertyInitialization": false,
+    // Needs to be disabled to support property injection
+    "useDefineForClassFields": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2019",
+    "target": "ES2023",
     "jsx": "react",
-    "lib": ["ES2019", "dom"],
+    "lib": ["ES2023", "dom"],
     "sourceMap": true,
     "types": ["node", "reflect-metadata"]
   }
