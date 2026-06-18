@@ -114,151 +114,27 @@ The Java server packages are available as maven as well as p2 dependency from th
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
-## Prerequisites for building
+## Developer Documentation (dev-packages)
 
-### Client packages
+### First time setup
 
-We recommend node in version 22 or higher:
+- Install [node.js](https://nodejs.org/) (requires Node v22+)
+- Install pnpm: <https://pnpm.io/installation> (use pnpm 10+); a recent pnpm automatically switches to the version pinned in the `packageManager` field
+- Clone this repository
+- Install dependencies: `pnpm i` or `pnpm i --frozen-lockfile`
 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-nvm install 22
-```
+### Build & Testing
 
-and Yarn
+- Build (all packages): `pnpm build`
+- Test (all packages): `pnpm test`
+- Clean (all packages): `pnpm clean`
 
-```bash
-npm install -g yarn
-```
-
-and Lerna
-
-```bash
-npm install -g lerna
-```
-
-### Server/Ide packages
-
-You'll need Java 21 and maven.
-
-## Building
-
-> **_NOTE:_** This section describes how to build the core components of glsp.
-> To build an optional integration component like the integration for VS Code or
-> Eclipse IDE please follow the build instructions in the corresponding repository.
-
-To build the client packages, just invoke
-
-```bash
-yarn install
-```
-
-in `glsp-client` and `glsp-theia-integration`.  
-To start an example server, you can either
-
-- run
-    ```bash
-    yarn start:exampleServer
-    ```
-    in `glsp-client` and open the `glsp-client/examples/workflow-standalone/app/diagram.html` file in your browser of choice
-- run
-    ```bash
-    yarn start
-    ```
-    in `glsp-theia-integration` and head your favorite browser to http://localhost:3000.
-
-The server components are built with
-
-```bash
-mvn clean verify
-```
-
-in `glsp-server`, and
-
-```bash
-yarn
-```
-
-in `glsp-server-node`.
-
-## Building and starting the Workflow Diagram example
+## Workflow Diagram Example
 
 The Workflow Diagram is a consistent example provided by all GLSP components.
 The example implements a simple flow chart diagram editor with different types of nodes and edges (see screenshot below).
 The example can be used to try out different GLSP features, as well as several available integrations with IDE platforms (Theia, VS Code, Eclipse, Standalone).
 As the example is fully open source, you can also use it as a blueprint for a custom implementation of a GLSP diagram editor.
 The workflow example consists of the following components: the Workflow Diagram Server, the client, and optionally an IDE integration of the Workflow Diagram Editor.
-Please follow the steps below to build and run each of those components.
 
-### Building and running the Workflow Diagram Server
-
-```bash
-cd glsp-server
-mvn clean verify -Pfatjar
-```
-
-In the folder `glsp-server/examples/org.eclipse.glsp.example.workflow/target`, you should have a jar file `org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar` whereas `X.X.X` is the current version.
-You can now start the server by executing the following commands:
-
-```bash
-cd examples/org.eclipse.glsp.example.workflow/target
-java -jar org.eclipse.glsp.example.workflow-X.X.X-SNAPSHOT-glsp.jar org.eclipse.glsp.example.workflow.launch.ExampleServerLauncher
-```
-
-To start the example server from within your IDE, run the main method of the class [ExampleServerLauncher.java](https://github.com/eclipse-glsp/glsp-server/blob/master/examples/org.eclipse.glsp.example.workflow/src/org/eclipse/glsp/example/workflow/launch/WorkflowServerLauncher.java) in the module `glsp-server/examples/org.eclipse.glsp.example.workflow`.
-
-### Building and running the Workflow Diagram Editor in a Theia application
-
-Note that it is not necessary to build the other components of GLSP just for running the workflow example, as the workflow example build will pull all dependencies (including those from GLSP) from npmjs and sonar.
-
-Switch to the folder `glsp-theia-integration` in your clone of the [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration) repository and build.
-
-```bash
-cd glsp-theia-integration
-yarn
-```
-
-This will not only build the GLSP Theia integration modules, but also the workflow diagram editor example.
-Once the build is finished, you can start the Theia application:
-
-```bash
-cd glsp-theia-integration/examples/browser-app
-yarn start
-```
-
-Now open a browser and point it to <http://localhost:3000>.
-If you open this the first time and you don't have selected a workspace yet, point it to [`glsp-theia-integration/examples/workspace`](https://github.com/eclipse-glsp/glsp-theia-integration/tree/master/examples/workspace) of your repository clone.
-This will already include an up to date workflow file `example1.wf` that you can open by double-clicking it in the navigator.
-
-In order to start the workflow diagram editor example with VS Code, Eclipse, or standalone, please see the documentation of the respective integration modules:
-
-- [VS Code Integration](https://github.com/eclipsesource/glsp-vscode-integration#workflow-diagram-example)
-- [Eclipse Integration](https://github.com/eclipse-glsp/glsp-eclipse-integration#workflow-diagram-example)
-- [Standalone](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example)
-- [Theia Integration](https://github.com/eclipse-glsp/glsp-theia-integration#workflow-diagram-example)
-
-## Setting up your development environment
-
-If you want to explore or extend the GLSP source code in any of the available components, we recommend cloning the repositories alongside this repository, so that you have the following folder layout:
-
-- `eclipse-glsp` (or any name for your parent folder)
-- [`glsp`](https://github.com/eclipse-glsp/glsp)
-- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client)
-- [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration)
-- [`glsp-server`](https://github.com/eclipse-glsp/glsp-server)
-- [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples)
-
-For the client-side code (Typescript), we recommend using VS Code.
-Therefore, this repository provides a VS Code [workspace file](glsp.code-workspace), which you can open in VS Code and it will import all client-side folders for you -- given that you kept the repository structure specified above.
-
-The [GLSP workspace file](glsp.theia.code-workspace) provides build & watch tasks, so that you can build all packages with the task `Build all` or start watching all client packages with `Watch all`.
-
-For the [server components](https://github.com/eclipse-glsp/glsp-server), you can use any IDE you like.
-We recommend an IDE that supports maven, though, to import the maven modules from the [glsp-server](https://github.com/eclipse-glsp/glsp-server) and optionally also those from the [glsp-examples](https://github.com/eclipse-glsp/glsp-examples/tree/master/server/).
-
-### Linking and watching
-
-When you are planning to change more than one client package at a time, or if you want to test your changes with the workflow example, we recommend to `yarn link` your local sources.
-Therefore, we provide the [yarn-link script](https://github.com/eclipse-glsp/glsp-theia-integration/blob/master/configs/local-linking.sh) that automatically links all the relevant packages.
-Currently, this script is only available for Linux and Mac (shell script).
-The [GLSP VS Code workspace](glsp.theia.code-workspace) also includes a dedicated VS Code task called `Yarn link all packages` and `Yarn unlink all packages`.
+For detailed instructions on how to build and run the Workflow Diagram example, please refer to the [corresponding section in the `glsp-client` README](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example).

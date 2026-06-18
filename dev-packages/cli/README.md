@@ -8,7 +8,7 @@ The contributed `glsp`, is a command line tool that offers all contributed comma
 Install `@eclipse-glsp/cli` as a dev dependency in your application.
 
 ```bash
-yarn add @eclipse-glsp/cli --dev
+pnpm add --save-dev @eclipse-glsp/cli
 ```
 
 ## Usage

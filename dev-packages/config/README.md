@@ -19,7 +19,7 @@ ESLint and prettier are included as direct dependencies.
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/config
+pnpm add --save-dev @eclipse-glsp/config
 ```
 
 ## Usage

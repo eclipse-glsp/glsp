@@ -1,0 +1,45 @@
+packages:
+    - 'dev-packages/*'
+
+# Tooling (eslint, prettier, mocha, ts-node, rimraf, @eclipse-glsp/*-config, ...) is provided
+# as transitive deps of @eclipse-glsp/dev and must resolve from the workspace root
+# (tsconfig `extends`, lint/test/build bins). Public-hoist only the dev tooling; app/runtime
+# deps stay strictly isolated. pnpm >=11 no longer reads non-auth settings from .npmrc, so
+# this lives here.
+publicHoistPattern:
+    - '@eclipse-glsp/*config*'
+    - '@eclipse-glsp/cli'
+    - 'eslint'
+    - 'eslint-*'
+    - '@typescript-eslint/*'
+    - 'prettier'
+    - 'prettier-plugin-*'
+    - 'mocha'
+    - 'mocha-ctrf-json-reporter'
+    - 'chai'
+    - 'sinon'
+    - 'ts-node'
+    - 'rimraf'
+    - 'nyc'
+    - '@types/*' # type stubs are compile-time-only; hoist so `@types/<x>` resolves at root
+
+# Force patched versions of vulnerable transitive deps that upstream has not yet released.
+# - serialize-javascript: RCE/DoS (GHSA-5c6j-r48x-rmvq, GHSA-qj8w-gfj5-8c6v); pulled by mocha,
+#   which still bundles a vulnerable version (mochajs/mocha#5872).
+# - uuid / js-yaml: bounds-check & ReDoS fixes (GHSA-w5hq-g745-h8pq, GHSA-h67p-54hq-rp68); pulled
+#   transitively via nyc's istanbul deps.
+overrides:
+    serialize-javascript: '>=7.0.5'
+    uuid: '>=11.1.1'
+    js-yaml: '>=4.1.2'
+    # jsdiff ReDoS (GHSA-73rr-hh4g-fpgx); pulled by mocha (declares ^7, fix is in >=8.0.3).
+    diff: '>=8.0.3'
+
+# Deps allowed to run install/build scripts (pnpm >=11 replaces onlyBuiltDependencies).
+allowBuilds:
+    esbuild: true
+    unrs-resolver: true
+
+# Min age (minutes) of dependency versions to install — supply-chain hardening. 4320 = 72h.
+minimumReleaseAge: 4320
+minimumReleaseAgeIgnoreMissingTime: false

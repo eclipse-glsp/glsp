@@ -14,7 +14,7 @@ WORKFLOW_STATUS.md
 
 # Lock files
 package-lock.json
-yarn.lock
+pnpm-lock.yaml
 
 # Logs
 *.log

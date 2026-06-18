@@ -5,7 +5,7 @@ Common shared configuration for Eclipse GLSP components that are based on Typesc
 ## Install
 
 ```bash
-yarn add --dev @eclipse-glsp/ts-config
+pnpm add --save-dev @eclipse-glsp/ts-config
 ```
 
 ## Usage

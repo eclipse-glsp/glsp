@@ -9,7 +9,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "command": "yarn",
+      "command": "pnpm install && pnpm build",
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
