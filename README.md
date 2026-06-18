@@ -118,7 +118,7 @@ All changes on the master branch are deployed automatically to the corresponding
 
 ### First time setup
 
-- Install [node.js](https://nodejs.org/) (reqiores Node v22+)
+- Install [node.js](https://nodejs.org/) (requires Node v22+)
 - Install pnpm: <https://pnpm.io/installation> (use pnpm 10+); a recent pnpm automatically switches to the version pinned in the `packageManager` field
 - Clone this repository
 - Install dependencies: `pnpm i` or `pnpm i --frozen-lockfile`
