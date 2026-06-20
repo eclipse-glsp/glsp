@@ -24,14 +24,11 @@ import {
     commitChanges,
     createBranch,
     deleteFile,
-    detectPackageManager,
     exec,
     execAsync,
     getDefaultBranch,
     getWorkspacePackages,
-    installCommand,
     replaceInFile,
-    runScriptCommand,
     validateGitDirectory,
     writeFile
 } from '../../util';
@@ -156,13 +153,10 @@ async function build(options: PrepareReleaseOptions): Promise<void> {
 }
 
 async function buildNpm(options: PrepareReleaseOptions): Promise<void> {
-    const pm = detectPackageManager(options.repoDir);
-    LOGGER.info(`Install & Build with ${pm}`);
-    await execAsync(installCommand(pm), { silent: false, cwd: options.repoDir, errorMsg: `${pm} install failed` });
-    if (pm === 'pnpm') {
-        // bare `yarn` triggers the root prepare/build script implicitly; with pnpm we build explicitly
-        await execAsync(runScriptCommand(pm, '--if-present build'), { silent: false, cwd: options.repoDir, errorMsg: 'Build failed' });
-    }
+    LOGGER.info('Install & Build with pnpm');
+    await execAsync('pnpm install', { silent: false, cwd: options.repoDir, errorMsg: 'pnpm install failed' });
+    // `pnpm install` does not run the build automatically, so build explicitly.
+    await execAsync('pnpm run --if-present build', { silent: false, cwd: options.repoDir, errorMsg: 'Build failed' });
     LOGGER.debug('Build succeeded');
 }
 
@@ -185,8 +179,11 @@ async function buildJavaServer(options: PrepareReleaseOptions): Promise<void> {
 }
 
 async function buildEclipseIntegration(options: PrepareReleaseOptions): Promise<void> {
-    LOGGER.info('[Client] Install & Build with yarn');
-    // await execAsync('yarn', { silent: false, cwd: path.resolve(options.repoDir, 'client'), errorMsg: 'Client build failed' });
+    const clientDir = path.resolve(options.repoDir, 'client');
+    LOGGER.info('[Client] Install & Build with pnpm');
+    await execAsync('pnpm install', { silent: false, cwd: clientDir, errorMsg: 'Client install failed' });
+    // `pnpm install` does not run the build automatically, so build explicitly.
+    await execAsync('pnpm run --if-present build', { silent: false, cwd: clientDir, errorMsg: 'Client build failed' });
     LOGGER.newLine();
     LOGGER.info('Build Server(P2)');
     await execAsync('mvn clean install -B', {

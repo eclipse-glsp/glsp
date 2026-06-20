@@ -119,24 +119,4 @@ describe('releng version', () => {
 
         expect(readPackageJson('packages/a').dependencies!['@eclipse-glsp/protocol']).to.equal('2.9.0');
     });
-
-    it('should update lerna.json if present', async () => {
-        const root = createPackage('.', { name: 'parent', private: true });
-        fs.writeFileSync(path.join(tempDir, 'lerna.json'), JSON.stringify({ version: '2.8.0-next', npmClient: 'yarn' }));
-
-        await setVersion(makeOptions('2.9.0', [root]));
-
-        const lernaJson = JSON.parse(fs.readFileSync(path.join(tempDir, 'lerna.json'), 'utf8'));
-        expect(lernaJson.version).to.equal('2.9.0');
-        expect(lernaJson.npmClient).to.equal('yarn');
-    });
-
-    it('should succeed without lerna.json (pnpm repos)', async () => {
-        const root = createPackage('.', { name: 'parent', private: true });
-
-        await setVersion(makeOptions('2.9.0', [root]));
-
-        expect(fs.existsSync(path.join(tempDir, 'lerna.json'))).to.be.false;
-        expect(readPackageJson('.').version).to.equal('2.9.0');
-    });
 });

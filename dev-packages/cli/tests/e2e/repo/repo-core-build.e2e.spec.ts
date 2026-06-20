@@ -17,9 +17,19 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as YAML from 'yaml';
 import { cliDiag, runCli } from '../../helpers/cli-helper';
 import { readJson } from '../../helpers/repo-helper';
 import { cleanupTempDir, createTempDir } from '../../helpers/test-helper';
+
+function readOverrides(repoDir: string): Record<string, string> {
+    const yamlPath = path.join(repoDir, 'pnpm-workspace.yaml');
+    if (!fs.existsSync(yamlPath)) {
+        return {};
+    }
+    const parsed = YAML.parse(fs.readFileSync(yamlPath, 'utf8')) as { overrides?: Record<string, string> };
+    return parsed?.overrides ?? {};
+}
 
 describe('repo commands — core (build)', function () {
     const CORE_REPOS = ['glsp-client', 'glsp-server-node'] as const;
@@ -75,7 +85,7 @@ describe('repo commands — core (build)', function () {
     // ── Run ───────────────────────────────────────────────────────────────
 
     describe('run', function () {
-        it('should run a yarn script in a repo via scoped command', function () {
+        it('should run a package script in a repo via scoped command', function () {
             const result = runCli(['repo', 'glsp-client', 'run', '--version', '-d', workDir]);
             expect(result.exitCode, cliDiag(result)).to.equal(0);
         });
@@ -143,15 +153,25 @@ describe('repo commands — core (build)', function () {
     // ── Link / Unlink ──────────────────────────────────────────────────────
 
     describe('link', function () {
-        it('should link core repos', function () {
+        it('should link core repos via pnpm-workspace.yaml overrides', function () {
             const result = runCli(['repo', 'link', '-d', workDir]);
             expect(result.exitCode, cliDiag(result)).to.equal(0);
 
-            const linkDir = path.join(workDir, '.yarn-link');
-            expect(fs.existsSync(linkDir), '.yarn-link directory should exist').to.be.true;
+            // glsp-server-node should consume glsp-client's packages/singletons through link: overrides.
+            const serverDir = path.join(workDir, 'glsp-server-node');
+            const links = Object.entries(readOverrides(serverDir)).filter(([, value]) => value.startsWith('link:'));
+            expect(links.length, 'expected link: overrides in glsp-server-node').to.be.greaterThan(0);
+            expect(
+                links.some(([, value]) => value.includes('glsp-client')),
+                'expected at least one override pointing into glsp-client'
+            ).to.be.true;
 
-            const linkedPkgs = fs.readdirSync(path.join(linkDir, '@eclipse-glsp'));
-            expect(linkedPkgs.length).to.be.greaterThan(0);
+            // A consumed override should resolve to the local glsp-client checkout.
+            const consumed = links.find(([name]) => fs.existsSync(path.join(serverDir, 'node_modules', name)));
+            if (consumed) {
+                const real = fs.realpathSync(path.join(serverDir, 'node_modules', consumed[0]));
+                expect(real.startsWith(fs.realpathSync(path.join(workDir, 'glsp-client')))).to.be.true;
+            }
         });
     });
 
@@ -159,6 +179,9 @@ describe('repo commands — core (build)', function () {
         it('should unlink core repos', function () {
             const result = runCli(['repo', 'unlink', '-d', workDir]);
             expect(result.exitCode, cliDiag(result)).to.equal(0);
+
+            const links = Object.values(readOverrides(path.join(workDir, 'glsp-server-node'))).filter(value => value.startsWith('link:'));
+            expect(links.length, 'link overrides should be removed after unlink').to.equal(0);
         });
     });
 

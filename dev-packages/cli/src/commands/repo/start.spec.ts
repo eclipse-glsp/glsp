@@ -83,31 +83,22 @@ describe('start-action', () => {
     });
 
     describe('resolveCommand', () => {
-        it('should resolve to a yarn --cwd command for yarn repos', () => {
-            fs.writeFileSync(path.join(tempDir, 'yarn.lock'), '');
-            const result = resolveCommand('start:websocket', tempDir, false);
-            expect(result).to.equal(`yarn --cwd ${tempDir} start:websocket`);
-        });
-
-        it('should resolve to a pnpm -C command for pnpm repos', () => {
-            fs.writeFileSync(path.join(tempDir, 'pnpm-workspace.yaml'), '');
+        it('should resolve to a pnpm -C command', () => {
             const result = resolveCommand('start:websocket', tempDir, false);
             expect(result).to.equal(`pnpm -C ${tempDir} start:websocket`);
         });
 
         it('should return undefined on dry-run', () => {
-            fs.writeFileSync(path.join(tempDir, 'yarn.lock'), '');
             const result = resolveCommand('start:websocket', tempDir, true);
             expect(result).to.be.undefined;
         });
 
         it('should handle scripts with arguments', () => {
-            fs.writeFileSync(path.join(tempDir, 'pnpm-lock.yaml'), '');
             const result = resolveCommand('start:websocket --port 8081', tempDir, false);
             expect(result).to.equal(`pnpm -C ${tempDir} start:websocket --port 8081`);
         });
 
-        it('should fall back to pnpm when the repo is not cloned yet', () => {
+        it('should work even when the repo is not cloned yet', () => {
             const result = resolveCommand('start:websocket', '/not/cloned/repo', false);
             expect(result).to.equal('pnpm -C /not/cloned/repo start:websocket');
         });

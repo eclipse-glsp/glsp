@@ -46,7 +46,6 @@
     "watch:tsc": "tsc --watch"
   },
   "devDependencies": {
-    "@eclipse-glsp/config": "workspace:*",
     "@types/semver": "^7.7.1",
     "commander": "^14.0.0",
     "esbuild": "~0.28.1",

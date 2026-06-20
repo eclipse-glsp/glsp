@@ -15,7 +15,6 @@
  ********************************************************************************/
 
 import { Argument } from 'commander';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import {
@@ -28,10 +27,8 @@ import {
     findFiles,
     getWorkspacePackages,
     readFile,
-    readJson,
     replaceInFile,
-    validateGitDirectory,
-    writeJson
+    validateGitDirectory
 } from '../../util';
 import { GLSPRepo, RelengCmdOptions, RelengOptions, VersionType, asMvnVersion, configureEnv, isNextVersion } from './common';
 interface SetVersionsCmdOptions extends RelengCmdOptions {}
@@ -102,16 +99,6 @@ function setVersionNpm(options: NpmSetVersionOptions): void {
 
         pkg.write();
     });
-
-    // Update lerna file if present (repos migrated to pnpm no longer have one — the root package.json is the source of truth)
-    const lernaJsonPath = path.resolve(options.repoDir, 'lerna.json');
-    if (fs.existsSync(lernaJsonPath)) {
-        const lernaJson = readJson<{ version: string }>(lernaJsonPath);
-        lernaJson.version = options.version;
-        writeJson(lernaJsonPath, lernaJson);
-    } else {
-        LOGGER.debug('No lerna.json found, skipping update');
-    }
 
     // Repo specific changes
     if (options.repo === 'glsp-theia-integration') {

@@ -17,16 +17,7 @@
 import { Argument } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-    LOGGER,
-    PackageManager,
-    baseCommand,
-    detectPackageManager,
-    execAsync,
-    execBinCommand,
-    getWorkspacePackages,
-    validateGitDirectory
-} from '../../util';
+import { LOGGER, baseCommand, execAsync, getWorkspacePackages, validateGitDirectory } from '../../util';
 import { configureEnv, deriveCanaryVersion, getVersionFromPackage, isNextVersion, npmVersionExists } from './common';
 
 export type PublishDistTag = 'next' | 'latest';
@@ -40,7 +31,7 @@ export interface PublishCmdOptions {
 
 export const PublishCommand = baseCommand()
     .name('publish')
-    .description('Publish all workspace packages of a GLSP repository (pnpm: `pnpm publish`, yarn/lerna: `lerna publish`)')
+    .description('Publish all workspace packages of a GLSP repository via `pnpm publish`')
     .addArgument(new Argument('<distTag>', 'The npm dist-tag to publish under').choices(['next', 'latest']))
     .option('-v, --verbose', 'Enable verbose (debug) log output', false)
     .option('-r, --repoDir <repoDir>', 'Path to the component repository', validateGitDirectory, process.cwd())
@@ -52,49 +43,20 @@ export const PublishCommand = baseCommand()
     });
 
 /**
- * Publishes all (public) workspace packages of a GLSP repository, dispatching on the detected
- * package manager so that pnpm-based and not-yet-migrated yarn/lerna-based repositories are both
- * supported during the migration period.
+ * Publishes all (public) workspace packages of a GLSP repository via `pnpm publish -r` (so that
+ * `workspace:` ranges are rewritten to exact versions); npm provenance/trusted publishing (configured
+ * via environment) is preserved.
  * - `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`) and publishes it
  *    under the `next` dist-tag.
  * - `latest`: publishes the current package versions under the `latest` dist-tag. Already published
  *    versions are skipped.
- *
- * For pnpm repositories publishing is delegated to `pnpm publish -r` (so that `workspace:` ranges are
- * rewritten to exact versions); for yarn/lerna repositories it falls back to the legacy `lerna publish`.
- * In both cases npm provenance/trusted publishing (configured via environment) is preserved.
  */
 export async function publish(distTag: PublishDistTag, options: PublishCmdOptions): Promise<void> {
-    const packageManager = detectPackageManager(options.repoDir);
-    LOGGER.info(`Publish workspace packages of '${options.repoDir}' with dist-tag '${distTag}' (package manager: ${packageManager})`);
-    if (packageManager !== 'pnpm') {
-        return publishWithLerna(distTag, packageManager, options);
-    }
+    LOGGER.info(`Publish workspace packages of '${options.repoDir}' with dist-tag '${distTag}'`);
     if (distTag === 'next') {
         return publishNext(options);
     }
     return publishLatest(options);
-}
-
-/**
- * Legacy publishing path for yarn/lerna-based repositories that have not been migrated to pnpm yet.
- * Mirrors the former root `package.json` `publish:next`/`publish:latest` scripts; `lerna` itself derives
- * the canary version (for `next`) and skips already-published versions (for `latest`). The `lerna` binary
- * is resolved from the repository's `node_modules` via the detected package manager.
- */
-async function publishWithLerna(distTag: PublishDistTag, packageManager: PackageManager, options: PublishCmdOptions): Promise<void> {
-    if (options.dryRun) {
-        throw new Error("'--dry-run' is only supported for pnpm-based repositories ('lerna publish' has no dry-run mode).");
-    }
-    const lernaArgs =
-        distTag === 'next'
-            ? 'publish preminor --exact --canary --preid next --dist-tag next --no-git-tag-version --no-push --ignore-scripts --yes'
-            : 'publish from-package --no-git-reset -y';
-    let cmd = `${execBinCommand(packageManager, 'lerna')} ${lernaArgs}`;
-    if (options.registry) {
-        cmd += ` --registry ${options.registry}`;
-    }
-    await execAsync(cmd, { cwd: options.repoDir, silent: false, errorMsg: 'lerna publish failed' });
 }
 
 async function publishNext(options: PublishCmdOptions): Promise<void> {

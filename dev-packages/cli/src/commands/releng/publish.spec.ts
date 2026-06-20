@@ -46,14 +46,6 @@ describe('releng publish', () => {
         fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({ name: 'parent', version, private: true }));
     }
 
-    function markAsPnpmRepo(): void {
-        fs.writeFileSync(path.join(tempDir, 'pnpm-workspace.yaml'), "packages:\n  - 'packages/*'\n");
-    }
-
-    function markAsYarnRepo(): void {
-        fs.writeFileSync(path.join(tempDir, 'yarn.lock'), '');
-    }
-
     function createPackage(relativePath: string, content: Partial<PackageData> & { name: string; version: string }): PackageHelper {
         const pkgDir = path.join(tempDir, relativePath);
         fs.mkdirSync(pkgDir, { recursive: true });
@@ -86,58 +78,9 @@ describe('releng publish', () => {
         });
     });
 
-    describe('publish (yarn/lerna fallback)', () => {
-        it('should fall back to `lerna publish ... --canary` for next on yarn repositories', async () => {
-            createRootPackage('2.8.0-next');
-            markAsYarnRepo();
-
-            await publish('next', makeOptions());
-
-            expect(execAsyncStub.calledOnce).to.be.true;
-            const cmd = execAsyncStub.firstCall.args[0] as string;
-            expect(cmd).to.equal(
-                'yarn lerna publish preminor --exact --canary --preid next --dist-tag next ' +
-                    '--no-git-tag-version --no-push --ignore-scripts --yes'
-            );
-            expect(execAsyncStub.firstCall.args[1].cwd).to.equal(tempDir);
-        });
-
-        it('should fall back to `lerna publish from-package` for latest on yarn repositories', async () => {
-            createRootPackage('2.9.0');
-            markAsYarnRepo();
-
-            await publish('latest', makeOptions());
-
-            expect(execAsyncStub.calledOnce).to.be.true;
-            expect(execAsyncStub.firstCall.args[0]).to.equal('yarn lerna publish from-package --no-git-reset -y');
-        });
-
-        it('should append a custom registry to the lerna command', async () => {
-            createRootPackage('2.9.0');
-            markAsYarnRepo();
-
-            await publish('latest', makeOptions({ registry: 'http://localhost:4873' }));
-
-            expect(execAsyncStub.firstCall.args[0]).to.contain('--registry http://localhost:4873');
-        });
-
-        it('should reject --dry-run for yarn/lerna repositories', async () => {
-            createRootPackage('2.8.0-next');
-            markAsYarnRepo();
-            try {
-                await publish('next', makeOptions({ dryRun: true }));
-                expect.fail('should have thrown');
-            } catch (error) {
-                expect((error as Error).message).to.contain('only supported for pnpm-based repositories');
-            }
-            expect(execAsyncStub.notCalled).to.be.true;
-        });
-    });
-
     describe('publish next', () => {
         it('should apply the canary version to all workspace packages and publish with --tag next', async () => {
             createRootPackage('2.8.0-next');
-            markAsPnpmRepo();
             stubGit('v2.7.0', '42');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.8.0-next' });
             const pkgB = createPackage('packages/b', { name: '@eclipse-glsp/b', version: '2.8.0-next' });
@@ -160,7 +103,6 @@ describe('releng publish', () => {
 
         it('should not write versions and pass --dry-run in dry-run mode', async () => {
             createRootPackage('2.8.0-next');
-            markAsPnpmRepo();
             stubGit('v2.7.0', '7');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.8.0-next' });
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
@@ -174,7 +116,6 @@ describe('releng publish', () => {
 
         it('should pass a custom registry to pnpm publish', async () => {
             createRootPackage('2.8.0-next');
-            markAsPnpmRepo();
             stubGit('v2.7.0', '7');
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([]);
 
@@ -185,7 +126,6 @@ describe('releng publish', () => {
 
         it('should refuse to publish a canary if the root version is not a next version', async () => {
             createRootPackage('2.8.0');
-            markAsPnpmRepo();
             stubGit('v2.7.0', '7');
             try {
                 await publish('next', makeOptions());
@@ -199,7 +139,6 @@ describe('releng publish', () => {
     describe('publish latest', () => {
         it('should refuse to publish next versions under the latest dist-tag', async () => {
             createRootPackage('2.8.0-next');
-            markAsPnpmRepo();
             try {
                 await publish('latest', makeOptions());
                 expect.fail('should have thrown');
@@ -210,7 +149,6 @@ describe('releng publish', () => {
 
         it('should publish with --tag latest when unpublished packages exist', async () => {
             createRootPackage('2.9.0');
-            markAsPnpmRepo();
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
             // npm view fails -> version does not exist yet
@@ -224,7 +162,6 @@ describe('releng publish', () => {
 
         it('should skip publishing when all package versions already exist', async () => {
             createRootPackage('2.9.0');
-            markAsPnpmRepo();
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
             // npm view returns the version -> already published
@@ -237,7 +174,6 @@ describe('releng publish', () => {
 
         it('should ignore private packages when checking for unpublished versions', async () => {
             createRootPackage('2.9.0');
-            markAsPnpmRepo();
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
             const examplePkg = createPackage('examples/e', { name: '@eclipse-glsp-examples/e', version: '2.9.0', private: true });
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA, examplePkg]);
@@ -253,7 +189,6 @@ describe('releng publish', () => {
     describe('publish summary', () => {
         it('should report and remove the pnpm publish summary', async () => {
             createRootPackage('2.8.0-next');
-            markAsPnpmRepo();
             stubGit('v2.7.0', '7');
             sandbox.stub(packageUtil, 'getWorkspacePackages').returns([]);
             const summaryPath = path.join(tempDir, 'pnpm-publish-summary.json');
