@@ -16,7 +16,7 @@
 
 import * as path from 'path';
 import { Command } from 'commander';
-import { LOGGER, PackageManager, baseCommand, detectPackageManager, execForeground, runScriptInDirCommand } from '../../util';
+import { LOGGER, baseCommand, execForeground } from '../../util';
 import { configureRepoEnv, discoverNewestFile, resolveWorkspaceDir } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────
@@ -37,14 +37,7 @@ function collectPassthroughArgs(cmd: Command): string {
 }
 
 export function resolveCommand(script: string, repoDir: string, dryRun: boolean): string | undefined {
-    let pm: PackageManager;
-    try {
-        pm = detectPackageManager(repoDir);
-    } catch (error) {
-        // e.g. dry runs may target repos that are not cloned yet — assume pnpm (the target state)
-        pm = 'pnpm';
-    }
-    const resolved = runScriptInDirCommand(pm, repoDir, script);
+    const resolved = `pnpm -C ${repoDir} ${script}`;
     if (dryRun) {
         process.stdout.write(resolved + '\n');
         return undefined;

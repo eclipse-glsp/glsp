@@ -63,8 +63,7 @@ Options:
 
 ## coverageReport
 
-The `coverageReport` command can be used to create a full nyc test coverage report for a pnpm/yarn mono repository.
-The package manager is auto-detected from the repository (pnpm-workspace.yaml/pnpm-lock.yaml vs. yarn.lock).
+The `coverageReport` command can be used to create a full nyc test coverage report for a pnpm mono repository.
 Individual coverage reports for each package are created and then combined to a full report.
 
 ```console
@@ -203,9 +202,7 @@ Options:
 
 ### publish
 
-Publishes all (public) workspace packages of a GLSP repository (replaces `lerna publish`).
-The package manager is auto-detected: pnpm-based repositories publish via `pnpm publish -r`, while
-not-yet-migrated yarn/lerna-based repositories fall back to the legacy `lerna publish`.
+Publishes all (public) workspace packages of a GLSP repository via `pnpm publish -r` (replaces `lerna publish`).
 
 - `next`: applies a canary version (`<root-version>.<commits-since-last-tag>`, e.g. `2.8.0-next.42`) to all
   workspace packages and publishes them under the `next` dist-tag. Requires the full git history
@@ -213,15 +210,14 @@ not-yet-migrated yarn/lerna-based repositories fall back to the legacy `lerna pu
 - `latest`: publishes the current package versions under the `latest` dist-tag. Packages whose version
   already exists on the registry are skipped.
 
-For pnpm repositories publishing is delegated to `pnpm publish -r`, so `workspace:` dependency ranges are
-rewritten to exact versions; in both cases npm provenance/trusted publishing (`NPM_CONFIG_PROVENANCE`) is
-preserved. `--dry-run` is only supported for pnpm-based repositories.
+Publishing is delegated to `pnpm publish -r`, so `workspace:` dependency ranges are rewritten to exact
+versions; npm provenance/trusted publishing (`NPM_CONFIG_PROVENANCE`) is preserved.
 
 ```console
 $ glsp releng publish -h
 Usage: glsp releng publish [options] <distTag>
 
-Publish all workspace packages of a GLSP repository (pnpm: `pnpm publish`, yarn/lerna: `lerna publish`)
+Publish all workspace packages of a GLSP repository via `pnpm publish`
 
 Arguments:
   distTag                  The npm dist-tag to publish under (choices: "next", "latest")
@@ -256,8 +252,8 @@ Commands:
   clone [options] [repos...]        Clone GLSP repositories
   fork [options] <user>             Add fork remotes to already-cloned repositories
   build [options]                   Build repositories (dependency-ordered)
-  link [options]                    Interlink repositories via yarn link
-  unlink [options]                  Remove yarn links between repositories
+  link [options]                    Interlink repositories via pnpm-workspace.yaml link overrides
+  unlink [options]                  Remove the pnpm link overrides between repositories
   pwd [options]                     Print resolved paths for all discovered repositories
   log [options]                     Print the last commit for all discovered repositories
   workspace                         Manage VS Code workspace files for GLSP projects
@@ -349,21 +345,30 @@ Options:
 
 ### link / unlink
 
-Links (or unlinks) repositories via `yarn link` for cross-repo development.
-Repositories are processed in dependency order, and singleton dependencies (sprotty, inversify, etc.)
-are shared from `glsp-client` to avoid duplicate instances.
+Links (or unlinks) repositories for cross-repo development by injecting `link:` overrides into each
+consumer's `pnpm-workspace.yaml` and reinstalling. Repositories are processed in dependency order, and
+singleton dependencies (sprotty, sprotty-protocol, vscode-jsonrpc, inversify) are shared from `glsp-client`
+to avoid duplicate instances. After linking a repo it is **built** so the `link:` overrides resolve to
+compiled `lib/` output rather than empty source directories (pass `--no-build` to skip); only the npm/pnpm
+side is built, so the `glsp-eclipse-integration` Maven server is left to a separate build. `unlink` removes
+those overrides again and reinstalls.
+
+For `glsp-eclipse-integration`, whose linkable pnpm workspace lives in a `client/` subdirectory, the
+overrides are injected into `client/pnpm-workspace.yaml`.
 
 ```console
 $ glsp repo link -h
 Usage: glsp repo link [options]
 
-Interlink repositories via yarn link
+Interlink repositories via pnpm-workspace.yaml link overrides
 
 Options:
   -d, --dir <path>      Target directory where repos are cloned
   -r, --repo <name...>  Link only these repos
   --preset <name>       Link repos from a preset (choices: "core", "theia", "vscode",
                         "eclipse", "playwright", "all")
+  --no-build            Skip building the linked repos (links resolve to existing compiled output)
+  --electron            Build the Theia electron variant instead of browser (default: false)
   --no-fail-fast        Continue after a failure
   -v, --verbose         Verbose output (default: false)
   -h, --help            display help for command

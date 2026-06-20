@@ -35,52 +35,11 @@ export function createTempGitRepo(): string {
     return dir;
 }
 
-/**
- * Creates a temporary yarn monorepo with git, a root package.json with workspaces,
- * and the specified sub-packages (each with their own package.json).
- */
-export function createTempMonorepo(packages: string[] = ['packages/pkg-a']): string {
-    const dir = createTempGitRepo();
-    const rootPkg = {
-        name: 'test-monorepo',
-        version: '1.0.0',
-        private: true,
-        workspaces: ['packages/*']
-    };
-    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify(rootPkg, undefined, 2));
-
-    for (const pkg of packages) {
-        const pkgDir = path.join(dir, pkg);
-        fs.mkdirSync(pkgDir, { recursive: true });
-        const pkgName = `@test/${path.basename(pkg)}`;
-        fs.writeFileSync(path.join(pkgDir, 'package.json'), JSON.stringify({ name: pkgName, version: '1.0.0' }, undefined, 2));
-    }
-
-    git('add .', dir);
-    git('commit -m "add monorepo structure"', dir);
-    return dir;
-}
-
-/** Creates a local bare repo and sets it as origin for the given repo. Returns the bare repo path. */
-export function addLocalBareRemote(repoDir: string): string {
-    const bareDir = createTempDir();
-    git('init --bare', bareDir);
-    git(`remote add origin ${bareDir}`, repoDir);
-    git('push -u origin HEAD', repoDir);
-    return bareDir;
-}
-
 /** Write a file, stage it, and commit. */
 export function commitFile(repoDir: string, relativePath: string, content: string, message: string): void {
     const filePath = path.join(repoDir, relativePath);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, content);
-    git('add .', repoDir);
-    git(`commit -m "${message}"`, repoDir);
-}
-
-/** Stage all changes and commit. */
-export function commitAll(repoDir: string, message: string): void {
     git('add .', repoDir);
     git(`commit -m "${message}"`, repoDir);
 }

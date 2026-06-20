@@ -67,7 +67,6 @@ describe('updateNext', () => {
     }
 
     it('should pin next deps via pnpm-workspace.yaml overrides and install (without opportunistic updates)', async () => {
-        sandbox.stub(packageUtil, 'detectPackageManager').returns('pnpm');
         createPackage('.', { name: 'root', private: true });
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': 'next' } });
         sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
@@ -90,7 +89,6 @@ describe('updateNext', () => {
     });
 
     it('should merge into an existing overrides block (ours win) and restore it afterwards', async () => {
-        sandbox.stub(packageUtil, 'detectPackageManager').returns('pnpm');
         createPackage('.', { name: 'root', private: true });
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': 'next' } });
         sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
@@ -114,27 +112,11 @@ describe('updateNext', () => {
     });
 
     it('should do nothing when a pnpm repo has no next dependencies', async () => {
-        sandbox.stub(packageUtil, 'detectPackageManager').returns('pnpm');
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': '^2.0.0' } });
         sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
 
         await updateNext(tempDir, { verbose: false });
 
         expect(execAsyncStub.notCalled).to.be.true;
-    });
-
-    it('should use yarn resolutions for a yarn repo', async () => {
-        sandbox.stub(packageUtil, 'detectPackageManager').returns('yarn');
-        const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': 'next' } });
-        createPackage('.', { name: 'root', private: true });
-        sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
-        execStub.withArgs(sinon.match(/npm view/)).returns('2.8.0-next.42');
-
-        await updateNext(tempDir, { verbose: false });
-
-        // the yarn path installs via yarn, never via pnpm
-        const commands = execAsyncStub.getCalls().map(call => call.args[0] as string);
-        expect(commands.some(cmd => cmd.includes('yarn install'))).to.be.true;
-        expect(commands.some(cmd => cmd.includes('pnpm'))).to.be.false;
     });
 });

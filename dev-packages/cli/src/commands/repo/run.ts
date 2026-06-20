@@ -16,7 +16,7 @@
 
 import * as path from 'path';
 import { Command } from 'commander';
-import { GLSPRepo, baseCommand, detectPackageManager, execForeground, runScriptCommand } from '../../util';
+import { GLSPRepo, baseCommand, execForeground } from '../../util';
 import { configureRepoEnv, resolveWorkspaceDir } from './common/utils';
 
 export function createScopedRunCommand(repo: GLSPRepo): Command {
@@ -34,8 +34,7 @@ export function createScopedRunCommand(repo: GLSPRepo): Command {
             const dir = resolveWorkspaceDir(cli.dir);
             const repoDir = path.resolve(dir, repo);
             const passthrough = thisCmd.args.slice(1).join(' ');
-            const pm = detectPackageManager(repoDir);
-            const cmd = runScriptCommand(pm, passthrough ? `${script} ${passthrough}` : script);
+            const cmd = `pnpm run ${passthrough ? `${script} ${passthrough}` : script}`;
             await execForeground(cmd, { cwd: repoDir, verbose: cli.verbose });
         });
 }

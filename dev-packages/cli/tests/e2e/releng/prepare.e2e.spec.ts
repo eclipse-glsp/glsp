@@ -18,6 +18,7 @@ import { expect } from 'chai';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as YAML from 'yaml';
 import { runCli } from '../../helpers/cli-helper';
 import { replaceOriginWithBare, shallowClone } from '../../helpers/clone-helper';
 import { cleanupTempDir } from '../../helpers/test-helper';
@@ -87,17 +88,25 @@ function injectChangelogSection(repoDir: string): void {
 }
 
 /**
- * Finds workspace package.json files (not the root) by reading the root
- * package.json workspaces globs and resolving them.
+ * Reads the workspace package globs of a repo. pnpm repos declare them in `pnpm-workspace.yaml`;
+ * legacy repos use the `workspaces` field in the root `package.json`.
+ */
+function readWorkspaceGlobs(repoDir: string): string[] {
+    const pnpmWorkspace = path.join(repoDir, 'pnpm-workspace.yaml');
+    if (fs.existsSync(pnpmWorkspace)) {
+        const parsed = YAML.parse(fs.readFileSync(pnpmWorkspace, 'utf8')) as { packages?: string[] };
+        return parsed?.packages ?? [];
+    }
+    const rootPkg = readJson(path.join(repoDir, 'package.json'));
+    return Array.isArray(rootPkg.workspaces) ? rootPkg.workspaces : ((rootPkg.workspaces as { packages?: string[] })?.packages ?? []);
+}
+
+/**
+ * Finds workspace package.json files (not the root) by resolving the workspace globs.
  */
 function findWorkspacePackageJsons(repoDir: string): string[] {
-    const rootPkg = readJson(path.join(repoDir, 'package.json'));
-    const workspaces: string[] = Array.isArray(rootPkg.workspaces)
-        ? rootPkg.workspaces
-        : ((rootPkg.workspaces as { packages?: string[] })?.packages ?? []);
-
     const results: string[] = [];
-    for (const pattern of workspaces) {
+    for (const pattern of readWorkspaceGlobs(repoDir)) {
         const base = pattern.replace(/\/?\*.*$/, '');
         const fullBase = path.join(repoDir, base);
         if (!fs.existsSync(fullBase)) {
@@ -155,10 +164,6 @@ describe('releng prepare — glsp', function () {
         // Version bumped in root package.json
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
         expect(rootPkg.version).to.equal('99.0.0');
-
-        // Version bumped in lerna.json
-        const lerna = readJson(path.join(repoDir, 'lerna.json'));
-        expect(lerna.version).to.equal('99.0.0');
 
         // At least one workspace package.json updated
         const workspacePkgs = findWorkspacePackageJsons(repoDir);
@@ -223,9 +228,6 @@ for (const repo of NPM_REPOS_WITH_EXTERNAL_DEPS) {
             const rootPkg = readJson(path.join(repoDir, 'package.json'));
             expect(rootPkg.version as string).to.match(/-next$/);
 
-            const lerna = readJson(path.join(repoDir, 'lerna.json'));
-            expect(lerna.version as string).to.match(/-next$/);
-
             // At least one workspace package.json updated
             const workspacePkgs = findWorkspacePackageJsons(repoDir);
             expect(workspacePkgs.length).to.be.greaterThan(0);
@@ -280,9 +282,6 @@ describe('releng prepare — glsp-playwright', function () {
         // Version bumped with -next suffix
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
         expect(rootPkg.version as string).to.match(/-next$/);
-
-        const lerna = readJson(path.join(repoDir, 'lerna.json'));
-        expect(lerna.version as string).to.match(/-next$/);
 
         // CHANGELOG.md should have a new active section
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
@@ -383,9 +382,6 @@ describe('releng prepare — glsp-theia-integration', function () {
         // NPM checks
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
         expect(rootPkg.version as string).to.match(/-next$/);
-
-        const lerna = readJson(path.join(repoDir, 'lerna.json'));
-        expect(lerna.version as string).to.match(/-next$/);
 
         // Theia README compatibility table should contain 'next'
         const readme = readText(path.join(repoDir, 'README.md'));

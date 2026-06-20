@@ -108,55 +108,6 @@ export function readPackage(packagePath: string): PackageHelper {
     return new PackageHelper(packagePath, packageData.name);
 }
 
-export type PackageManager = 'pnpm' | 'yarn';
-
-/**
- * Detects the package manager of the given repository by checking for package-manager-specific files.
- * @param rootPath The root path of the repository
- * @returns `pnpm` if a `pnpm-workspace.yaml` or `pnpm-lock.yaml` is present, `yarn` if a `yarn.lock` is present
- * @throws Error if no package manager could be detected
- */
-export function detectPackageManager(rootPath: string): PackageManager {
-    if (fs.existsSync(path.resolve(rootPath, 'pnpm-workspace.yaml')) || fs.existsSync(path.resolve(rootPath, 'pnpm-lock.yaml'))) {
-        return 'pnpm';
-    }
-    if (fs.existsSync(path.resolve(rootPath, 'yarn.lock'))) {
-        return 'yarn';
-    }
-    throw new Error(
-        `Could not detect the package manager of '${rootPath}'.` +
-            ' Expected a pnpm-workspace.yaml/pnpm-lock.yaml (pnpm) or a yarn.lock (yarn) in the repository root.'
-    );
-}
-
-/**
- * Returns the install command for the given package manager.
- */
-export function installCommand(pm: PackageManager): string {
-    return pm === 'pnpm' ? 'pnpm install' : 'yarn install';
-}
-
-/**
- * Returns the command to run a package.json script with the given package manager.
- */
-export function runScriptCommand(pm: PackageManager, script: string): string {
-    return pm === 'pnpm' ? `pnpm run ${script}` : `yarn ${script}`;
-}
-
-/**
- * Returns the command to execute a binary from the workspace's node_modules with the given package manager.
- */
-export function execBinCommand(pm: PackageManager, bin: string): string {
-    return pm === 'pnpm' ? `pnpm exec ${bin}` : `yarn ${bin}`;
-}
-
-/**
- * Returns the command to run a package.json script in the given directory with the given package manager.
- */
-export function runScriptInDirCommand(pm: PackageManager, dir: string, script: string): string {
-    return pm === 'pnpm' ? `pnpm -C ${dir} ${script}` : `yarn --cwd ${dir} ${script}`;
-}
-
 export interface PnpmWorkspaceProject {
     name: string;
     version: string;
@@ -171,7 +122,7 @@ export interface PnpmWorkspaceProject {
  * @param includeRoot Whether to include the root package.json as well
  * @returns The package helpers of all workspace packages (excluding the root unless `includeRoot` is set)
  */
-export function getPnpmWorkspacePackages(rootPath: string, includeRoot = false): PackageHelper[] {
+export function getWorkspacePackages(rootPath: string, includeRoot = false): PackageHelper[] {
     const result = exec('pnpm -r list --json --depth -1', { cwd: rootPath, silent: true });
     const projects = JSON.parse(result) as PnpmWorkspaceProject[];
     const rootPackagePath = path.resolve(rootPath, 'package.json');
@@ -180,68 +131,6 @@ export function getPnpmWorkspacePackages(rootPath: string, includeRoot = false):
         .map(project => new PackageHelper(path.resolve(project.path, 'package.json'), project.name));
     if (includeRoot) {
         packages.push(new PackageHelper(rootPackagePath, 'root'));
-    }
-    return packages;
-}
-
-/**
- * Get all {@link PackageHelper}s of a workspace/mono repo, dispatching on the detected package manager.
- * @param rootPath The root path of the workspace
- * @param includeRoot Whether to include the root package.json as well
- * @returns The package helpers of all workspace packages
- */
-export function getWorkspacePackages(rootPath: string, includeRoot = false): PackageHelper[] {
-    return detectPackageManager(rootPath) === 'pnpm'
-        ? getPnpmWorkspacePackages(rootPath, includeRoot)
-        : getYarnWorkspacePackages(rootPath, includeRoot);
-}
-
-export interface YarnWorkspaceInfo {
-    location: string;
-    workspaceDependencies: string[];
-    mismatchedWorkspaceDependencies: string[];
-}
-
-export function isYarnMonorepo(rootPath: string): boolean {
-    return getYarnWorkspaceInfo(rootPath) !== undefined;
-}
-
-/**
- * Get the yarn (v1) workspace info by executing `yarn workspaces info` and parsing the result.
- * @param rootPath The root path of the yarn mono repo
- * @returns The parsed workspace info or `undefined` if the command failed (e.g. not a yarn mono repo)
- * @deprecated Use {@link getWorkspacePackages} instead. Will be removed once all GLSP repos are migrated to pnpm.
- */
-export function getYarnWorkspaceInfo(rootPath: string): Record<string, YarnWorkspaceInfo> | undefined {
-    try {
-        const result = exec('yarn workspaces info', { cwd: rootPath, silent: true });
-        // Trim the first and last line to extract the JSON object
-        const jsonStart = result.indexOf('{');
-        const jsonEnd = result.lastIndexOf('}');
-        const json = result.substring(jsonStart, jsonEnd + 1);
-        return JSON.parse(json) as Record<string, YarnWorkspaceInfo>;
-    } catch (error) {
-        return undefined;
-    }
-}
-
-/**
- *  Get all {@link PackageHelper}s of a yarn (v1) mono repo by executing `yarn workspaces info` and parsing the result.
- * @param rootPath The root path of the yarn mono repo
- * @param includeRoot Whether to include the root package.json as well
- * @returns The package helpers of all workspace packages
- * @deprecated Use {@link getWorkspacePackages} instead. Will be removed once all GLSP repos are migrated to pnpm.
- */
-export function getYarnWorkspacePackages(rootPath: string, includeRoot = false): PackageHelper[] {
-    const workspaces = getYarnWorkspaceInfo(rootPath);
-    if (!workspaces) {
-        return [];
-    }
-    const packages = Object.entries(workspaces).map(
-        ([name, info]) => new PackageHelper(path.resolve(rootPath, info.location, 'package.json'), name)
-    );
-    if (includeRoot) {
-        packages.push(new PackageHelper(path.resolve(rootPath, 'package.json'), 'root'));
     }
     return packages;
 }

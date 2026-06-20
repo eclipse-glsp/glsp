@@ -16,7 +16,7 @@
 
 import { Command, Option } from 'commander';
 import * as path from 'path';
-import { GLSPRepo, LOGGER, PRESET_NAMES, baseCommand, detectPackageManager, execAsync, installCommand, runScriptCommand } from '../../util';
+import { GLSPRepo, LOGGER, PRESET_NAMES, baseCommand, execAsync } from '../../util';
 import { configureRepoEnv, formatError, getBuildOrder, resolveTargetRepos, resolveWorkspaceDir, validateReposExist } from './common/utils';
 
 // ── Action ──────────────────────────────────────────────────────────────────
@@ -26,47 +26,70 @@ export interface BuildActionOptions {
     electron: boolean;
     verbose: boolean;
     failFast: boolean;
+    /** Run `pnpm install` before building. Default `true`; the link flow sets `false` (already installed). */
+    install?: boolean;
+    /** Build the Java/Maven parts (eclipse server, glsp-server). Default `true`; the link flow skips them. */
+    java?: boolean;
 }
 
-async function installAndBuildNpm(repoDir: string, execOpts: { cwd?: string; verbose: boolean; silent: boolean }): Promise<void> {
-    const pm = detectPackageManager(repoDir);
-    LOGGER.debug(`${pm} install`);
-    await execAsync(installCommand(pm), { ...execOpts, cwd: repoDir });
-    if (pm === 'pnpm') {
-        // bare `yarn` triggers the root prepare/build script implicitly; with pnpm we build explicitly
-        LOGGER.debug('pnpm build');
-        await execAsync(runScriptCommand(pm, '--if-present build'), { ...execOpts, cwd: repoDir });
+interface NpmExecOpts {
+    cwd?: string;
+    verbose: boolean;
+    silent: boolean;
+}
+
+async function installNpm(repoDir: string, execOpts: NpmExecOpts): Promise<void> {
+    LOGGER.debug('pnpm install');
+    await execAsync('pnpm install', { ...execOpts, cwd: repoDir });
+}
+
+// `pnpm install` does not run the build automatically, so build explicitly.
+async function buildNpm(repoDir: string, execOpts: NpmExecOpts): Promise<void> {
+    LOGGER.debug('pnpm build');
+    await execAsync('pnpm run --if-present build', { ...execOpts, cwd: repoDir });
+}
+
+async function installAndBuildNpm(repoDir: string, execOpts: NpmExecOpts, install: boolean): Promise<void> {
+    if (install) {
+        await installNpm(repoDir, execOpts);
     }
+    await buildNpm(repoDir, execOpts);
 }
 
 export async function buildSingleRepo(repo: GLSPRepo, options: BuildActionOptions): Promise<void> {
     const repoDir = path.resolve(options.dir, repo);
     const npmOpts = { cwd: repoDir, verbose: options.verbose, silent: false, env: { FORCE_COLOR: '1' } };
     const mvnOpts = { cwd: repoDir, verbose: options.verbose, silent: false };
+    const install = options.install ?? true;
+    const java = options.java ?? true;
 
     LOGGER.label(`Building ${repo}...`);
 
     switch (repo) {
         case 'glsp-theia-integration': {
-            await installAndBuildNpm(repoDir, npmOpts);
+            await installAndBuildNpm(repoDir, npmOpts, install);
             const target = options.electron ? 'electron' : 'browser';
             LOGGER.debug('Build for target: ' + target);
-            await execAsync(runScriptCommand(detectPackageManager(repoDir), `${target} build`), npmOpts);
+            await execAsync(`pnpm run ${target} build`, npmOpts);
             break;
         }
         case 'glsp-server': {
-            await execAsync('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B', mvnOpts);
+            if (java) {
+                await execAsync('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B', mvnOpts);
+            }
             break;
         }
         case 'glsp-eclipse-integration': {
             LOGGER.debug('Build client');
-            await installAndBuildNpm(path.join(repoDir, 'client'), npmOpts);
-            LOGGER.debug('Maven build for server');
-            await execAsync('mvn clean verify -Dstyle.color=always -B', { ...mvnOpts, cwd: path.join(repoDir, 'server') });
+            await installAndBuildNpm(path.join(repoDir, 'client'), npmOpts, install);
+            if (java) {
+                LOGGER.debug('Maven build for server');
+                await execAsync('mvn clean verify -Dstyle.color=always -B', { ...mvnOpts, cwd: path.join(repoDir, 'server') });
+            }
             break;
         }
         default: {
-            await installAndBuildNpm(repoDir, npmOpts);
+            await installAndBuildNpm(repoDir, npmOpts, install);
             break;
         }
     }
