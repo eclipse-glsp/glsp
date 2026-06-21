@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, beforeEach, afterAll, expect } from 'vitest';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -131,7 +131,7 @@ describe('releng prepare — glsp', function () {
     let repoDir: string;
     let bareParentDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp');
         ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -140,7 +140,7 @@ describe('releng prepare — glsp', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -196,7 +196,7 @@ for (const repo of NPM_REPOS_WITH_EXTERNAL_DEPS) {
         let repoDir: string;
         let bareParentDir: string;
 
-        before(function () {
+        beforeAll(function () {
             repoDir = shallowClone(repo);
             ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
         });
@@ -205,7 +205,7 @@ for (const repo of NPM_REPOS_WITH_EXTERNAL_DEPS) {
             resetRepo(repoDir);
         });
 
-        after(function () {
+        afterAll(function () {
             if (repoDir) {
                 cleanupTempDir(path.dirname(repoDir));
             }
@@ -251,7 +251,7 @@ describe('releng prepare — glsp-playwright', function () {
     let repoDir: string;
     let bareParentDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp-playwright');
         ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -260,7 +260,7 @@ describe('releng prepare — glsp-playwright', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -300,7 +300,7 @@ describe('releng prepare — glsp-client (extended)', function () {
     let bareDir: string;
     let bareParentDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp-client');
         ({ bareDir, parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -309,7 +309,7 @@ describe('releng prepare — glsp-client (extended)', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -351,7 +351,7 @@ describe('releng prepare — glsp-theia-integration', function () {
     let repoDir: string;
     let bareParentDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp-theia-integration');
         ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -360,7 +360,7 @@ describe('releng prepare — glsp-theia-integration', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -399,14 +399,11 @@ describe('releng prepare — glsp-theia-integration', function () {
 
 // ── glsp-server (Java / Maven) ─────────────────────────────────────────────
 
-describe('releng prepare — glsp-server', function () {
+describe.skipIf(!isMavenAvailable())('releng prepare — glsp-server', function () {
     let repoDir: string;
     let bareParentDir: string;
 
-    before(function () {
-        if (!isMavenAvailable()) {
-            this.skip();
-        }
+    beforeAll(function () {
         repoDir = shallowClone('glsp-server');
         ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -417,7 +414,7 @@ describe('releng prepare — glsp-server', function () {
         }
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -455,14 +452,11 @@ describe('releng prepare — glsp-server', function () {
 
 // ── glsp-eclipse-integration (hybrid: npm client + mvn server) ─────────────
 
-describe('releng prepare — glsp-eclipse-integration', function () {
+describe.skipIf(!isMavenAvailable())('releng prepare — glsp-eclipse-integration', function () {
     let repoDir: string;
     let bareParentDir: string;
 
-    before(function () {
-        if (!isMavenAvailable()) {
-            this.skip();
-        }
+    beforeAll(function () {
         repoDir = shallowClone('glsp-eclipse-integration');
         ({ parentDir: bareParentDir } = replaceOriginWithBare(repoDir));
     });
@@ -473,7 +467,7 @@ describe('releng prepare — glsp-eclipse-integration', function () {
         }
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }

@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type MockInstance } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import * as processUtil from '../../util/process-util';
 import * as gitUtil from '../../util/git-util';
 import { createTempDir, cleanupTempDir } from '../../../tests/helpers/test-helper';
@@ -25,9 +24,8 @@ import { validateReposExist } from './common/utils';
 import { SwitchActionOptions, switchSingleRepo, validateReposClean } from './switch';
 
 describe('switch-action', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execStub: sinon.SinonStub;
+    let execStub: MockInstance;
 
     function makeOptions(overrides: Partial<SwitchActionOptions> = {}): SwitchActionOptions {
         return {
@@ -47,12 +45,11 @@ describe('switch-action', () => {
 
     beforeEach(() => {
         tempDir = createTempDir();
-        execStub = sandbox.stub(processUtil, 'exec').returns('');
-        sandbox.stub(gitUtil, 'hasChanges').returns(false);
+        execStub = vi.spyOn(processUtil, 'exec').mockReturnValue('');
+        vi.spyOn(gitUtil, 'hasChanges').mockReturnValue(false);
     });
 
     afterEach(() => {
-        sandbox.restore();
         cleanupTempDir(tempDir);
     });
 
@@ -76,7 +73,7 @@ describe('switch-action', () => {
 
         it('should throw listing dirty repos', () => {
             createRepoDirs('glsp-client');
-            (gitUtil.hasChanges as sinon.SinonStub).returns(true);
+            vi.mocked(gitUtil.hasChanges).mockReturnValue(true);
             expect(() => validateReposClean(['glsp-client'], tempDir)).to.throw(/uncommitted changes.*glsp-client/);
         });
     });
@@ -85,8 +82,8 @@ describe('switch-action', () => {
         it('should run git checkout with the branch name', () => {
             createRepoDirs('glsp-client');
             switchSingleRepo('glsp-client', makeOptions({ branch: 'release/2.0' }));
-            expect(execStub.calledOnce).to.be.true;
-            const cmd = execStub.firstCall.args[0] as string;
+            expect(execStub).toHaveBeenCalledOnce();
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('git checkout');
             expect(cmd).to.contain('release/2.0');
         });
@@ -94,26 +91,30 @@ describe('switch-action', () => {
         it('should add --force when force is true', () => {
             createRepoDirs('glsp-client');
             switchSingleRepo('glsp-client', makeOptions({ branch: 'main', force: true }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('--force');
         });
 
         it('should warn and return when branch does not exist', () => {
             createRepoDirs('glsp-client');
-            execStub.throws(new Error("error: pathspec 'nonexistent' did not match any"));
+            execStub.mockImplementation(() => {
+                throw new Error("error: pathspec 'nonexistent' did not match any");
+            });
             expect(() => switchSingleRepo('glsp-client', makeOptions({ branch: 'nonexistent' }))).to.not.throw();
         });
 
         it('should rethrow on other git errors', () => {
             createRepoDirs('glsp-client');
-            execStub.throws(new Error('fatal: some other error'));
+            execStub.mockImplementation(() => {
+                throw new Error('fatal: some other error');
+            });
             expect(() => switchSingleRepo('glsp-client', makeOptions())).to.throw('fatal: some other error');
         });
 
         it('should use gh pr checkout for --pr', () => {
             createRepoDirs('glsp-client');
             switchSingleRepo('glsp-client', makeOptions({ branch: undefined, pr: '42' }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('gh pr checkout 42');
             expect(cmd).to.contain('-R eclipse-glsp/glsp-client');
         });

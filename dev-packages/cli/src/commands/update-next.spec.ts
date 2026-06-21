@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type Mock } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import * as YAML from 'yaml';
 import { cleanupTempDir, createTempDir } from '../../tests/helpers/test-helper';
 import { PackageData, PackageHelper } from '../util';
@@ -27,21 +26,20 @@ import * as processUtil from '../util/process-util';
 import { updateNext } from './update-next';
 
 describe('updateNext', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execStub: sinon.SinonStub;
-    let execAsyncStub: sinon.SinonStub;
+    let execStub: Mock;
+    let execAsyncStub: Mock;
 
     beforeEach(() => {
         tempDir = createTempDir();
         // no uncommitted changes -> the command does not early-return
-        sandbox.stub(gitUtil, 'getUncommittedChanges').returns([]);
-        execStub = sandbox.stub(processUtil, 'exec');
-        execAsyncStub = sandbox.stub(processUtil, 'execAsync').resolves('');
+        vi.spyOn(gitUtil, 'getUncommittedChanges').mockReturnValue([]);
+        execStub = vi.spyOn(processUtil, 'exec') as unknown as Mock;
+        execAsyncStub = vi.spyOn(processUtil, 'execAsync').mockResolvedValue('') as unknown as Mock;
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
         cleanupTempDir(tempDir);
     });
 
@@ -56,7 +54,7 @@ describe('updateNext', () => {
     /** Runs updateNext and returns the pnpm-workspace.yaml content captured during the (first) install. */
     async function runAndCaptureWorkspaceYaml(workspaceYamlPath: string): Promise<string> {
         let captured: string | undefined;
-        execAsyncStub.callsFake(() => {
+        execAsyncStub.mockImplementation(() => {
             if (captured === undefined) {
                 captured = fs.readFileSync(workspaceYamlPath, 'utf8');
             }
@@ -69,11 +67,16 @@ describe('updateNext', () => {
     it('should pin next deps via pnpm-workspace.yaml overrides and install (without opportunistic updates)', async () => {
         createPackage('.', { name: 'root', private: true });
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': 'next' } });
-        sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+        vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
         const workspaceYamlPath = path.join(tempDir, 'pnpm-workspace.yaml');
         const originalYaml = "packages:\n    - 'packages/*'\n";
         fs.writeFileSync(workspaceYamlPath, originalYaml);
-        execStub.withArgs(sinon.match(/npm view/)).returns('2.8.0-next.6');
+        execStub.mockImplementation((...args: any[]) => {
+            if (/npm view/.test(args[0])) {
+                return '2.8.0-next.6';
+            }
+            return undefined;
+        });
 
         const yamlDuringInstall = await runAndCaptureWorkspaceYaml(workspaceYamlPath);
 
@@ -82,7 +85,7 @@ describe('updateNext', () => {
         // ... and the file is restored verbatim afterwards
         expect(fs.readFileSync(workspaceYamlPath, 'utf8')).to.equal(originalYaml);
 
-        const commands = execAsyncStub.getCalls().map(call => call.args[0] as string);
+        const commands = execAsyncStub.mock.calls.map(call => call[0] as string);
         // uses `pnpm install` (lockfile-respecting), never `pnpm update` (opportunistic in-range bumps)
         expect(commands.some(cmd => cmd.includes('pnpm install'))).to.be.true;
         expect(commands.some(cmd => cmd.includes('pnpm update'))).to.be.false;
@@ -91,14 +94,19 @@ describe('updateNext', () => {
     it('should merge into an existing overrides block (ours win) and restore it afterwards', async () => {
         createPackage('.', { name: 'root', private: true });
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': 'next' } });
-        sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+        vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
         const workspaceYamlPath = path.join(tempDir, 'pnpm-workspace.yaml');
         const originalYaml = YAML.stringify({
             packages: ['packages/*'],
             overrides: { 'unrelated-dep': '1.2.3', '@eclipse-glsp/protocol': 'next' }
         });
         fs.writeFileSync(workspaceYamlPath, originalYaml);
-        execStub.withArgs(sinon.match(/npm view/)).returns('2.8.0-next.6');
+        execStub.mockImplementation((...args: any[]) => {
+            if (/npm view/.test(args[0])) {
+                return '2.8.0-next.6';
+            }
+            return undefined;
+        });
 
         const yamlDuringInstall = await runAndCaptureWorkspaceYaml(workspaceYamlPath);
 
@@ -113,10 +121,10 @@ describe('updateNext', () => {
 
     it('should do nothing when a pnpm repo has no next dependencies', async () => {
         const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', dependencies: { '@eclipse-glsp/protocol': '^2.0.0' } });
-        sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+        vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
 
         await updateNext(tempDir, { verbose: false });
 
-        expect(execAsyncStub.notCalled).to.be.true;
+        expect(execAsyncStub).not.toHaveBeenCalled();
     });
 });

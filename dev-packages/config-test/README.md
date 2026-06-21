@@ -1,18 +1,13 @@
 # Eclipse GLSP - Shared configuration for testing
 
-Common shared configuration for testing Eclipse GLSP components that are implemented with Typescript.
-Provides a meta package that export common configuration objects for:
-
-- [Mocha](https://www.typescriptlang.org/) (`.mocharc`)
-- [nyc](https://github.com/istanbuljs/nyc) (`.nycrc`)
+Meta package that bundles the shared [Vitest](https://vitest.dev) test configuration and the test
+dependencies (Vitest + the V8 coverage provider) for Eclipse GLSP components implemented with Typescript.
 
 The package is available via npm and can be used by all GLSP components implemented with Typescript.
-Mocha and nyc are included as direct dependencies.
 
 ## Components
 
-- [`@eclipse-glsp/mocha-config`](https://www.npmjs.com/package/@eclipse-glsp/mocha-config): Shared Mocha configuration for GLSP projects
-- [`@eclipse-glsp/nyc-config`](https://www.npmjs.com/package/@eclipse-glsp/nyc-config): Shared nyc configuration for GLSP projects
+- [`@eclipse-glsp/vitest-config`](https://www.npmjs.com/package/@eclipse-glsp/vitest-config): Shared Vitest configuration for GLSP projects.
 
 ## Install
 
@@ -22,26 +17,14 @@ pnpm add --save-dev @eclipse-glsp/config-test
 
 ## Usage
 
-### Mocha
+**Create a `vite.config.ts`** that extends the shared config (provided by `@eclipse-glsp/vitest-config`,
+pulled in transitively by this package):
 
-**Create a `.mocharc`**:
+```ts
+import { glspVitestConfig } from '@eclipse-glsp/vitest-config';
 
-```json
-{
-    "$schema": "https://json.schemastore.org/mocharc",
-    "extends": "@eclipse-glsp/mocha-config"
-}
+export default glspVitestConfig;
 ```
-
-### Nyc
-
-**Add a `.nycrc.json` to your project root**:
-
-```json
-"@eclipse-glsp/prettier-config"
-```
-
-Configuration can also be provided by `nyc.config.js` if programmed logic is required.
 
 ## More information
 

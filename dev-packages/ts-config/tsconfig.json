@@ -26,6 +26,6 @@
     "jsx": "react",
     "lib": ["ES2023", "dom"],
     "sourceMap": true,
-    "types": ["node", "reflect-metadata"]
+    "types": ["node"]
   }
 }

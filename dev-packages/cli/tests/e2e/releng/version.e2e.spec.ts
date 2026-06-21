@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, afterEach, afterAll, expect } from 'vitest';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -57,7 +57,7 @@ for (const repo of NPM_REPOS) {
     describe(`releng version — ${repo}`, function () {
         let repoDir: string;
 
-        before(function () {
+        beforeAll(function () {
             repoDir = shallowClone(repo);
         });
 
@@ -65,7 +65,7 @@ for (const repo of NPM_REPOS) {
             resetRepo(repoDir);
         });
 
-        after(function () {
+        afterAll(function () {
             cleanupTempDir(path.dirname(repoDir));
         });
 
@@ -105,7 +105,7 @@ for (const repo of NPM_REPOS) {
 describe('releng version — glsp-client (extended)', function () {
     let repoDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp-client');
     });
 
@@ -113,7 +113,7 @@ describe('releng version — glsp-client (extended)', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         cleanupTempDir(path.dirname(repoDir));
     });
 
@@ -151,7 +151,7 @@ describe('releng version — glsp-client (extended)', function () {
 describe('releng version — glsp-theia-integration', function () {
     let repoDir: string;
 
-    before(function () {
+    beforeAll(function () {
         repoDir = shallowClone('glsp-theia-integration');
     });
 
@@ -159,7 +159,7 @@ describe('releng version — glsp-theia-integration', function () {
         resetRepo(repoDir);
     });
 
-    after(function () {
+    afterAll(function () {
         cleanupTempDir(path.dirname(repoDir));
     });
 
@@ -195,13 +195,10 @@ describe('releng version — glsp-theia-integration', function () {
 
 // ── glsp-server (Java / Maven) ─────────────────────────────────────────────
 
-describe('releng version — glsp-server', function () {
+describe.skipIf(!isMavenAvailable())('releng version — glsp-server', function () {
     let repoDir: string;
 
-    before(function () {
-        if (!isMavenAvailable()) {
-            this.skip();
-        }
+    beforeAll(function () {
         repoDir = shallowClone('glsp-server');
     });
 
@@ -211,7 +208,7 @@ describe('releng version — glsp-server', function () {
         }
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }
@@ -236,13 +233,10 @@ describe('releng version — glsp-server', function () {
 
 // ── glsp-eclipse-integration (hybrid: npm client + mvn server) ─────────────
 
-describe('releng version — glsp-eclipse-integration', function () {
+describe.skipIf(!isMavenAvailable())('releng version — glsp-eclipse-integration', function () {
     let repoDir: string;
 
-    before(function () {
-        if (!isMavenAvailable()) {
-            this.skip();
-        }
+    beforeAll(function () {
         repoDir = shallowClone('glsp-eclipse-integration');
     });
 
@@ -252,7 +246,7 @@ describe('releng version — glsp-eclipse-integration', function () {
         }
     });
 
-    after(function () {
+    afterAll(function () {
         if (repoDir) {
             cleanupTempDir(path.dirname(repoDir));
         }

@@ -14,19 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import { cleanupTempDir, createTempDir } from '../../tests/helpers/test-helper';
 import { PackageHelper, getWorkspacePackages } from './package-util';
 import * as processUtil from './process-util';
 
 describe('package-util', () => {
-    const sandbox = sinon.createSandbox();
-
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
     });
 
     describe('PackageHelper constructor', () => {
@@ -84,7 +81,7 @@ describe('package-util', () => {
                 { name: '@scope/pkg-a', version: '1.0.0', path: pkgADir },
                 { name: '@scope/pkg-b', version: '1.0.0', path: pkgBDir }
             ]);
-            sandbox.stub(processUtil, 'exec').returns(listOutput);
+            vi.spyOn(processUtil, 'exec').mockReturnValue(listOutput);
 
             const packages = getWorkspacePackages(tempDir);
             expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', '@scope/pkg-b']);
@@ -98,7 +95,7 @@ describe('package-util', () => {
                 { name: 'root-pkg', version: '1.0.0', path: tempDir, private: true },
                 { name: '@scope/pkg-a', version: '1.0.0', path: pkgADir }
             ]);
-            sandbox.stub(processUtil, 'exec').returns(listOutput);
+            vi.spyOn(processUtil, 'exec').mockReturnValue(listOutput);
 
             const packages = getWorkspacePackages(tempDir, true);
             expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', 'root']);

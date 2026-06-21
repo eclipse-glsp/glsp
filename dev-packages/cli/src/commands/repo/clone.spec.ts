@@ -14,19 +14,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type MockInstance } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import * as processUtil from '../../util/process-util';
 import * as forkUtils from './common/fork-utils';
 import { createTempDir, cleanupTempDir } from '../../../tests/helpers/test-helper';
 import { CloneActionOptions, cloneSingleRepo } from './clone';
 
 describe('clone-action', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execStub: sinon.SinonStub;
+    let execStub: MockInstance;
 
     function makeOptions(overrides: Partial<CloneActionOptions> = {}): CloneActionOptions {
         return {
@@ -39,21 +37,20 @@ describe('clone-action', () => {
 
     beforeEach(() => {
         tempDir = createTempDir();
-        execStub = sandbox.stub(processUtil, 'exec').returns('');
-        sandbox.stub(forkUtils, 'ensureFork').resolves();
-        sandbox.stub(forkUtils, 'getRemotes').returns({});
+        execStub = vi.spyOn(processUtil, 'exec').mockReturnValue('');
+        vi.spyOn(forkUtils, 'ensureFork').mockResolvedValue(undefined);
+        vi.spyOn(forkUtils, 'getRemotes').mockReturnValue({});
     });
 
     afterEach(() => {
-        sandbox.restore();
         cleanupTempDir(tempDir);
     });
 
     describe('cloneSingleRepo', () => {
         it('should call git clone with https URL', async () => {
             await cloneSingleRepo('glsp-client', makeOptions());
-            expect(execStub.calledOnce).to.be.true;
-            const cmd = execStub.firstCall.args[0] as string;
+            expect(execStub).toHaveBeenCalledOnce();
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('git clone');
             expect(cmd).to.contain('https://github.com/eclipse-glsp/glsp-client.git');
             expect(cmd).to.contain(path.join(tempDir, 'glsp-client'));
@@ -61,43 +58,43 @@ describe('clone-action', () => {
 
         it('should call git clone with ssh URL', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ protocol: 'ssh' }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('git@github.com:eclipse-glsp/glsp-client.git');
         });
 
         it('should use fork org when --fork is set', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ fork: 'myuser' }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('myuser/glsp-client');
         });
 
         it('should add upstream remote when --fork is set', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ fork: 'myuser' }));
-            const upstreamCall = execStub.getCalls().find(c => (c.args[0] as string).includes('remote add upstream'));
+            const upstreamCall = execStub.mock.calls.find(c => (c[0] as string).includes('remote add upstream'));
             expect(upstreamCall).to.exist;
-            expect(upstreamCall!.args[0]).to.contain('eclipse-glsp/glsp-client');
+            expect(upstreamCall![0]).to.contain('eclipse-glsp/glsp-client');
         });
 
         it('should not add upstream if already present after clone', async () => {
-            (forkUtils.getRemotes as sinon.SinonStub).returns({ upstream: 'https://github.com/eclipse-glsp/glsp-client.git' });
+            vi.spyOn(forkUtils, 'getRemotes').mockReturnValue({ upstream: 'https://github.com/eclipse-glsp/glsp-client.git' });
             await cloneSingleRepo('glsp-client', makeOptions({ fork: 'myuser' }));
-            const upstreamCall = execStub.getCalls().find(c => (c.args[0] as string).includes('remote add upstream'));
+            const upstreamCall = execStub.mock.calls.find(c => (c[0] as string).includes('remote add upstream'));
             expect(upstreamCall).to.be.undefined;
         });
 
         it('should call ensureFork when --fork is set', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ fork: 'myuser' }));
-            expect((forkUtils.ensureFork as sinon.SinonStub).calledOnceWith('myuser', 'glsp-client')).to.be.true;
+            expect(vi.mocked(forkUtils.ensureFork)).toHaveBeenCalledExactlyOnceWith('myuser', 'glsp-client');
         });
 
         it('should not call ensureFork when --fork is not set', async () => {
             await cloneSingleRepo('glsp-client', makeOptions());
-            expect((forkUtils.ensureFork as sinon.SinonStub).called).to.be.false;
+            expect(vi.mocked(forkUtils.ensureFork)).not.toHaveBeenCalled();
         });
 
         it('should include -b flag when --branch is set', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ branch: 'release/2.0' }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('-b release/2.0');
         });
 
@@ -105,7 +102,7 @@ describe('clone-action', () => {
             fs.mkdirSync(path.join(tempDir, 'glsp-client'));
             const result = await cloneSingleRepo('glsp-client', makeOptions());
             expect(result).to.be.false;
-            expect(execStub.called).to.be.false;
+            expect(execStub).not.toHaveBeenCalled();
         });
 
         it('should remove existing directory with --override remove', async () => {
@@ -114,7 +111,7 @@ describe('clone-action', () => {
             fs.writeFileSync(path.join(targetDir, 'old.txt'), 'old');
             await cloneSingleRepo('glsp-client', makeOptions({ override: 'remove' }));
             expect(fs.existsSync(path.join(targetDir, 'old.txt'))).to.be.false;
-            expect(execStub.calledOnce).to.be.true;
+            expect(execStub).toHaveBeenCalledOnce();
         });
 
         it('should rename existing directory with --override rename', async () => {
@@ -129,7 +126,7 @@ describe('clone-action', () => {
 
         it('should use gh repo clone for gh protocol', async () => {
             await cloneSingleRepo('glsp-client', makeOptions({ protocol: 'gh' }));
-            const cmd = execStub.firstCall.args[0] as string;
+            const cmd = execStub.mock.calls[0][0] as string;
             expect(cmd).to.contain('gh repo clone');
             expect(cmd).to.contain('eclipse-glsp/glsp-client');
         });

@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type MockInstance } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import { cleanupTempDir, createTempDir } from '../../../tests/helpers/test-helper';
 import { PackageData, PackageHelper } from '../../util';
 import * as packageUtil from '../../util/package-util';
@@ -26,19 +25,18 @@ import { deriveCanaryVersion } from './common';
 import { PublishCmdOptions, publish } from './publish';
 
 describe('releng publish', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execStub: sinon.SinonStub;
-    let execAsyncStub: sinon.SinonStub;
+    let execStub: MockInstance;
+    let execAsyncStub: MockInstance;
 
     beforeEach(() => {
         tempDir = createTempDir();
-        execStub = sandbox.stub(processUtil, 'exec');
-        execAsyncStub = sandbox.stub(processUtil, 'execAsync').resolves('');
+        execStub = vi.spyOn(processUtil, 'exec');
+        execAsyncStub = vi.spyOn(processUtil, 'execAsync').mockResolvedValue('');
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
         cleanupTempDir(tempDir);
     });
 
@@ -55,8 +53,15 @@ describe('releng publish', () => {
     }
 
     function stubGit(lastTag: string, commitCount: string): void {
-        execStub.withArgs(sinon.match(/git describe/)).returns(lastTag);
-        execStub.withArgs(sinon.match(/git rev-list/)).returns(commitCount);
+        execStub.mockImplementation((cmd: string) => {
+            if (/git describe/.test(cmd)) {
+                return lastTag;
+            }
+            if (/git rev-list/.test(cmd)) {
+                return commitCount;
+            }
+            return undefined;
+        });
     }
 
     function makeOptions(overrides: Partial<PublishCmdOptions> = {}): PublishCmdOptions {
@@ -73,7 +78,12 @@ describe('releng publish', () => {
 
         it('should throw a helpful error when no git tag can be found', () => {
             createRootPackage('2.8.0-next');
-            execStub.withArgs(sinon.match(/git describe/)).throws(new Error('fatal: No names found'));
+            execStub.mockImplementation((cmd: string) => {
+                if (/git describe/.test(cmd)) {
+                    throw new Error('fatal: No names found');
+                }
+                return undefined;
+            });
             expect(() => deriveCanaryVersion(tempDir)).to.throw(/fetch-depth: 0/);
         });
     });
@@ -84,7 +94,7 @@ describe('releng publish', () => {
             stubGit('v2.7.0', '42');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.8.0-next' });
             const pkgB = createPackage('packages/b', { name: '@eclipse-glsp/b', version: '2.8.0-next' });
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA, pkgB]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA, pkgB]);
 
             await publish('next', makeOptions());
 
@@ -96,32 +106,32 @@ describe('releng publish', () => {
             const root = JSON.parse(fs.readFileSync(path.join(tempDir, 'package.json'), 'utf8'));
             expect(root.version).to.equal('2.8.0-next');
 
-            expect(execAsyncStub.calledOnce).to.be.true;
-            expect(execAsyncStub.firstCall.args[0]).to.equal('pnpm publish -r --tag next --no-git-checks --report-summary');
-            expect(execAsyncStub.firstCall.args[1].cwd).to.equal(tempDir);
+            expect(execAsyncStub).toHaveBeenCalledOnce();
+            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm publish -r --tag next --no-git-checks --report-summary');
+            expect(execAsyncStub.mock.calls[0][1].cwd).to.equal(tempDir);
         });
 
         it('should not write versions and pass --dry-run in dry-run mode', async () => {
             createRootPackage('2.8.0-next');
             stubGit('v2.7.0', '7');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.8.0-next' });
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
 
             await publish('next', makeOptions({ dryRun: true }));
 
             const writtenA = JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8'));
             expect(writtenA.version).to.equal('2.8.0-next');
-            expect(execAsyncStub.firstCall.args[0]).to.contain('--dry-run');
+            expect(execAsyncStub.mock.calls[0][0]).to.contain('--dry-run');
         });
 
         it('should pass a custom registry to pnpm publish', async () => {
             createRootPackage('2.8.0-next');
             stubGit('v2.7.0', '7');
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([]);
 
             await publish('next', makeOptions({ registry: 'http://localhost:4873' }));
 
-            expect(execAsyncStub.firstCall.args[0]).to.contain('--registry http://localhost:4873');
+            expect(execAsyncStub.mock.calls[0][0]).to.contain('--registry http://localhost:4873');
         });
 
         it('should refuse to publish a canary if the root version is not a next version', async () => {
@@ -150,39 +160,54 @@ describe('releng publish', () => {
         it('should publish with --tag latest when unpublished packages exist', async () => {
             createRootPackage('2.9.0');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
             // npm view fails -> version does not exist yet
-            execStub.withArgs(sinon.match(/npm view/)).throws(new Error('404'));
+            execStub.mockImplementation((cmd: string) => {
+                if (/npm view/.test(cmd)) {
+                    throw new Error('404');
+                }
+                return undefined;
+            });
 
             await publish('latest', makeOptions());
 
-            expect(execAsyncStub.calledOnce).to.be.true;
-            expect(execAsyncStub.firstCall.args[0]).to.equal('pnpm publish -r --tag latest --no-git-checks --report-summary');
+            expect(execAsyncStub).toHaveBeenCalledOnce();
+            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm publish -r --tag latest --no-git-checks --report-summary');
         });
 
         it('should skip publishing when all package versions already exist', async () => {
             createRootPackage('2.9.0');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
             // npm view returns the version -> already published
-            execStub.withArgs(sinon.match(/npm view/)).returns('2.9.0');
+            execStub.mockImplementation((cmd: string) => {
+                if (/npm view/.test(cmd)) {
+                    return '2.9.0';
+                }
+                return undefined;
+            });
 
             await publish('latest', makeOptions());
 
-            expect(execAsyncStub.notCalled).to.be.true;
+            expect(execAsyncStub).not.toHaveBeenCalled();
         });
 
         it('should ignore private packages when checking for unpublished versions', async () => {
             createRootPackage('2.9.0');
             const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.9.0' });
             const examplePkg = createPackage('examples/e', { name: '@eclipse-glsp-examples/e', version: '2.9.0', private: true });
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([pkgA, examplePkg]);
-            execStub.withArgs(sinon.match(/npm view @eclipse-glsp\/a/)).returns('2.9.0');
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA, examplePkg]);
+            execStub.mockImplementation((cmd: string) => {
+                if (/npm view @eclipse-glsp\/a/.test(cmd)) {
+                    return '2.9.0';
+                }
+                return undefined;
+            });
 
             await publish('latest', makeOptions());
 
             // the only public package is already published -> nothing to publish
-            expect(execAsyncStub.notCalled).to.be.true;
+            expect(execAsyncStub).not.toHaveBeenCalled();
         });
     });
 
@@ -190,9 +215,9 @@ describe('releng publish', () => {
         it('should report and remove the pnpm publish summary', async () => {
             createRootPackage('2.8.0-next');
             stubGit('v2.7.0', '7');
-            sandbox.stub(packageUtil, 'getWorkspacePackages').returns([]);
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([]);
             const summaryPath = path.join(tempDir, 'pnpm-publish-summary.json');
-            execAsyncStub.callsFake(() => {
+            execAsyncStub.mockImplementation(() => {
                 fs.writeFileSync(
                     summaryPath,
                     JSON.stringify({ publishedPackages: [{ name: '@eclipse-glsp/a', version: '2.8.0-next.7' }] })

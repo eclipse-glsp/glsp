@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type Mock } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import * as YAML from 'yaml';
 import { GLSPRepo, PackageHelper } from '../../util';
 import * as packageUtil from '../../util/package-util';
@@ -47,20 +46,19 @@ function mockPkg(name: string, location: string): PackageHelper {
 }
 
 describe('link-action', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execAsyncStub: sinon.SinonStub;
-    let workspaceStub: sinon.SinonStub;
+    let execAsyncStub: Mock;
+    let workspaceStub: Mock;
 
     beforeEach(() => {
         tempDir = createTempDir();
-        execAsyncStub = sandbox.stub(processUtil, 'execAsync').resolves('');
-        workspaceStub = sandbox.stub(packageUtil, 'getWorkspacePackages');
-        workspaceStub.returns([]);
+        execAsyncStub = vi.spyOn(processUtil, 'execAsync').mockResolvedValue('') as unknown as Mock;
+        workspaceStub = vi.spyOn(packageUtil, 'getWorkspacePackages') as unknown as Mock;
+        workspaceStub.mockReturnValue([]);
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
         cleanupTempDir(tempDir);
     });
 
@@ -102,7 +100,7 @@ describe('link-action', () => {
         const clientPkg = mockPkg('@eclipse-glsp/client', path.join(tempDir, 'glsp-client/packages/client'));
         const protocolPkg = mockPkg('@eclipse-glsp/protocol', path.join(tempDir, 'glsp-client/packages/protocol'));
         const serverPkg = mockPkg('@eclipse-glsp/server', path.join(tempDir, 'glsp-server-node/packages/server'));
-        workspaceStub.callsFake((rootPath: string) => {
+        workspaceStub.mockImplementation((rootPath: string) => {
             const repoName = path.basename(rootPath);
             if (repoName === 'glsp-client') {
                 return [clientPkg, protocolPkg];
@@ -134,13 +132,16 @@ describe('link-action', () => {
     describe('getGLSPWorkspacePackages', () => {
         it('should filter to @eclipse-glsp scoped packages', () => {
             const repoDir = path.join(tempDir, 'glsp-client');
-            workspaceStub
-                .withArgs(repoDir)
-                .returns([
-                    mockPkg('@eclipse-glsp/client', path.join(repoDir, 'packages/client')),
-                    mockPkg('@eclipse-glsp/protocol', path.join(repoDir, 'packages/protocol')),
-                    mockPkg('some-other-pkg', path.join(repoDir, 'packages/other'))
-                ]);
+            workspaceStub.mockImplementation((rootPath: string) => {
+                if (rootPath === repoDir) {
+                    return [
+                        mockPkg('@eclipse-glsp/client', path.join(repoDir, 'packages/client')),
+                        mockPkg('@eclipse-glsp/protocol', path.join(repoDir, 'packages/protocol')),
+                        mockPkg('some-other-pkg', path.join(repoDir, 'packages/other'))
+                    ];
+                }
+                return [];
+            });
             const result = getGLSPWorkspacePackages(repoDir);
             expect(result).to.have.length(2);
             expect(result.map(p => p.name)).to.deep.equal(['@eclipse-glsp/client', '@eclipse-glsp/protocol']);
@@ -150,12 +151,15 @@ describe('link-action', () => {
     describe('collectProvidedPackages', () => {
         it('should map @eclipse-glsp workspace packages to their location', () => {
             const repoDir = path.join(tempDir, 'glsp-client');
-            workspaceStub
-                .withArgs(repoDir)
-                .returns([
-                    mockPkg('@eclipse-glsp/client', path.join(repoDir, 'packages/client')),
-                    mockPkg('@eclipse-glsp/protocol', path.join(repoDir, 'packages/protocol'))
-                ]);
+            workspaceStub.mockImplementation((rootPath: string) => {
+                if (rootPath === repoDir) {
+                    return [
+                        mockPkg('@eclipse-glsp/client', path.join(repoDir, 'packages/client')),
+                        mockPkg('@eclipse-glsp/protocol', path.join(repoDir, 'packages/protocol'))
+                    ];
+                }
+                return [];
+            });
             expect(collectProvidedPackages(repoDir)).to.deep.equal({
                 '@eclipse-glsp/client': path.join(repoDir, 'packages/client'),
                 '@eclipse-glsp/protocol': path.join(repoDir, 'packages/protocol')
@@ -194,7 +198,7 @@ describe('link-action', () => {
 
     describe('collectSingletonLinks', () => {
         it('should collect resolvable singletons from the glsp-client install', () => {
-            workspaceStub.returns([]); // no @eclipse-glsp packages → resolve from clientDir fallback
+            workspaceStub.mockReturnValue([]); // no @eclipse-glsp packages → resolve from clientDir fallback
             createNodeModules('glsp-client', 'sprotty', 'inversify');
             const clientDir = path.join(tempDir, 'glsp-client');
             const links = collectSingletonLinks(clientDir);
@@ -299,8 +303,8 @@ describe('link-action', () => {
 
             // Each repo is installed (to apply the overrides) and then built, in build order:
             // install client, build client, install server-node, build server-node.
-            expect(execAsyncStub.callCount).to.equal(4);
-            const calls = execAsyncStub.getCalls().map(c => [c.args[0], c.args[1].cwd] as const);
+            expect(execAsyncStub.mock.calls.length).to.equal(4);
+            const calls = execAsyncStub.mock.calls.map(c => [c[0], c[1].cwd] as const);
             expect(calls).to.deep.equal([
                 ['pnpm install --no-frozen-lockfile', path.join(tempDir, 'glsp-client')],
                 ['pnpm run --if-present build', path.join(tempDir, 'glsp-client')],
@@ -317,8 +321,8 @@ describe('link-action', () => {
             await runLink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ build: false }));
 
             // Only the override-applying install runs per repo; no build.
-            expect(execAsyncStub.callCount).to.equal(2);
-            expect(execAsyncStub.getCalls().every(c => c.args[0] === 'pnpm install --no-frozen-lockfile')).to.be.true;
+            expect(execAsyncStub.mock.calls.length).to.equal(2);
+            expect(execAsyncStub.mock.calls.every(c => c[0] === 'pnpm install --no-frozen-lockfile')).to.be.true;
         });
 
         it('should link into the client/ subdir for glsp-eclipse-integration', async () => {
@@ -344,27 +348,27 @@ describe('link-action', () => {
             }
 
             // The install runs in the client/ workspace, not the repo root.
-            const eclipseInstall = execAsyncStub.getCalls().find(c => c.args[1].cwd === clientDir);
+            const eclipseInstall = execAsyncStub.mock.calls.find(c => c[1].cwd === clientDir);
             expect(eclipseInstall, 'install should run in client/').to.not.be.undefined;
         });
 
         it('should stop on first failure when failFast is true', async () => {
             createRepoDirs('glsp-client', 'glsp-server-node');
             setupWorkspaceStub();
-            execAsyncStub.rejects(new Error('install failed'));
+            execAsyncStub.mockRejectedValue(new Error('install failed'));
             try {
                 await runLink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ failFast: true }));
                 expect.fail('should have thrown');
             } catch (error) {
                 expect((error as Error).message).to.contain('failed to link');
             }
-            expect(execAsyncStub.callCount).to.equal(1);
+            expect(execAsyncStub.mock.calls.length).to.equal(1);
         });
 
         it('should skip non-linkable repos', async () => {
             createRepoDirs('glsp-server');
             await runLink(['glsp-server'] as GLSPRepo[], makeOptions());
-            expect(execAsyncStub.called).to.be.false;
+            expect(execAsyncStub).not.toHaveBeenCalled();
         });
     });
 
@@ -382,9 +386,9 @@ describe('link-action', () => {
 
             expect(readWorkspaceYaml('glsp-server-node')).to.not.have.property('overrides');
             // Only glsp-server-node had overrides, so only it is reinstalled.
-            expect(execAsyncStub.callCount).to.equal(1);
-            expect(execAsyncStub.firstCall.args[0]).to.equal('pnpm install --no-frozen-lockfile');
-            expect(execAsyncStub.firstCall.args[1].cwd).to.equal(path.join(tempDir, 'glsp-server-node'));
+            expect(execAsyncStub.mock.calls.length).to.equal(1);
+            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm install --no-frozen-lockfile');
+            expect(execAsyncStub.mock.calls[0][1].cwd).to.equal(path.join(tempDir, 'glsp-server-node'));
         });
 
         it('should stop on first failure when failFast is true', async () => {
@@ -392,7 +396,7 @@ describe('link-action', () => {
             writeWorkspaceYaml('glsp-server-node', {
                 overrides: { '@eclipse-glsp/protocol': 'link:../glsp-client/packages/protocol' }
             });
-            execAsyncStub.rejects(new Error('install failed'));
+            execAsyncStub.mockRejectedValue(new Error('install failed'));
             try {
                 await runUnlink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ failFast: true }));
                 expect.fail('should have thrown');

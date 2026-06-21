@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, afterEach, afterAll, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { cliDiag, runCli } from '../../helpers/cli-helper';
@@ -25,13 +25,13 @@ describe('repo commands — core (clone)', function () {
     const CORE_REPOS = ['glsp-client', 'glsp-server-node'] as const;
     let workDir: string;
 
-    before(function () {
+    beforeAll(function () {
         workDir = createTempDir();
         const result = runCli(['repo', 'clone', '--preset', 'core', '-d', workDir]);
         expect(result.exitCode, cliDiag(result)).to.equal(0);
     });
 
-    after(function () {
+    afterAll(function () {
         cleanupTempDir(workDir);
     });
 
@@ -58,10 +58,7 @@ describe('repo commands — core (clone)', function () {
             }
         });
 
-        it('should clone with --protocol ssh via scoped command', function () {
-            if (!isSshAvailable()) {
-                this.skip();
-            }
+        it.skipIf(!isSshAvailable())('should clone with --protocol ssh via scoped command', function () {
             const singleDir = createTempDir();
             try {
                 const result = runCli(['repo', 'glsp-client', 'clone', '-d', singleDir, '-p', 'ssh']);
