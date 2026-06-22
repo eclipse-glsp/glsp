@@ -27,6 +27,7 @@ export interface PublishCmdOptions {
     repoDir: string;
     dryRun: boolean;
     registry?: string;
+    interactive?: boolean;
 }
 
 export const PublishCommand = baseCommand()
@@ -37,6 +38,11 @@ export const PublishCommand = baseCommand()
     .option('-r, --repoDir <repoDir>', 'Path to the component repository', validateGitDirectory, process.cwd())
     .option('--dry-run', 'Derive versions and run `pnpm publish` in dry-run mode without applying changes', false)
     .option('--registry <url>', 'Publish to a custom npm registry (e.g. a local verdaccio for testing)')
+    .option(
+        '--interactive',
+        'Bump versions but do not publish; print the `pnpm publish` command to run manually in an interactive shell (e.g. for npm 2FA/OTP prompts)',
+        false
+    )
     .action((distTag: PublishDistTag, cmdOptions: PublishCmdOptions) => {
         configureEnv(cmdOptions);
         return publish(distTag, cmdOptions);
@@ -106,14 +112,20 @@ async function publishLatest(options: PublishCmdOptions): Promise<void> {
 }
 
 async function pnpmPublish(distTag: PublishDistTag, options: PublishCmdOptions): Promise<void> {
-    let cmd = `pnpm publish -r --tag ${distTag} --no-git-checks --report-summary`;
+    let cmd = `pnpm publish -r --tag ${distTag} --no-git-checks`;
     if (options.dryRun) {
         cmd += ' --dry-run';
     }
     if (options.registry) {
         cmd += ` --registry ${options.registry}`;
     }
-    // plain env passthrough preserves NPM_CONFIG_PROVENANCE and the OIDC token for trusted publishing
+    if (options.interactive) {
+        // pnpm can't prompt for an OTP from the spawned (non-TTY) child process, so hand the command to the user.
+        LOGGER.info('Versions bumped. Run the following command in an interactive shell to publish:');
+        LOGGER.info(`\n  ${cmd}\n`);
+        return;
+    }
+    cmd += ' --report-summary';
     await execAsync(cmd, { cwd: options.repoDir, silent: false, errorMsg: 'pnpm publish failed' });
     reportPublishSummary(options);
 }

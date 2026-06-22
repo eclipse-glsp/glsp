@@ -18,7 +18,7 @@ import { describe, it, beforeEach, afterEach, expect, vi, type MockInstance } fr
 import * as fs from 'fs';
 import * as path from 'path';
 import { cleanupTempDir, createTempDir } from '../../../tests/helpers/test-helper';
-import { PackageData, PackageHelper } from '../../util';
+import { LOGGER, PackageData, PackageHelper } from '../../util';
 import * as packageUtil from '../../util/package-util';
 import * as processUtil from '../../util/process-util';
 import { deriveCanaryVersion } from './common';
@@ -132,6 +132,22 @@ describe('releng publish', () => {
             await publish('next', makeOptions({ registry: 'http://localhost:4873' }));
 
             expect(execAsyncStub.mock.calls[0][0]).to.contain('--registry http://localhost:4873');
+        });
+
+        it('should bump versions and print the publish command without publishing in interactive mode', async () => {
+            createRootPackage('2.8.0-next');
+            stubGit('v2.7.0', '42');
+            const pkgA = createPackage('packages/a', { name: '@eclipse-glsp/a', version: '2.8.0-next' });
+            vi.spyOn(packageUtil, 'getWorkspacePackages').mockReturnValue([pkgA]);
+            const infoStub = vi.spyOn(LOGGER, 'info');
+
+            await publish('next', makeOptions({ interactive: true }));
+
+            // versions are still bumped on disk
+            expect(JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8')).version).to.equal('2.8.0-next.42');
+            // but nothing is published
+            expect(execAsyncStub).not.toHaveBeenCalled();
+            expect(infoStub.mock.calls.flat()).to.contain('\n  pnpm publish -r --tag next --no-git-checks\n');
         });
 
         it('should refuse to publish a canary if the root version is not a next version', async () => {
