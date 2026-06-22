@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { createScopedRunCommand } from './run';
 
 describe('run-command', () => {

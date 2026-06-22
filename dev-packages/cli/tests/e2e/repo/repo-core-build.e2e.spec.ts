@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
@@ -35,7 +35,7 @@ describe('repo commands — core (build)', function () {
     const CORE_REPOS = ['glsp-client', 'glsp-server-node'] as const;
     let workDir: string;
 
-    before(function () {
+    beforeAll(function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'core', '-d', workDir]);
@@ -45,7 +45,7 @@ describe('repo commands — core (build)', function () {
         expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).to.equal(0);
     });
 
-    after(function () {
+    afterAll(function () {
         cleanupTempDir(workDir);
     });
 

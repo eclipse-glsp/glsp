@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { cliDiag, runCli } from '../../helpers/cli-helper';
@@ -23,7 +23,7 @@ import { cleanupTempDir, createTempDir } from '../../helpers/test-helper';
 describe('repo commands — vscode', function () {
     let workDir: string;
 
-    before(function () {
+    beforeAll(function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'vscode', '-d', workDir]);
@@ -33,7 +33,7 @@ describe('repo commands — vscode', function () {
         expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).to.equal(0);
     });
 
-    after(function () {
+    afterAll(function () {
         cleanupTempDir(workDir);
     });
 

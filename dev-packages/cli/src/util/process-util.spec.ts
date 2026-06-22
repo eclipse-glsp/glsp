@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, expect } from 'vitest';
 import { configureExec, exec, execForeground } from './process-util';
 
 describe('process-util', () => {

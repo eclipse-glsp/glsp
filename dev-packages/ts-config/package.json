@@ -26,8 +26,7 @@
   ],
   "main": "./tsconfig.json",
   "files": [
-    "tsconfig.json",
-    "mocha.json"
+    "tsconfig.json"
   ],
   "peerDependencies": {
     "typescript": ">=5.5"

@@ -1,11 +1,11 @@
 {
-  "name": "@eclipse-glsp/mocha-config",
+  "name": "@eclipse-glsp/vitest-config",
   "version": "2.8.0-next",
-  "description": "Shared Mocha test configuration for GLSP projects",
+  "description": "Shared Vitest test configuration for GLSP projects",
   "keywords": [
     "eclipse",
     "glsp",
-    "mocha",
+    "vitest",
     "testing"
   ],
   "homepage": "https://www.eclipse.org/glsp/",
@@ -25,14 +25,22 @@
       "url": "https://projects.eclipse.org/projects/ecd.glsp"
     }
   ],
-  "main": ".mocharc.json",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
   "files": [
-    ".mocharc.json"
+    "index.js",
+    "index.d.ts"
   ],
   "peerDependencies": {
-    "ignore-styles": "^5.0.1",
-    "mocha": "^11.7.6",
-    "reflect-metadata": "^0.2.2"
+    "@vitest/coverage-v8": ">=4.0.0",
+    "vitest": ">=4.0.0"
   },
   "publishConfig": {
     "access": "public"

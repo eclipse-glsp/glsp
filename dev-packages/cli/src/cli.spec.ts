@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { Command } from 'commander';
 import { CheckHeaderCommand } from './commands/check-header';
-import { CoverageReportCommand } from './commands/coverage-report';
 import { GenerateIndex } from './commands/generate-index';
 import { RelengCommand } from './commands/releng/releng';
 import { RepoCommand } from './commands/repo/repo';
@@ -46,12 +45,6 @@ describe('cli', () => {
     // ── Top-level ──────────────────────────────────────────────────────
 
     describe('top-level commands', () => {
-        describe('coverageReport', () => {
-            it('should have expected options', () => {
-                expect(optionLongs(CoverageReportCommand)).to.include.members(['--projectRoot', '--coverageScript']);
-            });
-        });
-
         describe('checkHeaders', () => {
             it('should accept a <rootDir> argument', () => {
                 expect(CheckHeaderCommand.registeredArguments).to.have.lengthOf(1);

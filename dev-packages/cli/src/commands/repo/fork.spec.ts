@@ -14,10 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi, type MockInstance } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import * as processUtil from '../../util/process-util';
 import * as forkUtils from './common/fork-utils';
 import { RemoteInfo, analyzeForkRemotes, getRemoteUrl, remoteMatchesOrg } from './common/fork-utils';
@@ -121,21 +120,20 @@ describe('fork-utils', () => {
 });
 
 describe('fork-action', () => {
-    const sandbox = sinon.createSandbox();
     let tempDir: string;
-    let execStub: sinon.SinonStub;
-    let ensureForkStub: sinon.SinonStub;
-    let getRemotesStub: sinon.SinonStub;
+    let execStub: MockInstance;
+    let ensureForkStub: MockInstance;
+    let getRemotesStub: MockInstance;
 
     beforeEach(() => {
         tempDir = createTempDir();
-        execStub = sandbox.stub(processUtil, 'exec').returns('');
-        ensureForkStub = sandbox.stub(forkUtils, 'ensureFork').resolves();
-        getRemotesStub = sandbox.stub(forkUtils, 'getRemotes');
+        execStub = vi.spyOn(processUtil, 'exec').mockReturnValue('');
+        ensureForkStub = vi.spyOn(forkUtils, 'ensureFork').mockResolvedValue(undefined);
+        getRemotesStub = vi.spyOn(forkUtils, 'getRemotes').mockReturnValue(undefined as any);
     });
 
     afterEach(() => {
-        sandbox.restore();
+        vi.restoreAllMocks();
         cleanupTempDir(tempDir);
     });
 
@@ -148,12 +146,12 @@ describe('fork-action', () => {
     describe('configureForkRemote', () => {
         it('should rename origin and add fork for rename-origin flow', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'ssh');
 
-            expect(ensureForkStub.calledOnceWith('myuser', 'glsp-client')).to.be.true;
-            const calls = execStub.getCalls().map(c => c.args[0] as string);
+            expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('myuser', 'glsp-client');
+            const calls = execStub.mock.calls.map(c => c[0] as string);
             expect(calls).to.include('git remote rename origin upstream');
             const addOrigin = calls.find(c => c.includes('git remote add origin'));
             expect(addOrigin).to.exist;
@@ -162,15 +160,15 @@ describe('fork-action', () => {
 
         it('should set origin URL for set-origin flow', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({
+            getRemotesStub.mockReturnValue({
                 origin: 'https://github.com/eclipse-glsp/glsp-client.git',
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'https');
 
-            expect(ensureForkStub.calledOnceWith('myuser', 'glsp-client')).to.be.true;
-            const calls = execStub.getCalls().map(c => c.args[0] as string);
+            expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('myuser', 'glsp-client');
+            const calls = execStub.mock.calls.map(c => c[0] as string);
             const setUrl = calls.find(c => c.includes('git remote set-url origin'));
             expect(setUrl).to.exist;
             expect(setUrl).to.contain('https://github.com/myuser/glsp-client.git');
@@ -178,77 +176,77 @@ describe('fork-action', () => {
 
         it('should skip when already configured', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({
+            getRemotesStub.mockReturnValue({
                 origin: 'git@github.com:myuser/glsp-client.git',
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'ssh');
 
-            expect(ensureForkStub.called).to.be.false;
-            expect(execStub.called).to.be.false;
+            expect(ensureForkStub).not.toHaveBeenCalled();
+            expect(execStub).not.toHaveBeenCalled();
         });
 
         it('should skip when remotes are unexpected', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({ origin: 'https://github.com/other-org/glsp-client.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/other-org/glsp-client.git' });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'ssh');
 
-            expect(ensureForkStub.called).to.be.false;
-            expect(execStub.called).to.be.false;
+            expect(ensureForkStub).not.toHaveBeenCalled();
+            expect(execStub).not.toHaveBeenCalled();
         });
 
         it('should use ssh URL when protocol is ssh', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'ssh');
 
-            const addOrigin = execStub.getCalls().find(c => (c.args[0] as string).includes('git remote add origin'));
-            expect(addOrigin!.args[0]).to.contain('git@github.com:myuser/glsp-client.git');
+            const addOriginCall = execStub.mock.calls.find(c => (c[0] as string).includes('git remote add origin'));
+            expect(addOriginCall![0]).to.contain('git@github.com:myuser/glsp-client.git');
         });
 
         it('should use https URL when protocol is https', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
 
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'https');
 
-            const addOrigin = execStub.getCalls().find(c => (c.args[0] as string).includes('git remote add origin'));
-            expect(addOrigin!.args[0]).to.contain('https://github.com/myuser/glsp-client.git');
+            const addOriginCall = execStub.mock.calls.find(c => (c[0] as string).includes('git remote add origin'));
+            expect(addOriginCall![0]).to.contain('https://github.com/myuser/glsp-client.git');
         });
 
         it('should pass correct cwd for git commands', async () => {
             const repoDir = createRepoDir('glsp-server-node');
-            getRemotesStub.returns({ origin: 'https://github.com/eclipse-glsp/glsp-server-node.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/eclipse-glsp/glsp-server-node.git' });
 
             await configureForkRemote('glsp-server-node', repoDir, 'myuser', 'ssh');
 
-            for (const call of execStub.getCalls()) {
-                expect(call.args[1]).to.have.property('cwd', repoDir);
+            for (const call of execStub.mock.calls) {
+                expect(call[1]).to.have.property('cwd', repoDir);
             }
         });
 
         it('should call ensureFork for rename-origin', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
+            getRemotesStub.mockReturnValue({ origin: 'https://github.com/eclipse-glsp/glsp-client.git' });
 
             await configureForkRemote('glsp-client', repoDir, 'testuser', 'ssh');
 
-            expect(ensureForkStub.calledOnceWith('testuser', 'glsp-client')).to.be.true;
+            expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('testuser', 'glsp-client');
         });
 
         it('should call ensureFork for set-origin', async () => {
             const repoDir = createRepoDir('glsp-client');
-            getRemotesStub.returns({
+            getRemotesStub.mockReturnValue({
                 origin: 'https://github.com/eclipse-glsp/glsp-client.git',
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             });
 
             await configureForkRemote('glsp-client', repoDir, 'testuser', 'https');
 
-            expect(ensureForkStub.calledOnceWith('testuser', 'glsp-client')).to.be.true;
+            expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('testuser', 'glsp-client');
         });
     });
 });

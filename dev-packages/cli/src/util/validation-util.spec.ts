@@ -14,25 +14,21 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sinon from 'sinon';
 import { createTempDir, cleanupTempDir } from '../../tests/helpers/test-helper';
 import * as gitUtil from './git-util';
 import { validateDirectory, validateFile, validateGitDirectory } from './validation-util';
 
 describe('validation-util', () => {
-    let sandbox: sinon.SinonSandbox;
     let tempDir: string;
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox();
         tempDir = createTempDir();
     });
 
     afterEach(() => {
-        sandbox.restore();
         cleanupTempDir(tempDir);
     });
 
@@ -63,14 +59,14 @@ describe('validation-util', () => {
 
     describe('validateGitDirectory', () => {
         it('should return the git root for a valid git directory', () => {
-            sandbox.stub(gitUtil, 'isGitRepository').returns(true);
-            sandbox.stub(gitUtil, 'getGitRoot').returns('/resolved/root');
+            vi.spyOn(gitUtil, 'isGitRepository').mockReturnValue(true);
+            vi.spyOn(gitUtil, 'getGitRoot').mockReturnValue('/resolved/root');
             const result = validateGitDirectory(tempDir);
             expect(result).to.equal('/resolved/root');
         });
 
         it('should throw for a directory that is not a git repository', () => {
-            sandbox.stub(gitUtil, 'isGitRepository').returns(false);
+            vi.spyOn(gitUtil, 'isGitRepository').mockReturnValue(false);
             expect(() => validateGitDirectory(tempDir)).to.throw(/Not a valid git repository/);
         });
     });

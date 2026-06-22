@@ -27,11 +27,6 @@ jobs:
           node-version: 22.x
           cache: pnpm
       - name: Test
-        run: pnpm test:ci
-      - name: Publish Test Report
-        uses: ctrf-io/github-test-reporter@0f299074936c32ccaab5be5230511f6b2b9080aa # v1.0.28
-        with:
-          report-path: 'dev-packages/*/ctrf/*.json'
-          summary-report: true
-          file-report: true
-        if: always()
+        # Failures are annotated inline on the PR by Vitest's built-in `github-actions`
+        # reporter (enabled via the shared @eclipse-glsp/vitest-config preset when GITHUB_ACTIONS is set).
+        run: pnpm test

@@ -14,20 +14,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
+import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { cliDiag, runCli } from '../../helpers/cli-helper';
 import { isMavenAvailable } from '../../helpers/repo-helper';
 import { cleanupTempDir, createTempDir } from '../../helpers/test-helper';
 
-describe('repo commands — eclipse', function () {
+describe.skipIf(!isMavenAvailable())('repo commands — eclipse', function () {
     let workDir: string;
 
-    before(function () {
-        if (!isMavenAvailable()) {
-            this.skip();
-        }
+    beforeAll(function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'eclipse', '-d', workDir]);
@@ -39,7 +36,7 @@ describe('repo commands — eclipse', function () {
         runCli(['repo', 'build', '-d', workDir, '--no-fail-fast']);
     });
 
-    after(function () {
+    afterAll(function () {
         if (workDir) {
             cleanupTempDir(workDir);
         }

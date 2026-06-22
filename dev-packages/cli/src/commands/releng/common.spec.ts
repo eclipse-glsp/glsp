@@ -14,8 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { expect } from 'chai';
-import * as sinon from 'sinon';
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 import * as fileUtil from '../../util/file-util';
 import { LOGGER } from '../../util/logger';
 import { PackageHelper } from '../../util/package-util';
@@ -37,33 +36,26 @@ import {
 } from './common';
 
 describe('common', () => {
-    let sandbox: sinon.SinonSandbox;
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox();
-        sandbox.stub(LOGGER, 'debug');
-        sandbox.stub(LOGGER, 'warn');
-    });
-
-    afterEach(() => {
-        sandbox.restore();
+        vi.spyOn(LOGGER, 'debug').mockReturnValue(undefined);
+        vi.spyOn(LOGGER, 'warn').mockReturnValue(undefined);
     });
 
     describe('GLSPRepo.deriveFromDirectory', () => {
         it('should derive repo name from HTTPS remote URL', () => {
-            sandbox.stub(gitUtil, 'getRemoteUrl').returns('https://github.com/eclipse-glsp/glsp-client.git');
+            vi.spyOn(gitUtil, 'getRemoteUrl').mockReturnValue('https://github.com/eclipse-glsp/glsp-client.git');
             const result = GLSPRepo.deriveFromDirectory('/some/path');
             expect(result).to.equal('glsp-client');
         });
 
         it('should derive repo name from SSH remote URL', () => {
-            sandbox.stub(gitUtil, 'getRemoteUrl').returns('git@github.com:eclipse-glsp/glsp-server-node.git');
+            vi.spyOn(gitUtil, 'getRemoteUrl').mockReturnValue('git@github.com:eclipse-glsp/glsp-server-node.git');
             const result = GLSPRepo.deriveFromDirectory('/some/path');
             expect(result).to.equal('glsp-server-node');
         });
 
         it('should return undefined for a non-GLSP repository', () => {
-            sandbox.stub(gitUtil, 'getRemoteUrl').returns('https://github.com/other/repo.git');
+            vi.spyOn(gitUtil, 'getRemoteUrl').mockReturnValue('https://github.com/other/repo.git');
             const result = GLSPRepo.deriveFromDirectory('/some/path');
             expect(result).to.be.undefined;
         });
@@ -71,21 +63,26 @@ describe('common', () => {
 
     describe('isGithubCLIAuthenticated', () => {
         it('should return true when gh is installed and authenticated', () => {
-            sandbox.stub(processUtil, 'exec').returns('');
+            vi.spyOn(processUtil, 'exec').mockReturnValue('');
             const result = isGithubCLIAuthenticated();
             expect(result).to.be.true;
         });
 
         it('should return false when gh auth status throws', () => {
-            const execStub = sandbox.stub(processUtil, 'exec');
-            execStub.withArgs('which gh', sinon.match.any).returns('');
-            execStub.withArgs('gh auth status').throws(new Error('not authenticated'));
+            vi.spyOn(processUtil, 'exec').mockImplementation((...args) => {
+                if (args[0] === 'gh auth status') {
+                    throw new Error('not authenticated');
+                }
+                return '';
+            });
             const result = isGithubCLIAuthenticated();
             expect(result).to.be.false;
         });
 
         it('should return false when gh is not installed', () => {
-            sandbox.stub(processUtil, 'exec').throws(new Error('gh not found'));
+            vi.spyOn(processUtil, 'exec').mockImplementation(() => {
+                throw new Error('gh not found');
+            });
             const result = isGithubCLIAuthenticated();
             expect(result).to.be.false;
         });
@@ -159,9 +156,9 @@ describe('common', () => {
         });
 
         it('should warn when a custom version is provided for non-custom type', () => {
-            const warnStub = sandbox.stub(console, 'warn');
+            const warnStub = vi.spyOn(console, 'warn').mockReturnValue(undefined);
             VersionType.validate('minor', '1.0.0');
-            expect(warnStub.calledOnce).to.be.true;
+            expect(warnStub).toHaveBeenCalledOnce();
         });
 
         it('should accept non-custom type without a version', () => {
@@ -188,14 +185,14 @@ describe('common', () => {
         });
 
         it('should derive minor version from local package', () => {
-            sandbox.stub(packageUtil, 'readPackage').returns({ content: { version: '1.2.0' } } as unknown as PackageHelper);
+            vi.spyOn(packageUtil, 'readPackage').mockReturnValue({ content: { version: '1.2.0' } } as unknown as PackageHelper);
             const options = { versionType: 'minor' as VersionType, repoDir: '/repo', repo: 'glsp-client' as const, verbose: false };
             const result = VersionType.deriveVersion(options);
             expect(result).to.equal('1.3.0');
         });
 
         it('should derive next version with -next suffix', () => {
-            sandbox.stub(packageUtil, 'readPackage').returns({ content: { version: '1.2.0' } } as unknown as PackageHelper);
+            vi.spyOn(packageUtil, 'readPackage').mockReturnValue({ content: { version: '1.2.0' } } as unknown as PackageHelper);
             const options = { versionType: 'next' as VersionType, repoDir: '/repo', repo: 'glsp-client' as const, verbose: false };
             const result = VersionType.deriveVersion(options);
             expect(result).to.equal('1.3.0-next');
@@ -204,25 +201,25 @@ describe('common', () => {
 
     describe('getLocalVersion', () => {
         it('should read from pom.xml for glsp-server', () => {
-            sandbox.stub(fileUtil, 'readFile').returns('<version>2.0.0</version>');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue('<version>2.0.0</version>');
             expect(getLocalVersion('/repo', 'glsp-server')).to.equal('2.0.0');
         });
 
         it('should read from server/pom.xml for glsp-eclipse-integration', () => {
-            const readStub = sandbox.stub(fileUtil, 'readFile').returns('<version>2.1.0</version>');
+            const readStub = vi.spyOn(fileUtil, 'readFile').mockReturnValue('<version>2.1.0</version>');
             expect(getLocalVersion('/repo', 'glsp-eclipse-integration')).to.equal('2.1.0');
-            expect(readStub.firstCall.args[0]).to.contain('server');
+            expect(readStub.mock.calls[0][0]).to.contain('server');
         });
 
         it('should read from package.json for npm repos', () => {
-            sandbox.stub(packageUtil, 'readPackage').returns({ content: { version: '1.5.0' } } as unknown as PackageHelper);
+            vi.spyOn(packageUtil, 'readPackage').mockReturnValue({ content: { version: '1.5.0' } } as unknown as PackageHelper);
             expect(getLocalVersion('/repo', 'glsp-client')).to.equal('1.5.0');
         });
     });
 
     describe('getVersionFromPom', () => {
         it('should extract version from pom.xml', () => {
-            sandbox.stub(fileUtil, 'readFile').returns(
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue(
                 `<?xml version="1.0"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -233,41 +230,41 @@ describe('common', () => {
         });
 
         it('should throw when no version is found', () => {
-            sandbox.stub(fileUtil, 'readFile').returns('<project></project>');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue('<project></project>');
             expect(() => getVersionFromPom('/repo')).to.throw(/Could not find version/);
         });
     });
 
     describe('getVersionFromPackage', () => {
         it('should return the version from package.json', () => {
-            sandbox.stub(packageUtil, 'readPackage').returns({ content: { version: '1.0.0' } } as unknown as PackageHelper);
+            vi.spyOn(packageUtil, 'readPackage').mockReturnValue({ content: { version: '1.0.0' } } as unknown as PackageHelper);
             expect(getVersionFromPackage('/repo')).to.equal('1.0.0');
         });
 
         it('should throw when no version is found', () => {
-            sandbox.stub(packageUtil, 'readPackage').returns({ content: {} } as unknown as PackageHelper);
+            vi.spyOn(packageUtil, 'readPackage').mockReturnValue({ content: {} } as unknown as PackageHelper);
             expect(() => getVersionFromPackage('/repo')).to.throw(/No version found/);
         });
     });
 
     describe('getLastReleaseTag', () => {
         it('should return the first valid semver tag starting with v', () => {
-            sandbox.stub(processUtil, 'exec').returns('v2.0.0\nv1.0.0\nsome-tag');
+            vi.spyOn(processUtil, 'exec').mockReturnValue('v2.0.0\nv1.0.0\nsome-tag');
             expect(getLastReleaseTag('/repo')).to.equal('v2.0.0');
         });
 
         it('should skip pre-release tags', () => {
-            sandbox.stub(processUtil, 'exec').returns('v2.0.0-rc.1\nv1.0.0');
+            vi.spyOn(processUtil, 'exec').mockReturnValue('v2.0.0-rc.1\nv1.0.0');
             expect(getLastReleaseTag('/repo')).to.equal('v1.0.0');
         });
 
         it('should skip tags without v prefix', () => {
-            sandbox.stub(processUtil, 'exec').returns('release-1.0\nv0.9.0');
+            vi.spyOn(processUtil, 'exec').mockReturnValue('release-1.0\nv0.9.0');
             expect(getLastReleaseTag('/repo')).to.equal('v0.9.0');
         });
 
         it('should return undefined when no valid tag exists', () => {
-            sandbox.stub(processUtil, 'exec').returns('nightly\nsome-tag');
+            vi.spyOn(processUtil, 'exec').mockReturnValue('nightly\nsome-tag');
             expect(getLastReleaseTag('/repo')).to.be.undefined;
         });
     });
@@ -289,8 +286,8 @@ describe('common', () => {
         ].join('\n');
 
         it('should extract the changelog section for the given version', () => {
-            sandbox.stub(fileUtil, 'readFile').returns(changelogContent);
-            sandbox.stub(processUtil, 'exec').returns('v1.0.0');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue(changelogContent);
+            vi.spyOn(processUtil, 'exec').mockReturnValue('v1.0.0');
             const result = getChangeLogChanges({ repoDir: '/repo', version: '2.0.0', repo: 'glsp-client' });
             expect(result).to.contain('Added feature A');
             expect(result).to.contain('Added feature B');
@@ -298,24 +295,24 @@ describe('common', () => {
         });
 
         it('should append a full changelog link when a previous tag exists', () => {
-            sandbox.stub(fileUtil, 'readFile').returns(changelogContent);
-            sandbox.stub(processUtil, 'exec').returns('v1.0.0');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue(changelogContent);
+            vi.spyOn(processUtil, 'exec').mockReturnValue('v1.0.0');
             const result = getChangeLogChanges({ repoDir: '/repo', version: '2.0.0', repo: 'glsp-client' });
             expect(result).to.contain('Full Changelog');
             expect(result).to.contain('v1.0.0...v2.0.0');
         });
 
         it('should throw when no section matches the version', () => {
-            sandbox.stub(fileUtil, 'readFile').returns(changelogContent);
-            sandbox.stub(processUtil, 'exec').returns('');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue(changelogContent);
+            vi.spyOn(processUtil, 'exec').mockReturnValue('');
             expect(() => getChangeLogChanges({ repoDir: '/repo', version: '9.9.9', repo: 'glsp-client' })).to.throw(
                 /No changelog section found/
             );
         });
 
         it('should demote headings by one level', () => {
-            sandbox.stub(fileUtil, 'readFile').returns(changelogContent);
-            sandbox.stub(processUtil, 'exec').returns('');
+            vi.spyOn(fileUtil, 'readFile').mockReturnValue(changelogContent);
+            vi.spyOn(processUtil, 'exec').mockReturnValue('');
             const result = getChangeLogChanges({ repoDir: '/repo', version: '2.0.0', repo: 'glsp-client' });
             expect(result).to.contain('## Features');
             expect(result).to.not.contain('### Features');

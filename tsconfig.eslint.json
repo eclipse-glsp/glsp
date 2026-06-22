@@ -3,5 +3,10 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["dev-packages/*/src", "dev-packages/*/tests", "releng/src"]
+  "include": [
+    "dev-packages/*/src",
+    "dev-packages/*/tests",
+    "dev-packages/*/vite.config*.ts",
+    "releng/src"
+  ]
 }

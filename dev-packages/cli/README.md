@@ -21,7 +21,6 @@ Options:
   -h, --help                            display help for command
 
 Commands:
-  coverageReport [options]              Generate a test coverage report for a glsp component
   checkHeaders [options] <rootDir>      Validates the copyright year range (end year) of license header files
   updateNext|u [options] [rootDir]      Updates all `next` dependencies in GLSP project to the latest version
   generateIndex [options] <rootDir...>  Generate index files in a given source directory.
@@ -59,24 +58,6 @@ Options:
   -j, --json                            Also persist validation results as json file (default: false)
   -a, --autoFix                         Auto apply & commit fixes without prompting the user (default: false)
   -h, --help                            display help for command
-```
-
-## coverageReport
-
-The `coverageReport` command can be used to create a full nyc test coverage report for a pnpm mono repository.
-Individual coverage reports for each package are created and then combined to a full report.
-
-```console
-$ glsp coverageReport -h
-Usage: glsp coverageReport [options]
-
-Generate a test coverage report for a glsp component
-
-Options:
-  -p, --projectRoot <projectRoot>  The root directory of the GLSP component (default:
-                                   "<cwd>")
-  -c, --coverageScript <script>    Script command of the package root for creating coverage reports (default: "test:coverage")
-  -h, --help                       display help for command
 ```
 
 ## updateNext
