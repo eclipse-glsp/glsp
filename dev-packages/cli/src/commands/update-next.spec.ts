@@ -81,14 +81,14 @@ describe('updateNext', () => {
         const yamlDuringInstall = await runAndCaptureWorkspaceYaml(workspaceYamlPath);
 
         // the resolved next version is pinned via the overrides block while installing ...
-        expect(YAML.parse(yamlDuringInstall).overrides).to.deep.equal({ '@eclipse-glsp/protocol': '2.8.0-next.6' });
+        expect(YAML.parse(yamlDuringInstall).overrides).toEqual({ '@eclipse-glsp/protocol': '2.8.0-next.6' });
         // ... and the file is restored verbatim afterwards
-        expect(fs.readFileSync(workspaceYamlPath, 'utf8')).to.equal(originalYaml);
+        expect(fs.readFileSync(workspaceYamlPath, 'utf8')).toBe(originalYaml);
 
         const commands = execAsyncStub.mock.calls.map(call => call[0] as string);
         // uses `pnpm install` (lockfile-respecting), never `pnpm update` (opportunistic in-range bumps)
-        expect(commands.some(cmd => cmd.includes('pnpm install'))).to.be.true;
-        expect(commands.some(cmd => cmd.includes('pnpm update'))).to.be.false;
+        expect(commands.some(cmd => cmd.includes('pnpm install'))).toBe(true);
+        expect(commands.some(cmd => cmd.includes('pnpm update'))).toBe(false);
     });
 
     it('should merge into an existing overrides block (ours win) and restore it afterwards', async () => {
@@ -111,12 +111,12 @@ describe('updateNext', () => {
         const yamlDuringInstall = await runAndCaptureWorkspaceYaml(workspaceYamlPath);
 
         // existing override preserved, our pin merged in / overriding the stale one
-        expect(YAML.parse(yamlDuringInstall).overrides).to.deep.equal({
+        expect(YAML.parse(yamlDuringInstall).overrides).toEqual({
             'unrelated-dep': '1.2.3',
             '@eclipse-glsp/protocol': '2.8.0-next.6'
         });
         // original file restored verbatim
-        expect(fs.readFileSync(workspaceYamlPath, 'utf8')).to.equal(originalYaml);
+        expect(fs.readFileSync(workspaceYamlPath, 'utf8')).toBe(originalYaml);
     });
 
     it('should do nothing when a pnpm repo has no next dependencies', async () => {

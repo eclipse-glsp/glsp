@@ -27,10 +27,10 @@ describe('repo commands — vscode', function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'vscode', '-d', workDir]);
-        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).to.equal(0);
+        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).toBe(0);
 
         const buildResult = runCli(['repo', 'build', '-d', workDir]);
-        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).to.equal(0);
+        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).toBe(0);
     });
 
     afterAll(function () {
@@ -39,54 +39,54 @@ describe('repo commands — vscode', function () {
 
     it('should build vscode-integration with scoped build', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'build', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
     });
 
     // ── Package ───────────────────────────────────────────────────────────
 
     it('should package the VS Code extension as VSIX', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'package', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
 
         const vsixDir = path.join(workDir, 'glsp-vscode-integration', 'example', 'workflow', 'extension');
         const vsixFiles = fs.readdirSync(vsixDir).filter(f => f.endsWith('.vsix'));
-        expect(vsixFiles).to.have.lengthOf.at.least(1);
+        expect(vsixFiles.length).toBeGreaterThanOrEqual(1);
     });
 
     it('should package the VS Code web extension as VSIX', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'web-package', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
 
         const vsixDir = path.join(workDir, 'glsp-vscode-integration', 'example', 'workflow', 'web-extension');
         const vsixFiles = fs.readdirSync(vsixDir).filter(f => f.endsWith('.vsix'));
-        expect(vsixFiles).to.have.lengthOf.at.least(1);
+        expect(vsixFiles.length).toBeGreaterThanOrEqual(1);
     });
 
     // ── VSIX path ─────────────────────────────────────────────────────────
 
     it('should print the VSIX path after packaging', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'vsix-path', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
-        expect(result.stdout).to.match(/\.vsix$/);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
+        expect(result.stdout).toMatch(/\.vsix$/);
     });
 
     it('should print the web extension VSIX path after packaging', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'web-vsix-path', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
-        expect(result.stdout).to.match(/\.vsix$/);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
+        expect(result.stdout).toMatch(/\.vsix$/);
     });
 
     // ── VSIX ID ───────────────────────────────────────────────────────────
 
     it('should print the VSIX ID', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'vsix-id']);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
-        expect(result.stdout).to.equal('eclipse-glsp.workflow-vscode-example');
+        expect(result.exitCode, cliDiag(result)).toBe(0);
+        expect(result.stdout).toBe('eclipse-glsp.workflow-vscode-example');
     });
 
     it('should print the web extension VSIX ID', function () {
         const result = runCli(['repo', 'glsp-vscode-integration', 'web-vsix-id']);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
-        expect(result.stdout).to.equal('eclipse-glsp.workflow-vscode-example-web');
+        expect(result.exitCode, cliDiag(result)).toBe(0);
+        expect(result.stdout).toBe('eclipse-glsp.workflow-vscode-example-web');
     });
 });

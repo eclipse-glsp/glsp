@@ -73,7 +73,7 @@ describe('releng publish', () => {
             createRootPackage('2.8.0-next');
             stubGit('v2.7.0', '42');
             const canary = deriveCanaryVersion(tempDir);
-            expect(canary).to.deep.equal({ base: '2.8.0-next', lastTag: 'v2.7.0', commitCount: 42, version: '2.8.0-next.42' });
+            expect(canary).toEqual({ base: '2.8.0-next', lastTag: 'v2.7.0', commitCount: 42, version: '2.8.0-next.42' });
         });
 
         it('should throw a helpful error when no git tag can be found', () => {
@@ -84,7 +84,7 @@ describe('releng publish', () => {
                 }
                 return undefined;
             });
-            expect(() => deriveCanaryVersion(tempDir)).to.throw(/fetch-depth: 0/);
+            expect(() => deriveCanaryVersion(tempDir)).toThrow(/fetch-depth: 0/);
         });
     });
 
@@ -100,15 +100,15 @@ describe('releng publish', () => {
 
             const writtenA = JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8'));
             const writtenB = JSON.parse(fs.readFileSync(pkgB.filePath, 'utf8'));
-            expect(writtenA.version).to.equal('2.8.0-next.42');
-            expect(writtenB.version).to.equal('2.8.0-next.42');
+            expect(writtenA.version).toBe('2.8.0-next.42');
+            expect(writtenB.version).toBe('2.8.0-next.42');
             // the root package keeps the plain base version
             const root = JSON.parse(fs.readFileSync(path.join(tempDir, 'package.json'), 'utf8'));
-            expect(root.version).to.equal('2.8.0-next');
+            expect(root.version).toBe('2.8.0-next');
 
             expect(execAsyncStub).toHaveBeenCalledOnce();
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm publish -r --tag next --no-git-checks --report-summary');
-            expect(execAsyncStub.mock.calls[0][1].cwd).to.equal(tempDir);
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm publish -r --tag next --no-git-checks --report-summary');
+            expect(execAsyncStub.mock.calls[0][1].cwd).toBe(tempDir);
         });
 
         it('should not write versions and pass --dry-run in dry-run mode', async () => {
@@ -120,8 +120,8 @@ describe('releng publish', () => {
             await publish('next', makeOptions({ dryRun: true }));
 
             const writtenA = JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8'));
-            expect(writtenA.version).to.equal('2.8.0-next');
-            expect(execAsyncStub.mock.calls[0][0]).to.contain('--dry-run');
+            expect(writtenA.version).toBe('2.8.0-next');
+            expect(execAsyncStub.mock.calls[0][0]).toContain('--dry-run');
         });
 
         it('should pass a custom registry to pnpm publish', async () => {
@@ -131,7 +131,7 @@ describe('releng publish', () => {
 
             await publish('next', makeOptions({ registry: 'http://localhost:4873' }));
 
-            expect(execAsyncStub.mock.calls[0][0]).to.contain('--registry http://localhost:4873');
+            expect(execAsyncStub.mock.calls[0][0]).toContain('--registry http://localhost:4873');
         });
 
         it('should bump versions and print the publish command without publishing in interactive mode', async () => {
@@ -144,10 +144,10 @@ describe('releng publish', () => {
             await publish('next', makeOptions({ interactive: true }));
 
             // versions are still bumped on disk
-            expect(JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8')).version).to.equal('2.8.0-next.42');
+            expect(JSON.parse(fs.readFileSync(pkgA.filePath, 'utf8')).version).toBe('2.8.0-next.42');
             // but nothing is published
             expect(execAsyncStub).not.toHaveBeenCalled();
-            expect(infoStub.mock.calls.flat()).to.contain('\n  pnpm publish -r --tag next --no-git-checks\n');
+            expect(infoStub.mock.calls.flat()).toContain('\n  pnpm publish -r --tag next --no-git-checks\n');
         });
 
         it('should refuse to publish a canary if the root version is not a next version', async () => {
@@ -157,7 +157,7 @@ describe('releng publish', () => {
                 await publish('next', makeOptions());
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain('not a next version');
+                expect((error as Error).message).toContain('not a next version');
             }
         });
     });
@@ -169,7 +169,7 @@ describe('releng publish', () => {
                 await publish('latest', makeOptions());
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain("Refusing to publish under the 'latest' dist-tag");
+                expect((error as Error).message).toContain("Refusing to publish under the 'latest' dist-tag");
             }
         });
 
@@ -188,7 +188,7 @@ describe('releng publish', () => {
             await publish('latest', makeOptions());
 
             expect(execAsyncStub).toHaveBeenCalledOnce();
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm publish -r --tag latest --no-git-checks --report-summary');
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm publish -r --tag latest --no-git-checks --report-summary');
         });
 
         it('should skip publishing when all package versions already exist', async () => {
@@ -243,7 +243,7 @@ describe('releng publish', () => {
 
             await publish('next', makeOptions());
 
-            expect(fs.existsSync(summaryPath)).to.be.false;
+            expect(fs.existsSync(summaryPath)).toBe(false);
         });
     });
 });

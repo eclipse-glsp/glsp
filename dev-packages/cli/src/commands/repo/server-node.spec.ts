@@ -42,27 +42,27 @@ describe('server-node', () => {
         it('should return absolute path when browser bundle exists', () => {
             createBundle(BROWSER_BUNDLE_PATH);
             const result = resolveBundlePath(tempDir, BROWSER_BUNDLE_PATH, 'Browser bundle');
-            expect(result).to.equal(path.resolve(tempDir, BROWSER_BUNDLE_PATH));
+            expect(result).toBe(path.resolve(tempDir, BROWSER_BUNDLE_PATH));
         });
 
         it('should return absolute path when node bundle exists', () => {
             createBundle(NODE_BUNDLE_PATH);
             const result = resolveBundlePath(tempDir, NODE_BUNDLE_PATH, 'Node server bundle');
-            expect(result).to.equal(path.resolve(tempDir, NODE_BUNDLE_PATH));
+            expect(result).toBe(path.resolve(tempDir, NODE_BUNDLE_PATH));
         });
 
         it('should throw when bundle does not exist', () => {
-            expect(() => resolveBundlePath(tempDir, BROWSER_BUNDLE_PATH, 'Browser bundle')).to.throw(/Browser bundle not found/);
+            expect(() => resolveBundlePath(tempDir, BROWSER_BUNDLE_PATH, 'Browser bundle')).toThrow(/Browser bundle not found/);
         });
 
         it('should include the expected path in the error message', () => {
-            expect(() => resolveBundlePath(tempDir, NODE_BUNDLE_PATH, 'Node server bundle')).to.throw(
+            expect(() => resolveBundlePath(tempDir, NODE_BUNDLE_PATH, 'Node server bundle')).toThrow(
                 new RegExp(NODE_BUNDLE_PATH.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
             );
         });
 
         it('should include build hint in the error message', () => {
-            expect(() => resolveBundlePath(tempDir, BROWSER_BUNDLE_PATH, 'Browser bundle')).to.throw(/glsp repo server-node build/);
+            expect(() => resolveBundlePath(tempDir, BROWSER_BUNDLE_PATH, 'Browser bundle')).toThrow(/glsp repo server-node build/);
         });
     });
 });

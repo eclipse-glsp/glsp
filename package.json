@@ -19,6 +19,7 @@
     "publish:latest": "glsp releng publish latest",
     "publish:next": "glsp releng publish next",
     "test": "pnpm -C dev-packages/cli test",
+    "test:coverage": "pnpm -C dev-packages/cli test:coverage",
     "test:e2e": "pnpm -C dev-packages/cli test:e2e",
     "watch": "pnpm cli watch"
   },

@@ -25,10 +25,10 @@ describe('repo commands — theia', function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'theia', '-d', workDir]);
-        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).to.equal(0);
+        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).toBe(0);
 
         const buildResult = runCli(['repo', 'build', '-d', workDir]);
-        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).to.equal(0);
+        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).toBe(0);
     });
 
     afterAll(function () {
@@ -37,6 +37,6 @@ describe('repo commands — theia', function () {
 
     it('should build theia-integration with scoped build', function () {
         const result = runCli(['repo', 'glsp-theia-integration', 'build', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
     });
 });

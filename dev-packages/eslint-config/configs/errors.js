@@ -75,9 +75,7 @@ module.exports = [
             'import-x/export': 'off', // we have multiple exports due to namespaces, enums and classes that share the same name
             // eslint-plugin-no-null
             'no-null/no-null': 'error',
-            // chai friendly
-            'no-unused-expressions': 'off',
-            'chai-friendly/no-unused-expressions': [
+            'no-unused-expressions': [
                 'error',
                 {
                     allowShortCircuit: true,

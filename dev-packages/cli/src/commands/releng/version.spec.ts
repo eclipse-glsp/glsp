@@ -65,8 +65,8 @@ describe('releng version', () => {
 
         await setVersion(makeOptions('2.9.0', [pkgA, root]));
 
-        expect(readPackageJson('.').version).to.equal('2.9.0');
-        expect(readPackageJson('packages/a').version).to.equal('2.9.0');
+        expect(readPackageJson('.').version).toBe('2.9.0');
+        expect(readPackageJson('packages/a').version).toBe('2.9.0');
     });
 
     it('should preserve workspace: dependency ranges', async () => {
@@ -79,8 +79,8 @@ describe('releng version', () => {
 
         await setVersion(makeOptions('2.9.0', [pkgA, pkgB, root]));
 
-        expect(readPackageJson('packages/b').dependencies!['@eclipse-glsp/a']).to.equal('workspace:*');
-        expect(readPackageJson('packages/b').version).to.equal('2.9.0');
+        expect(readPackageJson('packages/b').dependencies!['@eclipse-glsp/a']).toBe('workspace:*');
+        expect(readPackageJson('packages/b').version).toBe('2.9.0');
     });
 
     it('should bump exact-pinned workspace dependencies to the new version', async () => {
@@ -93,7 +93,7 @@ describe('releng version', () => {
 
         await setVersion(makeOptions('2.9.0-next', [pkgA, pkgB, root]));
 
-        expect(readPackageJson('packages/b').dependencies!['@eclipse-glsp/a']).to.equal('2.9.0-next');
+        expect(readPackageJson('packages/b').dependencies!['@eclipse-glsp/a']).toBe('2.9.0-next');
     });
 
     it("should set external @eclipse-glsp dependencies to 'next' for next versions", async () => {
@@ -105,7 +105,7 @@ describe('releng version', () => {
 
         await setVersion(makeOptions('2.9.0-next', [pkgA, root]));
 
-        expect(readPackageJson('packages/a').dependencies!['@eclipse-glsp/protocol']).to.equal('next');
+        expect(readPackageJson('packages/a').dependencies!['@eclipse-glsp/protocol']).toBe('next');
     });
 
     it('should bump external @eclipse-glsp dependencies to the release version for release versions', async () => {
@@ -117,6 +117,6 @@ describe('releng version', () => {
 
         await setVersion(makeOptions('2.9.0', [pkgA, root]));
 
-        expect(readPackageJson('packages/a').dependencies!['@eclipse-glsp/protocol']).to.equal('2.9.0');
+        expect(readPackageJson('packages/a').dependencies!['@eclipse-glsp/protocol']).toBe('2.9.0');
     });
 });

@@ -37,49 +37,49 @@ describe('git-util', () => {
         it('should parse porcelain output into file paths', () => {
             execStub.mockReturnValue(' M src/file.ts\n?? new-file.ts');
             const result = getUncommittedChanges('/repo');
-            expect(result).to.have.length(2);
+            expect(result).toHaveLength(2);
         });
 
         it('should return empty array for empty output', () => {
             execStub.mockReturnValue('');
             const result = getUncommittedChanges('/repo');
-            expect(result).to.have.length(0);
+            expect(result).toHaveLength(0);
         });
     });
 
     describe('hasChanges', () => {
         it('should return true when there are uncommitted changes', () => {
             execStub.mockReturnValue(' M src/file.ts\n?? new-file.ts');
-            expect(hasChanges('/repo')).to.be.true;
+            expect(hasChanges('/repo')).toBe(true);
         });
 
         it('should return false when there are no changes', () => {
             execStub.mockReturnValue('');
-            expect(hasChanges('/repo')).to.be.false;
+            expect(hasChanges('/repo')).toBe(false);
         });
     });
 
     describe('commitChanges', () => {
         it('should escape double quotes in commit message', () => {
             commitChanges('fix "bug"', '/repo');
-            expect(execStub.mock.calls[1][0]).to.contain('\\"');
+            expect(execStub.mock.calls[1][0]).toContain('\\"');
         });
 
         it('should escape backslashes in commit message', () => {
             commitChanges('path\\to\\file', '/repo');
-            expect(execStub.mock.calls[1][0]).to.contain('\\\\');
+            expect(execStub.mock.calls[1][0]).toContain('\\\\');
         });
     });
 
     describe('getDefaultBranch', () => {
         it('should parse HEAD branch from remote output', () => {
             execStub.mockReturnValue('* remote origin\n  HEAD branch: main\n  Remote branches:');
-            expect(getDefaultBranch('/repo')).to.equal('main');
+            expect(getDefaultBranch('/repo')).toBe('main');
         });
 
         it('should fallback to master when HEAD branch is not found', () => {
             execStub.mockReturnValue('* remote origin\n  Remote branches:');
-            expect(getDefaultBranch('/repo')).to.equal('master');
+            expect(getDefaultBranch('/repo')).toBe('master');
         });
     });
 
@@ -89,7 +89,7 @@ describe('git-util', () => {
                 if (/symbolic-ref/.test(cmd)) return 'origin/develop';
                 return '';
             });
-            expect(getDefaultBranchRef('/repo')).to.equal('origin/develop');
+            expect(getDefaultBranchRef('/repo')).toBe('origin/develop');
         });
 
         it('should fall back to the first existing candidate ref', () => {
@@ -100,14 +100,14 @@ describe('git-util', () => {
                 if (/--verify --quiet main/.test(cmd)) return '';
                 return '';
             });
-            expect(getDefaultBranchRef('/repo')).to.equal('main');
+            expect(getDefaultBranchRef('/repo')).toBe('main');
         });
 
         it('should return undefined when no default branch can be determined', () => {
             execStub.mockImplementation(() => {
                 throw new Error('not a git repository');
             });
-            expect(getDefaultBranchRef('/repo')).to.be.undefined;
+            expect(getDefaultBranchRef('/repo')).toBeUndefined();
         });
     });
 
@@ -120,8 +120,8 @@ describe('git-util', () => {
                 return '';
             });
             const result = getChangesComparedToDefaultBranch('/repo');
-            expect(result).to.have.members(['/repo/src/a.ts', '/repo/src/b.ts', '/repo/src/c.ts']);
-            expect(result).to.have.length(3);
+            expect(result).toEqual(expect.arrayContaining(['/repo/src/a.ts', '/repo/src/b.ts', '/repo/src/c.ts']));
+            expect(result).toHaveLength(3);
         });
 
         it('should only consider uncommitted changes when no default branch is found', () => {
@@ -130,7 +130,7 @@ describe('git-util', () => {
                 throw new Error('not a git repository');
             });
             const result = getChangesComparedToDefaultBranch('/repo');
-            expect(result).to.deep.equal(['/repo/src/only.ts']);
+            expect(result).toEqual(['/repo/src/only.ts']);
         });
     });
 
@@ -138,13 +138,13 @@ describe('git-util', () => {
         it('should return a Date for a valid date string', () => {
             execStub.mockReturnValue('2024-01-15 10:30:00 +0000');
             const result = getLastModificationDate('file.ts', '/repo');
-            expect(result).to.be.an.instanceOf(Date);
+            expect(result).toBeInstanceOf(Date);
         });
 
         it('should return undefined for empty result', () => {
             execStub.mockReturnValue('');
             const result = getLastModificationDate('file.ts', '/repo');
-            expect(result).to.be.undefined;
+            expect(result).toBeUndefined();
         });
 
         it('should return undefined when exec throws', () => {
@@ -152,7 +152,7 @@ describe('git-util', () => {
                 throw new Error('git error');
             });
             const result = getLastModificationDate('file.ts', '/repo');
-            expect(result).to.be.undefined;
+            expect(result).toBeUndefined();
         });
     });
 });

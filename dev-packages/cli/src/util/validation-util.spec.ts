@@ -35,25 +35,25 @@ describe('validation-util', () => {
     describe('validateDirectory', () => {
         it('should return the resolved path for a valid directory', () => {
             const result = validateDirectory(tempDir);
-            expect(result).to.equal(path.resolve(tempDir));
+            expect(result).toBe(path.resolve(tempDir));
         });
 
         it('should throw for a non-existent path', () => {
             const nonExistent = path.join(tempDir, 'does-not-exist');
-            expect(() => validateDirectory(nonExistent)).to.throw(/Not a valid file path/);
+            expect(() => validateDirectory(nonExistent)).toThrow(/Not a valid file path/);
         });
 
         it('should throw for a file path (not a directory)', () => {
             const filePath = path.join(tempDir, 'test-file.txt');
             fs.writeFileSync(filePath, 'content');
-            expect(() => validateDirectory(filePath)).to.throw(/Not a directory/);
+            expect(() => validateDirectory(filePath)).toThrow(/Not a directory/);
         });
     });
 
     describe('validateFile', () => {
         it('should throw for a non-existent file when hasToExist is true', () => {
             const nonExistent = path.join(tempDir, 'missing-file.txt');
-            expect(() => validateFile(nonExistent, true)).to.throw(/Not a valid file path/);
+            expect(() => validateFile(nonExistent, true)).toThrow(/Not a valid file path/);
         });
     });
 
@@ -62,12 +62,12 @@ describe('validation-util', () => {
             vi.spyOn(gitUtil, 'isGitRepository').mockReturnValue(true);
             vi.spyOn(gitUtil, 'getGitRoot').mockReturnValue('/resolved/root');
             const result = validateGitDirectory(tempDir);
-            expect(result).to.equal('/resolved/root');
+            expect(result).toBe('/resolved/root');
         });
 
         it('should throw for a directory that is not a git repository', () => {
             vi.spyOn(gitUtil, 'isGitRepository').mockReturnValue(false);
-            expect(() => validateGitDirectory(tempDir)).to.throw(/Not a valid git repository/);
+            expect(() => validateGitDirectory(tempDir)).toThrow(/Not a valid git repository/);
         });
     });
 });

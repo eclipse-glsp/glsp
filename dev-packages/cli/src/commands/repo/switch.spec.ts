@@ -56,25 +56,25 @@ describe('switch-action', () => {
     describe('validateReposExist', () => {
         it('should pass when all repos exist', () => {
             createRepoDirs('glsp-client', 'glsp-server-node');
-            expect(() => validateReposExist(['glsp-client', 'glsp-server-node'], tempDir)).to.not.throw();
+            expect(() => validateReposExist(['glsp-client', 'glsp-server-node'], tempDir)).not.toThrow();
         });
 
         it('should throw listing missing repos', () => {
             createRepoDirs('glsp-client');
-            expect(() => validateReposExist(['glsp-client', 'glsp-server-node'], tempDir)).to.throw(/not cloned.*glsp-server-node/);
+            expect(() => validateReposExist(['glsp-client', 'glsp-server-node'], tempDir)).toThrow(/not cloned.*glsp-server-node/);
         });
     });
 
     describe('validateReposClean', () => {
         it('should pass when all repos are clean', () => {
             createRepoDirs('glsp-client');
-            expect(() => validateReposClean(['glsp-client'], tempDir)).to.not.throw();
+            expect(() => validateReposClean(['glsp-client'], tempDir)).not.toThrow();
         });
 
         it('should throw listing dirty repos', () => {
             createRepoDirs('glsp-client');
             vi.mocked(gitUtil.hasChanges).mockReturnValue(true);
-            expect(() => validateReposClean(['glsp-client'], tempDir)).to.throw(/uncommitted changes.*glsp-client/);
+            expect(() => validateReposClean(['glsp-client'], tempDir)).toThrow(/uncommitted changes.*glsp-client/);
         });
     });
 
@@ -84,15 +84,15 @@ describe('switch-action', () => {
             switchSingleRepo('glsp-client', makeOptions({ branch: 'release/2.0' }));
             expect(execStub).toHaveBeenCalledOnce();
             const cmd = execStub.mock.calls[0][0] as string;
-            expect(cmd).to.contain('git checkout');
-            expect(cmd).to.contain('release/2.0');
+            expect(cmd).toContain('git checkout');
+            expect(cmd).toContain('release/2.0');
         });
 
         it('should add --force when force is true', () => {
             createRepoDirs('glsp-client');
             switchSingleRepo('glsp-client', makeOptions({ branch: 'main', force: true }));
             const cmd = execStub.mock.calls[0][0] as string;
-            expect(cmd).to.contain('--force');
+            expect(cmd).toContain('--force');
         });
 
         it('should warn and return when branch does not exist', () => {
@@ -100,7 +100,7 @@ describe('switch-action', () => {
             execStub.mockImplementation(() => {
                 throw new Error("error: pathspec 'nonexistent' did not match any");
             });
-            expect(() => switchSingleRepo('glsp-client', makeOptions({ branch: 'nonexistent' }))).to.not.throw();
+            expect(() => switchSingleRepo('glsp-client', makeOptions({ branch: 'nonexistent' }))).not.toThrow();
         });
 
         it('should rethrow on other git errors', () => {
@@ -108,15 +108,15 @@ describe('switch-action', () => {
             execStub.mockImplementation(() => {
                 throw new Error('fatal: some other error');
             });
-            expect(() => switchSingleRepo('glsp-client', makeOptions())).to.throw('fatal: some other error');
+            expect(() => switchSingleRepo('glsp-client', makeOptions())).toThrow('fatal: some other error');
         });
 
         it('should use gh pr checkout for --pr', () => {
             createRepoDirs('glsp-client');
             switchSingleRepo('glsp-client', makeOptions({ branch: undefined, pr: '42' }));
             const cmd = execStub.mock.calls[0][0] as string;
-            expect(cmd).to.contain('gh pr checkout 42');
-            expect(cmd).to.contain('-R eclipse-glsp/glsp-client');
+            expect(cmd).toContain('gh pr checkout 42');
+            expect(cmd).toContain('-R eclipse-glsp/glsp-client');
         });
     });
 });

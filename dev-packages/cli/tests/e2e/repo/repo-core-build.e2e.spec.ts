@@ -39,10 +39,10 @@ describe('repo commands — core (build)', function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'core', '-d', workDir]);
-        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).to.equal(0);
+        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).toBe(0);
 
         const buildResult = runCli(['repo', 'build', '-d', workDir]);
-        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).to.equal(0);
+        expect(buildResult.exitCode, `build failed:\n${cliDiag(buildResult)}`).toBe(0);
     });
 
     afterAll(function () {
@@ -54,13 +54,13 @@ describe('repo commands — core (build)', function () {
     describe('build', function () {
         it('should have built all core repos', function () {
             for (const repo of CORE_REPOS) {
-                expect(fs.existsSync(path.join(workDir, repo, 'node_modules')), `${repo}/node_modules should exist`).to.be.true;
+                expect(fs.existsSync(path.join(workDir, repo, 'node_modules')), `${repo}/node_modules should exist`).toBe(true);
             }
         });
 
         it('should build with --repo filter', function () {
             const result = runCli(['repo', 'build', '-d', workDir, '-r', 'glsp-client']);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.exitCode, cliDiag(result)).toBe(0);
         });
 
         it('should continue on failure with --no-fail-fast', function () {
@@ -75,7 +75,7 @@ describe('repo commands — core (build)', function () {
                 );
 
                 const result = runCli(['repo', 'build', '-d', badDir, '--no-fail-fast']);
-                expect(result.exitCode).to.not.equal(0);
+                expect(result.exitCode).not.toBe(0);
             } finally {
                 cleanupTempDir(badDir);
             }
@@ -87,12 +87,12 @@ describe('repo commands — core (build)', function () {
     describe('run', function () {
         it('should run a package script in a repo via scoped command', function () {
             const result = runCli(['repo', 'glsp-client', 'run', '--version', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.exitCode, cliDiag(result)).toBe(0);
         });
 
         it('should fail when script does not exist', function () {
             const result = runCli(['repo', 'glsp-client', 'run', 'nonexistent-script-xyz', '-d', workDir]);
-            expect(result.exitCode).to.not.equal(0);
+            expect(result.exitCode).not.toBe(0);
         });
     });
 
@@ -108,8 +108,8 @@ describe('repo commands — core (build)', function () {
             }
 
             const result = runCli(['repo', 'glsp-server-node', 'browser-bundle', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
-            expect(result.stdout).to.contain('wf-glsp-server-webworker.js');
+            expect(result.exitCode, cliDiag(result)).toBe(0);
+            expect(result.stdout).toContain('wf-glsp-server-webworker.js');
         });
 
         it('should print the node bundle path when bundle exists', function () {
@@ -119,8 +119,8 @@ describe('repo commands — core (build)', function () {
             fs.writeFileSync(bundleFile, 'fake-bundle');
 
             const result = runCli(['repo', 'glsp-server-node', 'node-bundle', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
-            expect(result.stdout).to.contain('wf-glsp-server-node.js');
+            expect(result.exitCode, cliDiag(result)).toBe(0);
+            expect(result.stdout).toContain('wf-glsp-server-node.js');
         });
 
         it('should fail with helpful message when browser bundle is missing', function () {
@@ -128,9 +128,9 @@ describe('repo commands — core (build)', function () {
             try {
                 fs.mkdirSync(path.join(missingDir, 'glsp-server-node'), { recursive: true });
                 const result = runCli(['repo', 'glsp-server-node', 'browser-bundle', '-d', missingDir]);
-                expect(result.exitCode).to.not.equal(0);
+                expect(result.exitCode).not.toBe(0);
                 const output = result.stdout + result.stderr;
-                expect(output).to.contain('not found');
+                expect(output).toContain('not found');
             } finally {
                 cleanupTempDir(missingDir);
             }
@@ -141,9 +141,9 @@ describe('repo commands — core (build)', function () {
             try {
                 fs.mkdirSync(path.join(missingDir, 'glsp-server-node'), { recursive: true });
                 const result = runCli(['repo', 'glsp-server-node', 'node-bundle', '-d', missingDir]);
-                expect(result.exitCode).to.not.equal(0);
+                expect(result.exitCode).not.toBe(0);
                 const output = result.stdout + result.stderr;
-                expect(output).to.contain('not found');
+                expect(output).toContain('not found');
             } finally {
                 cleanupTempDir(missingDir);
             }
@@ -155,22 +155,22 @@ describe('repo commands — core (build)', function () {
     describe('link', function () {
         it('should link core repos via pnpm-workspace.yaml overrides', function () {
             const result = runCli(['repo', 'link', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.exitCode, cliDiag(result)).toBe(0);
 
             // glsp-server-node should consume glsp-client's packages/singletons through link: overrides.
             const serverDir = path.join(workDir, 'glsp-server-node');
             const links = Object.entries(readOverrides(serverDir)).filter(([, value]) => value.startsWith('link:'));
-            expect(links.length, 'expected link: overrides in glsp-server-node').to.be.greaterThan(0);
+            expect(links.length, 'expected link: overrides in glsp-server-node').toBeGreaterThan(0);
             expect(
                 links.some(([, value]) => value.includes('glsp-client')),
                 'expected at least one override pointing into glsp-client'
-            ).to.be.true;
+            ).toBe(true);
 
             // A consumed override should resolve to the local glsp-client checkout.
             const consumed = links.find(([name]) => fs.existsSync(path.join(serverDir, 'node_modules', name)));
             if (consumed) {
                 const real = fs.realpathSync(path.join(serverDir, 'node_modules', consumed[0]));
-                expect(real.startsWith(fs.realpathSync(path.join(workDir, 'glsp-client')))).to.be.true;
+                expect(real.startsWith(fs.realpathSync(path.join(workDir, 'glsp-client')))).toBe(true);
             }
         });
     });
@@ -178,10 +178,10 @@ describe('repo commands — core (build)', function () {
     describe('unlink', function () {
         it('should unlink core repos', function () {
             const result = runCli(['repo', 'unlink', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.exitCode, cliDiag(result)).toBe(0);
 
             const links = Object.values(readOverrides(path.join(workDir, 'glsp-server-node'))).filter(value => value.startsWith('link:'));
-            expect(links.length, 'link overrides should be removed after unlink').to.equal(0);
+            expect(links.length, 'link overrides should be removed after unlink').toBe(0);
         });
     });
 
@@ -190,26 +190,26 @@ describe('repo commands — core (build)', function () {
     describe('workspace', function () {
         it('should generate a .code-workspace file', function () {
             const result = runCli(['repo', 'workspace', 'init', '-d', workDir]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
+            expect(result.exitCode, cliDiag(result)).toBe(0);
 
             const wsFile = path.join(workDir, 'glsp.code-workspace');
-            expect(fs.existsSync(wsFile)).to.be.true;
+            expect(fs.existsSync(wsFile)).toBe(true);
 
             const ws = readJson(wsFile);
             const folders = ws.folders as { name: string; path: string }[];
-            expect(folders).to.have.length(2);
-            expect(folders.map(f => f.name)).to.include.members(['glsp-client', 'glsp-server-node']);
+            expect(folders).toHaveLength(2);
+            expect(folders.map(f => f.name)).toEqual(expect.arrayContaining(['glsp-client', 'glsp-server-node']));
         });
 
         it('should generate workspace with custom --output path', function () {
             const customPath = path.join(workDir, 'custom', 'my.code-workspace');
             const result = runCli(['repo', 'workspace', 'init', '-d', workDir, '-o', customPath]);
-            expect(result.exitCode, cliDiag(result)).to.equal(0);
-            expect(fs.existsSync(customPath)).to.be.true;
+            expect(result.exitCode, cliDiag(result)).toBe(0);
+            expect(fs.existsSync(customPath)).toBe(true);
 
             const ws = readJson(customPath);
             const folders = ws.folders as { name: string; path: string }[];
-            expect(folders).to.have.length(2);
+            expect(folders).toHaveLength(2);
         });
     });
 });

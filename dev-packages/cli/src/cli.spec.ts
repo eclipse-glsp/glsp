@@ -30,12 +30,12 @@ const optionLongs = (cmd: Command): string[] => cmd.options.map(o => o.long!);
 const subcommandNames = (cmd: Command): string[] => cmd.commands.map(c => c.name());
 const findSub = (parent: Command, name: string): Command => {
     const sub = parent.commands.find(c => c.name() === name);
-    expect(sub, `subcommand '${name}' not found on '${parent.name()}'`).to.exist;
+    expect(sub, `subcommand '${name}' not found on '${parent.name()}'`).toBeDefined();
     return sub!;
 };
 const choices = (cmd: Command, long: string): string[] | undefined => {
     const opt = cmd.options.find(o => o.long === long);
-    expect(opt, `option '${long}' not found on '${cmd.name()}'`).to.exist;
+    expect(opt, `option '${long}' not found on '${cmd.name()}'`).toBeDefined();
     return opt!.argChoices;
 };
 
@@ -47,63 +47,67 @@ describe('cli', () => {
     describe('top-level commands', () => {
         describe('checkHeaders', () => {
             it('should accept a <rootDir> argument', () => {
-                expect(CheckHeaderCommand.registeredArguments).to.have.lengthOf(1);
-                expect(CheckHeaderCommand.registeredArguments[0].name()).to.equal('rootDir');
-                expect(CheckHeaderCommand.registeredArguments[0].required).to.be.true;
+                expect(CheckHeaderCommand.registeredArguments).toHaveLength(1);
+                expect(CheckHeaderCommand.registeredArguments[0].name()).toBe('rootDir');
+                expect(CheckHeaderCommand.registeredArguments[0].required).toBe(true);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(CheckHeaderCommand)).to.include.members([
-                    '--type',
-                    '--fileExtensions',
-                    '--exclude',
-                    '--no-exclude-defaults',
-                    '--json',
-                    '--autoFix',
-                    '--commit'
-                ]);
+                expect(optionLongs(CheckHeaderCommand)).toEqual(
+                    expect.arrayContaining([
+                        '--type',
+                        '--fileExtensions',
+                        '--exclude',
+                        '--no-exclude-defaults',
+                        '--json',
+                        '--autoFix',
+                        '--commit'
+                    ])
+                );
             });
 
             it('should restrict --type choices', () => {
-                expect(choices(CheckHeaderCommand, '--type')).to.deep.equal(['full', 'changes', 'lastCommit']);
+                expect(choices(CheckHeaderCommand, '--type')).toEqual(['full', 'changes', 'lastCommit']);
             });
         });
 
         describe('updateNext', () => {
             it('should have alias "u"', () => {
-                expect(UpdateNextCommand.alias()).to.equal('u');
+                expect(UpdateNextCommand.alias()).toBe('u');
             });
 
             it('should accept an optional [rootDir] argument', () => {
-                expect(UpdateNextCommand.registeredArguments).to.have.lengthOf(1);
-                expect(UpdateNextCommand.registeredArguments[0].required).to.be.false;
+                expect(UpdateNextCommand.registeredArguments).toHaveLength(1);
+                expect(UpdateNextCommand.registeredArguments[0].required).toBe(false);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(UpdateNextCommand)).to.include.members(['--verbose']);
+                expect(optionLongs(UpdateNextCommand)).toEqual(expect.arrayContaining(['--verbose']));
             });
         });
 
         describe('generateIndex', () => {
             it('should accept a variadic <rootDir...> argument', () => {
-                expect(GenerateIndex.registeredArguments).to.have.lengthOf(1);
-                expect(GenerateIndex.registeredArguments[0].variadic).to.be.true;
+                expect(GenerateIndex.registeredArguments).toHaveLength(1);
+                expect(GenerateIndex.registeredArguments[0].variadic).toBe(true);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(GenerateIndex)).to.include.members([
-                    '--singleIndex',
-                    '--forceOverwrite',
-                    '--match',
-                    '--ignore',
-                    '--style',
-                    '--ignoreFile',
-                    '--verbose'
-                ]);
+                expect(optionLongs(GenerateIndex)).toEqual(
+                    expect.arrayContaining([
+                        '--singleIndex',
+                        '--forceOverwrite',
+                        '--match',
+                        '--ignore',
+                        '--style',
+                        '--ignoreFile',
+                        '--verbose'
+                    ])
+                );
             });
 
             it('should restrict --style choices', () => {
-                expect(choices(GenerateIndex, '--style')).to.deep.equal(['commonjs', 'esm']);
+                expect(choices(GenerateIndex, '--style')).toEqual(['commonjs', 'esm']);
             });
         });
     });
@@ -112,7 +116,7 @@ describe('cli', () => {
 
     describe('releng', () => {
         it('should have version and prepare subcommands', () => {
-            expect(subcommandNames(RelengCommand)).to.include.members(['version', 'prepare']);
+            expect(subcommandNames(RelengCommand)).toEqual(expect.arrayContaining(['version', 'prepare']));
         });
 
         describe('version', () => {
@@ -120,18 +124,18 @@ describe('cli', () => {
 
             it('should accept <versionType> argument with choices', () => {
                 const arg = cmd.registeredArguments[0];
-                expect(arg.name()).to.equal('versionType');
-                expect(arg.required).to.be.true;
-                expect(arg.argChoices).to.deep.equal(['major', 'minor', 'patch', 'custom', 'next']);
+                expect(arg.name()).toBe('versionType');
+                expect(arg.required).toBe(true);
+                expect(arg.argChoices).toEqual(['major', 'minor', 'patch', 'custom', 'next']);
             });
 
             it('should accept optional [customVersion] argument', () => {
-                expect(cmd.registeredArguments[1].name()).to.equal('customVersion');
-                expect(cmd.registeredArguments[1].required).to.be.false;
+                expect(cmd.registeredArguments[1].name()).toBe('customVersion');
+                expect(cmd.registeredArguments[1].required).toBe(false);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--verbose', '--repoDir']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--verbose', '--repoDir']));
             });
         });
 
@@ -140,11 +144,11 @@ describe('cli', () => {
 
             it('should accept <versionType> argument with choices', () => {
                 const arg = cmd.registeredArguments[0];
-                expect(arg.argChoices).to.deep.equal(['major', 'minor', 'patch', 'custom', 'next']);
+                expect(arg.argChoices).toEqual(['major', 'minor', 'patch', 'custom', 'next']);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--verbose', '--repoDir', '--no-push', '--draft', '--no-check']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--verbose', '--repoDir', '--no-push', '--draft', '--no-check']));
             });
         });
     });
@@ -153,60 +157,57 @@ describe('cli', () => {
 
     describe('repo', () => {
         it('should register all top-level repo subcommands', () => {
-            expect(subcommandNames(RepoCommand)).to.include.members([
-                'clone',
-                'fork',
-                'build',
-                'link',
-                'unlink',
-                'pwd',
-                'log',
-                'workspace'
-            ]);
+            expect(subcommandNames(RepoCommand)).toEqual(
+                expect.arrayContaining(['clone', 'fork', 'build', 'link', 'unlink', 'pwd', 'log', 'workspace'])
+            );
         });
 
         it('should register a subrepo command for each GLSPRepo', () => {
             for (const repoName of GLSPRepo.choices) {
-                expect(subcommandNames(RepoCommand), `subrepo '${repoName}' should be registered`).to.include(repoName);
+                expect(subcommandNames(RepoCommand), `subrepo '${repoName}' should be registered`).toContain(repoName);
             }
         });
 
         it('should have a global --dir option', () => {
-            expect(optionLongs(RepoCommand)).to.include('--dir');
+            expect(optionLongs(RepoCommand)).toContain('--dir');
         });
 
         describe('clone', () => {
             const cmd = findSub(RepoCommand, 'clone');
 
             it('should accept optional [repos...] argument', () => {
-                expect(cmd.registeredArguments[0].variadic).to.be.true;
-                expect(cmd.registeredArguments[0].required).to.be.false;
+                expect(cmd.registeredArguments[0].variadic).toBe(true);
+                expect(cmd.registeredArguments[0].required).toBe(false);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members([
-                    '--dir',
-                    '--protocol',
-                    '--branch',
-                    '--fork',
-                    '--override',
-                    '--preset',
-                    '--interactive',
-                    '--no-fail-fast',
-                    '--verbose'
-                ]);
+                expect(optionLongs(cmd)).toEqual(
+                    expect.arrayContaining([
+                        '--dir',
+                        '--protocol',
+                        '--branch',
+                        '--fork',
+                        '--override',
+                        '--preset',
+                        '--interactive',
+                        '--no-fail-fast',
+                        '--verbose'
+                    ])
+                );
             });
 
             it('should restrict --protocol choices', () => {
-                expect(choices(cmd, '--protocol')).to.deep.equal(['ssh', 'https', 'gh']);
+                expect(choices(cmd, '--protocol')).toEqual(['ssh', 'https', 'gh']);
             });
 
             it('should restrict --override choices', () => {
-                expect(choices(cmd, '--override')).to.deep.equal(['rename', 'remove']);
+                expect(choices(cmd, '--override')).toEqual(['rename', 'remove']);
             });
 
             it('should restrict --preset choices', () => {
-                expect(choices(cmd, '--preset')).to.include.members(['core', 'theia', 'vscode', 'eclipse', 'playwright', 'all']);
+                expect(choices(cmd, '--preset')).toEqual(
+                    expect.arrayContaining(['core', 'theia', 'vscode', 'eclipse', 'playwright', 'all'])
+                );
             });
         });
 
@@ -214,16 +215,16 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'fork');
 
             it('should accept required <user> argument', () => {
-                expect(cmd.registeredArguments[0].name()).to.equal('user');
-                expect(cmd.registeredArguments[0].required).to.be.true;
+                expect(cmd.registeredArguments[0].name()).toBe('user');
+                expect(cmd.registeredArguments[0].required).toBe(true);
             });
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--dir', '--protocol', '--repo', '--preset', '--verbose']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--protocol', '--repo', '--preset', '--verbose']));
             });
 
             it('should restrict --protocol choices', () => {
-                expect(choices(cmd, '--protocol')).to.deep.equal(['ssh', 'https', 'gh']);
+                expect(choices(cmd, '--protocol')).toEqual(['ssh', 'https', 'gh']);
             });
         });
 
@@ -231,15 +232,9 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'build');
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members([
-                    '--dir',
-                    '--repo',
-                    '--preset',
-                    '--electron',
-                    '--no-java',
-                    '--no-fail-fast',
-                    '--verbose'
-                ]);
+                expect(optionLongs(cmd)).toEqual(
+                    expect.arrayContaining(['--dir', '--repo', '--preset', '--electron', '--no-java', '--no-fail-fast', '--verbose'])
+                );
             });
         });
 
@@ -247,7 +242,7 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'link');
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--dir', '--repo', '--preset', '--no-fail-fast', '--verbose']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--repo', '--preset', '--no-fail-fast', '--verbose']));
             });
         });
 
@@ -255,7 +250,7 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'unlink');
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--dir', '--repo', '--preset', '--no-fail-fast', '--verbose']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--repo', '--preset', '--no-fail-fast', '--verbose']));
             });
         });
 
@@ -263,7 +258,7 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'pwd');
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--dir', '--raw', '--verbose']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--raw', '--verbose']));
             });
         });
 
@@ -271,7 +266,7 @@ describe('cli', () => {
             const cmd = findSub(RepoCommand, 'log');
 
             it('should have expected options', () => {
-                expect(optionLongs(cmd)).to.include.members(['--dir', '--repo', '--preset', '--verbose']);
+                expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--repo', '--preset', '--verbose']));
             });
         });
 
@@ -279,14 +274,14 @@ describe('cli', () => {
             const workspace = findSub(RepoCommand, 'workspace');
 
             it('should have init and open subcommands', () => {
-                expect(subcommandNames(workspace)).to.include.members(['init', 'open']);
+                expect(subcommandNames(workspace)).toEqual(expect.arrayContaining(['init', 'open']));
             });
 
             describe('init', () => {
                 const cmd = findSub(workspace, 'init');
 
                 it('should have expected options', () => {
-                    expect(optionLongs(cmd)).to.include.members(['--dir', '--output', '--repo', '--preset', '--verbose']);
+                    expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--output', '--repo', '--preset', '--verbose']));
                 });
             });
 
@@ -294,7 +289,7 @@ describe('cli', () => {
                 const cmd = findSub(workspace, 'open');
 
                 it('should have expected options', () => {
-                    expect(optionLongs(cmd)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(cmd)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
             });
         });
@@ -317,12 +312,12 @@ describe('cli', () => {
                     const cmd = createSubrepoCommand(repoName);
 
                     it('should have common subcommands', () => {
-                        expect(subcommandNames(cmd)).to.include.members(['clone', 'switch', 'build', 'pwd', 'log', 'run']);
+                        expect(subcommandNames(cmd)).toEqual(expect.arrayContaining(['clone', 'switch', 'build', 'pwd', 'log', 'run']));
                     });
 
                     if (SHORT_ALIASES[repoName]) {
                         it(`should have alias "${SHORT_ALIASES[repoName]}"`, () => {
-                            expect(cmd.alias()).to.equal(SHORT_ALIASES[repoName]);
+                            expect(cmd.alias()).toBe(SHORT_ALIASES[repoName]);
                         });
                     }
 
@@ -330,22 +325,17 @@ describe('cli', () => {
                         const clone = findSub(cmd, 'clone');
 
                         it('should have expected options', () => {
-                            expect(optionLongs(clone)).to.include.members([
-                                '--dir',
-                                '--protocol',
-                                '--branch',
-                                '--fork',
-                                '--override',
-                                '--verbose'
-                            ]);
+                            expect(optionLongs(clone)).toEqual(
+                                expect.arrayContaining(['--dir', '--protocol', '--branch', '--fork', '--override', '--verbose'])
+                            );
                         });
 
                         it('should restrict --protocol choices', () => {
-                            expect(choices(clone, '--protocol')).to.deep.equal(['ssh', 'https', 'gh']);
+                            expect(choices(clone, '--protocol')).toEqual(['ssh', 'https', 'gh']);
                         });
 
                         it('should restrict --override choices', () => {
-                            expect(choices(clone, '--override')).to.deep.equal(['rename', 'remove']);
+                            expect(choices(clone, '--override')).toEqual(['rename', 'remove']);
                         });
                     });
 
@@ -353,7 +343,7 @@ describe('cli', () => {
                         const sw = findSub(cmd, 'switch');
 
                         it('should have expected options', () => {
-                            expect(optionLongs(sw)).to.include.members(['--branch', '--dir', '--pr', '--force', '--verbose']);
+                            expect(optionLongs(sw)).toEqual(expect.arrayContaining(['--branch', '--dir', '--pr', '--force', '--verbose']));
                         });
                     });
 
@@ -361,12 +351,12 @@ describe('cli', () => {
                         const build = findSub(cmd, 'build');
 
                         it('should have expected options', () => {
-                            expect(optionLongs(build)).to.include.members(['--dir', '--verbose']);
+                            expect(optionLongs(build)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                         });
 
                         if (repoName === 'glsp-theia-integration') {
                             it('should have --electron option', () => {
-                                expect(optionLongs(build)).to.include('--electron');
+                                expect(optionLongs(build)).toContain('--electron');
                             });
                         }
                     });
@@ -375,7 +365,7 @@ describe('cli', () => {
                         const pwd = findSub(cmd, 'pwd');
 
                         it('should have expected options', () => {
-                            expect(optionLongs(pwd)).to.include.members(['--dir', '--verbose']);
+                            expect(optionLongs(pwd)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                         });
                     });
 
@@ -383,7 +373,7 @@ describe('cli', () => {
                         const log = findSub(cmd, 'log');
 
                         it('should have expected options', () => {
-                            expect(optionLongs(log)).to.include.members(['--dir', '--verbose']);
+                            expect(optionLongs(log)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                         });
                     });
 
@@ -391,13 +381,13 @@ describe('cli', () => {
                         const run = findSub(cmd, 'run');
 
                         it('should accept a required <script> argument', () => {
-                            expect(run.registeredArguments).to.have.lengthOf(1);
-                            expect(run.registeredArguments[0].name()).to.equal('script');
-                            expect(run.registeredArguments[0].required).to.be.true;
+                            expect(run.registeredArguments).toHaveLength(1);
+                            expect(run.registeredArguments[0].name()).toBe('script');
+                            expect(run.registeredArguments[0].required).toBe(true);
                         });
 
                         it('should have expected options', () => {
-                            expect(optionLongs(run)).to.include.members(['--dir', '--verbose']);
+                            expect(optionLongs(run)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                         });
                     });
                 });
@@ -410,11 +400,11 @@ describe('cli', () => {
                 const start = findSub(cmd, 'start');
 
                 it('should have start command', () => {
-                    expect(subcommandNames(cmd)).to.include('start');
+                    expect(subcommandNames(cmd)).toContain('start');
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--browser', '--dry-run', '--verbose']);
+                    expect(optionLongs(start)).toEqual(expect.arrayContaining(['--dir', '--browser', '--dry-run', '--verbose']));
                 });
             });
 
@@ -423,29 +413,29 @@ describe('cli', () => {
                 const start = findSub(cmd, 'start');
 
                 it('should have start command', () => {
-                    expect(subcommandNames(cmd)).to.include('start');
+                    expect(subcommandNames(cmd)).toContain('start');
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--dry-run', '--verbose']);
+                    expect(optionLongs(start)).toEqual(expect.arrayContaining(['--dir', '--socket', '--dry-run', '--verbose']));
                 });
 
                 it('should have browser-bundle command', () => {
-                    expect(subcommandNames(cmd)).to.include('browser-bundle');
+                    expect(subcommandNames(cmd)).toContain('browser-bundle');
                 });
 
                 it('should have expected browser-bundle options', () => {
                     const browserBundle = findSub(cmd, 'browser-bundle');
-                    expect(optionLongs(browserBundle)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(browserBundle)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
 
                 it('should have node-bundle command', () => {
-                    expect(subcommandNames(cmd)).to.include('node-bundle');
+                    expect(subcommandNames(cmd)).toContain('node-bundle');
                 });
 
                 it('should have expected node-bundle options', () => {
                     const nodeBundle = findSub(cmd, 'node-bundle');
-                    expect(optionLongs(nodeBundle)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(nodeBundle)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
             });
 
@@ -454,11 +444,11 @@ describe('cli', () => {
                 const start = findSub(cmd, 'start');
 
                 it('should have start command', () => {
-                    expect(subcommandNames(cmd)).to.include('start');
+                    expect(subcommandNames(cmd)).toContain('start');
                 });
 
                 it('should have expected start options', () => {
-                    expect(optionLongs(start)).to.include.members(['--dir', '--socket', '--dry-run', '--verbose']);
+                    expect(optionLongs(start)).toEqual(expect.arrayContaining(['--dir', '--socket', '--dry-run', '--verbose']));
                 });
             });
 
@@ -466,21 +456,23 @@ describe('cli', () => {
                 const cmd = createSubrepoCommand('glsp-theia-integration');
 
                 it('should have start command', () => {
-                    expect(subcommandNames(cmd)).to.include('start');
+                    expect(subcommandNames(cmd)).toContain('start');
                 });
 
                 it('should have expected start options', () => {
                     const start = findSub(cmd, 'start');
-                    expect(optionLongs(start)).to.include.members(['--dir', '--electron', '--debug', '--dry-run', '--verbose']);
+                    expect(optionLongs(start)).toEqual(
+                        expect.arrayContaining(['--dir', '--electron', '--debug', '--dry-run', '--verbose'])
+                    );
                 });
 
                 it('should have open command', () => {
-                    expect(subcommandNames(cmd)).to.include('open');
+                    expect(subcommandNames(cmd)).toContain('open');
                 });
 
                 it('should have expected open options', () => {
                     const open = findSub(cmd, 'open');
-                    expect(optionLongs(open)).to.include.members(['--verbose']);
+                    expect(optionLongs(open)).toEqual(expect.arrayContaining(['--verbose']));
                 });
             });
 
@@ -488,47 +480,47 @@ describe('cli', () => {
                 const cmd = createSubrepoCommand('glsp-vscode-integration');
 
                 it('should have vsix-id command', () => {
-                    expect(subcommandNames(cmd)).to.include('vsix-id');
+                    expect(subcommandNames(cmd)).toContain('vsix-id');
                 });
 
                 it('should have vsix-path command', () => {
-                    expect(subcommandNames(cmd)).to.include('vsix-path');
+                    expect(subcommandNames(cmd)).toContain('vsix-path');
                 });
 
                 it('should have expected vsix-path options', () => {
                     const vsixPath = findSub(cmd, 'vsix-path');
-                    expect(optionLongs(vsixPath)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(vsixPath)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
 
                 it('should have package command', () => {
-                    expect(subcommandNames(cmd)).to.include('package');
+                    expect(subcommandNames(cmd)).toContain('package');
                 });
 
                 it('should have expected package options', () => {
                     const pkg = findSub(cmd, 'package');
-                    expect(optionLongs(pkg)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(pkg)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
 
                 it('should have web-vsix-id command', () => {
-                    expect(subcommandNames(cmd)).to.include('web-vsix-id');
+                    expect(subcommandNames(cmd)).toContain('web-vsix-id');
                 });
 
                 it('should have web-vsix-path command', () => {
-                    expect(subcommandNames(cmd)).to.include('web-vsix-path');
+                    expect(subcommandNames(cmd)).toContain('web-vsix-path');
                 });
 
                 it('should have expected web-vsix-path options', () => {
                     const webVsixPath = findSub(cmd, 'web-vsix-path');
-                    expect(optionLongs(webVsixPath)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(webVsixPath)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
 
                 it('should have web-package command', () => {
-                    expect(subcommandNames(cmd)).to.include('web-package');
+                    expect(subcommandNames(cmd)).toContain('web-package');
                 });
 
                 it('should have expected web-package options', () => {
                     const webPkg = findSub(cmd, 'web-package');
-                    expect(optionLongs(webPkg)).to.include.members(['--dir', '--verbose']);
+                    expect(optionLongs(webPkg)).toEqual(expect.arrayContaining(['--dir', '--verbose']));
                 });
             });
         });

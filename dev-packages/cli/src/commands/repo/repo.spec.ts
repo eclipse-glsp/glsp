@@ -61,7 +61,7 @@ describe('repo --dir propagation', () => {
         parent.addCommand(createLeaf(captured));
 
         await parent.parseAsync(['node', 'test', '-d', '/test/path', 'leaf'], { from: 'node' });
-        expect(captured.dir).to.equal('/test/path');
+        expect(captured.dir).toBe('/test/path');
     });
 
     it('should not override subcommand --dir when explicitly set', async () => {
@@ -70,7 +70,7 @@ describe('repo --dir propagation', () => {
         parent.addCommand(createLeaf(captured));
 
         await parent.parseAsync(['node', 'test', '-d', '/parent', 'leaf', '-d', '/child'], { from: 'node' });
-        expect(captured.dir).to.equal('/child');
+        expect(captured.dir).toBe('/child');
     });
 
     it('should propagate --dir through middle layer to leaf', async () => {
@@ -81,7 +81,7 @@ describe('repo --dir propagation', () => {
         parent.addCommand(middle);
 
         await parent.parseAsync(['node', 'test', '-d', '/deep/path', 'middle', 'leaf'], { from: 'node' });
-        expect(captured.dir).to.equal('/deep/path');
+        expect(captured.dir).toBe('/deep/path');
     });
 
     it('should not propagate when parent --dir is not set', async () => {
@@ -90,7 +90,7 @@ describe('repo --dir propagation', () => {
         parent.addCommand(createLeaf(captured));
 
         await parent.parseAsync(['node', 'test', 'leaf'], { from: 'node' });
-        expect(captured.dir).to.be.undefined;
+        expect(captured.dir).toBeUndefined();
     });
 
     it('should allow leaf --dir to override through middle layer', async () => {
@@ -101,6 +101,6 @@ describe('repo --dir propagation', () => {
         parent.addCommand(middle);
 
         await parent.parseAsync(['node', 'test', '-d', '/parent', 'middle', 'leaf', '-d', '/leaf'], { from: 'node' });
-        expect(captured.dir).to.equal('/leaf');
+        expect(captured.dir).toBe('/leaf');
     });
 });

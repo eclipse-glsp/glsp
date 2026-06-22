@@ -38,19 +38,19 @@ describe('file-util', () => {
 
             const result = readFile(filePath, { startLine: 2, endLine: 3 });
 
-            expect(result).to.contain('line2');
-            expect(result).to.contain('line3');
-            expect(result).to.not.contain('line1');
-            expect(result).to.not.contain('line4');
+            expect(result).toContain('line2');
+            expect(result).toContain('line3');
+            expect(result).not.toContain('line1');
+            expect(result).not.toContain('line4');
         });
 
         it('should throw for a non-existent file', () => {
             const filePath = path.join(tempDir, 'missing.txt');
-            expect(() => readFile(filePath)).to.throw(/no such file/);
+            expect(() => readFile(filePath)).toThrow(/no such file/);
         });
 
         it('should throw for a directory path', () => {
-            expect(() => readFile(tempDir)).to.throw(/Is a directory/);
+            expect(() => readFile(tempDir)).toThrow(/Is a directory/);
         });
     });
 
@@ -61,7 +61,7 @@ describe('file-util', () => {
 
             deleteFile(filePath);
 
-            expect(fs.existsSync(filePath)).to.be.false;
+            expect(fs.existsSync(filePath)).toBe(false);
         });
 
         it('should delete a directory recursively', () => {
@@ -71,12 +71,12 @@ describe('file-util', () => {
 
             deleteFile(dirPath);
 
-            expect(fs.existsSync(dirPath)).to.be.false;
+            expect(fs.existsSync(dirPath)).toBe(false);
         });
 
         it('should throw for a non-existent path', () => {
             const filePath = path.join(tempDir, 'no-such-file.txt');
-            expect(() => deleteFile(filePath)).to.throw(/no such file/);
+            expect(() => deleteFile(filePath)).toThrow(/no such file/);
         });
     });
 
@@ -89,8 +89,8 @@ describe('file-util', () => {
 
             moveFile(filePath, destDir);
 
-            expect(fs.existsSync(path.join(destDir, 'source.txt'))).to.be.true;
-            expect(fs.existsSync(filePath)).to.be.false;
+            expect(fs.existsSync(path.join(destDir, 'source.txt'))).toBe(true);
+            expect(fs.existsSync(filePath)).toBe(false);
         });
     });
 
@@ -99,7 +99,7 @@ describe('file-util', () => {
             const filePath = path.join(tempDir, 'bad.json');
             fs.writeFileSync(filePath, '{ not valid json }', 'utf8');
 
-            expect(() => readJson(filePath)).to.throw(/Failed to parse JSON/);
+            expect(() => readJson(filePath)).toThrow(/Failed to parse JSON/);
         });
     });
 
@@ -111,7 +111,7 @@ describe('file-util', () => {
             replaceInFile(filePath, 'world', 'universe');
 
             const result = fs.readFileSync(filePath, 'utf8');
-            expect(result).to.equal('hello universe');
+            expect(result).toBe('hello universe');
         });
 
         it('should replace a regex pattern in a file', () => {
@@ -121,7 +121,7 @@ describe('file-util', () => {
             replaceInFile(filePath, /\d+/, 'NUM');
 
             const result = fs.readFileSync(filePath, 'utf8');
-            expect(result).to.equal('fooNUMbar');
+            expect(result).toBe('fooNUMbar');
         });
     });
 
@@ -134,8 +134,8 @@ describe('file-util', () => {
 
             const result = filterFiles([matchFile, noMatchFile], 'hello');
 
-            expect(result).to.have.lengthOf(1);
-            expect(result[0]).to.equal(path.resolve(matchFile));
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBe(path.resolve(matchFile));
         });
     });
 });

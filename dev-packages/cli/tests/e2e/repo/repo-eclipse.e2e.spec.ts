@@ -28,7 +28,7 @@ describe.skipIf(!isMavenAvailable())('repo commands — eclipse', function () {
         workDir = createTempDir();
 
         const cloneResult = runCli(['repo', 'clone', '--preset', 'eclipse', '-d', workDir]);
-        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).to.equal(0);
+        expect(cloneResult.exitCode, `clone failed:\n${cliDiag(cloneResult)}`).toBe(0);
 
         // Build with --no-fail-fast so all repos are attempted even if one fails.
         // The Tycho build for glsp-eclipse-integration/server depends on Eclipse p2
@@ -44,16 +44,16 @@ describe.skipIf(!isMavenAvailable())('repo commands — eclipse', function () {
 
     it('should have built glsp-server with Maven', function () {
         const targetDir = path.join(workDir, 'glsp-server', 'examples', 'org.eclipse.glsp.example.workflow', 'target');
-        expect(fs.existsSync(targetDir), 'Maven target directory should exist').to.be.true;
+        expect(fs.existsSync(targetDir), 'Maven target directory should exist').toBe(true);
     });
 
     it('should build glsp-server via scoped command', function () {
         const result = runCli(['repo', 'glsp-server', 'build', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
     });
 
     it('should build glsp-eclipse-integration via scoped command', function () {
         const result = runCli(['repo', 'glsp-eclipse-integration', 'build', '-d', workDir]);
-        expect(result.exitCode, cliDiag(result)).to.equal(0);
+        expect(result.exitCode, cliDiag(result)).toBe(0);
     });
 });
