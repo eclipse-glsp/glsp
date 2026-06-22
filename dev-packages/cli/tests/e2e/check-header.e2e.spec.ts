@@ -14,13 +14,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { runCli } from '../helpers/cli-helper';
-import { commitFile, createTempGitRepo } from '../helpers/git-helper';
-import { cleanupTempDir } from '../helpers/test-helper';
+import { commitFile, createTempGitRepo, initGitRepo } from '../helpers/git-helper';
+import { cleanupTempDir, createTempDir } from '../helpers/test-helper';
 
 const VALID_HEADER = `/********************************************************************************
  * Copyright (c) ${new Date().getFullYear()} EclipseSource and others.
@@ -106,6 +106,37 @@ describe('checkHeaders e2e', () => {
         commitFile(repoDir, 'src/new.ts', 'const y = 2;\n', 'add new file');
         const result = runCli(['checkHeaders', repoDir, '--type', 'lastCommit']);
         expect(result.stdout).to.contain('Check copy right headers of 1 files');
+    });
+
+    describe('with a repository under a dot-directory', () => {
+        let hiddenRepoDir: string;
+        let hiddenRoot: string;
+
+        beforeEach(() => {
+            hiddenRoot = createTempDir();
+            hiddenRepoDir = initGitRepo(path.join(hiddenRoot, '.hidden', 'repo'));
+        });
+
+        afterEach(() => {
+            cleanupTempDir(hiddenRoot);
+        });
+
+        it('should still detect changed files with --type changes', () => {
+            commitFile(hiddenRepoDir, 'src/base.ts', VALID_HEADER + '\nconst x = 1;\n', 'add base file');
+            execSync('git checkout -b feature', { cwd: hiddenRepoDir });
+            commitFile(hiddenRepoDir, 'src/feature.ts', 'const y = 2;\n', 'add feature file');
+            const result = runCli(['checkHeaders', hiddenRepoDir, '--type', 'changes']);
+            expect(result.stdout).to.contain('Check copy right headers of 1 files');
+            expect(result.stdout).to.contain('feature.ts');
+            expect(result.stdout).to.not.contain('base.ts');
+        });
+
+        it('should still detect changed files with --type lastCommit', () => {
+            commitFile(hiddenRepoDir, 'src/old.ts', VALID_HEADER + '\nconst x = 1;\n', 'add old file');
+            commitFile(hiddenRepoDir, 'src/new.ts', 'const y = 2;\n', 'add new file');
+            const result = runCli(['checkHeaders', hiddenRepoDir, '--type', 'lastCommit']);
+            expect(result.stdout).to.contain('Check copy right headers of 1 files');
+        });
     });
 
     it('should check custom file extensions with --fileExtensions', () => {

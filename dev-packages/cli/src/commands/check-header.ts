@@ -112,13 +112,15 @@ async function getFiles(rootDir: string, options: HeaderCheckOptions): Promise<s
         return resolveFiles(result);
     }
 
-    let changedFiles = options.type === 'changes' ? getChangesComparedToDefaultBranch(rootDir) : getChangesOfLastCommit(rootDir);
-    changedFiles = changedFiles.filter(minimatch.filter(includePattern));
+    const changedFiles = options.type === 'changes' ? getChangesComparedToDefaultBranch(rootDir) : getChangesOfLastCommit(rootDir);
+    // The change-detection helpers return absolute paths, but the include/exclude globs are
+    // repo-relative -> convert
+    let relativeFiles = changedFiles.map(file => path.relative(rootDir, file)).filter(minimatch.filter(includePattern));
 
     excludePattern.forEach(pattern => {
-        changedFiles = changedFiles.filter(minimatch.filter(`!${pattern}`));
+        relativeFiles = relativeFiles.filter(minimatch.filter(`!${pattern}`));
     });
-    const result = changedFiles.filter(file => fs.existsSync(file));
+    const result = relativeFiles.filter(file => fs.existsSync(path.resolve(rootDir, file)));
     return resolveFiles(result);
 }
 

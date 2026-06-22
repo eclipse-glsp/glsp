@@ -25,7 +25,12 @@ function git(args: string, cwd: string): string {
 
 /** Creates a temporary git repository with an initial commit. */
 export function createTempGitRepo(): string {
-    const dir = createTempDir();
+    return initGitRepo(createTempDir());
+}
+
+/** Initializes a git repository with an initial commit at the given directory (created if missing). */
+export function initGitRepo(dir: string): string {
+    fs.mkdirSync(dir, { recursive: true });
     git('init', dir);
     git('config user.email "test@test.com"', dir);
     git('config user.name "Test"', dir);
