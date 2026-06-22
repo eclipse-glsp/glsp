@@ -11,7 +11,7 @@ pnpm add --save-dev @eclipse-glsp/vitest-config
 
 ## Usage
 
-The package's default export is a ready-to-use flat config (globals, mock auto-restore, v8 coverage,
+The package's default export is a ready-to-use flat config (mock auto-restore, v8 coverage,
 CI annotations, and an `include` that globs every package's specs). For the common case, the
 repository-root `vite.config.ts` is a one-liner:
 

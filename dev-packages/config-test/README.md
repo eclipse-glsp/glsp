@@ -1,9 +1,9 @@
 # Eclipse GLSP - Shared configuration for testing
 
 Meta package that bundles the shared [Vitest](https://vitest.dev) test configuration and the test
-dependencies (Vitest + the V8 coverage provider) for Eclipse GLSP components implemented with Typescript.
+dependencies (Vitest + the V8 coverage provider) for Eclipse GLSP components implemented with TypeScript.
 
-The package is available via npm and can be used by all GLSP components implemented with Typescript.
+The package is available via npm and can be used by all GLSP components implemented with TypeScript.
 
 ## Components
 
@@ -21,9 +21,7 @@ pnpm add --save-dev @eclipse-glsp/config-test
 pulled in transitively by this package):
 
 ```ts
-import { glspVitestConfig } from '@eclipse-glsp/vitest-config';
-
-export default glspVitestConfig;
+export { default } from '@eclipse-glsp/vitest-config';
 ```
 
 ## More information
