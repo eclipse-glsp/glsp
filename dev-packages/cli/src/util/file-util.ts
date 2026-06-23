@@ -134,15 +134,10 @@ export interface GlobOptions {
 }
 
 type GlobbySync = (patterns: string | string[], options?: GlobOptions) => string[];
-/** Predicate that reports whether a given path (relative to the configured `cwd`) is ignored. */
-export type IgnoreFilter = (path: string) => boolean;
-type IsIgnoredByIgnoreFilesSync = (patterns: string | string[], options?: GlobOptions) => IgnoreFilter;
 
 let _globbySync: GlobbySync | undefined;
-let _isIgnoredByIgnoreFilesSync: IsIgnoredByIgnoreFilesSync | undefined;
 const _globbyReady: Promise<void> = import('globby').then(m => {
     _globbySync = m.globbySync as GlobbySync;
-    _isIgnoredByIgnoreFilesSync = m.isIgnoredByIgnoreFilesSync as IsIgnoredByIgnoreFilesSync;
 });
 
 export async function initGlobby(): Promise<void> {
@@ -154,26 +149,6 @@ export function globby(patterns: string | string[], options?: GlobOptions): stri
         throw new Error('globby not initialized. Call initGlobby() before using glob functions.');
     }
     return _globbySync(patterns, options);
-}
-
-/**
- * Builds a predicate that reports whether a path is excluded by the gitignore-style ignore files
- * matched by the given {@link patterns}.
- *
- * In contrast to the {@link GlobOptions.ignoreFiles} glob option, which only searches the glob `cwd`
- * downwards, this also honors ignore files located in parent directories when {@link GlobOptions.cwd}
- * points at an ancestor (e.g. the repository root) — mirroring how Git applies `.gitignore` files up
- * the directory tree.
- *
- * @param patterns Glob pattern(s) used to locate the ignore files (e.g. `'**\/.indexignore'`).
- * @param options Glob options; `cwd` defines the directory the returned predicate's paths are resolved against.
- * @returns A predicate that returns `true` for paths (relative to `cwd`) that are ignored.
- */
-export function isIgnoredByIgnoreFiles(patterns: string | string[], options?: GlobOptions): IgnoreFilter {
-    if (!_isIgnoredByIgnoreFilesSync) {
-        throw new Error('globby not initialized. Call initGlobby() before using glob functions.');
-    }
-    return _isIgnoredByIgnoreFilesSync(patterns, options);
 }
 
 /**
