@@ -16,7 +16,7 @@
     "**/lib": true
   },
   "task.autoDetect": "off",
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
