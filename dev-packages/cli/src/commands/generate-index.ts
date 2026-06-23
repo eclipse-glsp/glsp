@@ -18,7 +18,18 @@ import { createOption } from 'commander';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { GlobOptions, LOGGER, baseCommand, cd, configureLogger, globby, validateDirectory } from '../util';
+import {
+    GlobOptions,
+    LOGGER,
+    baseCommand,
+    cd,
+    configureLogger,
+    getGitRoot,
+    globby,
+    isGitRepository,
+    isIgnoredByIgnoreFiles,
+    validateDirectory
+} from '../util';
 export interface GenerateIndexCmdOptions {
     singleIndex: boolean;
     forceOverwrite: boolean;
@@ -58,11 +69,12 @@ export function generateIndex(rootDir: string, options: GenerateIndexCmdOptions)
         ignore,
         cwd,
         onlyFiles: options.singleIndex,
-        markDirectories: true,
-        ignoreFiles: '**/' + options.ignoreFile
+        markDirectories: true
     };
     LOGGER.debug('Search for children using the following glob options', globOptions);
-    const files = globby(pattern, globOptions);
+
+    const isIgnored = createIgnoreFilter(cwd, options.ignoreFile);
+    const files = globby(pattern, globOptions).filter(file => !isIgnored(file));
     LOGGER.debug('All children considered in the input directory', files);
 
     const relativeRootDirectory = '';
@@ -78,6 +90,36 @@ export function generateIndex(rootDir: string, options: GenerateIndexCmdOptions)
             writeIndex(directory, children, options);
         }
     }
+}
+
+/**
+ * Creates a predicate that determines whether a globbed entry should be excluded based on the
+ * configured ignore files.
+ *
+ * Ignore files are resolved from the enclosing Git repository root down to the indexed directory, so
+ * that ignore files in parent directories are honored — matching how Git applies `.gitignore` files up
+ * the tree. Outside of a Git repository there is no well-defined upper boundary, so only ignore files
+ * within {@link rootDir} are considered.
+ *
+ * @param rootDir The absolute source directory that is being indexed (globbed entries are relative to it).
+ * @param ignoreFileName The name of the ignore file to honor (e.g. `.indexignore`).
+ * @returns A predicate that returns `true` for entries that should be excluded from indexing.
+ */
+export function createIgnoreFilter(rootDir: string, ignoreFileName: string): (file: string) => boolean {
+    const ignoreRoot = isGitRepository(rootDir) ? getGitRoot(rootDir) : rootDir;
+    const isIgnored = isIgnoredByIgnoreFiles('**/' + ignoreFileName, { cwd: ignoreRoot });
+    return file => {
+        // the predicate expects POSIX paths relative to `ignoreRoot`
+        let relative = path.relative(ignoreRoot, path.join(rootDir, file)).split(path.sep).join('/');
+        if (relative === '') {
+            return false;
+        }
+        // globby marks directories with a trailing slash; preserve it so directory-only patterns (e.g. `test/`) match
+        if (isDirectory(file)) {
+            relative += '/';
+        }
+        return isIgnored(relative);
+    };
 }
 
 export function isDirectChild(parent: string, child: string, childHasChildren: () => boolean): boolean {
