@@ -115,17 +115,17 @@ describe('link-action', () => {
     describe('filterLinkableRepos', () => {
         it('should keep linkable npm repos', () => {
             const result = filterLinkableRepos(['glsp-client', 'glsp-server-node', 'glsp-theia-integration'] as GLSPRepo[]);
-            expect(result).to.deep.equal(['glsp-client', 'glsp-server-node', 'glsp-theia-integration']);
+            expect(result).toEqual(['glsp-client', 'glsp-server-node', 'glsp-theia-integration']);
         });
 
         it('should keep glsp-eclipse-integration', () => {
             const result = filterLinkableRepos(['glsp-client', 'glsp-eclipse-integration'] as GLSPRepo[]);
-            expect(result).to.deep.equal(['glsp-client', 'glsp-eclipse-integration']);
+            expect(result).toEqual(['glsp-client', 'glsp-eclipse-integration']);
         });
 
         it('should exclude non-linkable repos', () => {
             const result = filterLinkableRepos(['glsp-client', 'glsp-server', 'glsp-playwright'] as GLSPRepo[]);
-            expect(result).to.deep.equal(['glsp-client']);
+            expect(result).toEqual(['glsp-client']);
         });
     });
 
@@ -143,8 +143,8 @@ describe('link-action', () => {
                 return [];
             });
             const result = getGLSPWorkspacePackages(repoDir);
-            expect(result).to.have.length(2);
-            expect(result.map(p => p.name)).to.deep.equal(['@eclipse-glsp/client', '@eclipse-glsp/protocol']);
+            expect(result).toHaveLength(2);
+            expect(result.map(p => p.name)).toEqual(['@eclipse-glsp/client', '@eclipse-glsp/protocol']);
         });
     });
 
@@ -160,7 +160,7 @@ describe('link-action', () => {
                 }
                 return [];
             });
-            expect(collectProvidedPackages(repoDir)).to.deep.equal({
+            expect(collectProvidedPackages(repoDir)).toEqual({
                 '@eclipse-glsp/client': path.join(repoDir, 'packages/client'),
                 '@eclipse-glsp/protocol': path.join(repoDir, 'packages/protocol')
             });
@@ -172,7 +172,7 @@ describe('link-action', () => {
             createNodeModules('glsp-client', 'sprotty');
             const clientDir = path.join(tempDir, 'glsp-client');
             const dir = resolveSingletonDir([clientDir], 'sprotty');
-            expect(dir).to.equal(fs.realpathSync(path.join(clientDir, 'node_modules', 'sprotty')));
+            expect(dir).toBe(fs.realpathSync(path.join(clientDir, 'node_modules', 'sprotty')));
         });
 
         it('should walk up to the package root when the entry has a nested manifest', () => {
@@ -186,13 +186,13 @@ describe('link-action', () => {
             fs.writeFileSync(path.join(invDir, 'lib', 'cjs', 'package.json'), JSON.stringify({ type: 'commonjs' }));
             fs.writeFileSync(path.join(invDir, 'lib', 'cjs', 'index.js'), 'module.exports = {};');
 
-            expect(resolveSingletonDir([clientDir], 'inversify')).to.equal(fs.realpathSync(invDir));
+            expect(resolveSingletonDir([clientDir], 'inversify')).toBe(fs.realpathSync(invDir));
         });
 
         it('should return undefined when the dependency is not resolvable from any dir', () => {
             createRepoDirs('glsp-client');
             fs.writeFileSync(path.join(tempDir, 'glsp-client', 'package.json'), JSON.stringify({ name: 'glsp-client' }));
-            expect(resolveSingletonDir([path.join(tempDir, 'glsp-client')], 'sprotty')).to.be.undefined;
+            expect(resolveSingletonDir([path.join(tempDir, 'glsp-client')], 'sprotty')).toBeUndefined();
         });
     });
 
@@ -202,10 +202,10 @@ describe('link-action', () => {
             createNodeModules('glsp-client', 'sprotty', 'inversify');
             const clientDir = path.join(tempDir, 'glsp-client');
             const links = collectSingletonLinks(clientDir);
-            expect(links.sprotty).to.equal(fs.realpathSync(path.join(clientDir, 'node_modules', 'sprotty')));
-            expect(links.inversify).to.equal(fs.realpathSync(path.join(clientDir, 'node_modules', 'inversify')));
+            expect(links.sprotty).toBe(fs.realpathSync(path.join(clientDir, 'node_modules', 'sprotty')));
+            expect(links.inversify).toBe(fs.realpathSync(path.join(clientDir, 'node_modules', 'inversify')));
             // unresolvable singletons (sprotty-protocol, etc.) are simply skipped
-            expect(links['sprotty-protocol']).to.be.undefined;
+            expect(links['sprotty-protocol']).toBeUndefined();
         });
     });
 
@@ -217,8 +217,8 @@ describe('link-action', () => {
             applyLinkOverrides(repoDir, { '@eclipse-glsp/protocol': path.join(tempDir, 'glsp-client/packages/protocol') });
 
             const workspace = readWorkspaceYaml('glsp-server-node');
-            expect(workspace.packages).to.deep.equal(['packages/*']);
-            expect(workspace.overrides).to.deep.equal({
+            expect(workspace.packages).toEqual(['packages/*']);
+            expect(workspace.overrides).toEqual({
                 foo: '1.0.0',
                 '@eclipse-glsp/protocol': 'link:../glsp-client/packages/protocol'
             });
@@ -228,14 +228,14 @@ describe('link-action', () => {
             createRepoDirs('glsp-server-node');
             const repoDir = path.join(tempDir, 'glsp-server-node');
             applyLinkOverrides(repoDir, { sprotty: path.join(tempDir, 'glsp-client/node_modules/sprotty') });
-            expect(readWorkspaceYaml('glsp-server-node').overrides).to.deep.equal({ sprotty: 'link:../glsp-client/node_modules/sprotty' });
+            expect(readWorkspaceYaml('glsp-server-node').overrides).toEqual({ sprotty: 'link:../glsp-client/node_modules/sprotty' });
         });
 
         it('should be a no-op for empty links', () => {
             createRepoDirs('glsp-server-node');
             const repoDir = path.join(tempDir, 'glsp-server-node');
             applyLinkOverrides(repoDir, {});
-            expect(fs.existsSync(path.join(repoDir, 'pnpm-workspace.yaml'))).to.be.false;
+            expect(fs.existsSync(path.join(repoDir, 'pnpm-workspace.yaml'))).toBe(false);
         });
     });
 
@@ -252,10 +252,10 @@ describe('link-action', () => {
                 }
             });
             const removed = removeLinkOverrides(path.join(tempDir, 'glsp-server-node'));
-            expect(removed).to.be.true;
+            expect(removed).toBe(true);
             const workspace = readWorkspaceYaml('glsp-server-node');
-            expect(workspace.packages).to.deep.equal(['packages/*']);
-            expect(workspace.overrides).to.deep.equal({ 'some-dep': '1.2.3' });
+            expect(workspace.packages).toEqual(['packages/*']);
+            expect(workspace.overrides).toEqual({ 'some-dep': '1.2.3' });
         });
 
         it('should drop the overrides key when it becomes empty', () => {
@@ -265,20 +265,20 @@ describe('link-action', () => {
                 overrides: { '@eclipse-glsp/protocol': 'link:../glsp-client/packages/protocol' }
             });
             removeLinkOverrides(path.join(tempDir, 'glsp-server-node'));
-            expect(readWorkspaceYaml('glsp-server-node')).to.not.have.property('overrides');
+            expect(readWorkspaceYaml('glsp-server-node')).not.toHaveProperty('overrides');
         });
 
         it('should not touch non-link overrides for the same package', () => {
             createRepoDirs('glsp-server-node');
             writeWorkspaceYaml('glsp-server-node', { overrides: { sprotty: '1.4.0' } });
             const removed = removeLinkOverrides(path.join(tempDir, 'glsp-server-node'));
-            expect(removed).to.be.false;
-            expect(readWorkspaceYaml('glsp-server-node').overrides).to.deep.equal({ sprotty: '1.4.0' });
+            expect(removed).toBe(false);
+            expect(readWorkspaceYaml('glsp-server-node').overrides).toEqual({ sprotty: '1.4.0' });
         });
 
         it('should return false when no workspace file exists', () => {
             createRepoDirs('glsp-server-node');
-            expect(removeLinkOverrides(path.join(tempDir, 'glsp-server-node'))).to.be.false;
+            expect(removeLinkOverrides(path.join(tempDir, 'glsp-server-node'))).toBe(false);
         });
     });
 
@@ -291,21 +291,21 @@ describe('link-action', () => {
             await runLink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions());
 
             // glsp-client is the source of truth and gets no overrides.
-            expect(readWorkspaceYaml('glsp-client')).to.not.have.property('overrides');
+            expect(readWorkspaceYaml('glsp-client')).not.toHaveProperty('overrides');
 
             // glsp-server-node consumes glsp-client's packages and the shared singletons.
             const serverOverrides = readWorkspaceYaml('glsp-server-node').overrides ?? {};
-            expect(serverOverrides['@eclipse-glsp/client']).to.equal('link:../glsp-client/packages/client');
-            expect(serverOverrides['@eclipse-glsp/protocol']).to.equal('link:../glsp-client/packages/protocol');
+            expect(serverOverrides['@eclipse-glsp/client']).toBe('link:../glsp-client/packages/client');
+            expect(serverOverrides['@eclipse-glsp/protocol']).toBe('link:../glsp-client/packages/protocol');
             for (const dep of SINGLETON_DEPS) {
-                expect(serverOverrides[dep]).to.equal(`link:../glsp-client/node_modules/${dep}`);
+                expect(serverOverrides[dep]).toBe(`link:../glsp-client/node_modules/${dep}`);
             }
 
             // Each repo is installed (to apply the overrides) and then built, in build order:
             // install client, build client, install server-node, build server-node.
-            expect(execAsyncStub.mock.calls.length).to.equal(4);
+            expect(execAsyncStub.mock.calls.length).toBe(4);
             const calls = execAsyncStub.mock.calls.map(c => [c[0], c[1].cwd] as const);
-            expect(calls).to.deep.equal([
+            expect(calls).toEqual([
                 ['pnpm install --no-frozen-lockfile', path.join(tempDir, 'glsp-client')],
                 ['pnpm run --if-present build', path.join(tempDir, 'glsp-client')],
                 ['pnpm install --no-frozen-lockfile', path.join(tempDir, 'glsp-server-node')],
@@ -321,8 +321,8 @@ describe('link-action', () => {
             await runLink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ build: false }));
 
             // Only the override-applying install runs per repo; no build.
-            expect(execAsyncStub.mock.calls.length).to.equal(2);
-            expect(execAsyncStub.mock.calls.every(c => c[0] === 'pnpm install --no-frozen-lockfile')).to.be.true;
+            expect(execAsyncStub.mock.calls.length).toBe(2);
+            expect(execAsyncStub.mock.calls.every(c => c[0] === 'pnpm install --no-frozen-lockfile')).toBe(true);
         });
 
         it('should link into the client/ subdir for glsp-eclipse-integration', async () => {
@@ -336,20 +336,20 @@ describe('link-action', () => {
             await runLink(['glsp-client', 'glsp-eclipse-integration'] as GLSPRepo[], makeOptions({ build: false }));
 
             // Overrides go into client/pnpm-workspace.yaml, not the repo root.
-            expect(fs.existsSync(path.join(tempDir, 'glsp-eclipse-integration', 'pnpm-workspace.yaml'))).to.be.false;
+            expect(fs.existsSync(path.join(tempDir, 'glsp-eclipse-integration', 'pnpm-workspace.yaml'))).toBe(false);
             const overrides = (YAML.parse(fs.readFileSync(path.join(clientDir, 'pnpm-workspace.yaml'), 'utf8')).overrides ?? {}) as Record<
                 string,
                 string
             >;
             // Relative link paths gain an extra ../ because the workspace is one level deeper than the repo root.
-            expect(overrides['@eclipse-glsp/client']).to.equal('link:../../glsp-client/packages/client');
+            expect(overrides['@eclipse-glsp/client']).toBe('link:../../glsp-client/packages/client');
             for (const dep of SINGLETON_DEPS) {
-                expect(overrides[dep]).to.equal(`link:../../glsp-client/node_modules/${dep}`);
+                expect(overrides[dep]).toBe(`link:../../glsp-client/node_modules/${dep}`);
             }
 
             // The install runs in the client/ workspace, not the repo root.
             const eclipseInstall = execAsyncStub.mock.calls.find(c => c[1].cwd === clientDir);
-            expect(eclipseInstall, 'install should run in client/').to.not.be.undefined;
+            expect(eclipseInstall, 'install should run in client/').toBeDefined();
         });
 
         it('should stop on first failure when failFast is true', async () => {
@@ -360,9 +360,9 @@ describe('link-action', () => {
                 await runLink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ failFast: true }));
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain('failed to link');
+                expect((error as Error).message).toContain('failed to link');
             }
-            expect(execAsyncStub.mock.calls.length).to.equal(1);
+            expect(execAsyncStub.mock.calls.length).toBe(1);
         });
 
         it('should skip non-linkable repos', async () => {
@@ -384,11 +384,11 @@ describe('link-action', () => {
 
             await runUnlink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions());
 
-            expect(readWorkspaceYaml('glsp-server-node')).to.not.have.property('overrides');
+            expect(readWorkspaceYaml('glsp-server-node')).not.toHaveProperty('overrides');
             // Only glsp-server-node had overrides, so only it is reinstalled.
-            expect(execAsyncStub.mock.calls.length).to.equal(1);
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm install --no-frozen-lockfile');
-            expect(execAsyncStub.mock.calls[0][1].cwd).to.equal(path.join(tempDir, 'glsp-server-node'));
+            expect(execAsyncStub.mock.calls.length).toBe(1);
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm install --no-frozen-lockfile');
+            expect(execAsyncStub.mock.calls[0][1].cwd).toBe(path.join(tempDir, 'glsp-server-node'));
         });
 
         it('should stop on first failure when failFast is true', async () => {
@@ -401,7 +401,7 @@ describe('link-action', () => {
                 await runUnlink(['glsp-client', 'glsp-server-node'] as GLSPRepo[], makeOptions({ failFast: true }));
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain('failed to unlink');
+                expect((error as Error).message).toContain('failed to unlink');
             }
         });
     });

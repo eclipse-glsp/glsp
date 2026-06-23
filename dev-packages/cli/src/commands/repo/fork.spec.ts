@@ -26,33 +26,33 @@ import { configureForkRemote } from './fork';
 describe('fork-utils', () => {
     describe('getRemoteUrl', () => {
         it('should return SSH URL for ssh protocol', () => {
-            expect(getRemoteUrl('ssh', 'myuser', 'glsp-client')).to.equal('git@github.com:myuser/glsp-client.git');
+            expect(getRemoteUrl('ssh', 'myuser', 'glsp-client')).toBe('git@github.com:myuser/glsp-client.git');
         });
 
         it('should return HTTPS URL for https protocol', () => {
-            expect(getRemoteUrl('https', 'myuser', 'glsp-client')).to.equal('https://github.com/myuser/glsp-client.git');
+            expect(getRemoteUrl('https', 'myuser', 'glsp-client')).toBe('https://github.com/myuser/glsp-client.git');
         });
 
         it('should return HTTPS URL for gh protocol', () => {
-            expect(getRemoteUrl('gh', 'myuser', 'glsp-client')).to.equal('https://github.com/myuser/glsp-client.git');
+            expect(getRemoteUrl('gh', 'myuser', 'glsp-client')).toBe('https://github.com/myuser/glsp-client.git');
         });
     });
 
     describe('remoteMatchesOrg', () => {
         it('should match HTTPS URL', () => {
-            expect(remoteMatchesOrg('https://github.com/eclipse-glsp/glsp-client.git', 'eclipse-glsp', 'glsp-client')).to.be.true;
+            expect(remoteMatchesOrg('https://github.com/eclipse-glsp/glsp-client.git', 'eclipse-glsp', 'glsp-client')).toBe(true);
         });
 
         it('should match SSH URL', () => {
-            expect(remoteMatchesOrg('git@github.com:eclipse-glsp/glsp-client.git', 'eclipse-glsp', 'glsp-client')).to.be.true;
+            expect(remoteMatchesOrg('git@github.com:eclipse-glsp/glsp-client.git', 'eclipse-glsp', 'glsp-client')).toBe(true);
         });
 
         it('should not match different org', () => {
-            expect(remoteMatchesOrg('https://github.com/myuser/glsp-client.git', 'eclipse-glsp', 'glsp-client')).to.be.false;
+            expect(remoteMatchesOrg('https://github.com/myuser/glsp-client.git', 'eclipse-glsp', 'glsp-client')).toBe(false);
         });
 
         it('should not match different repo', () => {
-            expect(remoteMatchesOrg('https://github.com/eclipse-glsp/glsp-server-node.git', 'eclipse-glsp', 'glsp-client')).to.be.false;
+            expect(remoteMatchesOrg('https://github.com/eclipse-glsp/glsp-server-node.git', 'eclipse-glsp', 'glsp-client')).toBe(false);
         });
     });
 
@@ -65,14 +65,14 @@ describe('fork-utils', () => {
                 origin: 'git@github.com:myuser/glsp-client.git',
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('already-configured');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('already-configured');
         });
 
         it('should return rename-origin when origin=eclipse-glsp and no upstream', () => {
             const remotes: RemoteInfo = {
                 origin: 'https://github.com/eclipse-glsp/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('rename-origin');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('rename-origin');
         });
 
         it('should return set-origin when origin=eclipse-glsp and upstream=eclipse-glsp', () => {
@@ -80,7 +80,7 @@ describe('fork-utils', () => {
                 origin: 'https://github.com/eclipse-glsp/glsp-client.git',
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('set-origin');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('set-origin');
         });
 
         it('should return unexpected when origin=eclipse-glsp and upstream=something-else', () => {
@@ -88,33 +88,33 @@ describe('fork-utils', () => {
                 origin: 'https://github.com/eclipse-glsp/glsp-client.git',
                 upstream: 'https://github.com/other-org/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('unexpected');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('unexpected');
         });
 
         it('should return unexpected when origin is unknown org', () => {
             const remotes: RemoteInfo = {
                 origin: 'https://github.com/other-org/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('unexpected');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('unexpected');
         });
 
         it('should return unexpected when no remotes exist', () => {
             const remotes: RemoteInfo = {};
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('unexpected');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('unexpected');
         });
 
         it('should return unexpected when only upstream exists', () => {
             const remotes: RemoteInfo = {
                 upstream: 'https://github.com/eclipse-glsp/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('unexpected');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('unexpected');
         });
 
         it('should handle SSH URLs for eclipse-glsp origin', () => {
             const remotes: RemoteInfo = {
                 origin: 'git@github.com:eclipse-glsp/glsp-client.git'
             };
-            expect(analyzeForkRemotes(remotes, forkUser, repo)).to.equal('rename-origin');
+            expect(analyzeForkRemotes(remotes, forkUser, repo)).toBe('rename-origin');
         });
     });
 });
@@ -152,10 +152,10 @@ describe('fork-action', () => {
 
             expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('myuser', 'glsp-client');
             const calls = execStub.mock.calls.map(c => c[0] as string);
-            expect(calls).to.include('git remote rename origin upstream');
+            expect(calls).toContain('git remote rename origin upstream');
             const addOrigin = calls.find(c => c.includes('git remote add origin'));
-            expect(addOrigin).to.exist;
-            expect(addOrigin).to.contain('git@github.com:myuser/glsp-client.git');
+            expect(addOrigin).toBeDefined();
+            expect(addOrigin).toContain('git@github.com:myuser/glsp-client.git');
         });
 
         it('should set origin URL for set-origin flow', async () => {
@@ -170,8 +170,8 @@ describe('fork-action', () => {
             expect(ensureForkStub).toHaveBeenCalledExactlyOnceWith('myuser', 'glsp-client');
             const calls = execStub.mock.calls.map(c => c[0] as string);
             const setUrl = calls.find(c => c.includes('git remote set-url origin'));
-            expect(setUrl).to.exist;
-            expect(setUrl).to.contain('https://github.com/myuser/glsp-client.git');
+            expect(setUrl).toBeDefined();
+            expect(setUrl).toContain('https://github.com/myuser/glsp-client.git');
         });
 
         it('should skip when already configured', async () => {
@@ -204,7 +204,7 @@ describe('fork-action', () => {
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'ssh');
 
             const addOriginCall = execStub.mock.calls.find(c => (c[0] as string).includes('git remote add origin'));
-            expect(addOriginCall![0]).to.contain('git@github.com:myuser/glsp-client.git');
+            expect(addOriginCall![0]).toContain('git@github.com:myuser/glsp-client.git');
         });
 
         it('should use https URL when protocol is https', async () => {
@@ -214,7 +214,7 @@ describe('fork-action', () => {
             await configureForkRemote('glsp-client', repoDir, 'myuser', 'https');
 
             const addOriginCall = execStub.mock.calls.find(c => (c[0] as string).includes('git remote add origin'));
-            expect(addOriginCall![0]).to.contain('https://github.com/myuser/glsp-client.git');
+            expect(addOriginCall![0]).toContain('https://github.com/myuser/glsp-client.git');
         });
 
         it('should pass correct cwd for git commands', async () => {
@@ -224,7 +224,7 @@ describe('fork-action', () => {
             await configureForkRemote('glsp-server-node', repoDir, 'myuser', 'ssh');
 
             for (const call of execStub.mock.calls) {
-                expect(call[1]).to.have.property('cwd', repoDir);
+                expect(call[1]).toHaveProperty('cwd', repoDir);
             }
         });
 

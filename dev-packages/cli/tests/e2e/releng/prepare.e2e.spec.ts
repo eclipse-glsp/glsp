@@ -155,30 +155,30 @@ describe('releng prepare — glsp', function () {
         const result = runCli(['releng', 'prepare', 'custom', '99.0.0', '--no-push', '--no-check', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Release branch created
         const branches = git('branch', repoDir);
-        expect(branches).to.contain('release-v99.0.0');
+        expect(branches).toContain('release-v99.0.0');
 
         // Version bumped in root package.json
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
-        expect(rootPkg.version).to.equal('99.0.0');
+        expect(rootPkg.version).toBe('99.0.0');
 
         // At least one workspace package.json updated
         const workspacePkgs = findWorkspacePackageJsons(repoDir);
-        expect(workspacePkgs.length).to.be.greaterThan(0);
+        expect(workspacePkgs.length).toBeGreaterThan(0);
         const firstPkg = readJson(workspacePkgs[0]);
-        expect(firstPkg.version).to.equal('99.0.0');
+        expect(firstPkg.version).toBe('99.0.0');
 
         // CHANGELOG.md updated
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-        expect(changelog).to.not.contain('## v99.0.0 - active');
-        expect(changelog).to.contain('## [v99.0.0 -');
+        expect(changelog).not.toContain('## v99.0.0 - active');
+        expect(changelog).toContain('## [v99.0.0 -');
 
         // Git commit created
         const logMsg = git('log -1 --pretty=%s', repoDir);
-        expect(logMsg).to.equal('v99.0.0');
+        expect(logMsg).toBe('v99.0.0');
     });
 });
 
@@ -218,29 +218,29 @@ for (const repo of NPM_REPOS_WITH_EXTERNAL_DEPS) {
             const result = runCli(['releng', 'prepare', 'next', '--no-push', '--no-check', '-r', repoDir], {
                 timeout: 0
             });
-            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
             // Nightly branch created (nightly-X.Y.0-next)
             const branches = git('branch', repoDir);
-            expect(branches).to.match(/nightly-\d+\.\d+\.0-next/);
+            expect(branches).toMatch(/nightly-\d+\.\d+\.0-next/);
 
             // Version bumped with -next suffix
             const rootPkg = readJson(path.join(repoDir, 'package.json'));
-            expect(rootPkg.version as string).to.match(/-next$/);
+            expect(rootPkg.version as string).toMatch(/-next$/);
 
             // At least one workspace package.json updated
             const workspacePkgs = findWorkspacePackageJsons(repoDir);
-            expect(workspacePkgs.length).to.be.greaterThan(0);
+            expect(workspacePkgs.length).toBeGreaterThan(0);
             const firstPkg = readJson(workspacePkgs[0]);
-            expect(firstPkg.version as string).to.match(/-next$/);
+            expect(firstPkg.version as string).toMatch(/-next$/);
 
             // CHANGELOG.md should have a new active section
             const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-            expect(changelog).to.match(/## v\d+\.\d+\.0 - active/);
+            expect(changelog).toMatch(/## v\d+\.\d+\.0 - active/);
 
             // Git commit message
             const logMsg = git('log -1 --pretty=%s', repoDir);
-            expect(logMsg).to.match(/^Switch to nightly \d+\.\d+\.0-next versions$/);
+            expect(logMsg).toMatch(/^Switch to nightly \d+\.\d+\.0-next versions$/);
         });
     });
 }
@@ -273,23 +273,23 @@ describe('releng prepare — glsp-playwright', function () {
         const result = runCli(['releng', 'prepare', 'next', '--no-push', '--no-check', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Nightly branch created
         const branches = git('branch', repoDir);
-        expect(branches).to.match(/nightly-\d+\.\d+\.0-next/);
+        expect(branches).toMatch(/nightly-\d+\.\d+\.0-next/);
 
         // Version bumped with -next suffix
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
-        expect(rootPkg.version as string).to.match(/-next$/);
+        expect(rootPkg.version as string).toMatch(/-next$/);
 
         // CHANGELOG.md should have a new active section
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-        expect(changelog).to.match(/## v\d+\.\d+\.0 - active/);
+        expect(changelog).toMatch(/## v\d+\.\d+\.0 - active/);
 
         // Git commit message
         const logMsg = git('log -1 --pretty=%s', repoDir);
-        expect(logMsg).to.match(/^Switch to nightly \d+\.\d+\.0-next versions$/);
+        expect(logMsg).toMatch(/^Switch to nightly \d+\.\d+\.0-next versions$/);
     });
 });
 
@@ -322,11 +322,11 @@ describe('releng prepare — glsp-client (extended)', function () {
         const result = runCli(['releng', 'prepare', 'next', '--no-push', '--no-check', '--verbose', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Verbose mode produces debug output
         const combined = result.stdout + result.stderr;
-        expect(combined).to.contain('Bump version');
+        expect(combined).toContain('Bump version');
     });
 
     it('should push --draft release to local bare remote', function () {
@@ -338,10 +338,10 @@ describe('releng prepare — glsp-client (extended)', function () {
 
         // gh pr create will fail, so exit code is non-zero. But verify push happened.
         const remoteBranches = git('branch', bareDir);
-        expect(remoteBranches).to.match(/nightly-\d+\.\d+\.0-next/);
+        expect(remoteBranches).toMatch(/nightly-\d+\.\d+\.0-next/);
 
         // Regardless of exit code, the test exercises the push + draft path
-        expect(result).to.not.equal(undefined);
+        expect(result).not.toBe(undefined);
     });
 });
 
@@ -373,27 +373,27 @@ describe('releng prepare — glsp-theia-integration', function () {
         const result = runCli(['releng', 'prepare', 'next', '--no-push', '--no-check', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Nightly branch created
         const branches = git('branch', repoDir);
-        expect(branches).to.match(/nightly-\d+\.\d+\.0-next/);
+        expect(branches).toMatch(/nightly-\d+\.\d+\.0-next/);
 
         // NPM checks
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
-        expect(rootPkg.version as string).to.match(/-next$/);
+        expect(rootPkg.version as string).toMatch(/-next$/);
 
         // Theia README compatibility table should contain 'next'
         const readme = readText(path.join(repoDir, 'README.md'));
-        expect(readme).to.contain('next');
+        expect(readme).toContain('next');
 
         // CHANGELOG.md should have a new active section
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-        expect(changelog).to.match(/## v\d+\.\d+\.0 - active/);
+        expect(changelog).toMatch(/## v\d+\.\d+\.0 - active/);
 
         // Git commit message
         const logMsg = git('log -1 --pretty=%s', repoDir);
-        expect(logMsg).to.match(/^Switch to nightly \d+\.\d+\.0-next versions$/);
+        expect(logMsg).toMatch(/^Switch to nightly \d+\.\d+\.0-next versions$/);
     });
 });
 
@@ -429,24 +429,24 @@ describe.skipIf(!isMavenAvailable())('releng prepare — glsp-server', function 
         const result = runCli(['releng', 'prepare', 'custom', '99.0.0', '--no-push', '--no-check', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Release branch created
         const branches = git('branch', repoDir);
-        expect(branches).to.contain('release-v99.0.0');
+        expect(branches).toContain('release-v99.0.0');
 
         // Version bumped in pom.xml
         const pom = readText(path.join(repoDir, 'pom.xml'));
-        expect(pom).to.contain('<version>99.0.0</version>');
+        expect(pom).toContain('<version>99.0.0</version>');
 
         // CHANGELOG.md updated
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-        expect(changelog).to.not.contain('## v99.0.0 - active');
-        expect(changelog).to.contain('## [v99.0.0 -');
+        expect(changelog).not.toContain('## v99.0.0 - active');
+        expect(changelog).toContain('## [v99.0.0 -');
 
         // Git commit created
         const logMsg = git('log -1 --pretty=%s', repoDir);
-        expect(logMsg).to.equal('v99.0.0');
+        expect(logMsg).toBe('v99.0.0');
     });
 });
 
@@ -480,26 +480,26 @@ describe.skipIf(!isMavenAvailable())('releng prepare — glsp-eclipse-integratio
         const result = runCli(['releng', 'prepare', 'next', '--no-push', '--no-check', '-r', repoDir], {
             timeout: 0
         });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Nightly branch created
         const branches = git('branch', repoDir);
-        expect(branches).to.match(/nightly-\d+\.\d+\.0-next/);
+        expect(branches).toMatch(/nightly-\d+\.\d+\.0-next/);
 
         // Client npm packages get the -next suffix
         const clientPkg = readJson(path.join(repoDir, 'client', 'package.json'));
-        expect(clientPkg.version as string).to.match(/-next$/);
+        expect(clientPkg.version as string).toMatch(/-next$/);
 
         // Server pom.xml gets a SNAPSHOT version
         const serverPom = readText(path.join(repoDir, 'server', 'pom.xml'));
-        expect(serverPom).to.match(/<version>\d+\.\d+\.0-SNAPSHOT<\/version>/);
+        expect(serverPom).toMatch(/<version>\d+\.\d+\.0-SNAPSHOT<\/version>/);
 
         // CHANGELOG.md has a new active section added
         const changelog = readText(path.join(repoDir, 'CHANGELOG.md'));
-        expect(changelog).to.match(/## v\d+\.\d+\.0 - active/);
+        expect(changelog).toMatch(/## v\d+\.\d+\.0 - active/);
 
         // Git commit message for nightly
         const logMsg = git('log -1 --pretty=%s', repoDir);
-        expect(logMsg).to.match(/^Switch to nightly \d+\.\d+\.0-next versions$/);
+        expect(logMsg).toMatch(/^Switch to nightly \d+\.\d+\.0-next versions$/);
     });
 });

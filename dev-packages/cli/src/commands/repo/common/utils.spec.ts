@@ -42,20 +42,20 @@ describe('workspace-resolution', () => {
             const dir = path.join(tempDir, 'my-workspace');
             fs.mkdirSync(dir, { recursive: true });
             const result = resolveWorkspaceDir(dir);
-            expect(result).to.equal(dir);
+            expect(result).toBe(dir);
         });
 
         it('should resolve a relative cliDir against cwd', () => {
             process.chdir(tempDir);
             fs.mkdirSync(path.join(tempDir, 'sub'), { recursive: true });
             const result = resolveWorkspaceDir('sub');
-            expect(result).to.equal(path.resolve(tempDir, 'sub'));
+            expect(result).toBe(path.resolve(tempDir, 'sub'));
         });
 
         it('should return cwd when no cliDir and not inside a known repo', () => {
             process.chdir(tempDir);
             const result = resolveWorkspaceDir();
-            expect(result).to.equal(tempDir);
+            expect(result).toBe(tempDir);
         });
 
         it('should return the parent of a known repo root when inside one', () => {
@@ -63,7 +63,7 @@ describe('workspace-resolution', () => {
             fs.mkdirSync(repoDir, { recursive: true });
             process.chdir(repoDir);
             const result = resolveWorkspaceDir();
-            expect(result).to.equal(tempDir);
+            expect(result).toBe(tempDir);
         });
 
         it('should walk up from a nested directory inside a known repo', () => {
@@ -72,7 +72,7 @@ describe('workspace-resolution', () => {
             fs.mkdirSync(nestedDir, { recursive: true });
             process.chdir(nestedDir);
             const result = resolveWorkspaceDir();
-            expect(result).to.equal(tempDir);
+            expect(result).toBe(tempDir);
         });
     });
 });
@@ -95,7 +95,7 @@ describe('repo-discovery', () => {
             fs.mkdirSync(path.join(tempDir, 'glsp-client'));
             fs.mkdirSync(path.join(tempDir, 'glsp-server-node'));
             const repos = discoverRepos(tempDir);
-            expect(repos).to.deep.equal(['glsp-server-node', 'glsp-client']);
+            expect(repos).toEqual(['glsp-server-node', 'glsp-client']);
         });
 
         it('should ignore non-GLSP directories', () => {
@@ -103,19 +103,19 @@ describe('repo-discovery', () => {
             fs.mkdirSync(path.join(tempDir, 'my-project'));
             fs.mkdirSync(path.join(tempDir, 'node_modules'));
             const repos = discoverRepos(tempDir);
-            expect(repos).to.deep.equal(['glsp-client']);
+            expect(repos).toEqual(['glsp-client']);
         });
 
         it('should ignore files matching GLSP repo names', () => {
             fs.mkdirSync(path.join(tempDir, 'glsp-client'));
             fs.writeFileSync(path.join(tempDir, 'glsp-server-node'), 'not a dir');
             const repos = discoverRepos(tempDir);
-            expect(repos).to.deep.equal(['glsp-client']);
+            expect(repos).toEqual(['glsp-client']);
         });
 
         it('should return empty array for nonexistent directory', () => {
             const repos = discoverRepos(path.join(tempDir, 'nonexistent'));
-            expect(repos).to.deep.equal([]);
+            expect(repos).toEqual([]);
         });
 
         it('should return repos sorted by GLSPRepo.choices order', () => {
@@ -123,13 +123,13 @@ describe('repo-discovery', () => {
             fs.mkdirSync(path.join(tempDir, 'glsp'));
             fs.mkdirSync(path.join(tempDir, 'glsp-client'));
             const repos = discoverRepos(tempDir);
-            expect(repos).to.deep.equal(['glsp', 'glsp-client', 'glsp-theia-integration']);
+            expect(repos).toEqual(['glsp', 'glsp-client', 'glsp-theia-integration']);
         });
 
         it('should return empty array when no GLSP repos exist', () => {
             fs.mkdirSync(path.join(tempDir, 'some-project'));
             const repos = discoverRepos(tempDir);
-            expect(repos).to.deep.equal([]);
+            expect(repos).toEqual([]);
         });
     });
 });
@@ -144,22 +144,22 @@ describe('repo-graph', () => {
             const glspIdx = order.indexOf('glsp');
             const clientIdx = order.indexOf('glsp-client');
             const serverNodeIdx = order.indexOf('glsp-server-node');
-            expect(glspIdx).to.be.lessThan(clientIdx);
-            expect(clientIdx).to.be.lessThan(serverNodeIdx);
+            expect(glspIdx).toBeLessThan(clientIdx);
+            expect(clientIdx).toBeLessThan(serverNodeIdx);
         });
 
         it('should include only requested repos', () => {
             const repos: GLSPRepo[] = ['glsp-client', 'glsp-server-node'];
             const order = getBuildOrder(repos);
-            expect(order).to.have.lengthOf(2);
-            expect(order).to.include('glsp-client');
-            expect(order).to.include('glsp-server-node');
+            expect(order).toHaveLength(2);
+            expect(order).toContain('glsp-client');
+            expect(order).toContain('glsp-server-node');
         });
 
         it('should handle independent repos', () => {
             const repos: GLSPRepo[] = ['glsp-playwright'];
             const order = getBuildOrder(repos);
-            expect(order).to.deep.equal(['glsp-playwright']);
+            expect(order).toEqual(['glsp-playwright']);
         });
 
         it('should place glsp-server before glsp-eclipse-integration', () => {
@@ -167,22 +167,22 @@ describe('repo-graph', () => {
             const order = getBuildOrder(repos);
             const serverIdx = order.indexOf('glsp-server');
             const eclipseIdx = order.indexOf('glsp-eclipse-integration');
-            expect(serverIdx).to.be.lessThan(eclipseIdx);
+            expect(serverIdx).toBeLessThan(eclipseIdx);
         });
     });
 
     describe('isLeafRepo', () => {
         it('should return true for repos that no other repo depends on', () => {
-            expect(isLeafRepo('glsp-theia-integration')).to.be.true;
-            expect(isLeafRepo('glsp-vscode-integration')).to.be.true;
-            expect(isLeafRepo('glsp-playwright')).to.be.true;
+            expect(isLeafRepo('glsp-theia-integration')).toBe(true);
+            expect(isLeafRepo('glsp-vscode-integration')).toBe(true);
+            expect(isLeafRepo('glsp-playwright')).toBe(true);
         });
 
         it('should return false for repos that are dependencies of other repos', () => {
-            expect(isLeafRepo('glsp')).to.be.false;
-            expect(isLeafRepo('glsp-client')).to.be.false;
-            expect(isLeafRepo('glsp-server-node')).to.be.false;
-            expect(isLeafRepo('glsp-server')).to.be.false;
+            expect(isLeafRepo('glsp')).toBe(false);
+            expect(isLeafRepo('glsp-client')).toBe(false);
+            expect(isLeafRepo('glsp-server-node')).toBe(false);
+            expect(isLeafRepo('glsp-server')).toBe(false);
         });
     });
 });

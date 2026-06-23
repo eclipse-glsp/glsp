@@ -71,31 +71,31 @@ for (const repo of NPM_REPOS) {
 
         it(`should set custom version 99.0.0`, function () {
             const result = runCli(['releng', 'version', 'custom', '99.0.0', '-r', repoDir], { timeout: 0 });
-            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
             // Root package.json
             const rootPkg = readJson(path.join(repoDir, 'package.json'));
-            expect(rootPkg.version).to.equal('99.0.0');
+            expect(rootPkg.version).toBe('99.0.0');
 
             // At least one workspace package.json updated
             const workspacePkgs = findWorkspacePackageJsons(repoDir);
-            expect(workspacePkgs.length).to.be.greaterThan(0);
+            expect(workspacePkgs.length).toBeGreaterThan(0);
             const firstPkg = readJson(workspacePkgs[0]);
-            expect(firstPkg.version).to.equal('99.0.0');
+            expect(firstPkg.version).toBe('99.0.0');
         });
 
         it(`should set next version`, function () {
             const result = runCli(['releng', 'version', 'next', '-r', repoDir], { timeout: 0 });
-            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+            expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
             const rootPkg = readJson(path.join(repoDir, 'package.json'));
-            expect(rootPkg.version as string).to.match(/-next$/);
+            expect(rootPkg.version as string).toMatch(/-next$/);
 
             // At least one workspace package.json updated
             const workspacePkgs = findWorkspacePackageJsons(repoDir);
-            expect(workspacePkgs.length).to.be.greaterThan(0);
+            expect(workspacePkgs.length).toBeGreaterThan(0);
             const firstPkg = readJson(workspacePkgs[0]);
-            expect(firstPkg.version as string).to.match(/-next$/);
+            expect(firstPkg.version as string).toMatch(/-next$/);
         });
     });
 }
@@ -122,27 +122,27 @@ describe('releng version — glsp-client (extended)', function () {
         const origVersion = origPkg.version as string;
 
         const result = runCli(['releng', 'version', 'minor', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         const updatedPkg = readJson(path.join(repoDir, 'package.json'));
         const newVersion = updatedPkg.version as string;
-        expect(newVersion).to.not.equal(origVersion);
+        expect(newVersion).not.toBe(origVersion);
 
         // New version should be a clean semver without pre-release suffix
         // and its minor component should be >= the original base minor
         const origMinor = parseInt(origVersion.replace(/-.*$/, '').split('.')[1], 10);
         const newMinor = parseInt(newVersion.split('.')[1], 10);
-        expect(newMinor).to.be.greaterThanOrEqual(origMinor);
-        expect(newVersion).to.not.contain('-');
+        expect(newMinor).toBeGreaterThanOrEqual(origMinor);
+        expect(newVersion).not.toContain('-');
     });
 
     it('should accept --verbose flag', function () {
         const result = runCli(['releng', 'version', 'custom', '99.0.0', '--verbose', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Verbose mode produces debug output
         const combined = result.stdout + result.stderr;
-        expect(combined).to.contain('Bump version');
+        expect(combined).toContain('Bump version');
     });
 });
 
@@ -165,31 +165,31 @@ describe('releng version — glsp-theia-integration', function () {
 
     it('should set custom version 99.0.0 and update Theia README', function () {
         const result = runCli(['releng', 'version', 'custom', '99.0.0', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // NPM checks
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
-        expect(rootPkg.version).to.equal('99.0.0');
+        expect(rootPkg.version).toBe('99.0.0');
 
         const workspacePkgs = findWorkspacePackageJsons(repoDir);
-        expect(workspacePkgs.length).to.be.greaterThan(0);
+        expect(workspacePkgs.length).toBeGreaterThan(0);
 
         // Theia README compatibility table should contain the new version
         const readme = readText(path.join(repoDir, 'README.md'));
-        expect(readme).to.contain('99.0.0');
+        expect(readme).toContain('99.0.0');
     });
 
     it('should set next version', function () {
         const result = runCli(['releng', 'version', 'next', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         const rootPkg = readJson(path.join(repoDir, 'package.json'));
-        expect(rootPkg.version as string).to.match(/-next$/);
+        expect(rootPkg.version as string).toMatch(/-next$/);
 
         const workspacePkgs = findWorkspacePackageJsons(repoDir);
-        expect(workspacePkgs.length).to.be.greaterThan(0);
+        expect(workspacePkgs.length).toBeGreaterThan(0);
         const firstPkg = readJson(workspacePkgs[0]);
-        expect(firstPkg.version as string).to.match(/-next$/);
+        expect(firstPkg.version as string).toMatch(/-next$/);
     });
 });
 
@@ -216,18 +216,18 @@ describe.skipIf(!isMavenAvailable())('releng version — glsp-server', function 
 
     it('should set custom version 99.0.0 in pom.xml', function () {
         const result = runCli(['releng', 'version', 'custom', '99.0.0', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         const pom = readText(path.join(repoDir, 'pom.xml'));
-        expect(pom).to.contain('<version>99.0.0</version>');
+        expect(pom).toContain('<version>99.0.0</version>');
     });
 
     it('should set next version as SNAPSHOT in pom.xml', function () {
         const result = runCli(['releng', 'version', 'next', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         const pom = readText(path.join(repoDir, 'pom.xml'));
-        expect(pom).to.match(/<version>\d+\.\d+\.\d+-SNAPSHOT<\/version>/);
+        expect(pom).toMatch(/<version>\d+\.\d+\.\d+-SNAPSHOT<\/version>/);
     });
 });
 
@@ -254,28 +254,28 @@ describe.skipIf(!isMavenAvailable())('releng version — glsp-eclipse-integratio
 
     it('should set custom version 99.0.0 in client and server', function () {
         const result = runCli(['releng', 'version', 'custom', '99.0.0', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Client npm packages
         const clientPkg = readJson(path.join(repoDir, 'client', 'package.json'));
-        expect(clientPkg.version).to.equal('99.0.0');
+        expect(clientPkg.version).toBe('99.0.0');
 
         // Server pom.xml
         const serverPom = readText(path.join(repoDir, 'server', 'pom.xml'));
-        expect(serverPom).to.contain('<version>99.0.0</version>');
+        expect(serverPom).toContain('<version>99.0.0</version>');
     });
 
     it('should set next version in client and server', function () {
         const result = runCli(['releng', 'version', 'next', '-r', repoDir], { timeout: 0 });
-        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).to.equal(0);
+        expect(result.exitCode, `stdout: ${result.stdout}\nstderr: ${result.stderr}`).toBe(0);
 
         // Client should have -next suffix
         const clientPkg = readJson(path.join(repoDir, 'client', 'package.json'));
-        expect(clientPkg.version as string).to.match(/-next$/);
+        expect(clientPkg.version as string).toMatch(/-next$/);
 
         // Server should have -SNAPSHOT suffix
         const serverPom = readText(path.join(repoDir, 'server', 'pom.xml'));
-        expect(serverPom).to.match(/<version>\d+\.\d+\.\d+-SNAPSHOT<\/version>/);
+        expect(serverPom).toMatch(/<version>\d+\.\d+\.\d+-SNAPSHOT<\/version>/);
     });
 });
 

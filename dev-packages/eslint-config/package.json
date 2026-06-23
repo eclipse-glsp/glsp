@@ -38,7 +38,6 @@
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-import-resolver-typescript": "^4.0.0",
-    "eslint-plugin-chai-friendly": "^1.0.0",
     "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-no-null": "^1.0.2",
     "globals": "^17.6.0",

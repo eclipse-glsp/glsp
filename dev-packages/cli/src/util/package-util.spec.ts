@@ -38,19 +38,19 @@ describe('package-util', () => {
         });
 
         it('should throw if the path does not point to a package.json file', () => {
-            expect(() => new PackageHelper(path.join(tempDir, 'other.json'), 'test')).to.throw(/must point to a package.json/);
+            expect(() => new PackageHelper(path.join(tempDir, 'other.json'), 'test')).toThrow(/must point to a package.json/);
         });
 
         it('should throw if the package.json file does not exist', () => {
-            expect(() => new PackageHelper(path.join(tempDir, 'package.json'), 'test')).to.throw(/No package.json found/);
+            expect(() => new PackageHelper(path.join(tempDir, 'package.json'), 'test')).toThrow(/No package.json found/);
         });
 
         it('should succeed when the path points to an existing package.json', () => {
             const packageJsonPath = path.join(tempDir, 'package.json');
             fs.writeFileSync(packageJsonPath, JSON.stringify({ name: 'test-pkg', version: '1.0.0' }));
             const helper = new PackageHelper(packageJsonPath, 'test-pkg');
-            expect(helper.filePath).to.equal(packageJsonPath);
-            expect(helper.name).to.equal('test-pkg');
+            expect(helper.filePath).toBe(packageJsonPath);
+            expect(helper.name).toBe('test-pkg');
         });
     });
 
@@ -84,8 +84,8 @@ describe('package-util', () => {
             vi.spyOn(processUtil, 'exec').mockReturnValue(listOutput);
 
             const packages = getWorkspacePackages(tempDir);
-            expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', '@scope/pkg-b']);
-            expect(packages.map(pkg => pkg.location)).to.deep.equal([pkgADir, pkgBDir]);
+            expect(packages.map(pkg => pkg.name)).toEqual(['@scope/pkg-a', '@scope/pkg-b']);
+            expect(packages.map(pkg => pkg.location)).toEqual([pkgADir, pkgBDir]);
         });
 
         it('should append the root package if includeRoot is set', () => {
@@ -98,8 +98,8 @@ describe('package-util', () => {
             vi.spyOn(processUtil, 'exec').mockReturnValue(listOutput);
 
             const packages = getWorkspacePackages(tempDir, true);
-            expect(packages.map(pkg => pkg.name)).to.deep.equal(['@scope/pkg-a', 'root']);
-            expect(packages[packages.length - 1].location).to.equal(tempDir);
+            expect(packages.map(pkg => pkg.name)).toEqual(['@scope/pkg-a', 'root']);
+            expect(packages[packages.length - 1].location).toBe(tempDir);
         });
     });
 });

@@ -21,29 +21,29 @@ describe('run-command', () => {
     describe('createScopedRunCommand', () => {
         it('should create a command named "run"', () => {
             const cmd = createScopedRunCommand('glsp-client');
-            expect(cmd.name()).to.equal('run');
+            expect(cmd.name()).toBe('run');
         });
 
         it('should include the repo name in the description', () => {
             const cmd = createScopedRunCommand('glsp-server-node');
-            expect(cmd.description()).to.contain('glsp-server-node');
+            expect(cmd.description()).toContain('glsp-server-node');
         });
 
         it('should require a script argument', () => {
             const cmd = createScopedRunCommand('glsp-client');
             const scriptArg = cmd.registeredArguments.find(a => a.name() === 'script');
-            expect(scriptArg).to.not.be.undefined;
-            expect(scriptArg!.required).to.be.true;
+            expect(scriptArg).toBeDefined();
+            expect(scriptArg!.required).toBe(true);
         });
 
         it('should allow unknown options for passthrough', () => {
             const cmd = createScopedRunCommand('glsp-client');
-            expect((cmd as any)._allowUnknownOption).to.be.true;
+            expect((cmd as any)._allowUnknownOption).toBe(true);
         });
 
         it('should allow excess arguments for passthrough', () => {
             const cmd = createScopedRunCommand('glsp-client');
-            expect((cmd as any)._allowExcessArguments).to.be.true;
+            expect((cmd as any)._allowExcessArguments).toBe(true);
         });
     });
 });

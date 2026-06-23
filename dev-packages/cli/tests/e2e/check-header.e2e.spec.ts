@@ -53,32 +53,32 @@ describe('checkHeaders e2e', () => {
     it('should pass for files with valid headers', () => {
         commitFile(repoDir, 'src/good.ts', VALID_HEADER + '\nconst x = 1;\n', 'add valid file');
         const result = runCli(['checkHeaders', repoDir]);
-        expect(result.exitCode).to.equal(0);
-        expect(result.stdout).to.contain('0 copyright header violations');
+        expect(result.exitCode).toBe(0);
+        expect(result.stdout).toContain('0 copyright header violations');
     });
 
     it('should detect files with missing headers', () => {
         commitFile(repoDir, 'src/bad.ts', 'const x = 1;\n', 'add file without header');
         const result = runCli(['checkHeaders', repoDir]);
-        expect(result.exitCode).to.not.equal(0);
+        expect(result.exitCode).not.toBe(0);
     });
 
     it('should auto-fix invalid headers with --autoFix', () => {
         const outdatedHeader = VALID_HEADER.replace(String(new Date().getFullYear()), '2020');
         commitFile(repoDir, 'src/outdated.ts', outdatedHeader + '\nconst x = 1;\n', 'add outdated file');
         const result = runCli(['checkHeaders', repoDir, '--autoFix']);
-        expect(result.exitCode).to.equal(0);
+        expect(result.exitCode).toBe(0);
         const content = fs.readFileSync(path.join(repoDir, 'src/outdated.ts'), 'utf8');
-        expect(content).to.contain(String(new Date().getFullYear()));
+        expect(content).toContain(String(new Date().getFullYear()));
     });
 
     it('should create a git commit with --autoFix --commit', () => {
         const outdatedHeader = VALID_HEADER.replace(String(new Date().getFullYear()), '2020');
         commitFile(repoDir, 'src/outdated.ts', outdatedHeader + '\nconst x = 1;\n', 'add outdated file');
         const result = runCli(['checkHeaders', repoDir, '--autoFix', '--commit']);
-        expect(result.exitCode).to.equal(0);
+        expect(result.exitCode).toBe(0);
         const log = execSync('git log --oneline', { cwd: repoDir, encoding: 'utf-8' });
-        expect(log).to.contain('Fix copyright header violations');
+        expect(log).toContain('Fix copyright header violations');
     });
 
     it('should only check changed files with --type changes', () => {
@@ -87,7 +87,7 @@ describe('checkHeaders e2e', () => {
         fs.writeFileSync(path.join(repoDir, 'src/new.ts'), 'const y = 2;\n');
         execSync('git add .', { cwd: repoDir });
         const result = runCli(['checkHeaders', repoDir, '--type', 'changes']);
-        expect(result.stdout).to.contain('1 copyright header violations');
+        expect(result.stdout).toContain('1 copyright header violations');
     });
 
     it('should check files changed against the default branch with --type changes', () => {
@@ -96,16 +96,16 @@ describe('checkHeaders e2e', () => {
         execSync('git checkout -b feature', { cwd: repoDir });
         commitFile(repoDir, 'src/feature.ts', 'const y = 2;\n', 'add feature file');
         const result = runCli(['checkHeaders', repoDir, '--type', 'changes']);
-        expect(result.stdout).to.contain('Check copy right headers of 1 files');
-        expect(result.stdout).to.contain('feature.ts');
-        expect(result.stdout).to.not.contain('base.ts');
+        expect(result.stdout).toContain('Check copy right headers of 1 files');
+        expect(result.stdout).toContain('feature.ts');
+        expect(result.stdout).not.toContain('base.ts');
     });
 
     it('should only check last commit files with --type lastCommit', () => {
         commitFile(repoDir, 'src/old.ts', VALID_HEADER + '\nconst x = 1;\n', 'add old file');
         commitFile(repoDir, 'src/new.ts', 'const y = 2;\n', 'add new file');
         const result = runCli(['checkHeaders', repoDir, '--type', 'lastCommit']);
-        expect(result.stdout).to.contain('Check copy right headers of 1 files');
+        expect(result.stdout).toContain('Check copy right headers of 1 files');
     });
 
     describe('with a repository under a dot-directory', () => {
@@ -126,16 +126,16 @@ describe('checkHeaders e2e', () => {
             execSync('git checkout -b feature', { cwd: hiddenRepoDir });
             commitFile(hiddenRepoDir, 'src/feature.ts', 'const y = 2;\n', 'add feature file');
             const result = runCli(['checkHeaders', hiddenRepoDir, '--type', 'changes']);
-            expect(result.stdout).to.contain('Check copy right headers of 1 files');
-            expect(result.stdout).to.contain('feature.ts');
-            expect(result.stdout).to.not.contain('base.ts');
+            expect(result.stdout).toContain('Check copy right headers of 1 files');
+            expect(result.stdout).toContain('feature.ts');
+            expect(result.stdout).not.toContain('base.ts');
         });
 
         it('should still detect changed files with --type lastCommit', () => {
             commitFile(hiddenRepoDir, 'src/old.ts', VALID_HEADER + '\nconst x = 1;\n', 'add old file');
             commitFile(hiddenRepoDir, 'src/new.ts', 'const y = 2;\n', 'add new file');
             const result = runCli(['checkHeaders', hiddenRepoDir, '--type', 'lastCommit']);
-            expect(result.stdout).to.contain('Check copy right headers of 1 files');
+            expect(result.stdout).toContain('Check copy right headers of 1 files');
         });
     });
 
@@ -143,29 +143,29 @@ describe('checkHeaders e2e', () => {
         commitFile(repoDir, 'src/script.js', 'const x = 1;\n', 'add js file');
         commitFile(repoDir, 'src/good.ts', VALID_HEADER + '\nconst y = 2;\n', 'add ts file');
         const result = runCli(['checkHeaders', repoDir, '--fileExtensions', 'js']);
-        expect(result.stdout).to.contain('Check copy right headers of 1 files');
+        expect(result.stdout).toContain('Check copy right headers of 1 files');
     });
 
     it('should exclude files matching --exclude pattern', () => {
         commitFile(repoDir, 'src/main.ts', 'const x = 1;\n', 'add main');
         commitFile(repoDir, 'src/generated/output.ts', 'const y = 2;\n', 'add generated');
         const result = runCli(['checkHeaders', repoDir, '--exclude', '**/generated/**']);
-        expect(result.stdout).to.not.contain('generated/output.ts');
+        expect(result.stdout).not.toContain('generated/output.ts');
     });
 
     it('should accept --no-exclude-defaults flag', () => {
         commitFile(repoDir, 'src/main.ts', VALID_HEADER + '\nconst y = 2;\n', 'add main');
         const result = runCli(['checkHeaders', repoDir, '--no-exclude-defaults']);
-        expect(result.exitCode).to.equal(0);
+        expect(result.exitCode).toBe(0);
     });
 
     it('should write results to JSON file with --json', () => {
         commitFile(repoDir, 'src/good.ts', VALID_HEADER + '\nconst x = 1;\n', 'add valid file');
         const result = runCli(['checkHeaders', repoDir, '--json']);
-        expect(result.exitCode).to.equal(0);
+        expect(result.exitCode).toBe(0);
         const jsonPath = path.join(repoDir, 'headerCheck.json');
-        expect(fs.existsSync(jsonPath)).to.equal(true);
+        expect(fs.existsSync(jsonPath)).toBe(true);
         const jsonContent = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-        expect(jsonContent).to.be.an('array');
+        expect(Array.isArray(jsonContent)).toBe(true);
     });
 });

@@ -23,31 +23,31 @@ describe('repo-filter', () => {
 
         it('should return configured repos when no filter is specified', () => {
             const result = resolveRepoFilter(configuredRepos, {});
-            expect(result).to.deep.equal(configuredRepos);
+            expect(result).toEqual(configuredRepos);
         });
 
         it('should filter to specific repos with --repo', () => {
             const result = resolveRepoFilter(configuredRepos, { repo: ['glsp-client'] });
-            expect(result).to.deep.equal(['glsp-client']);
+            expect(result).toEqual(['glsp-client']);
         });
 
         it('should allow repos not in config with --repo', () => {
             const result = resolveRepoFilter(configuredRepos, { repo: ['glsp-playwright'] });
-            expect(result).to.deep.equal(['glsp-playwright']);
+            expect(result).toEqual(['glsp-playwright']);
         });
 
         it('should expand preset with --preset', () => {
             const result = resolveRepoFilter(configuredRepos, { preset: 'core' });
-            expect(result).to.include('glsp-client');
-            expect(result).to.include('glsp-server-node');
+            expect(result).toContain('glsp-client');
+            expect(result).toContain('glsp-server-node');
         });
 
         it('should throw for unknown preset', () => {
-            expect(() => resolveRepoFilter(configuredRepos, { preset: 'nonexistent' })).to.throw(/Unknown preset/);
+            expect(() => resolveRepoFilter(configuredRepos, { preset: 'nonexistent' })).toThrow(/Unknown preset/);
         });
 
         it('should throw for unknown repo name', () => {
-            expect(() => resolveRepoFilter(configuredRepos, { repo: ['not-a-repo'] })).to.throw(/Unknown repository/);
+            expect(() => resolveRepoFilter(configuredRepos, { repo: ['not-a-repo'] })).toThrow(/Unknown repository/);
         });
     });
 });

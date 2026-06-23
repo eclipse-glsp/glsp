@@ -40,12 +40,12 @@ describe('updateNext e2e', () => {
         fs.writeFileSync(pkgPath, JSON.stringify({ name: 'test', version: '1.0.1', private: true, workspaces: [] }, undefined, 2));
         const result = runCli(['updateNext', repoDir]);
         // LOGGER.warn uses console.warn which writes to stderr
-        expect(result.stderr).to.contain('Uncommitted changes');
+        expect(result.stderr).toContain('Uncommitted changes');
     });
 
     it('should error for non-existent directory', () => {
         const result = runCli(['updateNext', '/non/existent/path']);
-        expect(result.exitCode).to.not.equal(0);
+        expect(result.exitCode).not.toBe(0);
     });
 
     it('should show debug output with --verbose', () => {
@@ -56,6 +56,6 @@ describe('updateNext e2e', () => {
         execSync('git add . && git commit -m "add package.json"', { cwd: repoDir });
         const result = runCli(['updateNext', repoDir, '--verbose']);
         const output = result.stdout + result.stderr;
-        expect(output).to.contain('Scanning');
+        expect(output).toContain('Scanning');
     });
 });

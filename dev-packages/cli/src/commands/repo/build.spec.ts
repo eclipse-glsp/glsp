@@ -56,43 +56,43 @@ describe('build-action', () => {
             createRepoDirs('glsp-client');
             await buildSingleRepo('glsp-client', makeOptions());
             expect(execAsyncStub).toHaveBeenCalledTimes(2);
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm install');
-            expect(execAsyncStub.mock.calls[1][0]).to.equal('pnpm run --if-present build');
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm install');
+            expect(execAsyncStub.mock.calls[1][0]).toBe('pnpm run --if-present build');
         });
 
         it('should run pnpm install, build and browser build for theia-integration', async () => {
             createRepoDirs('glsp-theia-integration');
             await buildSingleRepo('glsp-theia-integration', makeOptions());
             expect(execAsyncStub).toHaveBeenCalledTimes(3);
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm install');
-            expect(execAsyncStub.mock.calls[1][0]).to.equal('pnpm run --if-present build');
-            expect(execAsyncStub.mock.calls[2][0]).to.equal('pnpm run browser build');
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm install');
+            expect(execAsyncStub.mock.calls[1][0]).toBe('pnpm run --if-present build');
+            expect(execAsyncStub.mock.calls[2][0]).toBe('pnpm run browser build');
         });
 
         it('should run electron build with --electron', async () => {
             createRepoDirs('glsp-theia-integration');
             await buildSingleRepo('glsp-theia-integration', makeOptions({ electron: true }));
             expect(execAsyncStub).toHaveBeenCalledTimes(3);
-            expect(execAsyncStub.mock.calls[2][0]).to.equal('pnpm run electron build');
+            expect(execAsyncStub.mock.calls[2][0]).toBe('pnpm run electron build');
         });
 
         it('should run mvn for glsp-server', async () => {
             createRepoDirs('glsp-server');
             await buildSingleRepo('glsp-server', makeOptions());
             expect(execAsyncStub).toHaveBeenCalledOnce();
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B');
+            expect(execAsyncStub.mock.calls[0][0]).toBe('mvn clean verify -Pm2 -Pfatjar -Dstyle.color=always -B');
         });
 
         it('should build client and server for eclipse-integration', async () => {
             createRepoDirs(path.join('glsp-eclipse-integration', 'client'));
             await buildSingleRepo('glsp-eclipse-integration', makeOptions());
             expect(execAsyncStub).toHaveBeenCalledTimes(3);
-            expect(execAsyncStub.mock.calls[0][0]).to.equal('pnpm install');
-            expect(execAsyncStub.mock.calls[0][1].cwd).to.contain(path.join('glsp-eclipse-integration', 'client'));
-            expect(execAsyncStub.mock.calls[1][0]).to.equal('pnpm run --if-present build');
-            expect(execAsyncStub.mock.calls[1][1].cwd).to.contain(path.join('glsp-eclipse-integration', 'client'));
-            expect(execAsyncStub.mock.calls[2][0]).to.equal('mvn clean verify -Dstyle.color=always -B');
-            expect(execAsyncStub.mock.calls[2][1].cwd).to.contain(path.join('glsp-eclipse-integration', 'server'));
+            expect(execAsyncStub.mock.calls[0][0]).toBe('pnpm install');
+            expect(execAsyncStub.mock.calls[0][1].cwd).toContain(path.join('glsp-eclipse-integration', 'client'));
+            expect(execAsyncStub.mock.calls[1][0]).toBe('pnpm run --if-present build');
+            expect(execAsyncStub.mock.calls[1][1].cwd).toContain(path.join('glsp-eclipse-integration', 'client'));
+            expect(execAsyncStub.mock.calls[2][0]).toBe('mvn clean verify -Dstyle.color=always -B');
+            expect(execAsyncStub.mock.calls[2][1].cwd).toContain(path.join('glsp-eclipse-integration', 'server'));
         });
     });
 
@@ -100,7 +100,7 @@ describe('build-action', () => {
         it('should build repos sequentially in dependency order', async () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions());
-            expect(failures).to.equal(0);
+            expect(failures).toBe(0);
             // pnpm install + build per repo
             expect(execAsyncStub).toHaveBeenCalledTimes(6);
         });
@@ -111,7 +111,7 @@ describe('build-action', () => {
                 await runBuildOrdered(['glsp', 'glsp-client'], makeOptions());
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain('glsp-client');
+                expect((error as Error).message).toContain('glsp-client');
             }
         });
 
@@ -119,7 +119,7 @@ describe('build-action', () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
             execAsyncStub.mockRejectedValueOnce(new Error('build failed'));
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions({ failFast: true }));
-            expect(failures).to.equal(1);
+            expect(failures).toBe(1);
             expect(execAsyncStub).toHaveBeenCalledTimes(1);
         });
 
@@ -127,7 +127,7 @@ describe('build-action', () => {
             createRepoDirs('glsp', 'glsp-client', 'glsp-server-node');
             execAsyncStub.mockRejectedValueOnce(new Error('build failed'));
             const failures = await runBuildOrdered(['glsp', 'glsp-client', 'glsp-server-node'], makeOptions({ failFast: false }));
-            expect(failures).to.equal(1);
+            expect(failures).toBe(1);
             // first repo fails on install (1 call); the other two each run install + build (2+2)
             expect(execAsyncStub).toHaveBeenCalledTimes(5);
         });

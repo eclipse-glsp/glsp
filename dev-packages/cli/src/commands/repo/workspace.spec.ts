@@ -48,9 +48,9 @@ describe('workspace-action', () => {
             const repos: GLSPRepo[] = ['glsp-client', 'glsp-server-node'];
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
-            expect(result.folders).to.have.length(2);
-            expect(result.folders[0]).to.deep.equal({ name: 'glsp-client', path: 'glsp-client' });
-            expect(result.folders[1]).to.deep.equal({ name: 'glsp-server-node', path: 'glsp-server-node' });
+            expect(result.folders).toHaveLength(2);
+            expect(result.folders[0]).toEqual({ name: 'glsp-client', path: 'glsp-client' });
+            expect(result.folders[1]).toEqual({ name: 'glsp-server-node', path: 'glsp-server-node' });
         });
 
         it('should compute paths relative to custom output location', () => {
@@ -59,23 +59,23 @@ describe('workspace-action', () => {
 
             const result = generateWorkspaceContent(repos, tempDir, makeOptions({ outputPath }));
 
-            expect(result.folders[0].path).to.equal(path.join('..', '..', 'glsp-client'));
+            expect(result.folders[0].path).toBe(path.join('..', '..', 'glsp-client'));
         });
 
         it('should include build, link, and unlink tasks', () => {
             const repos: GLSPRepo[] = ['glsp-client'];
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
-            expect(result.tasks.version).to.equal('2.0.0');
+            expect(result.tasks.version).toBe('2.0.0');
             const labels = result.tasks.tasks.map(t => t.label);
-            expect(labels).to.include('GLSP: Build all');
-            expect(labels).to.include('GLSP: Link');
-            expect(labels).to.include('GLSP: Unlink');
+            expect(labels).toContain('GLSP: Build all');
+            expect(labels).toContain('GLSP: Link');
+            expect(labels).toContain('GLSP: Unlink');
 
             const buildAll = result.tasks.tasks.find(t => t.label === 'GLSP: Build all')!;
-            expect(buildAll.type).to.equal('shell');
-            expect(buildAll.command).to.equal('npx @eclipse-glsp/cli repo build --no-java');
-            expect(buildAll.group).to.deep.equal({ kind: 'build', isDefault: true });
+            expect(buildAll.type).toBe('shell');
+            expect(buildAll.command).toBe('npx @eclipse-glsp/cli repo build --no-java');
+            expect(buildAll.group).toEqual({ kind: 'build', isDefault: true });
         });
 
         it('should include Java build task when Java repos are present', () => {
@@ -83,7 +83,7 @@ describe('workspace-action', () => {
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
             const labels = result.tasks.tasks.map(t => t.label);
-            expect(labels).to.include('GLSP: Build all (incl. Java)');
+            expect(labels).toContain('GLSP: Build all (incl. Java)');
         });
 
         it('should not include Java build task when no Java repos are present', () => {
@@ -91,7 +91,7 @@ describe('workspace-action', () => {
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
             const labels = result.tasks.tasks.map(t => t.label);
-            expect(labels).to.not.include('GLSP: Build all (incl. Java)');
+            expect(labels).not.toContain('GLSP: Build all (incl. Java)');
         });
 
         it('should include preset build tasks for matching strict subsets', () => {
@@ -99,14 +99,14 @@ describe('workspace-action', () => {
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
             const labels = result.tasks.tasks.map(t => t.label);
-            expect(labels).to.include('GLSP: Build core');
+            expect(labels).toContain('GLSP: Build core');
         });
 
         it('should include extension recommendations', () => {
             const repos: GLSPRepo[] = ['glsp-client'];
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
-            expect(result.extensions.recommendations).to.deep.equal([
+            expect(result.extensions.recommendations).toEqual([
                 'dbaeumer.vscode-eslint',
                 'esbenp.prettier-vscode',
                 'DavidAnson.vscode-markdownlint'
@@ -117,7 +117,7 @@ describe('workspace-action', () => {
             const repos: GLSPRepo[] = ['glsp-client'];
             const result = generateWorkspaceContent(repos, tempDir, makeOptions());
 
-            expect(result.settings).to.deep.equal({});
+            expect(result.settings).toEqual({});
         });
     });
 
@@ -126,11 +126,11 @@ describe('workspace-action', () => {
             const repos: GLSPRepo[] = ['glsp-client'];
             const outputFile = generateWorkspaceFile(repos, tempDir, makeOptions());
 
-            expect(outputFile).to.equal(path.join(tempDir, WORKSPACE_FILE_NAME));
-            expect(fs.existsSync(outputFile)).to.be.true;
+            expect(outputFile).toBe(path.join(tempDir, WORKSPACE_FILE_NAME));
+            expect(fs.existsSync(outputFile)).toBe(true);
 
             const content: VSCodeWorkspace = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
-            expect(content.folders).to.have.length(1);
+            expect(content.folders).toHaveLength(1);
         });
 
         it('should write to a custom output path', () => {
@@ -139,8 +139,8 @@ describe('workspace-action', () => {
 
             const outputFile = generateWorkspaceFile(repos, tempDir, makeOptions({ outputPath }));
 
-            expect(outputFile).to.equal(outputPath);
-            expect(fs.existsSync(outputFile)).to.be.true;
+            expect(outputFile).toBe(outputPath);
+            expect(fs.existsSync(outputFile)).toBe(true);
         });
 
         it('should overwrite an existing workspace file', () => {
@@ -152,7 +152,7 @@ describe('workspace-action', () => {
 
             const outputFile = path.join(tempDir, WORKSPACE_FILE_NAME);
             const content: VSCodeWorkspace = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
-            expect(content.folders).to.have.length(2);
+            expect(content.folders).toHaveLength(2);
         });
     });
 
@@ -160,24 +160,24 @@ describe('workspace-action', () => {
         it('should find a single .code-workspace file', () => {
             fs.writeFileSync(path.join(tempDir, 'glsp.code-workspace'), '{}');
             const result = discoverWorkspaceFile(tempDir);
-            expect(result).to.equal(path.join(tempDir, 'glsp.code-workspace'));
+            expect(result).toBe(path.join(tempDir, 'glsp.code-workspace'));
         });
 
         it('should return undefined when no .code-workspace file exists', () => {
             const result = discoverWorkspaceFile(tempDir);
-            expect(result).to.be.undefined;
+            expect(result).toBeUndefined();
         });
 
         it('should prefer glsp.code-workspace when multiple exist', () => {
             fs.writeFileSync(path.join(tempDir, 'glsp.code-workspace'), '{}');
             fs.writeFileSync(path.join(tempDir, 'other.code-workspace'), '{}');
             const result = discoverWorkspaceFile(tempDir);
-            expect(result).to.equal(path.join(tempDir, 'glsp.code-workspace'));
+            expect(result).toBe(path.join(tempDir, 'glsp.code-workspace'));
         });
 
         it('should return undefined for nonexistent directory', () => {
             const result = discoverWorkspaceFile(path.join(tempDir, 'nonexistent'));
-            expect(result).to.be.undefined;
+            expect(result).toBeUndefined();
         });
     });
 });

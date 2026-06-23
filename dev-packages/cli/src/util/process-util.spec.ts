@@ -25,25 +25,25 @@ describe('process-util', () => {
     describe('exec', () => {
         it('should return trimmed stdout on success', () => {
             const result = exec('echo hello');
-            expect(result).to.equal('hello');
+            expect(result).toBe('hello');
         });
 
         it('should throw on non-zero exit code', () => {
-            expect(() => exec('sh -c "exit 1"')).to.throw(/Command failed/);
+            expect(() => exec('sh -c "exit 1"')).toThrow(/Command failed/);
         });
 
         it('should use custom error message when provided', () => {
-            expect(() => exec('sh -c "exit 1"', { errorMsg: 'Custom error' })).to.throw('Custom error');
+            expect(() => exec('sh -c "exit 1"', { errorMsg: 'Custom error' })).toThrow('Custom error');
         });
 
         it('should pass cwd option', () => {
             const result = exec('pwd', { cwd: '/tmp' });
-            expect(result).to.include('tmp');
+            expect(result).toContain('tmp');
         });
 
         it('should return empty string for command with no output', () => {
             const result = exec('true');
-            expect(result).to.equal('');
+            expect(result).toBe('');
         });
     });
 
@@ -57,7 +57,7 @@ describe('process-util', () => {
                 await execForeground('sh -c "exit 1"');
                 expect.fail('should have thrown');
             } catch (error) {
-                expect((error as Error).message).to.contain('exited with code 1');
+                expect((error as Error).message).toContain('exited with code 1');
             }
         });
 
