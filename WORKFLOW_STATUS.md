@@ -1,6 +1,6 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-06-21.
+> Badges are live — workflow list auto-generated on 2026-07-12.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
@@ -51,5 +51,5 @@
 
 ## [glsp-website-source](https://github.com/eclipse-glsp/glsp-website-source)
 
-[![PR Preview Deploy](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml) [![Deploy Website](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml)
+[![GH Pages Cleanup](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/gh-pages-cleanup.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/gh-pages-cleanup.yml) [![PR Preview Deploy](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/pr-preview-deploy.yml) [![Deploy Website](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-website-source/actions/workflows/publish.yml)
 
