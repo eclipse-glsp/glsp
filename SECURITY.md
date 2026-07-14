@@ -1,7 +1,34 @@
-# Eclipse GLSP Vulnerability Reporting Policy
+# Security Policy
 
-If you think or suspect that you have discovered a new security vulnerability in this project, please do not disclose it on GitHub, e.g. in an issue, a PR, or a discussion. Any such disclosure will be removed/deleted on sight, to promote orderly disclosure, as per the Eclipse Foundation Security Policy (1).
+This Eclipse Foundation Project adheres to the [Eclipse Foundation Vulnerability Reporting Policy](https://www.eclipse.org/security/policy/).
 
-Instead, please report any potential vulnerability to the Eclipse Foundation Security Team. Make sure to provide a concise description of the issue, a CWE, and other supporting information.
+## How To Report a Vulnerability
 
-(1) Eclipse Foundation Vulnerability Reporting Policy: <https://www.eclipse.org/security/policy.php>
+If you think you have found a vulnerability in this repository, please report it to us through coordinated disclosure.
+
+**Please do not report security vulnerabilities through public issues, discussions, or change requests.**
+
+Instead, report it using one of the following ways:
+
+* Create a [confidential issue](https://gitlab.eclipse.org/security/vulnerability-reports/-/issues/new?issuable_template=new_vulnerability) in the Eclipse Foundation Vulnerability Reporting Tracker
+* Report a [vulnerability](https://github.com/eclipse-glsp/glsp/security/advisories/new) directly via private vulnerability reporting on GitHub
+
+You can find more information about reporting and disclosure at the [Eclipse Foundation Security page](https://www.eclipse.org/security/).
+
+Please include as much of the information listed below as you can to help us better understand and resolve the issue:
+
+* The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
+* Affected version(s)
+* Impact of the issue, including how an attacker might exploit the issue
+* Step-by-step instructions to reproduce the issue
+* The location of the affected source code (tag/branch/commit or direct URL)
+* Full paths of source file(s) related to the manifestation of the issue
+* Configuration required to reproduce the issue
+* Log files that are related to this issue (if possible)
+* Proof-of-concept or exploit code (if possible)
+
+This information will help us triage your report more quickly.
+
+## Supported Versions
+
+Eclipse GLSP components are released in lockstep. Security fixes and backports are only provided for the latest released version and the upcoming release. Older versions do not receive security updates.
