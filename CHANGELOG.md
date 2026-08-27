@@ -4,7 +4,28 @@
 
 ### Changes
 
+- [cli] Fix incorrect path resolution in the `repo` commands [#1690](https://github.com/eclipse-glsp/glsp/pull/1690)
+- [cli] Improve `checkHeaders --type changes` to diff against the default branch, so the checked files match a pull request's changed files [#1694](https://github.com/eclipse-glsp/glsp/pull/1694)
+- [cli] Make the CLI commands package-manager aware and add `releng publish` in place of `lerna publish` [#1697](https://github.com/eclipse-glsp/glsp/pull/1697)
+- [cli] Fix the pnpm path resolution of the `updateNext` command [#1698](https://github.com/eclipse-glsp/glsp/pull/1698)
+- [cli] Rework `repo link` and `repo unlink` onto pnpm `link:` overrides and build each linked repo, so the overrides resolve to compiled output [#1703](https://github.com/eclipse-glsp/glsp/pull/1703)
+- [cli] Add an interactive option to the `releng publish` command [#1706](https://github.com/eclipse-glsp/glsp/pull/1706)
+- [cli] Fix change detection of the `checkHeaders` command [#1707](https://github.com/eclipse-glsp/glsp/pull/1707)
+- [eslint-config] Re-enable the core `no-unused-expressions` rule and drop `eslint-plugin-chai-friendly`, which is obsolete now that assertions are function calls [#1708](https://github.com/eclipse-glsp/glsp/pull/1708)
+
 ### Potentially Breaking Changes
+
+- [deps] Update the shared dev dependencies to their current major versions [#1701](https://github.com/eclipse-glsp/glsp/pull/1701)
+    - ESLint 9.x to 10.x, along with `@stylistic` 2.x to 5.x, `globals` 15.x to 17.x, and `eslint-plugin-import-x` floored to >=4.16.2. The `preserve-caught-error` rule, new in ESLint 10's recommended set, is disabled.
+    - Prettier 2.x to 3.x, which reformats markdown list markers to a single space
+    - sinon 15.x to 22.x, rimraf 5.x to 6.x, esbuild 0.25 to 0.28, and reflect-metadata 0.1 to 0.2
+- [node] Raise the minimum Node version to `^22.13.0 || >=24`, required by ESLint 10 [#1701](https://github.com/eclipse-glsp/glsp/pull/1701)
+- [ts-config] Migrate the shared `target` and `lib` to ES2023 [#1702](https://github.com/eclipse-glsp/glsp/pull/1702)
+    - `useDefineForClassFields` is set to `false` to preserve property injection
+- [config] Migrate the shared test stack from Mocha, nyc, chai and sinon to Vitest [#1705](https://github.com/eclipse-glsp/glsp/pull/1705)
+    - New `@eclipse-glsp/vitest-config` package providing a ready-to-use shared flat config; the obsolete `mocha-config` and `nyc-config` packages are dropped
+    - `config-test` now bundles the Vitest config and test dependencies in place of Mocha and nyc
+    - The bespoke `coverage-report` CLI command is removed in favor of `vitest --coverage`
 
 ## [v2.7.0 - 01/06/2026](https://github.com/eclipse-glsp/glsp/releases/tag/v2.7.0)
 
