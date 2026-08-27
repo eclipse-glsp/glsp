@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/cli",
-  "version": "2.8.0-next",
+  "version": "2.8.0",
   "description": "CLI Tooling & scripts for GLSP components",
   "homepage": "https://www.eclipse.org/glsp/",
   "bugs": "https://github.com/eclipse-glsp/glsp/issues",
