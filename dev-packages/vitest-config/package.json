@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/vitest-config",
-  "version": "2.8.0-next",
+  "version": "2.8.0",
   "description": "Shared Vitest test configuration for GLSP projects",
   "keywords": [
     "eclipse",
