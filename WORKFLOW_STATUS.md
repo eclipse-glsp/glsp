@@ -1,6 +1,6 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-07-12.
+> Badges are live — workflow list auto-generated on 2026-08-30.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
@@ -29,7 +29,7 @@
 
 ## [glsp-server](https://github.com/eclipse-glsp/glsp-server)
 
-[![CodeQL](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml)
+[![CodeQL](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml) [![Copilot](https://github.com/eclipse-glsp/glsp-server/actions/workflows/copilot-pull-request-reviewer/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/copilot-pull-request-reviewer)
 
 ## [glsp-server-node](https://github.com/eclipse-glsp/glsp-server-node)
 
