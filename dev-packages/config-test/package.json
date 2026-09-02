@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp/config-test",
-  "version": "2.8.0",
+  "version": "2.9.0-next",
   "description": "Meta package that provides the shared Vitest test configuration and dependencies for GLSP projects",
   "keywords": [
     "eclipse",
