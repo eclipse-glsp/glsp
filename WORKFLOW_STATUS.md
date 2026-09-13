@@ -1,6 +1,6 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-07-12.
+> Badges are live — workflow list auto-generated on 2026-09-13.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
@@ -14,6 +14,10 @@
 [![CodeQL](https://github.com/eclipse-glsp/glsp-client/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/codeql-analysis.yml) [![CI](https://github.com/eclipse-glsp/glsp-client/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/ci.yml) [![E2E](https://github.com/eclipse-glsp/glsp-client/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-client/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/prepare-release.yml) [![Publish to NPM](https://github.com/eclipse-glsp/glsp-client/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/publish.yml)
 
 [![Publish Release](https://github.com/eclipse-glsp/glsp-client/actions/workflows/publish-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/publish-release.yml) [![PR Preview Deploy](https://github.com/eclipse-glsp/glsp-client/actions/workflows/pr-preview-deploy.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/pr-preview-deploy.yml) [![GH Pages Cleanup](https://github.com/eclipse-glsp/glsp-client/actions/workflows/gh-pages-cleanup.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/gh-pages-cleanup.yml) [![Main Deploy](https://github.com/eclipse-glsp/glsp-client/actions/workflows/main-deploy.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/main-deploy.yml)
+
+## [glsp-core](https://github.com/eclipse-glsp/glsp-core)
+
+[![CI](https://github.com/eclipse-glsp/glsp-core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-core/actions/workflows/ci.yml) [![PR Preview Deploy](https://github.com/eclipse-glsp/glsp-core/actions/workflows/pr-preview-deploy.yml/badge.svg?branch=main)](https://github.com/eclipse-glsp/glsp-core/actions/workflows/pr-preview-deploy.yml)
 
 ## [glsp-eclipse-integration](https://github.com/eclipse-glsp/glsp-eclipse-integration)
 
@@ -29,7 +33,7 @@
 
 ## [glsp-server](https://github.com/eclipse-glsp/glsp-server)
 
-[![CodeQL](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml)
+[![CodeQL](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/codeql-analysis.yml) [![E2E](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/e2e.yml) [![Prepare Release](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/prepare-release.yml) [![Copilot](https://github.com/eclipse-glsp/glsp-server/actions/workflows/copilot-pull-request-reviewer/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/copilot-pull-request-reviewer)
 
 ## [glsp-server-node](https://github.com/eclipse-glsp/glsp-server-node)
 
