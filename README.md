@@ -91,7 +91,6 @@ The [releases page of this repository](https://github.com/eclipse-glsp/glsp/rele
 Artifacts that are shared across all GLSP repositories and/or projects:
 
 - The Eclipse GLSP dev packages (ESLint/Prettier/TypeScript configs, the GLSP CLI) live in [glsp-core/dev-packages](https://github.com/eclipse-glsp/glsp-core/tree/main/dev-packages).
-- The `eclipseglsp/ci` Docker image used by the GLSP CI setups is available on [Dockerhub](https://hub.docker.com/r/eclipseglsp/ci).
 
 ## Build artifacts
 
@@ -102,7 +101,6 @@ The Java server packages are available as maven as well as p2 dependency from th
 
 ### Maven Repositories
 
-- _Snapshots_: <https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/>
 - _Releases/Release Candidates_: <https://central.sonatype.com/search?q=org.eclipse.glsp&namespace=org.eclipse.glsp>
 
 ### P2 Update Sites
@@ -115,7 +113,7 @@ The Java server packages are available as maven as well as p2 dependency from th
 - _Eclipse Integration Release Candidates_: </i> <https://download.eclipse.org/glsp/ide/p2/staging/>
 - _Eclipse Integration Releases_: </i> <https://download.eclipse.org/glsp/ide/p2/releases/>
 
-All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
+All changes on the master branch are deployed automatically to the corresponding nightly p2 update sites.
 
 ## Workflow Diagram Example
 
