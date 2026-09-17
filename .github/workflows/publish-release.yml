@@ -8,7 +8,7 @@ on:
         required: true
         type: choice
         options:
-          - glsp
+          - glsp-core
           - glsp-client
           - glsp-theia-integration
           - glsp-server

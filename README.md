@@ -1,13 +1,10 @@
 # Eclipse GLSP
 
-[![Client Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-client/ci.yml?branch=master&label=Client)](https://github.com/eclipse-glsp/glsp-client/actions/workflows/ci.yml)
-[![ServerJava Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/badge/icon?subject=server-java)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-server/job/master/)
-[![ServerNode Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-server-node/ci.yml?branch=main&label=server-node)](https://github.com/eclipse-glsp/glsp-server-node/actions/workflows/ci.yml)
-[![Dev Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp/ci.yml?branch=master&label=dev-packages)](https://github.com/eclipse-glsp/glsp/actions/workflows/ci.yml)
+[![Core Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-core/ci.yml?branch=main&label=core)](https://github.com/eclipse-glsp/glsp-core/actions/workflows/ci.yml)
+[![ServerJava Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-server/ci.yml?branch=master&label=server-java)](https://github.com/eclipse-glsp/glsp-server/actions/workflows/ci.yml)
 [![Theia Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-theia-integration/ci.yml?branch=master&label=theia%20integration)](https://github.com/eclipse-glsp/glsp-theia-integration/actions/workflows/ci.yml)
 [![Vscode Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-vscode-integration/ci.yml?branch=master&label=vscode%20integration)](https://github.com/eclipse-glsp/glsp-vscode-integration/actions/workflows/ci.yml)
-[![Eclipse Status](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/badge/icon?subject=eclipse-integration)](https://ci.eclipse.org/glsp/job/eclipse-glsp/job/glsp-eclipse-integration/job/master/)
-[![Playwright Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-playwright/ci.yml?branch=main&label=playwright)](https://github.com/eclipse-glsp/glsp-playwright/actions/workflows/ci.yml)
+[![Eclipse Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-eclipse-integration/ci.yml?branch=master&label=eclipse%20integration)](https://github.com/eclipse-glsp/glsp-eclipse-integration/actions/workflows/ci.yml)
 [![Examples Status](https://img.shields.io/github/actions/workflow/status/eclipse-glsp/glsp-examples/ci.yml?branch=master&label=examples)](https://github.com/eclipse-glsp/glsp-examples/actions/workflows/ci.yml)
 
 For a full overview of all CI workflows across the organization, see [Workflow Status](WORKFLOW_STATUS.md).
@@ -68,27 +65,33 @@ Below is a list of features that are supported by the different base technologie
 
 The GLSP source code consists of the following repositories:
 
-- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client): Contains the code for the ([Sprotty](https://github.com/eclipse/sprotty)-based) client.
+- [`glsp-core`](https://github.com/eclipse-glsp/glsp-core): The consolidated monorepo containing the ([Sprotty](https://github.com/eclipse/sprotty)-based) client, the typescript-based (node/browser) server framework, the Playwright-based testing framework and the shared dev tooling (`dev-packages`).
 - [`glsp-server`](https://github.com/eclipse-glsp/glsp-server): Contains the code for a Java-based framework to create GLSP server components.
-- [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node): Contains the code for a typescript-based framework to create GLSP server components running in node or pure browser applications.
 - [`glsp-theia-integration`](https://github.com/eclipse-glsp/glsp-theia-integration): Provides the glue code to integrate GLSP diagrams editors into [Theia](https://github.com/theia-ide/theia).
 - [`glsp-eclipse-integration`](https://github.com/eclipse-glsp/glsp-eclipse-integration): Provides the integration of GLSP diagram editors with the Eclipse IDE.
 - [`glsp-vscode-integration`](https://github.com/eclipse-glsp/glsp-vscode-integration): Provides the integration of GLSP diagrams editors into [VS Code](https://github.com/microsoft/vscode).
 - [`glsp-examples`](https://github.com/eclipse-glsp/glsp-examples): Contains various examples and project templates to demonstrate GLSP in action.
-- [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright): Playwright-based framework for testing GLSP diagram editors.
+- [`glsp-website-source`](https://github.com/eclipse-glsp/glsp-website-source): Contains the sources of the [GLSP website and documentation](https://www.eclipse.org/glsp/).
+
+The following repositories are deprecated; their sources have been consolidated into [`glsp-core`](https://github.com/eclipse-glsp/glsp-core) and they are kept read-only for reference:
+
+- [`glsp-client`](https://github.com/eclipse-glsp/glsp-client) (deprecated): now [`glsp-core/packages/client`](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/client).
+- [`glsp-server-node`](https://github.com/eclipse-glsp/glsp-server-node) (deprecated): now [`glsp-core/packages/server`](https://github.com/eclipse-glsp/glsp-core/tree/main/packages/server).
+- [`glsp-playwright`](https://github.com/eclipse-glsp/glsp-playwright) (deprecated): now [`glsp-core/e2e/playwright`](https://github.com/eclipse-glsp/glsp-core/tree/main/e2e/playwright).
 
 ## Release plan
 
 We release a minor version of Eclipse GLSP every three months, aligned with the [Eclipse Theia Community Releases](https://theia-ide.org/releases/), focusing on bug fixes and adding functionality while ensuring backward compatibility.
 Currently, there are no major releases with API breaks planned.
-For a detailed history of past releases, visit our [releases page on GitHub](https://github.com/eclipse-glsp/glsp/releases).
+Releases are published from the individual component repositories; the client, node server and shared dev tooling are released from [`glsp-core`](https://github.com/eclipse-glsp/glsp-core/releases).
+The [releases page of this repository](https://github.com/eclipse-glsp/glsp/releases) only holds the historic releases of the dev packages (up to v2.8.0).
 
 ## Shared artifacts
 
-This repository provides the following packages and artifacts that are shared across all GLSP repositories and/or projects:
+Artifacts that are shared across all GLSP repositories and/or projects:
 
-- [Eclipse GLSP docker images](docker/ci/README.md)
-- [Eclipse GLSP Dev Packages](dev-packages/README.md)
+- The Eclipse GLSP dev packages (ESLint/Prettier/TypeScript configs, the GLSP CLI) live in [glsp-core/dev-packages](https://github.com/eclipse-glsp/glsp-core/tree/main/dev-packages).
+- The `eclipseglsp/ci` Docker image used by the GLSP CI setups is available on [Dockerhub](https://hub.docker.com/r/eclipseglsp/ci).
 
 ## Build artifacts
 
@@ -114,21 +117,6 @@ The Java server packages are available as maven as well as p2 dependency from th
 
 All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
 
-## Developer Documentation (dev-packages)
-
-### First time setup
-
-- Install [node.js](https://nodejs.org/) (requires Node v22+)
-- Install pnpm: <https://pnpm.io/installation> (use pnpm 10+); a recent pnpm automatically switches to the version pinned in the `packageManager` field
-- Clone this repository
-- Install dependencies: `pnpm i` or `pnpm i --frozen-lockfile`
-
-### Build & Testing
-
-- Build (all packages): `pnpm build`
-- Test (all packages): `pnpm test`
-- Clean (all packages): `pnpm clean`
-
 ## Workflow Diagram Example
 
 The Workflow Diagram is a consistent example provided by all GLSP components.
@@ -137,4 +125,4 @@ The example can be used to try out different GLSP features, as well as several a
 As the example is fully open source, you can also use it as a blueprint for a custom implementation of a GLSP diagram editor.
 The workflow example consists of the following components: the Workflow Diagram Server, the client, and optionally an IDE integration of the Workflow Diagram Editor.
 
-For detailed instructions on how to build and run the Workflow Diagram example, please refer to the [corresponding section in the `glsp-client` README](https://github.com/eclipse-glsp/glsp-client#workflow-diagram-example).
+For detailed instructions on how to build and run the Workflow Diagram example, please refer to the [corresponding section in the `glsp-core` README](https://github.com/eclipse-glsp/glsp-core#workflow-diagram-example).

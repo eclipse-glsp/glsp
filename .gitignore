@@ -1,10 +1,5 @@
 node_modules/
 *.log
-lib
-dist
-tsconfig.tsbuildinfo
-eslint.xml
-coverage/
 
 # Agent specific files
 .claude/plans
