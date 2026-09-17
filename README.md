@@ -101,7 +101,6 @@ The Java server packages are available as maven as well as p2 dependency from th
 
 ### Maven Repositories
 
-- _Snapshots_: <https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/glsp/>
 - _Releases/Release Candidates_: <https://central.sonatype.com/search?q=org.eclipse.glsp&namespace=org.eclipse.glsp>
 
 ### P2 Update Sites
@@ -114,7 +113,7 @@ The Java server packages are available as maven as well as p2 dependency from th
 - _Eclipse Integration Release Candidates_: </i> <https://download.eclipse.org/glsp/ide/p2/staging/>
 - _Eclipse Integration Releases_: </i> <https://download.eclipse.org/glsp/ide/p2/releases/>
 
-All changes on the master branch are deployed automatically to the corresponding snapshot repositories.
+All changes on the master branch are deployed automatically to the corresponding nightly p2 update sites.
 
 ## Workflow Diagram Example
 
