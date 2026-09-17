@@ -8,21 +8,7 @@ This is a living artifact that will be continuously updated when new versions ar
 Please see the latest version (master) for the most up-to-date information.
 Please contribute any issues you experienced when upgrading to a newer version of Theia to this document, even for previous releases.
 
-<!-- TOC end -->
-
-<!-- TOC --><a name="glsp-migration-guide"></a>
-
-# GLSP Migration Guide
-
-<!-- TOC --><a name="description"></a>
-
-## Description
-
-The following guide highlights potential migration steps necessary when upgrading a GLSP project from
-version 1.0.0 to 2.x.x.
-This is a living artifact that will be continuously updated when new versions are released and/or new migration issues are encountered.
-Please see the latest version (master) for the most up-to-date information.
-Please contribute any issues you experienced when upgrading to a newer version of Theia to this document, even for previous releases.
+<!-- TOC start -->
 
 - [General](#general)
     - [Build dependencies](#build-dependencies)
@@ -45,22 +31,24 @@ Please contribute any issues you experienced when upgrading to a newer version o
     - [Improved `DiagramConfiguration`](#improved-diagramconfiguration)
     - [Custom diagram widget](#custom-diagram-widget)
 
+<!-- TOC end -->
+
 ## General
 
 ### Build dependencies
 
-- Node.js: **>=16.11.0** (Recommended: **18.x** or **20.x**)
+- Node.js: **^22.13.0** or **>=24** (Recommended: **24.x**)
 - Typescript: **>=5.x**
-- Java: **>=17.x**
+- Java: **>=21.x**
 
-The minimum required Node version for GLSP 2.x is Node 16.11.0.
-However, this version has already reached its end-of-life phase so we recommend to use one of the current LTS versions (18/20).
+The build dependencies have been raised over the course of the 2.x line.
+The current 2.x releases require Node 22.13.0 or higher; older Node versions have reached their end-of-life phase, so we recommend to use the current LTS version (24.x).
 
 All projects are now based on Typescript 5.
 For adopting projects this is more of a soft requirement since Typescript 5 is still type-compatible with older versions.
 While we recommend to upgrade to Typescript 5 as well to take advantage of the new features it is still possible to use older versions as well.
 
-For Java-based projects the new minimum required Java Version is 17.x.
+For Java-based projects the minimum required Java version is 21.x.
 
 Before starting the migration please make sure that all build time dependencies have been updated to a compatible version.
 
@@ -605,11 +593,11 @@ Not all changes are covered here, for a complete list of changes please refer to
 GLSP 2.x is compatible with Theia 1.39.x or higher.
 Older versions are no longer supported.
 Please update your Theia dependencies to a compatible version before starting the migration.
-If you are already on a compatible version we recommend to run `yarn upgrade` to ensure that shared dependencies between
+If you are already on a compatible version we recommend to refresh your lock file (e.g. `pnpm update` or `npm update`) to ensure that shared dependencies between
 Theia and GLSP are resolved to the same version.
 
 GLSP now consumes Theia as `peerDependency` this means instead of trying to resolve the Theia dependencies itself GLSP consume the versions declared in your (browser or electron) app.
-As a consequence it should no longer be necessary to use `yarn resolutions` (or `npm override`) to pin Theia to a specific version.
+As a consequence it should no longer be necessary to pin Theia to a specific version via dependency overrides (`pnpm.overrides`, `npm overrides` or `yarn resolutions`).
 
 ### Removal of sprotty-theia
 
