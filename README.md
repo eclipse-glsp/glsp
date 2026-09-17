@@ -91,7 +91,6 @@ The [releases page of this repository](https://github.com/eclipse-glsp/glsp/rele
 Artifacts that are shared across all GLSP repositories and/or projects:
 
 - The Eclipse GLSP dev packages (ESLint/Prettier/TypeScript configs, the GLSP CLI) live in [glsp-core/dev-packages](https://github.com/eclipse-glsp/glsp-core/tree/main/dev-packages).
-- The `eclipseglsp/ci` Docker image used by the GLSP CI setups is available on [Dockerhub](https://hub.docker.com/r/eclipseglsp/ci).
 
 ## Build artifacts
 
