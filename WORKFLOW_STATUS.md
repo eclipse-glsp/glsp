@@ -1,11 +1,11 @@
 # Eclipse GLSP Workflow Status
 
-> Badges are live — workflow list auto-generated on 2026-11-08.
+> Badges are live — workflow list auto-generated on 2026-11-15.
 > [Regenerate](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
 
 ## [glsp](https://github.com/eclipse-glsp/glsp)
 
-[![Prepare Release](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml) [![Workflow Summary Report](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml) [![Publish Release](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml) [![Workflow Badges](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml)
+[![Prepare Release](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/prepare-release.yml) [![Publish Release](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/publish-release.yml) [![Workflow Badges](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflow-badges.yml) [![Workflow Summary Report](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml/badge.svg?branch=master)](https://github.com/eclipse-glsp/glsp/actions/workflows/workflowSummary.yml)
 
 ## [glsp-client](https://github.com/eclipse-glsp/glsp-client)
 
